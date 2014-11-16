@@ -2,3 +2,11 @@
   docs:
   - index.md
   - getting-started/overview.md
+  - getting-started/architecture.md
+  - getting-started/designs.md
+- title: Features
+  docs:
+  - features/DR.md
+  - features/HA.md
+  - features/XSM.md
+  - features/RPU.md
