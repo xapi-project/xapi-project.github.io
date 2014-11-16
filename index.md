@@ -1,9 +1,9 @@
 ---
 layout: default
-title: Jetstrap Docs
+title: Welcome
 ---
 
-Welcome to the Jetstrap documentation, tutorials, and help site! We are
-constantly adding content, so check back often.
+Welcome to the Xapi project documentation site! We are constantly adding
+content, so check back often.
 
 To get started, check out the links on the left.

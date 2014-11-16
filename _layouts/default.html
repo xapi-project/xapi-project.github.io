@@ -48,14 +48,19 @@
     <div class="container">
       <div class="row">
         <div class="span3">
-          <ul id="menu" class="nav nav-list" data-spy="affix">
-            <li class="nav-header">JETSTRAP DOCS</li>
-            <li data-section=""><a href="{{site.baseurl}}/">Home</a></li>
-            <li class="nav-header">USING JETSTRAP</li>
-            <li data-section="jetstrap/gettingstarted"><a href="{{site.baseurl}}/jetstrap/gettingstarted.html">Getting Started</a></li>
-            <li data-section="builder/components"><a href="{{site.baseurl}}/builder/components.html">Components</a></li>
-            <li class="nav-header">SUPPORT</li>
-            <li><a href="mailto:support@jetstrap.com">Contact Support</a></li>
+          <ul id="menu" class="nav nav-list" data-spy="scroll">
+            {% for section in site.data.navbar %}
+              <li class="nav-header">{{section.title}}<li>
+              {% for d in section.docs %}
+                {% for p in site.pages %}
+                  {% if p.path == d %}
+                    <li data-section="{{p.path}}">
+                      <a href="{{site.baseurl}}/{{p.url}}">{{p.title}}</a>
+                    </li>
+                  {% endif %}
+                {% endfor %}
+              {% endfor %}
+            {% endfor %}
           </ul>
         </div>
         <div class="span9">
@@ -76,7 +81,7 @@
     </script>
 
     <script>
-      $('#menu [data-section="{{page.section}}"]').addClass('active');
+      $('#menu [data-section="{{page.path}}"]').addClass('active');
     </script>
 
     <script type="text/javascript">
