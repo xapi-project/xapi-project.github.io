@@ -4,7 +4,7 @@
   - getting-started/overview.md
   - getting-started/architecture.md
   - getting-started/designs.md
-- title: Features
+- title: High-level Features
   docs:
   - features/DR.md
   - features/HA.md
