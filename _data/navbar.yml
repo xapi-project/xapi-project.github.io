@@ -10,3 +10,17 @@
   - features/HA.md
   - features/XSM.md
   - features/RPU.md
+- title: Xapi
+  docs:
+  - xapi/overview.md
+  - xapi/architecture.md
+  - xapi/design/XenAPI-evolution.md
+  - xapi/design/backtraces.md
+  - xapi/design/gpu-passthrough.md
+  - xapi/design/memory-accounting.md
+  - xapi/design/pif-properties.md
+  - xapi/design/tunnelling.md
+  - xapi/design/udhcp.md
+- title: Future designs
+  docs:
+  - xapi/futures/distributed-database.md
