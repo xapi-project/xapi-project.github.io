@@ -21,6 +21,11 @@
   - xapi/design/pif-properties.md
   - xapi/design/tunnelling.md
   - xapi/design/udhcp.md
+- title: Squeezed
+  docs:
+  - squeezed/overview.md
+  - squeezed/architecture.md
+  - squeezed/design.md
 - title: Future designs
   docs:
   - xapi/futures/distributed-database.md
