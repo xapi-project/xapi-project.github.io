@@ -21,6 +21,17 @@
   - xapi/design/pif-properties.md
   - xapi/design/tunnelling.md
   - xapi/design/udhcp.md
+- title: Xenopsd
+  docs:
+  - xenopsd/overview.md
+  - xenopsd/features.md
+  - xenopsd/architecture.md
+  - xenopsd/futures/roadmap.md
+  - xenopsd/design/Events.md
+  - xenopsd/design/Tasks.md
+  - xenopsd/design/suspend-image-considerations.md
+  - xenopsd/design/suspend-image-framing-format.md
+  - xenopsd/walkthroughs/VM.start.md
 - title: Squeezed
   docs:
   - squeezed/overview.md
