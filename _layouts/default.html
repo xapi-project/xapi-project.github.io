@@ -54,7 +54,7 @@
                 {% for p in site.pages %}
                   {% if p.path == d %}
                     <li data-section="{{p.path}}">
-                      <a href="{{site.baseurl}}/{{p.url}}">{{p.title}}</a>
+                      <a href="{{site.baseurl}}{{p.url}}">{{p.title}}</a>
                     </li>
                   {% endif %}
                 {% endfor %}
