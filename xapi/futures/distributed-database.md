@@ -90,7 +90,7 @@ We will lose the following
 
 
 Stuff we need to build
-======================
+----------------------
 
 - A ```pull```/```push``` replicator: this would have to monitor the list
   of hosts in the pool and distribute updates to them in some vaguely
@@ -117,20 +117,23 @@ Stuff we need to build
   ```VDI.sm_config``` locks.
 
 Prototype
-=========
+---------
 
 A basic prototype has been created:
+
 ```
-  opam pin xen-api-client git://github.com/djs55/xen-api-client#improvements
-  opam pin add xapi-database git://github.com/djs55/xapi-database
-  opam pin add xapi git://github.com/djs55/xen-api#schema-sexp
+opam pin xen-api-client git://github.com/djs55/xen-api-client#improvements
+opam pin add xapi-database git://github.com/djs55/xapi-database
+opam pin add xapi git://github.com/djs55/xen-api#schema-sexp
 ```
+
 The ```xapi-database``` is clone of the existing Xapi database code
 configured to run as a separate process. There is
 [code to convert from XML to git](https://github.com/djs55/xapi-database/blob/master/core/db_git.ml#L55)
 and
 [an implementation of the Xapi remote database API](https://github.com/djs55/xapi-database/blob/master/core/db_git.ml#L186)
 which uses the following layout:
+
 ```
 $ git clone /xapi.db db
 Cloning into 'db'...
@@ -164,6 +167,7 @@ cpuid_feature_mask  memory-ratio-hvm  memory-ratio-pv
 $ cat xapi/pool/OpaqueRef\:39adc911-0c32-9e13-91a8-43a25939110b/other_config/cpuid_feature_mask
 ffffff7f-ffffffff-ffffffff-ffffffff
 ```
+
 Notice how:
 - every object is a directory
 - every key/value pair is represented as a file
