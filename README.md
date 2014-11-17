@@ -8,9 +8,9 @@ browse the documentation, you can do so via the Github interface. Or, if you
 prefer, you can view the rendered output which is hosted using Github Pages.
 
 ## Contributing documentation
-There is deliberately no `master` branch in this repository. All documentation
-is kept in the `gh-pages` branch, allowing Github Pages to host an
-automatically generated site.
+This repository is treated differently by Github. Due to its name, the `master`
+branch of this repository is compiled with Jekyll and hosted at
+[http://xapi-project.github.io/].
 
 Documentation is written in markdown and can be placed in a semantically
 meaningful place in the directory hierarchy.

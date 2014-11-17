@@ -1,4 +1,3 @@
 markdown: redcarpet
 highlighter: true
 permalink: /:title
-baseurl: /xapi-project
