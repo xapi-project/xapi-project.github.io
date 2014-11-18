@@ -8,7 +8,7 @@ Squeezed is responsible for managing the memory on a single host. Squeezed
 
 The following diagram shows the internals of Squeezed:
 
-![Internals of squeezed](http://xapi-project.github.io/squeezed/doc/architecture/squeezed.png)
+![Internals of squeezed](squeezed.png)
 
 At the center of squeezed is an abstract model of a Xen host. The model includes
 - the amount of already-used host memory (used by fixed overheads such as Xen

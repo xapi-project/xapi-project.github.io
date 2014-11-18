@@ -128,10 +128,10 @@ internal Squeezed concept and Xen is
 completely unaware of it. When the daemon is moving memory between
 domains, it always aims to keep
 
-![host free memory >= s + sum_i(reservation_i)](http://xapi-project.github.io/squeezed/doc/design/hostfreemem.svg)
+![host free memory >= s + sum_i(reservation_i)](hostfreemem.svg)
 
 where *s* is the size of the “slush fund” (currently 9MiB) and
-![reservation_t](http://xapi-project.github.io/squeezed/doc/design/reservation.svg)
+![reservation_t](reservation.svg)
 is the amount corresponding to the *i*th
 reservation.
 
@@ -228,7 +228,7 @@ meanings:
 
 If all balloon drivers are responsive then Squeezed daemon allocates
 memory proportionally, so that each domain has the same value of:
-![target-min/(max-min)](http://xapi-project.github.io/squeezed/doc/design/fraction.svg)
+![target-min/(max-min)](fraction.svg)
 
 So:
 
@@ -313,7 +313,7 @@ Note that non-ballooning aware domains will always have
 since the domain will not be
 instructed to balloon. Since a domain which is being built will have
 0 <= `totpages` <= `reservation`, Squeezed computes
-![unused(i)=reservation(i)-totpages](http://xapi-project.github.io/squeezed/doc/design/unused.svg)
+![unused(i)=reservation(i)-totpages](unused.svg)
 and subtracts this from its model of the host’s free memory, ensuring
 that it doesn’t accidentally reallocate this memory for some other
 purpose.
@@ -431,7 +431,7 @@ domain 2) and a host. For a domain, the square box shows its
 memory. Note the highlighted state where the host’s free memory is
 temporarily exhausted
 
-![Two phase target setting](http://xapi-project.github.io/squeezed/doc/design/twophase.svg)
+![Two phase target setting](twophase.svg)
 
 In the
 initial state (at the top of the diagram), there are two domains, one
@@ -515,7 +515,7 @@ computing ideal target values and the third diagram shows the result
 after targets have been set and the balloon drivers have
 responded.
 
-![calculation](http://xapi-project.github.io/squeezed/doc/design/calculation.svg)
+![calculation](calculation.svg)
 
 The scenario above includes 3 domains (domain 1,
 domain 2, domain 3) on a host. Each of the domains has a non-ideal
@@ -539,7 +539,7 @@ return `x` + `d1` + `d2` + `d3` to guests. If we
 use the default built-in proportional policy then, since all domains
 have the same `dynamic-min` and `dynamic-max`, each gets the same
 fraction of this free memory which we call `g`:
-![definition of g](http://xapi-project.github.io/squeezed/doc/design/g.svg)
+![definition of g](g.svg)
 For each domain, the ideal balloon target is now
 `target` = `dynamic-min` + `g`.
 Squeezed does not set all the targets at once: this would allow the
