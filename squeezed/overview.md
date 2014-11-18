@@ -15,9 +15,3 @@ Principles
 2. memory should be shared in proportion to the configured policy
 3. operate entirely at the level of domains (not VMs), and be independent of
    Xen toolstack
-
-Contents
---------
-- [Architecture](architecture/README.md): a high-level overview of Squeezed.
-- [Design](design/README.md): discover the low-level details, formats, protocols,
-  concurrency etc.

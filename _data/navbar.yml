@@ -35,8 +35,8 @@
 - title: Squeezed
   docs:
   - squeezed/overview.md
-  - squeezed/architecture.md
-  - squeezed/design.md
+  - squeezed/architecture/architecture.md
+  - squeezed/design/design.md
 - title: Future designs
   docs:
   - xapi/futures/distributed-database.md
