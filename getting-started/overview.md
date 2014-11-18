@@ -24,19 +24,19 @@ a sub-project of the Linux Foundation Xen Project.
 
 ## Components
 
-- [Xapi](https://github.com/xapi-project/xen-api/tree/master/doc): manages a cluster
+- [Xapi](https://github.com/xapi-project/xen-api): manages a cluster
   of Xen hosts, co-ordinating access to network and storage.
-- [Xenopsd](https://github.com/xapi-project/xenopsd/tree/master/doc): a low-level
+- [Xenopsd](https://github.com/xapi-project/xenopsd): a low-level
   "domain manager" which takes care of creating, suspending, resuming, migrating,
   rebooting domains by interacting with Xen via libxc and libxl.
-- [Xcp-rrdd](https://github.com/xapi-project/xcp-rrdd/tree/master/doc): a
+- [Xcp-rrdd](https://github.com/xapi-project/xcp-rrdd): a
   performance counter monitoring daemon which aggregates "datasources" defined
   via a plugin API and records history for each.
-- [Xcp-networkd](https://github.com/xapi-project/xcp-networkd/tree/master/doc):
+- [Xcp-networkd](https://github.com/xapi-project/xcp-networkd):
   a host network manager which takes care of configuring interfaces, bridges
   and OpenVSwitch instances
-- [Squeezed](https://github.com/xapi-project/squeezed/tree/master/doc): a single
+- [Squeezed](https://github.com/xapi-project/squeezed): a single
   host ballooning daemon which "balances" memory between running VMs.
-- [SM](https://github.com/xapi-project/sm/tree/master/doc): Storage Manager
+- [SM](https://github.com/xapi-project/sm): Storage Manager
   plugins which connect Xapi's internal storage interfaces to the control
   APIs of external storage systems.

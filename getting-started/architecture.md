@@ -14,7 +14,7 @@ The most fundamental concept is of a *Resource pool*: the whole cluster
 managed as a single entity. The following diagram shows a cluster of hosts
 running xapi, all sharing some storage:
 
-![A Resource Pool](http://xapi-project.github.io/xapi-project/doc/architecture/pool.png)
+![A Resource Pool](pool.png)
 
 At any time, at most one host is known as the *pool master* and is responsible
 for co-ordination and locking resources within the pool. When a pool is
@@ -47,7 +47,7 @@ The following diagram shows the software running on a single host. Note that
 all hosts run the same software (although not necessarily the same version,
   if we are in the middle of a rolling upgrade).
 
-![A Host](http://xapi-project.github.io/xapi-project/doc/architecture/host.png)
+![A Host](host.png)
 
 The xapi toolstack expects the host to be running Xen 4.4 or later, on either
 x86 or ARM. The Xen hypervisor partitions the host into *Domains*, some of
@@ -59,18 +59,18 @@ drivers to be isolated in their own domains.
 
 The toolstack consists of a set of co-operating daemons, building on top of the
 basic set common to all Xen hosts. We have:
-- [Xapi](https://github.com/xapi-project/xen-api/tree/master/doc): manages
+- [Xapi](https://github.com/xapi-project/xen-api): manages
   clusters of hosts, co-ordinating access to shared storage and networking.
-- [Xenopsd](https://github.com/xapi-project/xenopsd/tree/master/doc): a low-level
+- [Xenopsd](https://github.com/xapi-project/xenopsd): a low-level
   "domain manager" which takes care of creating, suspending, resuming, migrating,
   rebooting domains by interacting with Xen via libxc and libxl.
-- [Xcp-rrdd](https://github.com/xapi-project/xcp-rrdd/tree/master/doc): a
+- [Xcp-rrdd](https://github.com/xapi-project/xcp-rrdd): a
   performance counter monitoring daemon which aggregates "datasources" defined
   via a plugin API and records history for each.
-- [Xcp-networkd](https://github.com/xapi-project/xcp-networkd/tree/master/doc):
+- [Xcp-networkd](https://github.com/xapi-project/xcp-networkd):
   a host network manager which takes care of configuring interfaces, bridges
   and OpenVSwitch instances
-- [SM](https://github.com/xapi-project/sm/tree/master/doc): Storage Manager
+- [SM](https://github.com/xapi-project/sm): Storage Manager
   plugins which connect Xapi's internal storage interfaces to the control
   APIs of external storage systems.
 - *perfmon*: a daemon which monitors performance counters and sends "alerts"
