@@ -37,8 +37,8 @@ make the following addition to `_data/navbar.yml`:
 
 ## Previewing documentation before pushing
 
-If you wish to preview the site that will be generated before pushing the
-`gh-pages` branch you can do so from your own machine.
+If you wish to preview the site that will be generated before pushing, you can
+do so from your own machine.
 
 Install Jekyll:
 
