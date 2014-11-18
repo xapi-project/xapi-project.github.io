@@ -3,6 +3,15 @@ title: Backtrace support
 layout: default
 ---
 
+We want to make debugging easier by recording exception backtraces which are
+- reliable
+- cross-process (e.g. xapi to xenopsd)
+- cross-language
+- cross-host (e.g. master to slave)
+
+Backtraces in OCaml
+-------------------
+
 OCaml has fast exceptions which can be used for both
 - control flow i.e. fast jumps from inner scopes to outer scopes
 - reporting errors to users (e.g. the toplevel or an API user)
@@ -143,4 +152,57 @@ we can extend these to store the backtrace in an additional field ("backtrace").
 Callers, such as xapi, can extract the trace from failed Tasks and add it
 to their own context via ```Backtrace.add```
 
+Backtraces in python
+--------------------
 
+Python exceptions automatically incur the runtime cost to store reliable
+backtrace information. The
+[traceback.extract_tb](https://docs.python.org/2/library/traceback.html)
+can be used to extract the stack frame.
+
+Marshalling backtraces
+----------------------
+
+We need to be able to take an exception thrown from python code, gather
+the backtrace, transmit it to an OCaml program (e.g. xenopsd) and glue
+it onto the end of the OCaml backtrace. We will use a simple json marshalling
+format for the raw backtrace data:
+
+In python:
+
+    results = {
+      "error": str(s[1]),
+      "files": files,
+      "lines": lines,
+    }
+    print json.dumps(results)
+
+In OCaml:
+
+  type error = {
+    error: string;
+    files: string list;
+    lines: int list;
+  } with rpc
+  print_string (Jsonrpc.to_string (rpc_of_error ...))
+
+The SMAPIv1 API
+---------------
+
+Errors in SMAPIv1 are returned as XMLRPC "Faults" containing a code and
+a status line. Xapi transforms these into XenAPI exceptions usually of the
+form "SR_BACKEND_FAILURE_<code>". We can extend the SM backends to use the
+XenAPI exception type directly: i.e. to marshal exceptions as dictionaries:
+
+  results = {
+    "Status": "Failure",
+    "ErrorDescription": [ code, param1, ..., paramN ]
+  }
+
+We can then define a new backtrace-carrying error:
+
+  code = SR_BACKEND_FAILURE_WITH_EXCEPTION
+  param1 = json-encoded backtrace
+  param2 = code
+  param3 = reason
+  
