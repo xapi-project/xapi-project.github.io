@@ -53,3 +53,15 @@ $ jekyll serve -w --baseurl '/xapi-project'
 ```
 
 You will then be able to view the page at `localhost:4000/xapi-project`.
+
+## A note on images
+If you are contributing images, consider compressing them to keep this repo as
+slim as possible:
+```
+convert -resize 900 -background white -colors 256 [input.png] [output.png]
+```
+
+## Adding links to other parts of the site
+Relative links should work, but should you wish to refer to a page outside of
+the current section, you should prepend `{{site.baseurl}}` so that it will work
+in whichever repo we choose to host it and also when viewed locally.
