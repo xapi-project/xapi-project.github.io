@@ -22,20 +22,6 @@ The xapi toolstack is developed by the
 [xapi project](http://www.xenproject.org/developers/teams/xapi.html):
 a sub-project of the Linux Foundation Xen Project.
 
-## Contents
-
-- [Architecture](doc/architecture/README.md): read about how the components of the
-  xapi toolstack work together
-- [Features](doc/features/README.md): learn about the features supported by xapi and
-  how they work.
-- [Designs](doc/designs/README.md): explore designs for cross-cutting features.
-- [Xen API documentation](https://xapi-project.github.io/xen-api/): explore
-  the Xen API
-- [Futures](doc/futures/README.md): find out how the xapi toolstack is likely to change and
-  how you can help.
-- [Xapi project](http://wiki.xenproject.org/wiki/XAPI): learn about the xapi project
-  on the Xen wiki
-
 ## Components
 
 - [Xapi](https://github.com/xapi-project/xen-api/tree/master/doc): manages a cluster
