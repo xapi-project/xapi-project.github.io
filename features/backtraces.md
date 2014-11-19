@@ -184,15 +184,15 @@ Error code: SR_BACKEND_FAILURE_202
 Error parameters: , General backend error [opterr=exceptions must be old-style classes or derived from BaseException, not str],
 Raised Server_error(SR_BACKEND_FAILURE_202, [ ; General backend error [opterr=exceptions must be old-style classes or derived from BaseException, not str];  ])
 Backtrace:
-0/50 Called from file /opt/xensource/sm/EXTSR.py, line 221
-1/50 Called from file /opt/xensource/sm/blktap2.py, line 1065
-2/50 Called from file /opt/xensource/sm/blktap2.py, line 1567
-3/50 Called from file /opt/xensource/sm/blktap2.py, line 1519
-4/50 Called from file /opt/xensource/sm/blktap2.py, line 83
-5/50 Called from file /opt/xensource/sm/blktap2.py, line 1486
-6/50 Called from file /opt/xensource/sm/SRCommand.py, line 263
-7/50 Called from file /opt/xensource/sm/SRCommand.py, line 159
-8/50 Raised at file /opt/xensource/sm/SRCommand.py, line 110
+0/50 EXT @ st30 Raised at file /opt/xensource/sm/SRCommand.py, line 110
+1/50 EXT @ st30 Called from file /opt/xensource/sm/SRCommand.py, line 159
+2/50 EXT @ st30 Called from file /opt/xensource/sm/SRCommand.py, line 263
+3/50 EXT @ st30 Called from file /opt/xensource/sm/blktap2.py, line 1486
+4/50 EXT @ st30 Called from file /opt/xensource/sm/blktap2.py, line 83
+5/50 EXT @ st30 Called from file /opt/xensource/sm/blktap2.py, line 1519
+6/50 EXT @ st30 Called from file /opt/xensource/sm/blktap2.py, line 1567
+7/50 EXT @ st30 Called from file /opt/xensource/sm/blktap2.py, line 1065
+8/50 EXT @ st30 Called from file /opt/xensource/sm/EXTSR.py, line 221
 9/50 xenopsd-xc @ st30 Raised by primitive operation at file "lib/storage.ml", line 32, characters 3-26
 10/50 xenopsd-xc @ st30 Called from file "lib/task_server.ml", line 176, characters 15-19
 11/50 xenopsd-xc @ st30 Raised at file "lib/task_server.ml", line 184, characters 8-9
