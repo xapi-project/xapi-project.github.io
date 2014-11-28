@@ -152,7 +152,7 @@ not, the VM will not start. Therefore, to guarantee that a VM has access
 to a pGPU at any time, one must manually enforce that the number of
 vGPUs in a GPU group does not exceed the number of pGPUs. XenCenter
 might display a warning, or simply refuse to assign a vGPU, if this
-constraint it violated. This is analogous to the handling of memory
+constraint is violated. This is analogous to the handling of memory
 availability in a pool: a VM may not be able to start if there is no
 host having enough free memory.
 
