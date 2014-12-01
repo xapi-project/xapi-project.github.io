@@ -279,6 +279,8 @@ Starting up a host
 Shutting down a host
 --------------------
 
+![Shutting down a host](HA.shutdown.svg)
+
 Disabling HA cleanly
 --------------------
 
