@@ -289,5 +289,7 @@ Disabling HA cleanly
 Disabling HA uncleanly
 ----------------------
 
+![Disabling HA uncleanly](HA.disable.unclean.svg)
+
 Add a host to the pool
 ----------------------
