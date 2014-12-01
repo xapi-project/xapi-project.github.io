@@ -284,6 +284,8 @@ Shutting down a host
 Disabling HA cleanly
 --------------------
 
+![Disabling HA cleanly](HA.disable.clean.svg)
+
 Disabling HA uncleanly
 ----------------------
 
