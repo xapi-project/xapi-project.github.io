@@ -268,4 +268,22 @@ point of failure for the degraded pool. HA removes single point of failures,
 but multiple failures can still cause problems. It is important to fix
 failures properly after HA has worked around them.
 
+Enabling HA
+-----------
 
+Starting up a host
+------------------
+
+![Starting up a host](HA.start.svg)
+
+Shutting down a host
+--------------------
+
+Disabling HA cleanly
+--------------------
+
+Disabling HA uncleanly
+----------------------
+
+Add a host to the pool
+----------------------
