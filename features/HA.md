@@ -271,15 +271,61 @@ failures properly after HA has worked around them.
 Enabling HA
 -----------
 
+Before HA can be enabled the admin must take care to configure the
+environment properly. In particular:
+
+- NIC bonds should be available for network heartbeats;
+- multipath should be configured for the storage heartbeats;
+- all hosts should be online and fully-booted.
+
+Xapi will create a raw disk in a shared SR for use by the storage
+heartbeats and the master will tell every host in the pool to write
+an identical xhad.conf file. Control jumps to the same routine that
+is used to handle host startup:
+
 Starting up a host
 ------------------
 
 ![Starting up a host](HA.start.svg)
 
+First Xapi starts up the xhad via the ```ha_start_daemon``` script. The
+daemons read their config files and start exchanging heartbeats over
+the network and storage. All hosts must be online and all heartbeats must
+be working for HA to be enabled -- it is not sensible to enable HA when
+there are already failures in the pool. Assuming the host manages to
+join the liveset then it clears the "excluded" flag which would have
+been set if the host had been shutdown cleanly before -- this is only
+needed when a host is shutdown cleanly and then restarted.
+
+Xapi periodically queries the state of xhad via the ```ha_query_liveset```
+command. The state will be ```Starting``` until the liveset is fully
+formed at which point the state will be ```Online```.
+
+When the ```ha_start_daemon``` script returns then Xapi will decide
+whether to stand for master election or not. Initially when HA is being
+enabled and there is a master already, this node will be expected to
+stand unopposed. Later when HA notices that the master host has been
+fenced, all remaining hosts will stand for election and one of them will
+be chosen.
+
 Shutting down a host
 --------------------
 
 ![Shutting down a host](HA.shutdown.svg)
+
+When a host is to be shutdown cleanly, it can be safely "excluded"
+from the pool such that a future failure of the storage heartbeat will
+not cause all pool hosts to self-fence (see survival rule 2 above).
+When a host is "excluded" all other hosts know that the host does not
+consider itself a master and has no resources locked i.e. no VMs are
+running on it. An excluded host will never allow itself to form part
+of a "split brain".
+
+Once a host has given up its master role and shutdown any VMs, it is safe
+to disable fencing with ```ha_disarm_fencing``` and stop xhad with
+```ha_stop_daemon```. Once the daemon has been stopped the "excluded"
+bit can be set in the statefile via ```ha_set_excluded``` and the
+host safely rebooted.
 
 Disabling HA cleanly
 --------------------
