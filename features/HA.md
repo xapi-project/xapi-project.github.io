@@ -332,10 +332,34 @@ Disabling HA cleanly
 
 ![Disabling HA cleanly](HA.disable.clean.svg)
 
+HA can be shutdown cleanly when the statefile is working i.e. when hosts
+are alive because of survival rule 1. First the master Xapi tells the local
+Xhad to mark the pool state as "invalid" using ```ha_set_pool_state```.
+Every xhad instance will notice this state change the next time it performs
+a storage heartbeat. The Xhad instances will shutdown and Xapi will notice
+that HA has been disabled the next time it attempts to query the liveset.
+
+If a host loses access to the statefile (or if none of the hosts have
+access to the statefile) then HA can be disabled uncleanly.
+
 Disabling HA uncleanly
 ----------------------
 
 ![Disabling HA uncleanly](HA.disable.unclean.svg)
 
+HA should always be disabled cleanly when possible. If the storage has
+failed and can't be easily repaired, then HA can be disabled manually
+on every host. Since all hosts are online thanks to survival rule 2,
+the Xapi master is able to tell all Xapi instances to disable their
+recovery logic. Once the Xapis have been disabled -- and there is no
+possibility of split brain -- each host is asked to disable the watchdog
+with ```ha_disarm_fencing``` and then to stop Xhad with ```ha_stop_daemon```.
+
 Add a host to the pool
 ----------------------
+
+We assume that adding a host to the pool is an operation the admin will
+perform manually, so it is acceptable to disable HA for the duration
+and to re-enable it afterwards. If a failure happens during this operation
+then the admin will take care of it by hand.
+
