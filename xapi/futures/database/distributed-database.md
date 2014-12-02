@@ -121,10 +121,10 @@ Prototype
 
 A basic prototype has been created:
 
-```
-opam pin xen-api-client git://github.com/djs55/xen-api-client#improvements
-opam pin add xapi-database git://github.com/djs55/xapi-database
-opam pin add xapi git://github.com/djs55/xen-api#schema-sexp
+```bash
+$ opam pin xen-api-client git://github.com/djs55/xen-api-client#improvements
+$ opam pin add xapi-database git://github.com/djs55/xapi-database
+$ opam pin add xapi git://github.com/djs55/xen-api#schema-sexp
 ```
 
 The `xapi-database` is clone of the existing Xapi database code
@@ -134,7 +134,7 @@ and
 [an implementation of the Xapi remote database API](https://github.com/djs55/xapi-database/blob/master/core/db_git.ml#L186)
 which uses the following layout:
 
-```
+```bash
 $ git clone /xapi.db db
 Cloning into 'db'...
 done.

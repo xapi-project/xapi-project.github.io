@@ -115,7 +115,7 @@ The xhad.conf file is written in XML and contains
 
 The following is an example xhad.conf file:
 
-```
+```xml
 <?xml version="1.0" encoding="utf-8"?>
 <xhad-config version="1.0">
 
