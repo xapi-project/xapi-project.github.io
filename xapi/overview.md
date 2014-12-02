@@ -22,16 +22,3 @@ etc
 2. Xapi delegates all Xenstore/libxc/libxl access to Xenopsd, so Xapi could
    be run in an unprivileged helper domain
 3. Xapi delegates the low-level storage manipulation to SM plugins.
-
-## Contents
-
-- [Architecture](architecture/README.md): read about how Xapi fits into
-  the overall system; and the major pieces and patterns within Xapi.
-- [Features](features/README.md): learn about the features supported by Xapi and
-  how they work.
-- [Design](design/README.md): discover the low-level details, formats, protocols,
-  concurrency etc.
-- [Walk-throughs](walk-throughs/README.md): follow operations end-to-end to
-  understand how it all fits together.
-- [Futures](futures/README.md): find out how Xapi is likely to change and
-  how you can help.
