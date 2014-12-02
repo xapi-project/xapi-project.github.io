@@ -22,7 +22,7 @@ used by xapi. The XenAPI has *objects* which each have *fields* and
 
 ## XenAPI Lifecycle
 
-![API lifecycle states](http://xapi-project.github.io/xen-api/doc/design/XenAPI-lifecycle.svg)
+![API lifecycle states](XenAPI-lifecycle.svg)
 
 Each element of the XenAPI (objects, messages and fields) follows the lifecycle
 diagram above (inspired by
