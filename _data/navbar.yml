@@ -6,10 +6,10 @@
   - getting-started/designs.md
 - title: High-level Features
   docs:
-  - features/DR.md
-  - features/HA.md
-  - features/XSM.md
-  - features/RPU.md
+  - features/DR/DR.md
+  - features/HA/HA.md
+  - features/XSM/XSM.md
+  - features/RPU/RPU.md
   - features/backtraces.md
 - title: Xapi
   docs:

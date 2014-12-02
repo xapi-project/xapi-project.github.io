@@ -11,7 +11,7 @@ The Xapi Storage Migration (XSM) also known as "Storage Motion" allows
 
 The following diagram shows how XSM works at a high level:
 
-![Xapi Storage Migration](http://xapi-project.github.io/xapi-project/doc/features/xsm.png)
+![Xapi Storage Migration](xsm.png)
 
 The slowest part of a storage migration is migrating the storage, since virtual
 disks can be very large. Xapi starts by taking a snapshot and copying that to

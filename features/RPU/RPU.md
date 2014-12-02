@@ -12,7 +12,7 @@ downtime. An upgrade is a sequence of operations:
 
 The following diagram shows an upgrade of a 4 host pool:
 
-![Installing a new version without incurring VM downtime](http://xapi-project.github.io/xapi-project/doc/features/rpu.png)
+![Installing a new version without incurring VM downtime](rpu.png)
 
 The xapi master host must be upgraded first. A new xapi version can always
 talk to an old xapi, but an old xapi may not be able to talk to a a new one.

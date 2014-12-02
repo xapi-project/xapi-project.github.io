@@ -3,11 +3,11 @@ title: Disaster Recovery
 layout: default
 ---
 
-The [HA](HA.md) feature will restart VMs after hosts have failed, but what
+The [HA](../HA/HA.html) feature will restart VMs after hosts have failed, but what
 happens if a whole site (e.g. datacenter) is lost? A disaster recovery
 configuration is shown in the following diagram:
 
-![Disaster recovery maintaining a secondary site](http://xapi-project.github.io/xapi-project/doc/features/dr.png)
+![Disaster recovery maintaining a secondary site](dr.png)
 
 We rely on the storage array's built-in mirroring to replicate (synchronously
 or asynchronously: the admin's choice) between the primary and the secondary
