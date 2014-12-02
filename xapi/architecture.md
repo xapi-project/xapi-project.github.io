@@ -22,7 +22,7 @@ Note that Xapi delegates core functions such as
 
 The following diagram shows the internals of Xapi:
 
-![Internals of xapi](http://xapi-project.github.io/xen-api/doc/architecture/xapi.png)
+![Internals of xapi](xapi.png)
 
 The top of the diagram shows the XenAPI clients: XenCenter, XenOrchestra, OpenStack and
 CloudStack using XenAPI and HTTP GET/PUT over ports 80 and 443 to talk to xapi.
