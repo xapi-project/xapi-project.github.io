@@ -13,7 +13,7 @@ The following diagram shows the internals of Squeezed:
 At the center of squeezed is an abstract model of a Xen host. The model includes
 - the amount of already-used host memory (used by fixed overheads such as Xen
   and the crash kernel)
-- per-domain memory policy specifically ```dynamic-min``` and ```dynamic-max``` which
+- per-domain memory policy specifically `dynamic-min` and `dynamic-max` which
   together describe a range, within which the domain's actual used memory should remain
 - per-domain calibration data which allows us to compute the necessary balloon target
   value to achive a particular memory usage value.
@@ -32,7 +32,7 @@ their targets. Note that ballooning is fundamentally a co-operative process, so 
 must handle cases where the domains refuse to obey commands.
 
 The "output" of squeezed is a list of "actions" which include:
-- set domain x's ```memory/target``` to a new value
-- set the ```maxmem``` of a domain to a new value (as a hard limit beyond which the domain
+- set domain x's `memory/target` to a new value
+- set the `maxmem` of a domain to a new value (as a hard limit beyond which the domain
   cannot allocate)
 

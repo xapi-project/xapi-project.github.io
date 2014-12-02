@@ -100,7 +100,7 @@ continue to fail then xhad will consider the host to have failed and
 self-fence.
 
 xhad is configured via a simple config file written on each host in
-```/etc/xensource/xhad.conf```. The file must be identical on each host
+`/etc/xensource/xhad.conf`. The file must be identical on each host
 in the cluster. To make changes to the file, HA must be disabled and then
 re-enabled afterwards. Note it may not be possible to re-enable HA depending
 on the configuration change (e.g. if a host has been added but that host has
@@ -114,6 +114,7 @@ The xhad.conf file is written in XML and contains
   which local network interface and block device to use for heartbeating.
 
 The following is an example xhad.conf file:
+
 ```
 <?xml version="1.0" encoding="utf-8"?>
 <xhad-config version="1.0">
@@ -186,29 +187,29 @@ The fields have the following meaning:
   xapi's notion of a management network.
 - HeartbeatTimeout: if a heartbeat packet is not received for this many
   seconds, then xhad considers the heartbeat to have failed. This is
-  the user-supplied "HA timeout" value, represented below as ```T```.
-  ```T``` must be bigger than 10; we would normally use 60s.
+  the user-supplied "HA timeout" value, represented below as `T`.
+  `T` must be bigger than 10; we would normally use 60s.
 - StateFileTimeout: if a storage update is not seen for a host for this
   many seconds, then xhad considers the storage heartbeat to have failed.
-  We would normally use the same value as the HeartbeatTimeout ```T```.
+  We would normally use the same value as the HeartbeatTimeout `T`.
 - HeartbeatInterval: interval between heartbeat packets sent. We would
-  normally use a value ```2 <= t <= 6```, derived from the user-supplied
-  HA timeout via ```t = (T + 10) / 10```
+  normally use a value `2 <= t <= 6`, derived from the user-supplied
+  HA timeout via `t = (T + 10) / 10`
 - StateFileInterval: interval betwen storage updates (also known as
   "statefile updates"). This would normally be set to the same value as
   HeartbeatInterval.
 - HeartbeatWatchdogTimeout: If the host does not send a heartbeat for this
   amount of time then the host self-fences via the Xen watchdog. We normally
-  set this to ```T```.
+  set this to `T`.
 - StateFileWatchdogTimeout: If the host does not update the statefile for
   this amount of time then the host self-fences via the Xen watchdog. We
-  normally set this to ```T+15```.
+  normally set this to `T+15`.
 - BootJoinTimeout: When the host is booting and joining the liveset (i.e.
   the cluster), consider the join a failure if it takes longer than this
-  amount of time. We would normally set this to ```T+60```.
+  amount of time. We would normally set this to `T+60`.
 - EnableJoinTimeout: When the host is enabling HA for the first time,
   consider the enable a failure if it takes longer than this amount of time.
-  We would normally set this to ```T+60```.
+  We would normally set this to `T+60`.
 - XapiHealthCheckInterval: Interval between "health checks" where we run
   a script to check whether Xapi is responding or not.
 - XapiHealthCheckTimeout: Number of seconds to wait before assuming that
@@ -223,20 +224,20 @@ The fields have the following meaning:
 In addition to the config file, Xhad exposes a simple control API which
 is exposed as scripts:
 
-- ```ha_set_pool_state (Init | Invalid)```: sets the global pool state to "Init" (before starting
+- `ha_set_pool_state (Init | Invalid)`: sets the global pool state to "Init" (before starting
   HA) or "Invalid" (causing all other daemons who can see the statefile to
   shutdown)
   "Invalid"
-- ```ha_start_daemon```: if the pool state is "Init" then the daemon will
+- `ha_start_daemon`: if the pool state is "Init" then the daemon will
   attempt to contact other daemons and enable HA. If the pool state is
   "Active" then the host will attempt to join the existing liveset.
-- ```ha_query_liveset```: returns the current state of the cluster.
-- ```ha_propose_master```: returns whether the current node has been
+- `ha_query_liveset`: returns the current state of the cluster.
+- `ha_propose_master`: returns whether the current node has been
   elected pool master.
-- ```ha_stop_daemon```: shuts down the xhad on the local host. Note this
+- `ha_stop_daemon`: shuts down the xhad on the local host. Note this
   will not disarm the Xen watchdog by itself.
-- ```ha_disarm_fencing```: disables fencing on the local host.
-- ```ha_set_excluded```: when a host is being shutdown cleanly, record the
+- `ha_disarm_fencing`: disables fencing on the local host.
+- `ha_set_excluded`: when a host is being shutdown cleanly, record the
   fact that the VMs have all been shutdown so that this host can be ignored
   in future cluster membership calculations.
 
@@ -288,7 +289,7 @@ Starting up a host
 
 ![Starting up a host](HA.start.svg)
 
-First Xapi starts up the xhad via the ```ha_start_daemon``` script. The
+First Xapi starts up the xhad via the `ha_start_daemon` script. The
 daemons read their config files and start exchanging heartbeats over
 the network and storage. All hosts must be online and all heartbeats must
 be working for HA to be enabled -- it is not sensible to enable HA when
@@ -297,11 +298,11 @@ join the liveset then it clears the "excluded" flag which would have
 been set if the host had been shutdown cleanly before -- this is only
 needed when a host is shutdown cleanly and then restarted.
 
-Xapi periodically queries the state of xhad via the ```ha_query_liveset```
-command. The state will be ```Starting``` until the liveset is fully
-formed at which point the state will be ```Online```.
+Xapi periodically queries the state of xhad via the `ha_query_liveset`
+command. The state will be `Starting` until the liveset is fully
+formed at which point the state will be `Online`.
 
-When the ```ha_start_daemon``` script returns then Xapi will decide
+When the `ha_start_daemon` script returns then Xapi will decide
 whether to stand for master election or not. Initially when HA is being
 enabled and there is a master already, this node will be expected to
 stand unopposed. Later when HA notices that the master host has been
@@ -322,9 +323,9 @@ running on it. An excluded host will never allow itself to form part
 of a "split brain".
 
 Once a host has given up its master role and shutdown any VMs, it is safe
-to disable fencing with ```ha_disarm_fencing``` and stop xhad with
-```ha_stop_daemon```. Once the daemon has been stopped the "excluded"
-bit can be set in the statefile via ```ha_set_excluded``` and the
+to disable fencing with `ha_disarm_fencing` and stop xhad with
+`ha_stop_daemon`. Once the daemon has been stopped the "excluded"
+bit can be set in the statefile via `ha_set_excluded` and the
 host safely rebooted.
 
 Disabling HA cleanly
@@ -334,7 +335,7 @@ Disabling HA cleanly
 
 HA can be shutdown cleanly when the statefile is working i.e. when hosts
 are alive because of survival rule 1. First the master Xapi tells the local
-Xhad to mark the pool state as "invalid" using ```ha_set_pool_state```.
+Xhad to mark the pool state as "invalid" using `ha_set_pool_state`.
 Every xhad instance will notice this state change the next time it performs
 a storage heartbeat. The Xhad instances will shutdown and Xapi will notice
 that HA has been disabled the next time it attempts to query the liveset.
@@ -353,7 +354,7 @@ on every host. Since all hosts are online thanks to survival rule 2,
 the Xapi master is able to tell all Xapi instances to disable their
 recovery logic. Once the Xapis have been disabled -- and there is no
 possibility of split brain -- each host is asked to disable the watchdog
-with ```ha_disarm_fencing``` and then to stop Xhad with ```ha_stop_daemon```.
+with `ha_disarm_fencing` and then to stop Xhad with `ha_stop_daemon`.
 
 Add a host to the pool
 ----------------------

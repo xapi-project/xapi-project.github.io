@@ -28,8 +28,8 @@ Using git via Irmin
 -------------------
 
 A git repository is a database of key=value pairs with branching history.
-If we placed our host and VM metadata in git then we could ```commit```
-changes and ```pull``` and ```push``` them between replicas. The
+If we placed our host and VM metadata in git then we could `commit`
+changes and `pull` and `push` them between replicas. The
 [Irmin](https://github.com/mirage/irmin) library provides an easy programming
 interface on top of git which we could link with the Xapi database layer.
 
@@ -40,7 +40,7 @@ Proposed new architecture
 
 The diagram above shows two hosts: one a master and the other a regular host.
 The XenAPI client has sent a request to the wrong host; normally this would
-result in a ```HOST_IS_SLAVE``` error being sent to the client. In the new
+result in a `HOST_IS_SLAVE` error being sent to the client. In the new
 world, the host is able to process the request, only contacting the master
 if it is necessary to acquire a lock. Starting a VM would require a lock; but
 rebooting or migrating an existing VM would not. Assuming the lock can
@@ -85,22 +85,22 @@ We will lose the following
 - the ability to use the Xapi database as a "lock"
 - coherence between hosts: there will be no guarantee that an effect seen
   by host 'A' will be seen immediately by host 'B'. In particular this means
-  that clients should send all their commands and ```event.from``` calls to
+  that clients should send all their commands and `event.from` calls to
   the same host (although any host will do)
 
 
 Stuff we need to build
 ----------------------
 
-- A ```pull```/```push``` replicator: this would have to monitor the list
+- A `pull`/`push` replicator: this would have to monitor the list
   of hosts in the pool and distribute updates to them in some vaguely
   efficient manner. Ideally we would avoid hassling the pool master and
   use some more efficient topology: perhaps a tree?
 
-- A ```git diff``` to XenAPI event converter: whenever a host ```pull```s
+- A `git diff` to XenAPI event converter: whenever a host `pull`s
   updates from another it needs to convert the diff into a set of touched
-  objects for any ```event.from``` to read. We could send the changeset hash
-  as the ```event.from``` token.
+  objects for any `event.from` to read. We could send the changeset hash
+  as the `event.from` token.
 
 - Irmin nested views: since Tasks can be nested (and git branches can be
   nested) we need to make sure that Irmin views can be nested.
@@ -114,7 +114,7 @@ Stuff we need to build
   without triggering an early merge (which would harm efficiency)
 
 - We need to create a first-class locking API to use instead of the
-  ```VDI.sm_config``` locks.
+  `VDI.sm_config` locks.
 
 Prototype
 ---------
@@ -127,7 +127,7 @@ opam pin add xapi-database git://github.com/djs55/xapi-database
 opam pin add xapi git://github.com/djs55/xen-api#schema-sexp
 ```
 
-The ```xapi-database``` is clone of the existing Xapi database code
+The `xapi-database` is clone of the existing Xapi database code
 configured to run as a separate process. There is
 [code to convert from XML to git](https://github.com/djs55/xapi-database/blob/master/core/db_git.ml#L55)
 and
