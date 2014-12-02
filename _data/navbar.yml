@@ -39,4 +39,4 @@
   - squeezed/design/design.md
 - title: Future designs
   docs:
-  - xapi/futures/distributed-database.md
+  - xapi/futures/database/distributed-database.md
