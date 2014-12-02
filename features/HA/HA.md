@@ -460,13 +460,18 @@ properly configured. This is achieved by:
 
 - when the master boots and initialises its database it sets all Hosts to
   dead and disabled and then signals the HA background thread
-  `signal_database_state_valid`) to wake up from sleep and 
+  ([signal_database_state_valid](https://github.com/xapi-project/xen-api/blob/0bbd4f5ac5fe46f9e982e5d5587ac56ed8427295/ocaml/xapi/xapi_ha.ml#L627))
+  to wake up from sleep and 
   start processing liveset information (and potentially setting hosts to live)
-- when a slave calls `Pool.hello` (i.e. after the slave has rebooted),
+- when a slave calls
+  [Pool.hello](https://github.com/xapi-project/xen-api/blob/0bbd4f5ac5fe46f9e982e5d5587ac56ed8427295/ocaml/xapi/xapi_pool.ml#L1019)
+  (i.e. after the slave has rebooted),
   the master sets it to disabled, allowing it a grace period to plug in its
   storage;
 - when a host (master or slave) successfully plugs in its networking and
-  storage it calls `consider_enabling_host` which checks that the
+  storage it calls 
+  [consider_enabling_host](https://github.com/xapi-project/xen-api/blob/0bbd4f5ac5fe46f9e982e5d5587ac56ed8427295/ocaml/xapi/xapi_host_helpers.ml#L193)
+  which checks that the
   preconditions are met and then sets the host to enabled; and
 - when a slave notices its database connection to the master restart
   (i.e. after the master `xapi` has just restarted) it calls
@@ -481,7 +486,9 @@ When HA is enabled and all hosts are running normally then each calls
 Slaves check to see if the host they believe is the master is alive and has
 the master lock. If another node has become master then the slave will
 rewrite its `pool.conf` and restart. If no node is the master then the
-slave will call `on_master_failure`, proposing itself and, if it is rejected,
+slave will call 
+[on_master_failure](https://github.com/xapi-project/xen-api/blob/0bbd4f5ac5fe46f9e982e5d5587ac56ed8427295/ocaml/xapi/xapi_ha.ml#L129),
+proposing itself and, if it is rejected,
 checking the liveset to see which node acquired the lock.
 
 The master monitors the liveset and updates the `Host_metrics.live` flag
@@ -506,9 +513,9 @@ Planning and overcommit
 The VM failover planning code is sub-divided into two pieces, stored in
 separate files:
 
-- binpack.ml: contains two algorithms for packing items of different sizes
+- [binpack.ml](https://github.com/xapi-project/xen-api/blob/0bbd4f5ac5fe46f9e982e5d5587ac56ed8427295/ocaml/xapi/binpack.ml): contains two algorithms for packing items of different sizes
   (i.e. VMs) into bins of different sizes (i.e. Hosts); and
-- xapi_ha_vm_failover.ml: interfaces between the Pool database and the
+- [xapi_ha_vm_failover.ml](https://github.com/xapi-project/xen-api/blob/0bbd4f5ac5fe46f9e982e5d5587ac56ed8427295/ocaml/xapi/xapi_ha_vm_failover.ml): interfaces between the Pool database and the
   binpacker; also performs counterfactual reasoning for overcommit protection.
 
 The input to the binpacking algorithms are configuration values which
