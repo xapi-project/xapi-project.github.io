@@ -56,7 +56,126 @@ any more failures.
 Design
 ======
 
-HA consists of the following components:
+HA must never violate the following safety rules:
+
+1. there must be at most one master at all times. This is because the master
+   holds the VM and disk locks.
+2. there must be at most one instance of a particular VM at all times. This
+   is because starting the same VM twice will result in severe filesystem
+   corruption.
+
+However to be useful HA must:
+
+- detect failures quickly;
+- minimise the number of false-positives in the failure detector; and
+- make the failure handling logic as robust as possible.
+
+The implementation difficulty arises when trying to be both useful and safe
+at the same time.
+
+Terminology
+-----------
+
+We use the following terminology:
+
+- *fencing*: also known as I/O fencing, refers to the act of isolating a
+  host from network and storage. Once a host has been fenced, any VMs running
+  there cannot generate side-effects observable to a third party. This means
+  it is safe to restart the running VMs on another node without violating the
+  safety-rule and running the same VM simultaneously in two locations.
+- *heartbeating*: exchanging status updates with other hosts at regular
+  pre-arranged intervals. Heartbeat messages reveal that hosts are alive
+  and that I/O paths are working.
+- *statefile*: a shared disk (also known as a "quorum disk") on the "Heartbeat"
+  SR which is mapped as a block device into every host's domain 0. The shared
+  disk acts both as a channel for heartbeat messages and also as a building
+  block of a Pool master lock, to prevent multiple hosts becoming masters in
+  violation of the safety-rule (a dangerous situation also known as
+  "split-brain").
+- *management network*: the network over which the XenAPI XML/RPC requests
+  flow and also used to send heartbeat messages.
+- *liveset*: a per-Host view containing a subset of the Hosts in the Pool
+  which are considered by that Host to be alive i.e. responding to XenAPI
+  commands and running the VMs marked as `resident_on` there. When a Host `b`
+  leaves the liveset as seen by Host `a` it is safe for Host `a` to assume
+  that Host `b` has been fenced and to take recovery actions (e.g. restarting
+  VMs), without violating either of the safety-rules.
+- *properly shared SR*: an SR which has field `shared=true`; and which has a
+  `PBD` connecting it to every `enabled` Host in the Pool; and where each of
+  these `PBD`s has field `currently_attached` set to true. A VM whose disks
+  are in a properly shared SR could be restarted on any `enabled` Host,
+  memory and network permitting.
+- *properly shared Network*: a Network which has a `PIF` connecting it to
+  every `enabled` Host in the Pool; and where each of these `PIF`s has
+  field `currently_attached` set to true. A VM whose VIFs connect to
+  properly shared Networks could be restarted on any `enabled` Host,
+  memory and storage permitting.
+- *agile*: a VM is said to be agile if all disks are in properly shared SRs
+  and all network interfaces connect to properly shared Networks.
+- *unprotected*: an unprotected VM has field `ha_always_run` set to false
+  and will never be restarted automatically on failure
+  or have reconfiguration actions blocked by the HA overcommit protection.
+- *best-effort*: a best-effort VM has fields `ha_always_run` set to true and
+  `ha_restart_priority` set to best-effort.
+  A best-effort VM will only be restarted if (i) the failure is directly
+  observed; and (ii) capacity exists for an immediate restart.
+  No more than one restart attempt will ever be made.
+- *protected*: a VM is said to be protected if it will be restarted by HA
+  i.e. has field `ha_always_run` set to true and
+  field `ha_restart_priority` not set to `best-effort.
+- *survival rule 1*: describes the situation where hosts survive 
+  because they are in the largest network partition with statefile access.
+  This is the normal state of the `xhad` daemon.
+- *survival rule 2*: describes the situation where *all* hosts have lost
+  access to the statefile but remain alive
+  while they can all see each-other on the network. In this state any further
+  failure will cause all nodes to self-fence.
+  This state is intended to cope with the system-wide temporary loss of the
+  storage service underlying the statefile.
+
+Assumptions
+-----------
+
+We assume:
+
+- All I/O used for monitoring the health of hosts (i.e. both storage and
+  network-based heartbeating) is along redundant paths, so that it survives
+  a single hardware failure (e.g. a broken switch or an accidentally-unplugged
+  cable). It is up to the admin to ensure their environment is setup correctly.
+- The hypervisor watchdog mechanism will be able to guarantee the isolation
+  of nodes, once communication has been lost, within a pre-arranged time
+  period. Therefore no active power fencing equipment is required.
+- VMs may only be marked as *protected* if they are fully *agile* i.e. able
+  to run on any host, memory permitting. No additional constraints of any kind
+  may be specified e.g. it is not possible to make ``CPU reservations''.
+- Pools are assumed to be homogenous with respect to CPU type and presence of
+  VT/SVM support (also known as "HVM"). If a Pool is created with
+  non-homogenous hosts using the `--force` flag then the additional
+  constraints will not be noticed by the VM failover planner resulting in
+  runtime failures while trying to execute the failover plans.
+- No attempt will ever be made to shutdown or suspend "lower" priority VMs
+  to guarantee the survival of "higher" priority VMs.
+- Once HA is enabled it is not possible to reconfigure the management network
+  or the SR used for storage heartbeating.
+- VMs marked as *protected* are considered to have failed if they are offline
+  i.e. the VM failure handling code is level-sensitive rather than
+  edge-sensitive.
+- VMs marked as *best-effort* are considered to have failed only when the host
+  where they are resident is declared offline
+  i.e. the best-effort VM failure handling code is edge-sensitive rather than
+  level-sensitive.
+  A single restart attempt is attempted and if this fails no further start is
+  attempted.
+- HA can only be enabled if all Pool hosts are online and actively responding
+  to requests.
+- when HA is enabled the database is configured to write all updates to
+  the "Heartbeat" SR, guaranteeing that VM configuration changes are not lost
+  when a host fails.
+
+Components
+----------
+
+The implementation is split across the following components:
 
 - [xhad](https://github.com/xenserver/xhad): the cluster membership daemon
   maintains a quorum of hosts through network and storage heartbeats
@@ -363,4 +482,50 @@ We assume that adding a host to the pool is an operation the admin will
 perform manually, so it is acceptable to disable HA for the duration
 and to re-enable it afterwards. If a failure happens during this operation
 then the admin will take care of it by hand.
+
+xapi
+====
+
+[Xapi](https://github.com/xapi-project/xen-api) is responsible for
+
+- exposing an interface for setting HA policy
+- creating VDIs (disks) on shared storage for heartbeating and storing
+  the pool database
+- arranging for these disks to be attached on host boot, before the "SRmaster"
+  is online
+- configuring and managing the `xhad` heartbeating daemon
+
+The HA policy APIs include
+
+- methods to determine whether a VM is *agile* i.e. can be restarted in
+  principle on any host after a failure
+- planning for a user-specified number of host failures and enforcing
+  access control
+- restarting failed *protected* VMs in policy order
+
+
+Disks on shared storage
+-----------------------
+
+The regular disk APIs for creating, destroying, attaching, detaching (etc)
+disks need the `SRmaster` (usually but not always the Pool master) to be
+online to allow the disks to be locked. The `SRmaster` cannot be brought
+online until the host has joined the liveset. Therefore we have a
+cyclic dependency: joining the liveset needs the statefile disk to be attached
+but attaching a disk requires being a member of the liveset already.
+
+The dependency is broken by adding an explicit "unlocked" attach storage
+API called `VDI_ATTACH_FROM_CONFIG`. Xapi uses the `VDI_GENERATE_CONFIG` API
+during the HA enable operation and stores away the result. When the system
+boots the `VDI_ATTACH_FROM_CONFIG` is able to attach the disk without the
+SRmaster.
+
+xen
+===
+
+The Xen hypervisor has per-domain watchdog counters which, when enabled,
+decrement as time passes and can be reset from a hypercall from the domain.
+If the domain fails to make the hypercall and the timer reaches zero then
+the domain is immediately shutdown with reason reboot. We configure Xen
+to reboot the host when domain 0 enters this state.
 
