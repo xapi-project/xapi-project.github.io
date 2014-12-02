@@ -63,6 +63,10 @@ slim as possible:
 convert -resize 900 -background white -colors 256 [input.png] [output.png]
 ```
 
+If you wish to include a message sequence chart, consider using
+[js-sequence-diagrams](http://bramp.github.io/js-sequence-diagrams/) and
+check in the created .svg.
+
 ## Adding links to other parts of the site
 Relative links should work, but should you wish to refer to a page outside of
 the current section, you should prepend `{{site.baseurl}}` so that it will work
