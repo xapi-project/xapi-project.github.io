@@ -41,7 +41,7 @@ users:
 
 The Xenopsd "VM.add" function has code like this:
 
-```
+```ocaml
 	let add' x =
 		debug "VM.add %s" (Jsonrpc.to_string (rpc_of_t x));
 		DB.write x.id x;
@@ -174,7 +174,7 @@ To understand this and other internal details of Xenopsd, consult the
 The [queue_operation_int](https://github.com/xapi-project/xenopsd/blob/30cc9a72e8726d1e7501cd01ddb27ced6d53b9be/lib/xenops_server.ml#L1451)
 function looks like this:
 
-```
+```ocaml
 let queue_operation_int dbg id op =
 	let task = Xenops_task.add tasks dbg (fun t -> perform op t; None) in
 	Redirector.push id (op, task);
@@ -196,7 +196,7 @@ function. In the example above this is `perform op t` where `op` is
 [perform](https://github.com/xapi-project/xenopsd/blob/30cc9a72e8726d1e7501cd01ddb27ced6d53b9be/lib/xenops_server.ml#L1194)
 has fragments like this:
 
-```
+```ocaml
 		| VM_start id ->
 			debug "VM.start %s" id;
 			perform_atomics (atomics_of_operation op) t;
@@ -474,7 +474,7 @@ VM.start has completed. The function
 [VM.unpause](https://github.com/xapi-project/xenopsd/blob/b33bab13080cea91e2fd59d5088622cd68152339/xc/xenops_server_xen.ml#L808)
 is reassuringly simple:
 
-```
+```ocaml
 		if di.Xenctrl.total_memory_pages = 0n then raise (Domain_not_built);
 		Domain.unpause ~xc di.Xenctrl.domid;
 		Opt.iter

@@ -30,7 +30,7 @@ have caught an exception and then throw another exception, the backtrace
 buffer will be reinitialised, destroying your previous records. For example
 consider a 'finally' function:
 
-```
+```ocaml
 let finally f cleanup =
   try
     let result = f () in
@@ -54,7 +54,7 @@ We will use a variant of the solution proposed by
 where we will record backtraces when we catch exceptions, before the
 buffer is reinitialised. Our `finally` function will now look like this:
 
-```
+```ocaml
 let finally f cleanup =
   try
     let result = f () in

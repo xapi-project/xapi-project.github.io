@@ -29,7 +29,7 @@ Types
 
 A task has a state, which may be Pending, Completed or failed:
 
-```
+```ocaml
 	type async_result = unit
 
 	type completion_t = {
@@ -52,7 +52,7 @@ To see how they are marshalled, see
 From the point of view of a client, a Task has the immutable type (which can be
 queried with a `Task.stat`):
 
-```
+```ocaml
 	type t = {
 		id: id;
 		dbg: string;
