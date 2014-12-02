@@ -7,7 +7,7 @@ Xenopsd instances run on a host and manage VMs on behalf of clients. This
 picture shows 3 different Xenopsd instances: 2 named "xenopsd-xc" and 1 named
 "xenopsd-xenlight".
 
-![Where xenopsd fits on a host](http://djs55.github.io/xenopsd/doc/architecture/host.svg)
+![Where xenopsd fits on a host](host.svg)
 
 Each instance is responsible for managing a disjoint set of VMs. Clients should
 never ask more than one Xenopsd to manage the same VM.
@@ -16,7 +16,7 @@ Managing a VM means:
 - allowing devices (disks, nics, PCI cards, vCPUs etc) to be manipulated
 - providing updates to clients when things change (reboots, console becomes
   available, guest agent says something etc).
-For a full list of features, consult the [features list](../features/README.md).
+For a full list of features, consult the [features list](features.html).
 
 Each Xenopsd instance has a unique name on the host. A typical name is
 - org.xen.xcp.xenops.classic
@@ -57,7 +57,7 @@ contain all the hypervisor-specific code including
 
 The following diagram shows the internal structure of Xenopsd:
 
-![Inside xenopsd](http://djs55.github.io/xenopsd/doc/architecture/xenopsd.svg)
+![Inside xenopsd](xenopsd.svg)
 
 At the top of the diagram two client RPC have been sent: one to start a VM
 and the other to fetch the latest events. The RPCs are all defined in
