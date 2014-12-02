@@ -35,11 +35,11 @@ The inputs to the model are
 
 First the shadow memory is calculated, in MiB
 
-![Shadow memory in MiB](http://xapi-project.github.io/xen-api/doc/design/shadow.svg)
+![Shadow memory in MiB](shadow.svg)
 
 Second the VM overhead is calculated, in MiB
 
-![Memory overhead in MiB](http://xapi-project.github.io/xen-api/doc/design/overhead.svg)
+![Memory overhead in MiB](overhead.svg)
 
 Memory required to start a VM
 -----------------------------

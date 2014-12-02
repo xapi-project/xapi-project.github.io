@@ -16,7 +16,7 @@ Xenopsd is responsible for
 - handling crashes
 etc
 
-Check out the [full features list](features.md).
+Check out the [full features list](features.html).
 
 Principles
 ----------
@@ -35,17 +35,3 @@ Principles
    this state.
 5. be debuggable: Xenopsd will expose diagnostic APIs and tools to allow
    its internal state to be inspected and modified.
-
-Contents
---------
-
-- [Architecture](architecture/README.md): read about how Xenopsd fits into
-  the overall system; and the major pieces and patterns within Xenopsd.
-- [Features](features/README.md): learn about the features supported by Xenopsd and
-  how they work.
-- [Design](design/README.md): discover the low-level details, formats, protocols,
-  concurrency etc.
-- [Walk-throughs](walk-throughs/README.md): follow operations end-to-end to
-  understand how it all fits together.
-- [Futures](futures/README.md): find out how Xenopsd is likely to change and
-  how you can help.

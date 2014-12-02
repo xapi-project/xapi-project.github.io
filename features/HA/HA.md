@@ -33,7 +33,7 @@ Example
 The following diagram shows an HA-enabled pool, before and after a network
 link between two hosts fails.
 
-![High-Availability in action](http://xapi-project.github.io/xapi-project/doc/features/ha.png)
+![High-Availability in action](ha.png)
 
 When HA is enabled, all hosts in the pool
 - exchange periodic heartbeat messages over the network
