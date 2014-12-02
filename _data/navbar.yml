@@ -1,7 +1,6 @@
 - title: Getting Started
   docs:
   - index.md
-  - getting-started/overview.md
   - getting-started/architecture.md
   - getting-started/designs.md
 - title: High-level Features
