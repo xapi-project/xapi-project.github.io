@@ -36,6 +36,7 @@ link between two hosts fails.
 ![High-Availability in action](ha.png)
 
 When HA is enabled, all hosts in the pool
+
 - exchange periodic heartbeat messages over the network
 - send heartbeats to a shared storage device.
 - attempt to acquire a "master lock" on the shared storage.
@@ -43,7 +44,9 @@ When HA is enabled, all hosts in the pool
 HA is designed to recover as much as possible of the pool after a single failure
 i.e. it removes single points of failure. When some subset of the pool suffers
 a failure then the remaining pool members
-- figure out whether they are in the largest fully-connected set;
+
+- figure out whether they are in the largest fully-connected set (the
+  "liveset");
   - if they are not in the largest set then they "fence" themselves (i.e.
     force reboot via the hypervisor watchdog)
 - elect a master using the "master lock"
@@ -370,15 +373,14 @@ host will fence. The rules are:
 
 1. Xapi is running; the storage heartbeats are visible; this host is a
    member of the "best" partition (as seen through the storage heartbeats)
-
-where the "best" partition is the largest one if that is unique, or if there
-are multiple partitions of the same size then the one containing the lowest
-host uuid is considered best.
-
 2. Xapi is running; the storage is inaccessible; all hosts which should
    be running (i.e. not those "excluded" by being cleanly shutdown) are
    online and have also lost storage access (as seen through the network
    heartbeats).
+
+where the "best" partition is the largest one if that is unique, or if there
+are multiple partitions of the same size then the one containing the lowest
+host uuid is considered best.
 
 The first survival rule is the "normal" case. The second rule exists only
 to prevent the storage from becoming a single point of failure: all hosts
@@ -440,6 +442,239 @@ during the HA enable operation and stores away the result. When the system
 boots the `VDI_ATTACH_FROM_CONFIG` is able to attach the disk without the
 SRmaster.
 
+The role of Host.enabled
+------------------------
+
+The `Host.enabled` flag is used to mean, "this host is ready to start VMs and
+should be included in failure planning".
+The VM restart planner assumes for simplicity that all *protected* VMs can
+be started anywhere; therefore all involved networks and storage must be
+*properly shared*.
+If a host with an unplugged `PBD` were to become enabled then the corresponding
+`SR` would cease to be *properly shared*, all the VMs would cease to be
+*agile* and the VM restart logic would fail.
+
+To ensure the VM restart logic always works, great care is taken to make
+sure that Hosts may only  become enabled when their networks and storage are
+properly configured. This is achieved by:
+
+- when the master boots and initialises its database it sets all Hosts to
+  dead and disabled and then signals the HA background thread
+  `signal_database_state_valid`) to wake up from sleep and 
+  start processing liveset information (and potentially setting hosts to live)
+- when a slave calls `Pool.hello` (i.e. after the slave has rebooted),
+  the master sets it to disabled, allowing it a grace period to plug in its
+  storage;
+- when a host (master or slave) successfully plugs in its networking and
+  storage it calls `consider_enabling_host` which checks that the
+  preconditions are met and then sets the host to enabled; and
+- when a slave notices its database connection to the master restart
+  (i.e. after the master `xapi` has just restarted) it calls
+  `consider_enabling_host}`
+
+The steady-state
+----------------
+
+When HA is enabled and all hosts are running normally then each calls 
+`ha_query_liveset` every 10s.
+
+Slaves check to see if the host they believe is the master is alive and has
+the master lock. If another node has become master then the slave will
+rewrite its `pool.conf` and restart. If no node is the master then the
+slave will call `on_master_failure`, proposing itself and, if it is rejected,
+checking the liveset to see which node acquired the lock.
+
+The master monitors the liveset and updates the `Host_metrics.live` flag
+of every host to reflect the liveset value. For every host which is not in
+the liveset (i.e. has fenced) it enumerates all resident VMs and marks them
+as `Halted`. For each protected VM which is not running, the master computes
+a VM restart plan and attempts to execute it. If the plan fails then a
+best-effort `VM.start` call is attempted. Finally an alert is generated if
+the VM could not be restarted.
+
+Note that XenAPI heartbeats are still sent when HA is enabled, even though
+they are not used to drive the values of the `Host_metrics.live` field.
+Note further that, when a host is being shutdown, the host is immediately
+marked as dead and its host reference is added to a list used to prevent the
+`Host_metrics.live` being accidentally reset back to live again by the
+asynchronous liveset query. The Host reference is removed from the list when
+the host restarts and calls `Pool.hello`.
+
+Planning and overcommit
+-----------------------
+
+The VM failover planning code is sub-divided into two pieces, stored in
+separate files:
+
+- binpack.ml: contains two algorithms for packing items of different sizes
+  (i.e. VMs) into bins of different sizes (i.e. Hosts); and
+- xapi_ha_vm_failover.ml: interfaces between the Pool database and the
+  binpacker; also performs counterfactual reasoning for overcommit protection.
+
+The input to the binpacking algorithms are configuration values which
+represent an abstract view of the Pool:
+
+```ocaml
+type ('a, 'b) configuration = {
+  hosts:        ('a * int64) list; (** a list of live hosts and free memory *)
+  vms:          ('b * int64) list; (** a list of VMs and their memory requirements *)
+  placement:    ('b * 'a) list;    (** current VM locations *)
+  total_hosts:  int;               (** total number of hosts in the pool 'n' *)
+  num_failures: int;               (** number of failures to tolerate 'r' *)
+}
+```
+Note that:
+
+- the memory required by the VMs listed in `placement` has already been
+  substracted from the total memory of the hosts; it doesn't need to be
+  subtracted again.
+- the free memory of each host has already had per-host miscellaneous
+  overheads subtracted from it, including that used by unprotected VMs,
+  which do not appear in the VM list.
+- the total number of hosts in the pool (`total_hosts`) is a constant for
+  any particular invocation of HA.
+- the number of failures to tolerate (`num_failures`) is the user-settable
+  value from the XenAPI `Pool.ha_host_failures_to_tolerate`.
+
+
+There are two algorithms which satisfy the interface:
+
+```ocaml
+sig
+  plan_always_possible: ('a, 'b) configuration -> bool;
+  get_specific_plan: ('a, 'b) configuration -> 'b list -> ('b * 'a) list
+end
+```
+
+The function `get_specific_plan` takes a configuration and a list of Hosts
+which have failed. It returns a VM restart plan represented as a VM to Host
+association list. This is the function called by the
+background HA VM restart thread on the master.
+
+The function `plan_always_possible` returns true if every sequence of Host
+failures of length
+`num_failures` (irrespective of whether all hosts failed at once, or in
+multiple separate episodes)
+would result in calls to `get_specific_plan` which would allow all protected
+VMs to be restarted.
+This function is heavily used by the overcommit protection logic as well as code in XenCenter which aims to 
+maximise failover capacity using the counterfactual reasoning APIs:
+
+```ocaml
+Pool.ha_compute_max_host_failures_to_tolerate
+Pool.ha_compute_hypothetical_max_host_failures_to_tolerate
+```
+
+There are two binpacking algorithms: the more detailed but expensive
+algorithmm is used for smaller/less 
+complicated pool configurations while the less detailed, cheaper algorithm
+is used for the rest. The
+choice between algorithms is based only on `total_hosts` (`n`) and
+`num_failures` (`r`).
+Note that the choice of algorithm will only change if the number of Pool
+hosts is varied (requiring HA to be disabled and then enabled) or if the
+user requests a new `num_failures` target to plan for.
+
+The expensive algorithm uses an exchaustive search with a
+"biggest-fit-decreasing" strategy that
+takes the biggest VMs first and allocates them to the biggest remaining Host.
+The implementation keeps the VMs and Hosts as sorted lists throughout.
+There are a number of transformations to the input configuration which are
+guaranteed to preserve the existence of a VM to host allocation (even if
+the actual allocation is different). These transformations which are safe
+are:
+
+- VMs may be removed from the list
+- VMs may have their memory requirements reduced
+- Hosts may be added
+- Hosts may have additional memory added.
+
+The cheaper algorithm is used for larger Pools where the state space to
+search is too large. It uses the same "biggest-fit-decreasing" strategy
+with the following simplifying approximations:
+
+- every VM that fails is as big as the biggest
+- the number of VMs which fail due to a single Host failure is always the
+  maximum possible (even if these are all very small VMs)
+- the largest and most capable Hosts fail
+
+An informal argument that these approximations are safe is as follows:
+if the maximum *number* of VMs fail, each of which is size of the largest
+and we can find a restart plan using only the smaller hosts then any real
+failure:
+
+- can never result in the failure of more VMs;
+- can never result in the failure of bigger VMs; and
+- can never result in less host capacity remaining.
+
+Therefore we can take this *almost-certainly-worse-than-worst-case* failure
+plan and:
+
+- replace the remaining hosts in the worst case plan with the real remaining
+  hosts, which will be the same size or larger; and
+- replace the failed VMs in the worst case plan with the real failed VMs,
+  which will be fewer or the same in number and smaller or the same in size.
+
+Note that this strategy will perform best when each host has the same number
+of VMs on it and when all VMs are approximately the same size. If one very big
+VM exists and a lot of smaller VMs then it will probably fail to find a plan.
+It is more tolerant of differing amounts of free host memory.
+
+Overcommit protection
+---------------------
+
+Overcommit protection blocks operations which would prevent the Pool being
+able to restart *protected* VMs after host failure.
+The Pool may become unable to restart protected VMs in two general ways:
+(i) by running out of resource i.e. host memory; and (ii) by altering host
+configuration in such a way that VMs cannot be started (or the planner
+thinks that VMs cannot be started).
+
+API calls which would change the amount of host memory currently in use
+(`VM.start`, `VM.resume`, `VM.migrate` etc) 
+have been modified to call the planning functions supplying special
+"configuration change" parameters.
+Configuration change values represent the proposed operation and have type
+
+```ocaml
+type configuration_change = {
+  (** existing VMs which are leaving *)
+  old_vms_leaving: (API.ref_host * (API.ref_VM * API.vM_t)) list;
+  (** existing VMs which are arriving *)
+  old_vms_arriving: (API.ref_host * (API.ref_VM * API.vM_t)) list;  
+  (** hosts to pretend to disable *)
+  hosts_to_disable: API.ref_host list;
+  (** new number of failures to consider *)
+  num_failures: int option;
+  (** new VMs to restart *)  
+  new_vms_to_protect: API.ref_VM list;
+}
+```
+
+A VM migration will be represented by saying the VM is "leaving" one host and
+"arriving" at another. A VM start or resume will be represented by saying the
+VM is "arriving" on a host.
+
+
+Note that no attempt is made to integrate the overcommit protection with the
+general `VM.start` host chooser as this would be quite expensive.
+
+Note that the overcommit protection calls are written as `asserts` called
+within the message forwarder in the master, holding the main forwarding lock.
+
+API calls which would change the system configuration in such a way as to
+prevent the HA restart planner being able to guarantee to restart protected
+VMs are also blocked.  These calls include:
+
+- `VBD.create`: where the disk is not in a *properly shared* SR
+- `VBD.insert`: where the CDROM is local to a host
+- `VIF.create`: where the network is not *properly shared*
+- `PIF.unplug`: when the network would cease to be *properly shared*
+- `PBD.unplug`: when the storage would cease to be *properly shared*
+- `Host.enable`: when some network or storage would cease to be
+  *properly shared* (e.g. if this host had a broken storage configuration)
+
+
 xen
 ===
 
@@ -485,22 +720,22 @@ The Xapi-to-Xapi communication looks as follows:
 
 ![Configuring HA around the Pool](HA.configure.svg)
 
-
-Starting up a host
-------------------
-
 The Xapi Pool master calls `Host.ha_join_liveset` on all hosts in the
 pool simultaneously. Each host 
 runs the `ha_start_daemon` script
 which starts Xhad. Each Xhad starts exchanging heartbeats over the network
 and storage defined in the `xhad.conf`.
 
+Joining a liveset
+-----------------
+
 ![Starting up a host](HA.start.svg)
 
- All hosts must be online and all heartbeats must
-be working for HA to be enabled -- it is not sensible to enable HA when
-there are already failures in the pool. Assuming the host manages to
-join the liveset then it clears the "excluded" flag which would have
+The Xhad instances exchange heartbeats and decide which hosts are in
+the "liveset" and which have been fenced.
+
+After joining the liveset, each host clears
+the "excluded" flag which would have
 been set if the host had been shutdown cleanly before -- this is only
 needed when a host is shutdown cleanly and then restarted.
 
@@ -534,6 +769,42 @@ to disable fencing with `ha_disarm_fencing` and stop xhad with
 bit can be set in the statefile via `ha_set_excluded` and the
 host safely rebooted.
 
+Restarting a host
+-----------------
+
+When a host restarts after a failure Xapi notices that *ha_armed* is
+set in the local database. Xapi 
+
+- runs the `attach-static-vdis` script to attach the statefile and
+  database VDIs. This can fail if the storage is inaccessible; Xapi will
+  retry until it succeeds.
+- runs the ha_start_daemon to join the liveset, or determine that HA
+  has been cleanly disabled (via setting the state to *Invalid*).
+
+In the special case where Xhad fails to access the statefile and the
+host used to be a slave then Xapi will try to contact the previous master
+and find out
+
+- who the new master is;
+- whether HA is enabled on the Pool or not.
+
+If Xapi can confirm that HA was disabled then it will disarm itself and
+join the new master. Otherwise it will keep waiting for the statefile
+to recover.
+
+In the special case where the statefile has been destroyed and cannot
+be recovered, there is an emergency HA disable API the admin can use to
+assert that HA really has been disabled, and it's not simply a connectivity
+problem. Obviously this API should only be used if the admin is totally
+sure that HA has been disabled.
+
+Disabling HA
+------------
+
+There are 2 methods of disabling HA: one for the "normal" case when the
+statefile is available; and the other for the "emergency" case when the
+statefile has failed and can't be recovered.
+
 Disabling HA cleanly
 --------------------
 
@@ -552,15 +823,17 @@ access to the statefile) then HA can be disabled uncleanly.
 Disabling HA uncleanly
 ----------------------
 
+The Xapi master first calls `Host.ha_disable_failover_actions` on each host
+which sets `ha_disable_failover_decisions` in the lcoal database. This
+prevents the node rebooting, gaining statefile access, acquiring the
+master lock and restarting VMs when other hosts have disabled their
+fencing (i.e. a "split brain").
+
 ![Disabling HA uncleanly](HA.disable.unclean.svg)
 
-HA should always be disabled cleanly when possible. If the storage has
-failed and can't be easily repaired, then HA can be disabled manually
-on every host. Since all hosts are online thanks to survival rule 2,
-the Xapi master is able to tell all Xapi instances to disable their
-recovery logic. Once the Xapis have been disabled -- and there is no
-possibility of split brain -- each host is asked to disable the watchdog
-with `ha_disarm_fencing` and then to stop Xhad with `ha_stop_daemon`.
+Once the master is sure that no host will suddenly start recovering VMs
+it is safe to call `Host.ha_disarm_fencing` which runs the script
+`ha_disarm_fencing` and then shuts down the Xhad with `ha_stop_daemon`.
 
 Add a host to the pool
 ----------------------
