@@ -38,11 +38,11 @@ The APIs are classified into categories:
   efficient access to the data.
 * emergency: these deal with scenarios where the master is offline
 
-If the incoming API call should be resent to the master than a XenAPI ```HOST_IS_SLAVE```
+If the incoming API call should be resent to the master than a XenAPI `HOST_IS_SLAVE`
 error message containing the master's IP is sent to the client.
 
 Once past the initial checks, API calls enter the "message forwarding" layer which
-- locks resources (via the ```current_operations``` mechanism)
+- locks resources (via the `current_operations` mechanism)
 - decides which host should execute the request.
 
 If the request should run locally then a direct function call is used; otherwise
@@ -63,7 +63,7 @@ If the XenAPI call is a storage operation then the "storage access" layer
 - invokes the relevant operation in the Storage Manager API (SMAPI) v2 interface;
 - uses the SMAPIv2 to SMAPIv1 converter to generate the necessary command-line to talk to
   the SMAPIv1 plugin (EXT, NFS, LVM etc) and to execute it
-- persists the state of the storage objects (including the result of a ```VDI.attach```
+- persists the state of the storage objects (including the result of a `VDI.attach`
   call) to persistent storage
 
 Internally the SMAPIv1 plugins use privileged access to the Xapi database to directly
@@ -76,19 +76,19 @@ The SMAPIv1 plugins also rely on Xapi for
 The Xapi database contains Host and VM metadata and is shared pool-wide. The master
 keeps a copy in memory, and all other nodes remote queries to the master. The database
 associates each object with a generation count which is used to implement the XenAPI
-```event.next``` and ```event.from``` APIs. The database is routinely asynchronously flushed to disk
+`event.next` and `event.from` APIs. The database is routinely asynchronously flushed to disk
 in XML format. If the "redo-log" is enabled then all database writes are made synchronously
 as deltas to a shared block device. Without the redo-log, recent updates may be lost
 if Xapi is killed before a flush.
 
 High-Availability refers to planning for host failure, monitoring host liveness and then
 following-through on the plans. Xapi defers to an external host liveness monitor
-called ```xhad```. When ```xhad``` confirms that a host has failed -- and has been
+called `xhad`. When `xhad` confirms that a host has failed -- and has been
 isolated from the storage -- then Xapi will restart any VMs which have failed and which
 have been marked as "protected" by HA. Xapi can also impose admission control to prevent
-the pool becoming too overloaded to cope with ```n``` arbitrary host failures.
+the pool becoming too overloaded to cope with `n` arbitrary host failures.
 
-The ```xe``` CLI is implemented in terms of the XenAPI, but for efficiency the implementation
-is linked directly into Xapi. The ```xe``` program remotes its command-line to Xapi,
+The `xe` CLI is implemented in terms of the XenAPI, but for efficiency the implementation
+is linked directly into Xapi. The `xe` program remotes its command-line to Xapi,
 and Xapi sends back a series of simple commands (prompt for input; print line; fetch file;
 exit etc).

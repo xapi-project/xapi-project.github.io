@@ -19,8 +19,8 @@ running xapi, all sharing some storage:
 At any time, at most one host is known as the *pool master* and is responsible
 for co-ordination and locking resources within the pool. When a pool is
 first created a master host is chosen. The master role can be transferred
-- on user request in an orderly fashion (```xe pool-designate-new-master```)
-- on user request in an emergency (```xe pool-emergency-transition-to-master```)
+- on user request in an orderly fashion (`xe pool-designate-new-master`)
+- on user request in an emergency (`xe pool-emergency-transition-to-master`)
 - automatically if HA is enabled on the cluster.
 
 All hosts expose an HTTP and XML/RPC interface running on port 80 and with TLS/SSL

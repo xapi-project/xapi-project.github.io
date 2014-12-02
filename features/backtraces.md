@@ -41,18 +41,18 @@ let finally f cleanup =
     raise e (* <-- backtrace starts here now *)
 ```
 
-This function performs some action (i.e. ```f ()```) and guarantees to
-perform some cleanup action (```cleanup ()```) whether or not an exception
+This function performs some action (i.e. `f ()`) and guarantees to
+perform some cleanup action (`cleanup ()`) whether or not an exception
 is thrown. This is a common pattern to ensure resources are freed (e.g.
-closing a socket or file descriptor). Unfortunately the ```raise e``` in
+closing a socket or file descriptor). Unfortunately the `raise e` in
 the exception handler loses the backtrace context: when the exception
-gets to the toplevel, ```Printexc.get_backtrace ()``` will point at the
-```finally``` rather than the real cause of the error.
+gets to the toplevel, `Printexc.get_backtrace ()` will point at the
+`finally` rather than the real cause of the error.
 
 We will use a variant of the solution proposed by
 [Jacques-Henri Jourdan](http://gallium.inria.fr/blog/a-library-to-record-ocaml-backtraces/)
 where we will record backtraces when we catch exceptions, before the
-buffer is reinitialised. Our ```finally``` function will now look like this:
+buffer is reinitialised. Our `finally` function will now look like this:
 
 ```
 let finally f cleanup =
@@ -66,7 +66,7 @@ let finally f cleanup =
     raise e
 ```
 
-The function ```Backtrace.is_important e``` associates the exception ```e```
+The function `Backtrace.is_important e` associates the exception `e`
 with the current backtrace before it gets deleted.
 
 Xapi always has high-level exception handlers or other wrappers around all the
@@ -74,8 +74,8 @@ threads it spawns. In particular Xapi tries really hard to associate threads
 with active tasks, so it can prefix all log lines with a task id. This helps
 admins see the related log lines even when there is lots of concurrent activity.
 Xapi also tries very hard to label other threads with names for the same reason
-(e.g. ```db_gc```). Every thread should end up being wrapped in ```with_thread_named```
-which allows us to catch exceptions and log stacktraces from ```Backtrace.get```
+(e.g. `db_gc`). Every thread should end up being wrapped in `with_thread_named`
+which allows us to catch exceptions and log stacktraces from `Backtrace.get`
 on the way out.
 
 OCaml design guidelines
@@ -85,21 +85,21 @@ Making nice backtraces requires us to think when we write our exception raising
 and handling code. In particular:
 
 - If a function handles an exception and re-raise it, you must call
-  ```Backtrace.is_important e``` with the exception to capture the backtrace first.
-- If a function raises a different exception (e.g. ```Not_found``` becoming a XenAPI
-  ```INTERNAL_ERROR```) then you must use ```Backtrace.reraise <old> <new>``` to
+  `Backtrace.is_important e` with the exception to capture the backtrace first.
+- If a function raises a different exception (e.g. `Not_found` becoming a XenAPI
+  `INTERNAL_ERROR`) then you must use `Backtrace.reraise <old> <new>` to
   ensure the backtrace is preserved.
 - All exceptions should be printable -- if the generic printer doesn't do a good
   enough job then register a custom printer.
 - If you are the last person who will see an exception (because you aren't going
-  to rethow it) then you *may* log the backtrace via ```Debug.log_backtrace e```
+  to rethow it) then you *may* log the backtrace via `Debug.log_backtrace e`
   *if and only if* you reasonably expect the resulting backtrace to be helpful
   and not spammy.
 - If you aren't the last person who will see an exception (because you are going
   to rethrow it or another exception), then *do not* log the backtrace; the
   next handler will do that.
 - All threads should have a final exception handler at the outermost level
-  for example ```Debug.with_thread_named``` will do this for you.
+  for example `Debug.with_thread_named` will do this for you.
 
 
 Backtraces in python
@@ -269,7 +269,7 @@ The SMAPIv1 API
 
 Errors in SMAPIv1 are returned as XMLRPC "Faults" containing a code and
 a status line. Xapi transforms these into XenAPI exceptions usually of the
-form ```SR_BACKEND_FAILURE_<code>```. We can extend the SM backends to use the
+form `SR_BACKEND_FAILURE_<code>`. We can extend the SM backends to use the
 XenAPI exception type directly: i.e. to marshal exceptions as dictionaries:
 
 ```python
@@ -281,12 +281,12 @@ XenAPI exception type directly: i.e. to marshal exceptions as dictionaries:
 
 We can then define a new backtrace-carrying error:
 
-- code = ```SR_BACKEND_FAILURE_WITH_BACKTRACE```
+- code = `SR_BACKEND_FAILURE_WITH_BACKTRACE`
 - param1 = json-encoded backtrace
 - param2 = code
 - param3 = reason
 
-which is internally transformed into ```SR_BACKEND_FAILURE_<code>``` and
+which is internally transformed into `SR_BACKEND_FAILURE_<code>` and
 the backtrace is appended to the current Task backtrace. From the client's
 point of view the final exception should look the same, but Xapi will have
 a chance to see and log the whole backtrace.

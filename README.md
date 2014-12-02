@@ -48,6 +48,7 @@ $ gem install jekyll
 
 Then you can host the site locally with the following command from the root
 directory of this repository:
+
 ```
 $ jekyll serve -w --baseurl '/xapi-project'
 ```
@@ -57,6 +58,7 @@ You will then be able to view the page at `localhost:4000/xapi-project`.
 ## A note on images
 If you are contributing images, consider compressing them to keep this repo as
 slim as possible:
+
 ```
 convert -resize 900 -background white -colors 256 [input.png] [output.png]
 ```
