@@ -388,6 +388,71 @@ point of failure for the degraded pool. HA removes single point of failures,
 but multiple failures can still cause problems. It is important to fix
 failures properly after HA has worked around them.
 
+
+xapi
+====
+
+[Xapi](https://github.com/xapi-project/xen-api) is responsible for
+
+- exposing an interface for setting HA policy
+- creating VDIs (disks) on shared storage for heartbeating and storing
+  the pool database
+- arranging for these disks to be attached on host boot, before the "SRmaster"
+  is online
+- configuring and managing the `xhad` heartbeating daemon
+
+The HA policy APIs include
+
+- methods to determine whether a VM is *agile* i.e. can be restarted in
+  principle on any host after a failure
+- planning for a user-specified number of host failures and enforcing
+  access control
+- restarting failed *protected* VMs in policy order
+
+The HA policy settings are stored in the Pool database which is written
+(synchronously)
+to a VDI in the same SR that's being used for heartbeating. This ensures
+that the database can be recovered after a host fails and the VMs are
+recovered.
+
+Xapi stores 2 settings in its local database:
+
+- *ha_disable_failover_actions*: this is set to false when we want nodes
+  to be able to recover VMs -- this is the normal case. It is set to true
+  during the HA disable process to prevent a split-brain forming while
+  HA is only partially enabled.
+- *ha_armed*: this is set to true to tell Xapi to start `Xhad` during
+  host startup and wait to join the liveset.
+
+Disks on shared storage
+-----------------------
+
+The regular disk APIs for creating, destroying, attaching, detaching (etc)
+disks need the `SRmaster` (usually but not always the Pool master) to be
+online to allow the disks to be locked. The `SRmaster` cannot be brought
+online until the host has joined the liveset. Therefore we have a
+cyclic dependency: joining the liveset needs the statefile disk to be attached
+but attaching a disk requires being a member of the liveset already.
+
+The dependency is broken by adding an explicit "unlocked" attach storage
+API called `VDI_ATTACH_FROM_CONFIG`. Xapi uses the `VDI_GENERATE_CONFIG` API
+during the HA enable operation and stores away the result. When the system
+boots the `VDI_ATTACH_FROM_CONFIG` is able to attach the disk without the
+SRmaster.
+
+xen
+===
+
+The Xen hypervisor has per-domain watchdog counters which, when enabled,
+decrement as time passes and can be reset from a hypercall from the domain.
+If the domain fails to make the hypercall and the timer reaches zero then
+the domain is immediately shutdown with reason reboot. We configure Xen
+to reboot the host when domain 0 enters this state.
+
+High-level operations
+=====================
+
+
 Enabling HA
 -----------
 
@@ -398,19 +463,41 @@ environment properly. In particular:
 - multipath should be configured for the storage heartbeats;
 - all hosts should be online and fully-booted.
 
-Xapi will create a raw disk in a shared SR for use by the storage
-heartbeats and the master will tell every host in the pool to write
-an identical xhad.conf file. Control jumps to the same routine that
-is used to handle host startup:
+The XenAPI client can request a specific shared SR to be used for
+storage heartbeats, otherwise Xapi will use the Pool's default SR.
+Xapi will use `VDI_GENERATE_CONFIG` to ensure the disk will be attached
+automatically on system boot before the liveset has been joined.
+
+Note that extra effort is made to re-use any existing heartbeat VDIS
+so that
+
+- if HA is disabled with some hosts offline, when they are rebooted they
+  stand a higher chance of seeing a well-formed statefile with an explicit
+  *invalid* state. If the VDIs were destroyed on HA disable then hosts which
+  boot up later would fail to attach the disk and it would be harder to
+  distinguish between a temporary storage failure and a permanent HA disable.
+- the heartbeat SR can be created on expensive low-latency high-reliability
+  storage and made as small as possible (to minimise infrastructure cost),
+  safe in the knowledge that if HA enables successfully once, it won't run
+  out of space and fail to enable in the future.
+
+The Xapi-to-Xapi communication looks as follows:
+
+![Configuring HA around the Pool](HA.configure.svg)
+
 
 Starting up a host
 ------------------
 
+The Xapi Pool master calls `Host.ha_join_liveset` on all hosts in the
+pool simultaneously. Each host 
+runs the `ha_start_daemon` script
+which starts Xhad. Each Xhad starts exchanging heartbeats over the network
+and storage defined in the `xhad.conf`.
+
 ![Starting up a host](HA.start.svg)
 
-First Xapi starts up the xhad via the `ha_start_daemon` script. The
-daemons read their config files and start exchanging heartbeats over
-the network and storage. All hosts must be online and all heartbeats must
+ All hosts must be online and all heartbeats must
 be working for HA to be enabled -- it is not sensible to enable HA when
 there are already failures in the pool. Assuming the host manages to
 join the liveset then it clears the "excluded" flag which would have
@@ -482,50 +569,3 @@ We assume that adding a host to the pool is an operation the admin will
 perform manually, so it is acceptable to disable HA for the duration
 and to re-enable it afterwards. If a failure happens during this operation
 then the admin will take care of it by hand.
-
-xapi
-====
-
-[Xapi](https://github.com/xapi-project/xen-api) is responsible for
-
-- exposing an interface for setting HA policy
-- creating VDIs (disks) on shared storage for heartbeating and storing
-  the pool database
-- arranging for these disks to be attached on host boot, before the "SRmaster"
-  is online
-- configuring and managing the `xhad` heartbeating daemon
-
-The HA policy APIs include
-
-- methods to determine whether a VM is *agile* i.e. can be restarted in
-  principle on any host after a failure
-- planning for a user-specified number of host failures and enforcing
-  access control
-- restarting failed *protected* VMs in policy order
-
-
-Disks on shared storage
------------------------
-
-The regular disk APIs for creating, destroying, attaching, detaching (etc)
-disks need the `SRmaster` (usually but not always the Pool master) to be
-online to allow the disks to be locked. The `SRmaster` cannot be brought
-online until the host has joined the liveset. Therefore we have a
-cyclic dependency: joining the liveset needs the statefile disk to be attached
-but attaching a disk requires being a member of the liveset already.
-
-The dependency is broken by adding an explicit "unlocked" attach storage
-API called `VDI_ATTACH_FROM_CONFIG`. Xapi uses the `VDI_GENERATE_CONFIG` API
-during the HA enable operation and stores away the result. When the system
-boots the `VDI_ATTACH_FROM_CONFIG` is able to attach the disk without the
-SRmaster.
-
-xen
-===
-
-The Xen hypervisor has per-domain watchdog counters which, when enabled,
-decrement as time passes and can be reset from a hypercall from the domain.
-If the domain fails to make the hypercall and the timer reaches zero then
-the domain is immediately shutdown with reason reboot. We configure Xen
-to reboot the host when domain 0 enters this state.
-
