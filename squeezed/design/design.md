@@ -103,7 +103,7 @@ Environmental assumptions
     guests from allocating *all* host memory (even
     transiently) we guarantee that memory from within these special
     ranges is always available. Squeezed operates in
-    [two phases](#twophase-section): first causing memory to be freed; and
+    [two phases](#two-phase-target-setting): first causing memory to be freed; and
     second causing memory to be allocated.
 
 8.  The Squeezed daemon
