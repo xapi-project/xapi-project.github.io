@@ -1,4 +1,4 @@
-# Xapi-project Docs
+# Xapi-project Docs [![Build Status](https://travis-ci.org/xapi-project/xapi-project.github.io.png)](https://travis-ci.org/xapi-project/xapi-project.github.io)
 
 Documentation for the architecture of the Xapi toolstack.
 
