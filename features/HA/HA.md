@@ -180,7 +180,7 @@ Components
 
 The implementation is split across the following components:
 
-- [xhad](https://github.com/xenserver/xhad): the cluster membership daemon
+- [xhad](https://github.com/xenserver/xha): the cluster membership daemon
   maintains a quorum of hosts through network and storage heartbeats
 - [xapi](https://github.com/xapi-project/xen-api): used to configure the
   HA policy i.e. which network and storage to use for heartbeating and which
@@ -209,7 +209,7 @@ isolate) nodes when they are not part of the cluster. In general there are
 xhad
 ====
 
-[xhad](https://github.com/xenserver/xhad) is the cluster membership daemon:
+[xhad](https://github.com/xenserver/xha) is the cluster membership daemon:
 it exchanges heartbeats with the other nodes to determine which nodes are
 still in the cluster (the "live set") and which nodes have *definitely*
 failed (through watchdog fencing). When a host has definitely failed, xapi
