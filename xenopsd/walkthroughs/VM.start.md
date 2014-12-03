@@ -168,10 +168,10 @@ What happens when a Xenopsd receives a VM.start request?
 
 When Xenopsd receives the request it adds it to the appropriate per-VM queue
 via the function
-[queue_operation](https://github.com/xapi-project/xenopsd/blob/30cc9a72e8726d1e7501cd01ddb27ced6d53b9be/lib/xenops_server.ml#L1737).
+[queue_operation](https://github.com/xapi-project/xenopsd/blob/524d57b3c70/lib/xenops_server.ml#L1744).
 To understand this and other internal details of Xenopsd, consult the
 [architecture description](../architecture.html).
-The [queue_operation_int](https://github.com/xapi-project/xenopsd/blob/30cc9a72e8726d1e7501cd01ddb27ced6d53b9be/lib/xenops_server.ml#L1451)
+The [queue_operation_int](https://github.com/xapi-project/xenopsd/blob/524d57b3c70/lib/xenops_server.ml#L1457)
 function looks like this:
 
 ```ocaml
@@ -183,7 +183,7 @@ let queue_operation_int dbg id op =
 
 The "task" is a record containing Task metadata plus a "do it now" function
 which will be executed by a thread from the thread pool.  The
-[module Redirector](https://github.com/xapi-project/xenopsd/blob/30cc9a72e8726d1e7501cd01ddb27ced6d53b9be/lib/xenops_server.ml#L395)
+[module Redirector](https://github.com/xapi-project/xenopsd/blob/524d57b3c70/lib/xenops_server.ml#L396)
 takes care of:
 - pushing operations to the right queue
 - ensuring at most one worker thread is working on a VM's operations
@@ -193,7 +193,7 @@ takes care of:
 Once a thread from the worker pool becomes free, it will execute the "do it now"
 function. In the example above this is `perform op t` where `op` is
 `VM_start vm` and `t` is the Task. The function
-[perform](https://github.com/xapi-project/xenopsd/blob/30cc9a72e8726d1e7501cd01ddb27ced6d53b9be/lib/xenops_server.ml#L1194)
+[perform](https://github.com/xapi-project/xenopsd/blob/524d57b3c70/lib/xenops_server.ml#L1198)
 has fragments like this:
 
 ```ocaml
@@ -205,7 +205,7 @@ has fragments like this:
 
 Each "operation" (e.g. `VM_start vm`) is decomposed into "micro-ops" by the
 function
-[atomics_of_operation](https://github.com/xapi-project/xenopsd/blob/30cc9a72e8726d1e7501cd01ddb27ced6d53b9be/lib/xenops_server.ml#L736)
+[atomics_of_operation](https://github.com/xapi-project/xenopsd/blob/524d57b3c70/lib/xenops_server.ml#L739)
 where the micro-ops are small building-block actions common to the higher-level
 operations. Each operation corresponds to a list of "micro-ops", where there is
 no if/then/else. Some of the "micro-ops" may be a no-op depending on the VM
