@@ -61,7 +61,6 @@ The numbered state changes in the diagram have the following meaning:
    the XenAPI, it is insecure or inefficient (for examples of deprecation
    policies of other projects, see
    [symbian](http://developer.symbian.org/wiki/index.php/Public_API_Change_Control_Process)
-   [sun](http://java.sun.com/j2se/1.4.2/docs/guide/misc/deprecation/deprecation.html)
    [eclipse](http://wiki.eclipse.org/Eclipse/API_Central/Deprecation_Policy)
    [oval](http://oval.mitre.org/language/about/deprecation.html).
 5. Remove: the element is taken out of the public API and can no longer be used.
