@@ -1,6 +1,6 @@
 language: ruby
 
-script: gem install jekyll html-proofer && jekyll build && htmlproof ./_site
+script: gem install github-pages html-proofer && jekyll build && htmlproof ./_site
 
 env:
   global:
