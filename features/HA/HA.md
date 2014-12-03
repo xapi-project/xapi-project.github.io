@@ -185,7 +185,7 @@ The implementation is split across the following components:
 - [xapi](https://github.com/xapi-project/xen-api): used to configure the
   HA policy i.e. which network and storage to use for heartbeating and which
   VMs to restart after a failure.
-- [xen](https://xenproject.org/): the Xen watchdog is used to reliably
+- [xen](http://xenproject.org/): the Xen watchdog is used to reliably
   fence the host when the host has been (partially or totally) isolated
   from the cluster
 
