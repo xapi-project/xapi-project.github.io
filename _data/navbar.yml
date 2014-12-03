@@ -9,6 +9,7 @@
   - features/HA/HA.md
   - features/XSM/XSM.md
   - features/RPU/RPU.md
+  - features/VGPU/vgpu.md
   - features/backtraces.md
 - title: Xapi
   docs:
