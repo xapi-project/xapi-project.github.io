@@ -98,12 +98,12 @@ and this relies on certain Xenstore keys being present.
 Once the VM metadata has been registered with Xenopsd, the client can call
 [VM.start](https://github.com/xapi-project/xcp-idl/blob/2e5c3dd79c63e3711227892271a6bece98eb0fa1/xen/xenops_interface.ml#L443).
 Like all potentially-blocking Xenopsd APIs, this function returns a Task id.
-Please refer to the [Task handling design](../design/Tasks.md) for a general
+Please refer to the [Task handling design](../design/Tasks.html) for a general
 overview of how tasks are handled.
 
 Clients can poll the state of a task by calling [TASK.stat](https://github.com/xapi-project/xcp-idl/blob/2e5c3dd79c63e3711227892271a6bece98eb0fa1/xen/xenops_interface.ml#L404)
 but most clients will prefer to use the event system instead.
-Please refer to the [Event handling design](../design/Events.md) for a general
+Please refer to the [Event handling design](../design/Events.html) for a general
 overview of how events are handled.
 
 The event model is similar to the XenAPI: clients call a blocking
@@ -117,7 +117,7 @@ case [TASK.stat](https://github.com/xapi-project/xcp-idl/blob/2e5c3dd79c63e37112
 The client will be able to see the task make progress and use this to -- for example --
 populate a progress bar in a UI. If the client needs to cancel the task then it
 can call the [TASK.cancel](https://github.com/xapi-project/xcp-idl/blob/2e5c3dd79c63e3711227892271a6bece98eb0fa1/xen/xenops_interface.ml#L405);
-again see the [Task handling design](../design/Tasks.md) to understand how this is
+again see the [Task handling design](../design/Tasks.html) to understand how this is
 implemented.
 
 When the Task has completed successfully, then calls to *.stat will show:
@@ -170,7 +170,7 @@ When Xenopsd receives the request it adds it to the appropriate per-VM queue
 via the function
 [queue_operation](https://github.com/xapi-project/xenopsd/blob/30cc9a72e8726d1e7501cd01ddb27ced6d53b9be/lib/xenops_server.ml#L1737).
 To understand this and other internal details of Xenopsd, consult the
-[architecture description](../architecture/README.md).
+[architecture description](../architecture.html).
 The [queue_operation_int](https://github.com/xapi-project/xenopsd/blob/30cc9a72e8726d1e7501cd01ddb27ced6d53b9be/lib/xenops_server.ml#L1451)
 function looks like this:
 
