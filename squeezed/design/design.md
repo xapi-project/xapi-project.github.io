@@ -47,11 +47,10 @@ Environmental assumptions
     is granted full access to xenstore, enabling it to modify every
     domain’s `memory/target`.
 
-2.  The Squeezed daemon calls
-    `setmaxmem` in order to cap the amount of memory a domain can use.
-    This relies on a patch to
-    [xen which allows `maxmem` to be set lower than `totpages`](http://xenbits.xen.org/xapi/xen-3.4.pq.hg?file/c01d38e7092a/max-pages-below-tot-pages).
-    See Section [maxmem](#use-of-maxmem) for more information.
+2.  The Squeezed daemon calls `setmaxmem` in order to cap the amount of memory
+    a domain can use.  This relies on a patch to xen which allows `maxmem` to
+    be set lower than `totpages` See Section [maxmem](#use-of-maxmem) for more
+    information.
 
 3.  The Squeezed daemon
     assumes that only domains which write `control/feature-balloon` into
