@@ -1,6 +1,9 @@
 ---
 title: OCFS2 storage
 layout: default
+design_doc: true
+revision: 1
+status: proposed
 ---
 
 Insert a diagram showing:
@@ -46,7 +49,7 @@ not be called across-hosts and therefore do not have to be backward compatible.
 
 We will define the following APIs:
 
-- `Cluster.join`: add a host to a cluster. On exit the local host software
+- `Cluster.add`: add a host to a cluster. On exit the local host software
   will know about the new host but it may need to be restarted before the
   change takes effect
   - in:`hostname:string`: the hostname of the management domain
@@ -54,7 +57,7 @@ We will define the following APIs:
   - in:`address:string list`: a list of addresses through which the host
       can be contacted
   - out: Task.id
-- `Cluster.leave`: removes a named host from the cluster. On exit the local
+- `Cluster.remove`: removes a named host from the cluster. On exit the local
   host software will know about the change but it may need to be restarted
   before it can take effect  
   - in:`uuid:string`: the UUID of the host to remove
@@ -69,9 +72,60 @@ We will define the following APIs:
 
 Xapi will be modified to:
 
-- on `Pool.join`
-- on `Pool.eject`
-- on `Pool.hello`
+- add read-only field `Host.clusters: Set(String)`: a set of string names for
+  the clusters this host is supposed to be in, which may be different to the
+  set of cluster services actually running. For now there will be
+  2 legal values: [] and [ "o2cb" ]. In future we might add "xhad". The
+  default value for schema upgrade is [].
+- extend enum `vdi_type` to include `o2cb_statefile` as well as `ha_statefile`
+- add method `Host.join`
+  - in: `self:Host`: the host to modify
+  - in: `cluster:String`: the cluster name. The only legal value is "o2cb".
+  add method `Host.leave`
+  - in: `self:Host`: the host to modify
+  - in: `cluster:String`: the cluster name. The only legal value is "o2cb".
+- modify `Pool.join` to resync with the master's `Host.clusters` list.
+- modify `Pool.eject` to enter maintenance mode and to call `Cluster.leave`
+  on the target host and the master (and as many other nodes as possible)
+- modify `Pool.hello` to join the same clusters as the master.
+
+This is not quite right -- every host needs to know about every other host.
+
+Monitoring and diagnostics
+==========================
+
+When either HA or OCFS O2CB "fences" the host it will look to the admin like
+a host crash and reboot. We need to (in priority order)
+
+1. help the admin *prevent* fences by monitoring their I/O paths
+   and fixing issues before they lead to trouble
+2. when a fence/crash does happen, help the admin
+   - tell the difference between an I/O error (admin to fix) and a software
+     bug (which should be reported)
+   - understand how to make their system more reliable
+
+Monitoring I/O paths
+--------------------
+
+Standard alerts
+---------------
+
+- network bonding
+- multipath
+
+Recommended visibility in the UI
+
+Post-crash diagnostics
+----------------------
+
+A tool to read the stack from the crash kernel dump and determine which system
+reset the host. We need to display this somewhere.
+
+Network configuration
+=====================
+
+Bonding
+Monitoring the bond (as xhad does)
 
 Open question: how dependent is OCFS2 on hostnames?
 
