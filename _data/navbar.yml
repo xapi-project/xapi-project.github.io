@@ -40,3 +40,4 @@
 - title: Future designs
   docs:
   - xapi/futures/database/distributed-database.md
+  - xapi/futures/snapshot-revert/snapshot-revert.md
