@@ -134,7 +134,12 @@ TODO: finding or creating the VDI here is racy
 SM plugin
 =========
 
+File format
 
+- vhd
+- raw
+
+TODO: who should set up the cluster?
 
 Monitoring and diagnostics
 ==========================
@@ -239,6 +244,12 @@ probably need to do this to avoid fencing.
 
 Walk-through: adding OCFS2 storage
 ==================================
+
+Walk-through: remove a host
+===========================
+
+Walk-through: after a crash
+===========================
 
 Summary of the impact on the admin
 ==================================
