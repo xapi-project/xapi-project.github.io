@@ -86,3 +86,13 @@ We will modify
 - LVHDSR.py to implement `VDI.revert` using a variant of the existing
   snapshot/clone machinery
 - LVHDoISCSISR.py and LVHDoHBASR.py to advertise the `VDI_REVERT` capability
+
+Prototype code
+==============
+
+Prototype code exists here:
+
+- [xapi-project/xcp-idl#37](https://github.com/xapi-project/xcp-idl/pull/37) by @johnelse
+- [xapi-project/xen-api#2058](https://github.com/xapi-project/xen-api/pull/2058) mainly by @johnelse but with 2 extra patches from me
+- [Definition of SMAPIv1 vdi_revert](https://github.com/djs55/sm/commit/cbc28755c9c4300ed067abc089081f58f821f504)
+- [Hacky implementation for EXT/NFS](https://github.com/djs55/sm/commit/eb31d6205ccd707152a5b59c9a733fd48db5316b)
