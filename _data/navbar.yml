@@ -37,7 +37,8 @@
   - squeezed/overview.md
   - squeezed/architecture/architecture.md
   - squeezed/design/design.md
-- title: Future designs
+- title: Design Docs
   docs:
+  - design-docs/index.md
   - xapi/futures/database/distributed-database.md
   - xapi/futures/snapshot-revert/snapshot-revert.md
