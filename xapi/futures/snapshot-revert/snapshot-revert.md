@@ -1,5 +1,7 @@
-Improving snapshot revert behaviour
-===================================
+---
+title: Improving snapshot revert behaviour
+layout: default
+---
 
 Currently there is a XenAPI `VM.revert` which reverts a "VM" to the state it
 was in when a VM-level snapshot was taken. There is no `VDI.revert` so
