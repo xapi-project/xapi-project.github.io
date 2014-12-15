@@ -40,5 +40,3 @@
 - title: Design Docs
   docs:
   - design-docs/index.md
-  - xapi/futures/database/distributed-database.md
-  - xapi/futures/snapshot-revert/snapshot-revert.md
