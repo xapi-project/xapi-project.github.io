@@ -158,17 +158,47 @@ a host crash and reboot. We need to (in priority order)
 Monitoring I/O paths
 --------------------
 
-If I/O fails for more than 60s when running `o2cb` then the host will fence.
+If heartbeat I/O fails for more than 60s when running `o2cb` then the host will fence.
+This can happen either
+
+- for a good reason: for example the host software may have deadlocked; someone may
+  have pulled the power; or perhaps a capacitor on the motherboard exploded
+
+- for a bad reason: for example a network bond link failure may have been ignored
+  and then the second link failed; or the heartbeat thread may have been starved of
+  I/O bandwidth by other processes 
+
+Since the consequences of fencing are severe -- all VMs on the host crash simultaneously --
+it is important to avoid the host fencing for bad reasons.
 
 Multipath QoS
 
 Heartbeat QoS
 
-Standard alerts
----------------
+Monitoring I/O health
+---------------------
 
-- network bonding
-- multipath
+We should recommend that all users
+
+- use network bonding for their network heartbeat
+- use multipath for their storage heartbeat
+
+Furthermore we need to *help* users monitor their I/O paths. It's no good if they use
+a bonded network but fail to notice when one of the paths have failed.
+
+The current XenServer HA implementation generates the following I/O-related alerts:
+
+- `HA_HEARTBEAT_APPROACHING_TIMEOUT` (priority 5 "informational"): when half the
+  network heartbeat timeout has been reached.
+- `HA_STATEFILE_APPROACHING_TIMEOUT` (priority 5 "informational"): when half the
+  storage heartbeat timeout has been reached.
+- `HA_NETWORK_BONDING_ERROR` (priority 3 "service degraded"): when one of the bond
+  links have failed. Note this only works with the bridge and is silently missing
+  with the OVS.
+- `HA_STATEFILE_LOST` (priority 2 "service loss imminent"): when the storage heartbeat
+  has completely failed and only the network heartbeat is left.
+- MULTIPATH_PERIODIC_ALERT (priority 3 "service degrated"): when one of the multipath
+  links have failed.
 
 Recommended visibility in the UI
 
