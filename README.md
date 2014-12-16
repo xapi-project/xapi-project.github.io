@@ -18,7 +18,7 @@ meaningful place in the directory hierarchy.
 A page must have the YAML front-matter for it to be compiled by Jekyll. The
 following boilerplate at the top of the file should suffice:
 
-```
+```yaml
 ---
 layout: default
 title: [title of page]
