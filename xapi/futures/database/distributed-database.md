@@ -1,6 +1,9 @@
 ---
 title: Distributed database
 layout: default
+design_doc: true
+revision: 1
+status: proposed
 ---
 
 All hosts in a pool use the shared database by sending queries to

@@ -18,7 +18,7 @@ meaningful place in the directory hierarchy.
 A page must have the YAML front-matter for it to be compiled by Jekyll. The
 following boilerplate at the top of the file should suffice:
 
-```
+```yaml
 ---
 layout: default
 title: [title of page]
@@ -33,6 +33,24 @@ make the following addition to `_data/navbar.yml`:
     docs:
     - foo.md
 +   - path/to/your-new-doc.md
+```
+
+## Contributing design proposals
+Design proposals for new features and amendments to existing features can also
+be added to this repository. These will normally be more verbose in nature and
+contain more justification of decisions than a normal API doc. They may also
+not yet be in the toolstack so we want to keep them separate. To create such
+a document create a Markdown file in a place of your choosing with the
+following YAML front-matter:
+
+```yaml
+---
+layout: default
+title: [title of page]
+design_doc: true
+status: [propsed|confirmed|released (version#)]
+revision: [iteration of document]
+---
 ```
 
 ## Previewing documentation before pushing

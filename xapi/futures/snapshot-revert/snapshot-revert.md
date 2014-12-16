@@ -1,6 +1,9 @@
 ---
 title: Improving snapshot revert behaviour
 layout: default
+design_doc: true
+revision: 1
+status: confirmed
 ---
 
 Currently there is a XenAPI `VM.revert` which reverts a "VM" to the state it
