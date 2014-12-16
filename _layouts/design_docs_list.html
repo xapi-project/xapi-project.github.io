@@ -1,0 +1,24 @@
+---
+layout: default
+---
+{{ content }}
+
+<div class="alert">
+<button type="btn" class="close" data-dismiss="alert">&times;</button>
+<strong>Key: </strong> <span class="label">Revision</span> <span class="label label-info">XenServer version</span>
+</div>
+
+<div class="input-group"><span class="input-group-addon">Filter</span>
+  <input id="filter" type="text" class="form-control" placeholder="Type here...">
+</div>
+
+<table class="table tabl-striped table-condensed">
+<tbody class="searchable">
+{% for p in site.pages | group_by:"xs_release" %}{% if p.design_doc %}
+<tr><td>
+<a href={{p.url}} class="btn btn-link">{{p.title}}</a> {% if p.revision != null %} <span class="label">v{{p.revision}}</span> {% endif %} {% if p.xs_release != null %} <span class="label label-info">{{p.xs_release}}</span> {% endif %}
+</td></tr>
+{% endif %}{% endfor %}
+</tbody>
+</table>
+

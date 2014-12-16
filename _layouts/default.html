@@ -86,6 +86,20 @@
       $('table').addClass('table table-bordered table-striped')
     </script>
 
+    <script>
+      $(document).ready(function () {
+        (function ($) {
+          $('input#filter').keyup(function () {
+            var rex = new RegExp($(this).val(), 'i');
+            $('.searchable tr').hide();
+            $('.searchable tr').filter(function () {
+              return rex.test($(this).text());
+            }).show();
+          })
+        }(jQuery));
+      });
+    </script>
+
     <script type="text/javascript">
 
       var _gaq = _gaq || [];
