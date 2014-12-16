@@ -1,6 +1,9 @@
 ---
 title: Tunnelling API design
 layout: default
+design_doc: true
+revision: 1
+status: released (5.6 FP1)
 ---
 
 To isolate network traffic between VMs (e.g. for security reasons) one can use

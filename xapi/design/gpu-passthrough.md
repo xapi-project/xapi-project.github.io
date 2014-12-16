@@ -1,6 +1,9 @@
 ---
 title: GPU pass-through support
 layout: default
+design_doc: true
+revision: 1
+status: released (6.0)
 ---
 
 This document contains the software design for GPU pass-through. This

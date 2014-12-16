@@ -1,6 +1,9 @@
 ---
 title: GRO and other properties of PIFs
 layout: default
+design_doc: true
+revision: 1
+status: released (6.5)
 ---
 
 It has been possible to enable and disable GRO and other "ethtool" features on
