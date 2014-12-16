@@ -5,7 +5,12 @@ layout: default
 
 <div class="alert">
 <button type="btn" class="close" data-dismiss="alert">&times;</button>
-<strong>Key: </strong> <span class="label">Revision</span> <span class="label label-info">Status</span>
+<strong>Key: </strong>
+<span class="label">Revision</span>
+<span class="label label-important">Proposed</span>
+<span class="label label-warning">Confirmed</span>
+<span class="label label-success">Released (vA.B)</span>
+<span class="label label-inverse">Unrecognised status</span>
 </div>
 
 <div class="input-group"><span class="input-group-addon">Filter</span>
@@ -15,9 +20,27 @@ layout: default
 <table class="table tabl-striped table-condensed">
 <tbody class="searchable">
 {% for p in site.pages | group_by:"xs_release" %}{% if p.design_doc %}
-<tr><td>
-<a href={{p.url}} class="btn btn-link">{{p.title}}</a> <span class="label">v{{p.revision}}</span> <span class="label label-info">{{p.status}}</span>
-</td></tr>
+  <tr><td>
+    <a href={{p.url}} class="btn btn-link">{{p.title}}</a>
+    <span class="label">v{{p.revision}}</span>
+    <span class="label
+        {% assign status = p.status | downcase %}
+        {% case status %}
+        {% when "proposed" or "submitted" %}
+          label-important
+        {% when "confirmed" or "accepted" %}
+          label-warning
+        {% else %}
+          {% if status contains "released" %}
+            label-success
+          {% else %}
+            label-inverse
+          {% endif %}
+        {% endcase %}
+        ">
+      {{p.status}}
+    </span>
+  </td></tr>
 {% endif %}{% endfor %}
 </tbody>
 </table>
