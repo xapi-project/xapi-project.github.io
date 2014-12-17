@@ -131,6 +131,21 @@ A Cluster plugin called "o2cb" will be added which
 
 TODO: finding or creating the VDI here is racy
 
+XenServer HA
+============
+
+We need to ensure `o2cb` and `xhad` do not try to conflict by fencing
+hosts at the same time. We shall:
+
+- use the default `o2cb` timeouts (hosts fence if no I/O in 60s): this
+  needs to be short because disk I/O *on otherwise working hosts* can
+  be blocked while another host is failing/ has failed.
+
+- make the `xhad` host fence timeouts much longer: 300s. It's much more
+  important that this is reliable than fast. We will make this change
+  globally and not just when using OCFS2.
+
+
 SM plugin
 =========
 
@@ -259,10 +274,12 @@ appropriate documentation.
 Network configuration
 =====================
 
-Bonding
-Monitoring the bond (as xhad does)
+The documentation should strongly recommend
 
-Open question: how dependent is OCFS2 on hostnames?
+- the management network is bonded
+- the management network is dedicated i.e. used only for management traffic
+  (including heartbeats)
+- the OCFS2 storage is multipathed
 
 Maintenance mode
 ================
@@ -293,15 +310,15 @@ We should also
   permanently deadlock; if the network is configured when OCFS2 storage is
   plugged then the host can crash.
 
-Open question: should we add a `Host.prepare_for_maintenance` (better name TBD)
+TODO: should we add a `Host.prepare_for_maintenance` (better name TBD)
 to take care of all this without XenCenter having to script it. This would also
 help CLI and powershell users do the right thing.
 
-Open question: should we insist that the host is rebooted to leave maintenance
+TODO: should we insist that the host is rebooted to leave maintenance
 mode? This would make maintenance mode more reliable and allow us to integrate
 maintenance mode with xHA (where maintenance mode is a "staged reboot")
 
-Open question: should we leave all clusters as part of maintenance mode? We
+TODO: should we leave all clusters as part of maintenance mode? We
 probably need to do this to avoid fencing.
 
 Walk-through: adding OCFS2 storage
@@ -325,5 +342,17 @@ a feature, we will have to live with these restrictions which previously only
 applied when HA was explicitly enabled. To reduce complexity we will not try
 to enforce restrictions only when OCFS2 is being used or is likely to be used.
 
+Impact even if not using OCFS2
+------------------------------
+
 - "Maintenance mode" now includes detaching all storage.
 - Host network reconfiguration can only be done in maintenance mode
+- XenServer HA enable takes longer
+- XenServer HA failure detection takes longer
+
+
+Impact when using OCFS2
+-----------------------
+
+- Sometimes a host will not be able to join the pool without taking the
+  pool into maintenance mode
