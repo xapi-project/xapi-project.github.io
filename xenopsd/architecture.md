@@ -99,14 +99,14 @@ Xenops_server_xen backend this is done by watching Xenstore for
 When such an event happens (for example: @releaseDomain sent when a domain
 requests a reboot) the corresponding operation does not happen inline. Instead
 the event is rebroadcast upwards to Xenops_server as a signal ("for example:
-VM <id> needs some attention") and a "VM_stat" micro-op is queued in the
+VM _id_ needs some attention") and a "VM_stat" micro-op is queued in the
 appropriate queue. Xenopsd does not allow operations to run on the same VM
 in parallel and enforces this by:
 
 - pushing all operations pertaining to a VM to the same queue
 - associating each VM queue to at-most-one worker pool thread
 
-The event takes the form "VM <id> needs some attention" and not "VM <id> needs
+The event takes the form "VM _id_ needs some attention" and not "VM _id_ needs
 to be rebooted" because, by the time the queue is flushed, the VM may well now
 be in a different state. Perhaps rather than being rebooted it now needs to
 be shutdown; or perhaps the domain is now in a good state because the reboot
@@ -148,7 +148,7 @@ There are three categories of metadata associated with VMs:
    to run with the previous configuration. We need to track the runtime
    configuration of the VM in order for suspend/resume and migrate to work. It
    is also useful to be able to tell a client, "on next reboot this value will
-   be <x> but currently it is <x-1>".
+   be _x_ but currently it is _x-1_".
 
 VM and VmExtra metadata is stored by Xenopsd in the domain 0 filesystem, in
 a simple directory hierarchy.
