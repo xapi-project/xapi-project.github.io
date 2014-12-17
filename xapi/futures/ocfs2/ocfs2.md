@@ -6,11 +6,10 @@ revision: 1
 status: proposed
 ---
 
-Insert a diagram showing:
+TODO: Insert a diagram showing:
 
 - SM plugin of type 'OCFS2'
 - O2CB configured for global heartbeats
-- storage-clusterd with an O2CB config manager
 - SAN
 - multiple LUNs, one SR per LUN
 
