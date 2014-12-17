@@ -1,6 +1,6 @@
 language: ruby
 
-script: gem install github-pages html-proofer && jekyll build && htmlproof --validate_html ./_site
+script: gem install github-pages html-proofer && jekyll build && jekyll doctor && htmlproof --validate_html ./_site
 
 env:
   global:
