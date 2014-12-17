@@ -145,6 +145,9 @@ hosts at the same time. We shall:
   important that this is reliable than fast. We will make this change
   globally and not just when using OCFS2.
 
+In the `xhad` config we will cap the `HeartbeatInterval` and `StatefileInterval`
+at 5s (the default otherwise would be 31s). This means that 60 heartbeat
+messages have to be lost before `xhad` concludes that the host has failed.
 
 SM plugin
 =========
