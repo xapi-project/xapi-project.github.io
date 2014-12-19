@@ -5,13 +5,7 @@ design_doc: true
 revision: 1
 status: proposed
 ---
-
-TODO: Insert a diagram showing:
-
-- SM plugin of type 'OCFS2'
-- O2CB configured for global heartbeats
-- SAN
-- multiple LUNs, one SR per LUN
+![Proposed architecture](ocfs2.png)
 
 Storage clusters
 ================
