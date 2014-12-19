@@ -5,10 +5,37 @@ design_doc: true
 revision: 1
 status: proposed
 ---
+
+
+OCFS2 is a (host-)clustered filesystem which runs on top of a shared raw block
+device. Hosts using OCFS2 form a cluster using a combination of network and
+storage heartbeats and host fencing to avoid split-brain.
+
+The following diagram shows the proposed architecture with `xapi`:
+
 ![Proposed architecture](ocfs2.png)
 
-Storage clusters
-================
+Please note the following:
+
+- OCFS2 is configured to use global heartbeats rather than per-mount heartbeats
+  because we quite often have many SRs and therefore many mountpoints
+- The OCFS2 global heartbeat should be collocated on the same SR as the XenServer
+  HA SR so that we depend on fewer SRs (the storage is a single point of failure
+  for OCFS2)
+- The OCFS2 global heartbeat should itself be a raw VDI within an LVHDSR.
+- Every host can be in at-most-one OCFS2 cluster i.e. the host cluster membership
+  is a per-host thing rather than a per-SR thing. Therefore `xapi` will be
+  modified to configure the cluster and manage the cluster node numbers.
+- Every SR will be a filesystem mount, managed by a SM plugin called "OCFS2".
+- Xapi HA uses the `xhad` process which runs in userspace but in the realtime
+  scheduling class so it has priority over all other userspace tasks. `xhad`
+  sends heartbeats via the `ha_statefile` VDI and via UDP, and uses the
+  Xen watchdog for host fencing.
+- OCFS2 HA uses the `o2cb` kernel driver which sends heartbeats via the
+  `o2cb_statefile` and via TCP, fencing the host by panicing domain 0.
+
+Managing O2CB
+=============
 
 OCFS2 uses the O2CB "cluster stack" which is similar to our `xhad`. To configure
 O2CB we need to
@@ -124,8 +151,8 @@ A Cluster plugin called "o2cb" will be added which
 
 TODO: finding or creating the VDI here is racy
 
-XenServer HA
-============
+Managing xhad
+=============
 
 We need to ensure `o2cb` and `xhad` do not try to conflict by fencing
 hosts at the same time. We shall:
@@ -145,12 +172,12 @@ messages have to be lost before `xhad` concludes that the host has failed.
 SM plugin
 =========
 
-File format
+The SM plugin `OCFS2` will be a file-based plugin.
 
-- vhd
-- raw
+TODO: which file format by default?
 
-TODO: who should set up the cluster?
+The SM plugin will first check whether the `o2cb` cluster is active and fail
+operations if it is not.
 
 I/O paths
 =========
