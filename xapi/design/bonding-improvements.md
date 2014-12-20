@@ -15,7 +15,7 @@ XAPI and XenAPI
 Creating a Bond
 ---------------
 
-### Current Behaviour
+### Current Behaviour on Bond creation
 
 Steps for a user to create a bond:
 
@@ -54,7 +54,7 @@ Steps for a user to create a bond:
 5.  Set the `PIF.bond_slave_of` fields of the slaves. The value of the
     `Bond.slaves` field is dynamically computed on request.
 
-### New Behaviour
+### New Behaviour on Bond creation
 
 Steps for a user to create a bond:
 
@@ -132,7 +132,7 @@ and destroying the old one".*
 Destroying a Bond
 -----------------
 
-### Current Behaviour
+### Current Behaviour on Bond destruction
 
 Steps for a user to destroy a bond:
 
@@ -154,7 +154,7 @@ Steps for a user to destroy a bond:
     devices.
 3.  Remove the Bond and master PIF objects.
 
-### New Behaviour
+### New Behaviour on Bond destruction
 
 Steps for a user to destroy a bond:
 
@@ -184,7 +184,7 @@ Steps for a user to destroy a bond:
 Using Bond Slaves
 -----------------
 
-### Current Behaviour
+### Current Behaviour for Bond Slaves
 
 -   It possible to plug any existing PIF, even bond slaves. Any other
     PIFs that cannot be attached at the same time as the PIF that is
@@ -201,7 +201,7 @@ Using Bond Slaves
     (master) and the VLAN may not be simultaneously attached. This is
     not currently enforced (which may be considered a bug).
 
-### New behaviour
+### New behaviour for Bond Slaves
 
 -   It is no longer possible to plug a bond slave. The exception
     CANNOT\_PLUG\_BOND\_SLAVE is raised when trying to do so.
@@ -223,7 +223,7 @@ Using Bond Slaves
 Actions on Start-up
 -------------------
 
-### Current Behaviour
+### Current Behaviour on Start-up
 
 When a pool slave starts up, bonds and VLANs on the pool master are
 replicated on the slave:
@@ -236,7 +236,7 @@ replicated on the slave:
     partial bond is created. If some of these interface are already
     bonded on the slave, this bond is destroyed first.
 
-### New behaviour
+### New Behaviour on Start-up
 
 -   The current VLAN/tunnel/bond recreation code is retained, as it uses
     the new Bond.create and Bond.destroy functions, and therefore does
