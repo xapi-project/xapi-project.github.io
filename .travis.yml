@@ -1,7 +1,2 @@
 language: ruby
-
-script: gem install github-pages html-proofer && jekyll build && jekyll doctor && htmlproof --validate_html ./_site
-
-env:
-  global:
-  - NOKOGIRI_USE_SYSTEM_LIBRARIES=true  # speeds up install of html-proofer
+script: bash -ex .travis-ci.sh
