@@ -21,7 +21,7 @@ layout: default
 <tbody class="searchable">
 {% for p in site.pages | group_by:"xs_release" %}{% if p.design_doc %}
   <tr><td>
-    <a href={{p.url}} class="btn btn-link">{{p.title}}</a>
+    <a href={{site.baseurl}}{{p.url}} class="btn btn-link">{{p.title}}</a>
     <span class="label">v{{p.revision}}</span>
     <span class="label
         {% assign status = p.status | downcase %}
