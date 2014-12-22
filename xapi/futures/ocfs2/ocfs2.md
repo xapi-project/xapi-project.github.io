@@ -161,7 +161,7 @@ A Cluster plugin called "o2cb" will be added which
     cluster needs to be rebooted to free node ids.
   - if the node id is not too high: rewrite the cluster.conf using
     the "online" tool.
-- on `Plugin:Cluster.start`: find or create a VDI with `type=o2cb_statefile`;
+- on `Plugin:Cluster.start`: find the VDI with `type=o2cb_statefile`;
   add this to the "static-vdis" list; `chkconfig` the service on. We
   will use the global heartbeat mode of `o2cb`.
 - on `Plugin:Cluster.stop`: stop the service; `chkconfig` the service off;
