@@ -224,8 +224,7 @@ The current XenServer HA implementation generates the following I/O-related aler
 - `HA_STATEFILE_APPROACHING_TIMEOUT` (priority 5 "informational"): when half the
   storage heartbeat timeout has been reached.
 - `HA_NETWORK_BONDING_ERROR` (priority 3 "service degraded"): when one of the bond
-  links have failed. Note this only works with the bridge and is silently missing
-  with the OVS.
+  links have failed.
 - `HA_STATEFILE_LOST` (priority 2 "service loss imminent"): when the storage heartbeat
   has completely failed and only the network heartbeat is left.
 - MULTIPATH_PERIODIC_ALERT (priority 3 "service degrated"): when one of the multipath
