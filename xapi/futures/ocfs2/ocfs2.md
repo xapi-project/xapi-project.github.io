@@ -400,6 +400,28 @@ probably need to do this to avoid fencing.
 Walk-through: adding OCFS2 storage
 ==================================
 
+Assume you have an existing Pool of 2 hosts. First the client will set up
+the O2CB cluster, choosing where to put the global heartbeat volume. The
+client should check that the I/O paths have all been setup correctly with
+bonding and multipath and prompt the user to fix any obvious problems.
+
+![The client enables O2CB and then creates an SR](o2cb-enable-external.svg)
+
+Internally within `Pool.enable_o2cb` Xapi will set up the cluster metadata
+on every host in the pool:
+
+![Xapi creates the cluster configuration and each host updates its metadata](o2cb-enable-internal1.svg)
+
+At this point all hosts have in-sync `cluster.conf` files but all cluster
+services are disabled. We also have `requires_mainenance=true` on all
+`Membership` entries and the global `Cluster` has `enabled=false`.
+The client will now try to enable the cluster with `Cluster.enable`:
+
+![Xapi enables the cluster software on all hosts](o2cb-enable-internal2.svg)
+
+Now all hosts are in the cluster and the SR can be created using the standard
+SM APIs.
+
 Walk-through: remove a host
 ===========================
 
