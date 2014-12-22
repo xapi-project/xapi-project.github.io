@@ -292,6 +292,7 @@ already been optimised to minimise the amount of I/O.
 Xapi will be modified to run a crash-dump analyser program `xen-crash-analyse`.
 
 `xen-crash-analyse` will:
+
 - parse the Xen and dom0 stacks and diagnose whether
   - the dom0 kernel was panic'ed by `o2cb`
   - the Xen watchdog was fired by `xhad`
