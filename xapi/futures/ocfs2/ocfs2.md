@@ -145,11 +145,15 @@ Xapi will be modified to:
       record's `left` date, deletes the `Membership`.
 - modify `XenAPI:Pool.join` to resync with the master's `Host.memberships` list.
 - modify `XenAPI:Pool.eject` to
-  - enter maintenance mode
+  - call `Membership.disable` in the cluster plugin to stop the `o2cb` service
   - call `Membership.destroy` in the cluster plugin to remove every other host
     from the local configuration
   - remove the `Host` metadata from the pool
-  - set `Membership.left` to `NOW()`
+  - set `XenAPI:Membership.left` to `NOW()`
+- modify `XenAPI:Host.forget` to
+  - remove the `Host` metadata from the pool
+  - set `XenAPI:Membership.left` to `NOW()`
+  - set `XenAPI:Cluster.maintenance_required` to true
 
 A Cluster plugin called "o2cb" will be added which
 
@@ -425,8 +429,21 @@ SM APIs.
 Walk-through: remove a host
 ===========================
 
-Walk-through: after a crash
-===========================
+Assume you have an existing Pool of 2 hosts with `o2cb` clustering enabled
+and at least one `ocfs2` filesystem mounted. If the host is online then
+`XenAPI:Pool.eject` will:
+
+![Xapi ejects a host from the pool](pool-eject.svg)
+
+Note that:
+
+- All hosts will have modified their `o2cb` `cluster.conf` to comment out
+  the former host
+- The `Membership` table still remembers the node number of the ejected host--
+  this cannot be re-used until the SR is taken down for maintenance.
+- All hosts can see the difference between their current `cluster.conf`
+  and the one they would use if they restarted the cluster service, so all
+  hosts report that the cluster must be taken offline i.e. `requires_maintence=true`.
 
 Summary of the impact on the admin
 ==================================
