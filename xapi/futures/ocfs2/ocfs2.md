@@ -70,7 +70,7 @@ These are "cluster plugin APIs".
 
 We will define the following APIs:
 
-- `Membership.create`: add a host to a cluster. On exit the local host cluster software
+- `Plugin:Membership.create`: add a host to a cluster. On exit the local host cluster software
   will know about the new host but it may need to be restarted before the
   change takes effect
   - in:`hostname:string`: the hostname of the management domain
@@ -81,24 +81,34 @@ We will define the following APIs:
   - in:`address:string list`: a list of addresses through which the host
       can be contacted
   - out: Task.id
-- `Membership.destroy`: removes a named host from the cluster. On exit the local
+- `Plugin:Membership.destroy`: removes a named host from the cluster. On exit the local
   host software will know about the change but it may need to be restarted
   before it can take effect  
   - in:`uuid:string`: the UUID of the host to remove
-  `Cluster.query`: queries the state of the cluster
-  - out:`needs_restart:bool`: true if there is some outstanding configuration
+  `Plugin:Cluster.query`: queries the state of the cluster
+  - out:`maintenance_required:bool`: true if there is some outstanding configuration
     change which cannot take effect until the cluster is restarted.
   - out:`hosts`: a list of all known hosts together with a state including:
     whether they are known to be alive or dead; or whether they are currently
     "excluded" because the cluster software needs to be restarted
-- `Cluster.start`: turn on the cluster software and let the local host join
-- `Cluster.stop`: turn off the cluster software
+- `Plugin:Cluster.start`: turn on the cluster software and let the local host join
+- `Plugin:Cluster.stop`: turn off the cluster software
 
 Xapi will be modified to:
 
 - add table `Cluster` which will have columns
   - `name: string`: this is the name of the Cluster plugin (TODO: use same
     terminology as SM?)
+  - 'configuration: Map(String,String)`: this will contain any cluster-global
+    information, overrides for default values etc.
+  - `enabled: Bool`: this is true when the cluster "should" be running. It
+    may require maintenance to synchronise changes across the hosts.
+  - `maintenance_required: Bool`: this is true when the cluster needs to
+    be placed into maintenance mode to resync its configuration
+- add method `XenAPI:Cluster.enable` which sets `enabled=true` and waits for all
+  hosts to report `Membership.enabled=true`.
+- add method `XenAPI:Cluster.disable` which sets `enabled=false` and waits for all
+  hosts to report `Membership.enabled=false`.
 - add table `Membership` which will have columns
   - `id: int`: automatically generated lowest available unique integer
     starting from 0
@@ -107,49 +117,68 @@ Xapi will be modified to:
     be NULL.
   - `left: Date`: if not 1/1/1970 this means the time at which the host
     left the cluster.
+  - `maintenance_required: Bool`: this is true when the Host believes the
+    cluster needs to be placed into maintenance mode.
 - add field `Host.memberships: Set(Ref(Membership))`
 - extend enum `vdi_type` to include `o2cb_statefile` as well as `ha_statefile`
-- add method `Membership.create`
+- add method `Pool.enable_o2cb` with arguments
+  - in: `heartbeat_sr: Ref(SR)`: the SR to use for global heartbeats
+  - in: `configuration: Map(String,String)`: available for future configuration tweaks
+  - Like `Pool.enable_ha` this will find or create the heartbeat VDI, create the
+    `Cluster` entry and the `Membership` entries. All `Memberships` will have
+    `maintenance_required=true` reflecting the fact that the desired cluster
+    state is out-of-sync with the actual cluster state.
+- add method `XenAPI:Membership.enable`
   - in: `self:Host`: the host to modify
   - in: `cluster:Cluster: the cluster.
-  add method `Membership.destroy`
+- add method `XenAPI:Membership.disable`
   - in: `self:Host`: the host to modify
   - in: `cluster:Cluster`: the cluster name.
 - add a cluster monitor thread which
-    - watches the `Host.memberships` field and calls `Membership.create` and
-      `Membership.destroy` to keep the local cluster software up-to-date
-      when any host changes its configuration
-    - calls `Cluster.query` after an `create` or `destroy` to see whether the
+    - watches the `Host.memberships` field and calls `Plugin:Membership.create` and
+      `Plugin:Membership.destroy` to keep the local cluster software up-to-date
+      when any host in the pool changes its configuration
+    - calls `Plugin:Cluster.query` after an `Plugin:Membership:create` or
+      `Plugin:Membership.destroy` to see whether the
       SR needs maintenance
     - when all hosts have a last start time later than a `Membership`
       record's `left` date, deletes the `Membership`.
-- modify `Pool.join` to resync with the master's `Host.memberships` list.
-- modify `Pool.eject` to
+- modify `XenAPI:Pool.join` to resync with the master's `Host.memberships` list.
+- modify `XenAPI:Pool.eject` to
   - enter maintenance mode
-  - call `Membership.destroy` in the cluster plugin
-  - remove the `Host` metadata
+  - call `Membership.destroy` in the cluster plugin to remove every other host
+    from the local configuration
+  - remove the `Host` metadata from the pool
   - set `Membership.left` to `NOW()`
 
 A Cluster plugin called "o2cb" will be added which
 
-- on `Cluster.remove`
+- on `Plugin:Membership.destroy`
   - comment out the relevant node id in cluster.conf
   - set the 'needs a restart' flag
-- on `Cluster.add`
+- on `Plugin:Membership.create`
   - if the provided node id is too high: return an error. This means the
     cluster needs to be rebooted to free node ids.
   - if the node id is not too high: rewrite the cluster.conf using
     the "online" tool.
-- on `Cluster.start`: find or create a VDI with `type=o2cb_statefile`;
+- on `Plugin:Cluster.start`: find or create a VDI with `type=o2cb_statefile`;
   add this to the "static-vdis" list; `chkconfig` the service on. We
   will use the global heartbeat mode of `o2cb`.
-- on `Cluster.stop`: stop the service; `chkconfig` the service off;
+- on `Plugin:Cluster.stop`: stop the service; `chkconfig` the service off;
   remove the "static-vdis" entry; leave the VDI itself alone
 - keeps track of the current 'live' cluster.conf which allows it to
   - report the cluster service as 'needing a restart' (which implies
     we need maintenance mode)
 
-TODO: finding or creating the VDI here is racy
+Summary of differences between this and xHA:
+
+- we allow for the possibility that hosts can join and leave, without
+  necessarily taking the whole cluster down. In the case of `o2cb` we
+  should be able to have `join` work live and only `eject` requires
+  maintenance mode
+- rather than write explicit RPCs to update cluster configuration state
+  we instead use an event watch and resync pattern, which is hopefully
+  more robust to network glitches while a reconfiguration is in progress.
 
 Managing xhad
 =============
