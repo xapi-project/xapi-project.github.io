@@ -361,6 +361,17 @@ The documentation should strongly recommend
   (including heartbeats)
 - the OCFS2 storage is multipathed
 
+`xcp-networkd` will be modified to change the behaviour of the DHCP client.
+Currently the `dhclient` will wait for a response and eventually background
+itself. This is a big problem since DHCP can reset the hostname, and this can
+break `o2cb`. Therefore we must insist that `PIF.reconfigure_ip` becomes
+fully synchronous, supporting timeout and cancellation. Once the call returns
+-- whether through success or failure -- there must not be anything in the
+background which will change the system's hostname.
+
+TODO: figure out whether we need to request "maintenance mode" for hostname
+changes.
+
 Maintenance mode
 ================
 
@@ -464,7 +475,8 @@ Impact even if not using OCFS2
 - Host network reconfiguration can only be done in maintenance mode
 - XenServer HA enable takes longer
 - XenServer HA failure detection takes longer
-
+- Network configuration with DHCP must be fully synchronous i.e. it wil block
+  until the DHCP server responds. On a timeout, the change will not be made.
 
 Impact when using OCFS2
 -----------------------
