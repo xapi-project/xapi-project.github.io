@@ -10,6 +10,7 @@
   - features/XSM/XSM.md
   - features/RPU/RPU.md
   - features/VGPU/vgpu.md
+  - features/snapshots/snapshots.md
   - features/backtraces.md
 - title: Xapi
   docs:
