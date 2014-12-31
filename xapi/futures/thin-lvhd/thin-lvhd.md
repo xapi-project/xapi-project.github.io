@@ -147,20 +147,138 @@ request will block for a long time if
 The local allocator
 ===================
 
+There is one local allocator process per attached SR. The process will be
+spawned by the SM ```sr_attach``` call, and sent a shutdown message from
+the ```sr_detach``` call.
+
+
+The ```sr_attach``` call shall
+
+- include an argument
+  ```--listen <path>``` where ```<path>``` is a name for the local Unix domain
+  socket.
+- ensure the host local LVs have been created and device-mapper devices
+  created
+
+When the host allocator process starts up it will read the host local
+journal and
+
+- ensure the local device mapper devices have been reloaded with the
+  recently-allocated blocks
+- compute the lowest still-free block in the local free block LV for
+  future allocations 
+
+The ```sr_detach``` call shall
+
+- send the shutdown request to the local allocator
+- wait for the local allocator to exit
+
+The shutdown request
+--------------------
+
+The shutdown request has the following format:
+
+Octet offsets | Name     | Description
+--------------|----------|------------
+0,1           | tl       | Total length (including this field) of message (in network byte order)
+2             | type     | The value '1' indicating a shutdown request
+
+There is no response to the shutdown request. The local allocator will
+terminate as soon as it is able.
+
+Handling extend requests
+------------------------
+
+When the local allocator receives an extend request it will examine
+the device mapper tables of the local free block LV and choose the first
+free blocks, up to the "vdi-allocation-quantum" in the ```/etc/tapdisk-allocator.conf```.
+The local allocator will append an entry to the host local journal recording
+this choice of blocks (always using unambiguous physical block addresses).
+Once the journal entry it committed, the host local allocator will reload
+the device mapper tables of the ```tapdisk3``` device and then reply to
+tapdisk.
+
+TODO: describe the journal format
+
+TODO: describe the journal replay tool here
+
 The SRmaster allocator
 ======================
+
+The SRmaster allocator is a XenAPI host plugin ```lvhd-allocator```.
+The local host allocator calls the SRmaster allocator when it is
+running low on free blocks on the host. The SRmaster allocator will
+perform an LVM resize of the host's local free block LV.
+
+TODO: what should the default resize amount be?
+
 
 The membership monitor
 ======================
 
+The role of the membership monitor is to
+
+- replay a host's journal when it has failed
+- destroy a host's local LVs when it has left the pool
+
+We shall
+
+- install a ```host-pre-declare-dead``` script to replay the journal
+- modify XenAPI ```Host.declare_dead``` to call ```host-pre-declare-dead``` before
+  the VMs are unlocked
+- add a ```host-pre-forget``` hook type which will be called just before a Host
+  is forgotten
+- install a ```host-pre-forget``` script to destroy the host's local LVs
+
 Walk-through: upgrade
 =====================
+
+Rolling upgrade should work in the usual way. As soon as the pool master has been
+upgraded, hosts will be able to use thin provisioning when new VDIs are attached.
+A VM suspend/resume/reboot or migrate will be needed to turn on thin provisioning
+for existing running VMs.
+
+Walk-through: downgrade
+=======================
+
+A pool may be safely downgraded to a previous version without thin provisioning
+provided that *storage is unplugged cleanly* so that journals are replayed.
+We should document how the journal replay tool works so people can work around
+problems for themselves. If journals are not replayed then VM disks will be
+corrupted.
 
 Walk-through: after a host failure
 ==================================
 
+If HA is enabled:
+
+- ```xhad``` elects a new master if necessary
+- the ```xhad``` tells ```Xapi``` which hosts are alive and which have failed.
+- ```Xapi``` runs the ```host-pre-declare-dead``` scripts for every failed host
+- the ```host-pre-declare-dead``` scripts replay the host local journals and
+  update the LVM metadata on the SRmaster
+- ```Xapi``` unlocks the VMs and restarts them on new hosts.
+
+If HA is not enabled:
+
+- the admin must tell ```Xapi``` which hosts have failed with ```xe host-declare-dead```
+- ```Xapi``` runs the ```host-pre-declare-dead``` scripts for every failed host
+- the ```host-pre-declare-dead``` scripts replay the host local journals and
+  update the LVM metadata on the SRmaster
+- ```Xapi``` unlocks the VMs
+- the admin may now restart the VMs on new hosts.
+
 Future use of dm-thin?
 ======================
 
+Dm-thin also uses 2 local LVs: one for the "thin pool" and one for the metadata.
+After replaying our journal we could potentially delete our host local LVs and
+switch over to dm-thin.
+
 Summary of the impact on the admin
 ==================================
+
+- If the VM workload performs a lot of disk allocation, then the admin *should*
+  enable HA.
+- The admin *must* not downgrade the pool without first cleanly detaching the
+  storage.
