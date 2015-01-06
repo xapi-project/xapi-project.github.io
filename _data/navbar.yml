@@ -12,6 +12,9 @@
   - features/VGPU/vgpu.md
   - features/snapshots/snapshots.md
   - features/backtraces.md
+- title: Xen-api
+  docs:
+  - xen-api/index.html
 - title: Xapi
   docs:
   - xapi/overview.md

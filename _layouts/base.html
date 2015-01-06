@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Xapi Project Docs{% if page.title }%} - {{page.title}}{% endif %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- Le styles -->
+    <link href="{{site.baseurl}}/assets/css/bootstrap.css" rel="stylesheet">
+    <style>
+      body { padding-top: 60px; /* 60px to make the container go all the way
+      to the bottom of the topbar */ }
+    </style>
+    <link href="{{site.baseurl}}/assets/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="{{site.baseurl}}/assets/css/docs.css" rel="stylesheet">
+    <link href="{{site.baseurl}}/assets/css/pygments-github.css" rel="stylesheet">
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js">
+      </script>
+    <![endif]-->
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="{{site.baseurl}}/assets/img/favicon.ico">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js">
+    </script>
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a href="{{site.baseurl}}/" class="brand"><img alt="Xapi Project"
+              src="{{site.baseurl}}/assets/img/xapi-project.png"></a>
+          <ul class="nav pull-right">
+            <li>
+              <a href="http://www.xenproject.org/developers/teams/xapi.html">
+                LF project
+              </a>
+            </li>
+            <li><a href="{{site.baseurl}}/">Documentation</a></li>
+            <li><a href="http://github.com/xapi-project">Github</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="span3">
+          <ul id="menu" class="nav nav-list" data-spy="scroll">
+            {% for section in site.data.navbar %}
+              <li class="nav-header">{{section.title}}<li>
+              {% for d in section.docs %}
+                {% for p in site.pages %}
+                  {% if p.path == d %}
+                    <li data-section="{{p.path}}">
+                      <a href="{{site.baseurl}}{{p.url}}">{{p.title}}</a>
+                    </li>
+                  {% endif %}
+                {% endfor %}
+              {% endfor %}
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="span9">
+          <div class="page-header">
+            <h1>{{page.title}}</h1>
+          </div>
+          {{content}}
+        </div>
+      </div>
+    </div>
+
+    <script src="{{site.baseurl}}/assets/js/bootstrap.js">
+    </script>
+
+    <script>
+        $('#menu [data-section="{{page.path}}"]').addClass('active');
+    </script>
+
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-33987438-3']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+    </script>
+  </body>
+</html>
+
