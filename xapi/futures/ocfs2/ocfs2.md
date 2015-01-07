@@ -483,3 +483,9 @@ Impact when using OCFS2
 
 - Sometimes a host will not be able to join the pool without taking the
   pool into maintenance mode
+- Every VM will have to be XSM'ed (is that a verb?) to the new OCFS2 storage.
+  This means that VMs with more than 2 snapshots will have their snapshots
+  deleted; it means you need to provision another storage target, temporarily
+  doubling your storage needs; and it will take a long time.
+- There will now be 2 different reasons why a host has fenced which the
+  admin needs to understand.
