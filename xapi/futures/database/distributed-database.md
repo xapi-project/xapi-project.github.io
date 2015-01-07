@@ -39,7 +39,7 @@ interface on top of git which we could link with the Xapi database layer.
 Proposed new architecture
 -------------------------
 
-![Pools of one](https://xapi-project.github.io/xen-api/doc/futures/distributed-database/architecture.png)
+![Pools of one](architecture.png)
 
 The diagram above shows two hosts: one a master and the other a regular host.
 The XenAPI client has sent a request to the wrong host; normally this would
@@ -50,7 +50,7 @@ rebooting or migrating an existing VM would not. Assuming the lock can
 be acquired, then the operation is executed locally with all state updates
 being made to a git topic branch.
 
-![Topic branches](https://xapi-project.github.io/xen-api/doc/futures/distributed-database/topic.png)
+![Topic branches](topic.png)
 
 Roughly we would have 1 topic branch per
 pending XenAPI Task. Once the Task completes successfully, the topic branch
