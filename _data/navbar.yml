@@ -12,16 +12,16 @@
   - features/VGPU/vgpu.md
   - features/snapshots/snapshots.md
   - features/backtraces.md
-- title: Xen-api
+- title: XenAPI
   docs:
   - xen-api/index.html
+  - xen-api/evolution.md
+  - xen-api/udhcp.md
 - title: Xapi
   docs:
   - xapi/overview.md
   - xapi/architecture.md
-  - xapi/design/XenAPI-evolution.md
   - xapi/design/memory-accounting.md
-  - xapi/design/udhcp.md
 - title: Xenopsd
   docs:
   - xenopsd/overview.md
