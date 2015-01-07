@@ -327,7 +327,7 @@ function class_doc()
 
 	html = "";
 	html += '<div class="lifecycle">' + current_lifecycle_stage(clsdoc.obj_lifecycle) + '</div>';
-	html += '<h1 class="title" onclick="showhide(document.getElementById(\'class_details\'))" style="cursor: pointer">Class: ' + cls + '</h1>\n';
+	html += '<h2 class="title" onclick="showhide(document.getElementById(\'class_details\'))" style="cursor: pointer">Class: ' + cls + '</h2>\n';
 	
 	html += '<div class="description">' + clsdoc.description + '</div>';
 	
@@ -340,11 +340,11 @@ function class_doc()
 	html += '</table>';
 	html += '</div>';
 	
-	html += '<div id="enums" style="display: none"><h2>Enums</h2></div>';
+	html += '<div id="enums" style="display: none"><h3>Enums</h3></div>';
 	
 	set_content(html);
 	
-	html = '<h2>Fields</h2>';
+	html = '<h3>Fields</h3>';
 	if (fields.length > 0) {
 		for (i in fields)
 			html += make_field(fields[i], i);
@@ -352,7 +352,7 @@ function class_doc()
 	else
 		html += '<p>None.</p>';
 	
-	html += '<h2>Messages</h2>';
+	html += '<h3>Messages</h3>';
 	if (messages.length > 0) {
 		for (i in messages)
 			html += make_message(messages[i], i);
@@ -401,7 +401,7 @@ function release_doc()
 	changes.sort(compare_release_notes);
 	
 	html = "";
-	html += '<h1 class="title">Release notes: ' + get_release_name(rel) + '</h1>\n';
+	html += '<h2 class="title">Release notes: ' + get_release_name(rel) + '</h2>\n';
 
 	html += '<table><tr><th style="width: 12em">Change</th><th>Element</th><th>Description</th></tr>';
 		
@@ -431,7 +431,7 @@ function class_list()
 
 function release_list()
 {
-	html = '<h2>Release notes</h2>';
+	html = '<h3>Release notes</h3>';
 	
 	releases = releases.slice(releases.indexOf(first_release))
 	for (i in releases) {
