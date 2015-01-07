@@ -1,0 +1,229 @@
+/*
+ * Copyright (C) 2006-2011 Citrix Systems Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation; version 2.1 only. with the special
+ * exception on linking described in file LICENSE.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ */
+
+#content-wrap {
+	float: left;
+	width: 100%;
+	margin: 0 -22em 0 0;
+	padding: 0;
+}
+
+#content {
+	background-color: white;
+	padding: 0;
+	margin: 0 15em 0 0;
+	line-height: 170%;
+}
+
+#sidebar {
+	float: right;
+	width: 12em;
+	padding: 1em;
+	color: white;
+	border-left: 1px dotted #cccccc;
+}
+
+
+#sidebar th {
+	text-align: left;
+	border-bottom: 0px solid white;
+}
+
+#content a {color: #35383d}
+
+#header a:hover {text-decoration: none;}
+
+#sidebar h2 {
+	font-weight: bold;
+	font-size: 15px;
+	line-height: 18px;
+	color: #772432;
+}
+
+#sidebar a {
+	color: #35383d;
+	font-size: 11px;
+	font-weight: bold;
+}
+
+.title {
+	margin-top: 0;
+}
+
+hr {
+	border: 1px thin #666;
+}
+
+.superscript { font-size : 80% }
+.subscript { font-size : 80% }
+
+#sidemenu {
+	padding-top: 1em;
+	padding-bottom: 1em;
+	font-size: 1em;
+	text-align: center;
+	font-weight: bold;
+	background-color: #ee4400;
+}
+
+.grey {
+	color: #ccc;
+}
+
+.empty {
+	color: red;
+}
+
+table
+{
+	font-size: 100%;
+	width: 100%;
+	border-collapse: collapse;
+}
+
+tr {
+	background-color: inherit;
+}
+
+td {
+	vertical-align: top;
+	padding: 3px 1em 3px 0;
+}
+
+th {
+	text-align: left;
+	border-bottom: 1px solid black;
+}
+
+.defined {
+	margin: 1em 0;
+	padding: 0 .5em;
+	background-color: #ffcc66;
+}
+
+.description {
+//	font-weight: bold;
+	margin-bottom: 1em;
+}
+
+.deprecated {
+	margin: .5em 5em .7em;
+	padding: 5px;
+	border: 1px solid grey;
+	text-align: center;
+	background-color: orange;
+}
+
+tt, .code {
+	font: 1.3em monospace;
+	font-weight: inherit;
+}
+
+.comment {
+	margin: 1em 0;
+}
+
+.comment br {
+	margin-bottom: .5em;
+}
+
+.field, .field2
+{
+	margin: 0em 0;
+	padding: .5em .7em .7em;
+	background-color: #dddddd;
+	cursor: pointer;
+}
+
+.field2
+{
+	background-color: #e8e8e8;
+}
+
+.field-type {
+	font-size: 80%;
+}
+
+.field-name {
+	font-weight: bold;
+}
+
+.field-head {
+	font-style: italic;
+}
+
+.field-description {
+	margin: .7em 0;
+}
+
+.field-table td {
+	padding: .3em 1.5em .3em 0;
+}
+
+.inline-type {
+	margin-right: .5em;
+}
+
+.inline-qualifier {
+	font-size: 70%;
+	vertical-align: top;
+	margin-left: .5em;
+}
+
+.inline-params {
+	margin-left: .5em;
+}
+
+.lifecycle {
+	font-size: 12px;
+	float: right;
+	font-variant:small-caps;
+	color: #306580;
+	margin: auto 0.5em;
+}
+
+.small-button {
+	font-size: 80%;
+	float: right;
+	margin: 0.2em 0 0.2em 0.5em;
+	color: #306580;
+}
+
+.stat {
+	font-size: 70%;
+	color: #cc3300;
+	vertical-align: top;
+}
+
+.type {
+}
+
+.symbol {
+	font-family: sans-serif;
+	color: #cc6600;
+}
+
+.large {
+	font-size: 130%;
+}
+
+.spaced {
+	padding: 0 0.3em;
+}
+
+.optional {
+	font-size: 70%;
+	vertical-align: top;
+}
+
