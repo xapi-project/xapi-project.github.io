@@ -14,9 +14,15 @@
   - features/backtraces.md
 - title: XenAPI
   docs:
-  - xen-api/index.html
+  - xen-api/overview.md
+  - xen-api/usage.md
+  - xen-api/http.md
+  - xen-api/extensions.md
+  - xen-api/wire-protocol.md
   - xen-api/evolution.md
+  - xen-api/vm-lifecycle.md
   - xen-api/udhcp.md
+  - xen-api/index.html
 - title: Xapi
   docs:
   - xapi/overview.md
