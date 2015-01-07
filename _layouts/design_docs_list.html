@@ -19,7 +19,8 @@ layout: default
 
 <table class="table tabl-striped table-condensed">
 <tbody class="searchable">
-{% for p in site.pages | group_by:"xs_release" %}{% if p.design_doc %}
+{% assign ps = site.pages | sort: "status" %}
+{% for p in ps %}{% if p.design_doc %}
   <tr><td>
     <a href={{site.baseurl}}{{p.url}} class="btn btn-link">{{p.title}}</a>
     <span class="label">v{{p.revision}}</span>
