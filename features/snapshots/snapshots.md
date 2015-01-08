@@ -88,6 +88,13 @@ relevant other objects.
 Reverting VM snapshots
 ======================
 
+The XenAPI call `VM.revert` overwrites the VM metadata with the snapshot VM
+metadata, deletes the current VDIs and replaces them with clones of the
+snapshot VDIs. Note there is no "vdi_revert" in the SMAPI.
+
+Revert implementation details
+-----------------------------
+
 This is the process by which we revert a VM to a snapshot. The
 first thing to notice is that there is some logic that is called
 from [message_forwarding.ml](https://github.com/xapi-project/xen-api/blob/ce6d3f276f0a56ef57ebcf10f45b0f478fd70322/ocaml/xapi/message_forwarding.ml#L1528),
