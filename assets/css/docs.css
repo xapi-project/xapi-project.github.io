@@ -39,7 +39,7 @@ body {
 .navbar-inner {
   padding: 5px 0px;
   background-image: none;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: #333333;
   box-shadow: none !important;
   -webkit-box-shadow: none !important;
   -moz-box-shadow: none !important;
