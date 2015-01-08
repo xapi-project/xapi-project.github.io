@@ -3,141 +3,104 @@ title: Snapshots
 layout: default
 ---
 
-Snapshots represent the state of a VM, or a disk (VDI) at a point in time.
-They can be used for:
+Snapshots represent the state of a VM, or a disk (VDI) at a point in time. They can be used for:
 
 - backups (hourly, daily, weekly etc)
 - experiments (take snapshot, try something, revert back again)
 - golden images (install OS, get it just right, clone it 1000s of times)
 
-Example: incremental backup with xe
-===================================
+Read more about [the Snapshot APIs](../../xen-api/snapshots.html).
 
-For a VDI with uuid $VDI, take a snapshot:
+Disk snapshots
+==============
 
-```sh
-FULL=$(xe vdi-snapshot uuid=$VDI)
-```
+Disks are represented in the XenAPI as VDI objects. Disk snapshots are represented
+as VDI objects with the flag `is_a_snapshot` set to true. Snapshots are always
+considered read-only, and should only be used for backup or cloning into new
+disks. Disk snapshots have a lifetime independent of the disk they are a snapshot
+of i.e. if someone deletes the original disk, the snapshots remain. This contrasts
+with some storage arrays in which snapshots are "second class" objects which are
+automatically deleted when the original disk is deleted.
 
-Next perform a full backup into a file "full.vhd", in vhd format:
+Disks are implemented in Xapi via "Storage Manager" (SM) plugins. The SM plugins
+conform to an api (the SMAPI) which has operations including
 
-```sh
-xe vdi-export uuid=$FULL filename=full.vhd format=vhd  --progress
-```
+- vdi_create: make a fresh disk, full of zeroes
+- vdi_snapshot: create a snapshot of a disk
 
-If the SR was using the vhd format internally (this is the default)
-then the full backup will be sparse and will only contain blocks if they
-have been written to.
 
-After some time has passed and the VDI has been written to, take another
-snapshot:
+Example vhd implementation
+==========================
 
-```sh
-DELTA=$(xe vdi-snapshot uuid=$VDI)
-```
+The existing "EXT" and "NFS" Xapi SM plugins store disk data in
+trees of .vhd files as in the following diagram:
 
-Now we can backup only the disk blocks which have changed between the original
-snapshot $FULL and the next snapshot $DELTA into a file called "delta.vhd":
+![Relationship between VDIs and vhd files](vhd-trees.png)
 
-```sh
-xe vdi-export uuid=$DELTA filename=delta.vhd format=vhd base=$FULL --progress
-```
+From the XenAPI point of view, we have one current VDI and a set of snapshots,
+each taken at a different point in time. These VDIs correspond to leaf vhds in
+a tree stored on disk, where the non-leaf nodes contain all the shared blocks.
 
-We now have 2 files on the local system:
 
-- "full.vhd": a complete backup of the first snapshot
-- "delta.vhd": an incremental backup of the second snapshot, relative to
-  the first
+Hypothetical LUN implementation
+===============================
 
-For example:
+A hypothetical Xapi SM plugin could use LUNs on an iSCSI storage array
+as VDIs, and the array's custom control interface to implement the "snapshot"
+operation:
 
-```sh
-test $ ls -lh *.vhd
--rw------- 1 dscott xendev 213M Aug 15 10:39 delta.vhd
--rw------- 1 dscott xendev 8.0G Aug 15 10:39 full.vhd
-```
+![Relationship between VDIs and LUNs on a hypothetical storage target](luns.png)
 
-To restore the original snapshot you must create an empty disk with the
-correct size. To find the size of a .vhd file use ```qemu-img``` as follows:
+From the XenAPI point of view, we have one current VDI and a set of snapshots,
+each taken at a different point in time. These VDIs correspond to LUNs on the
+same iSCSI target, and internally within the target these LUNs are comprised of
+blocks from a large shared copy-on-write pool with support for dedup.
 
-```sh
-test $ qemu-img info delta.vhd
-image: delta.vhd
-file format: vpc
-virtual size: 24G (25769705472 bytes)
-disk size: 212M
-```
+Reverting disk snapshots
+========================
 
-Here the size is 25769705472 bytes.
-Create a fresh VDI in SR $SR to restore the backup as follows:
+There is no current way to revert in-place a disk to a snapshot, but it is
+possible to create a writable disk by "cloning" a snapshot.
 
-```sh
-SIZE=25769705472
-RESTORE=$(xe vdi-create name-label=restored virtual-size=$SIZE sr-uuid=$SR type=user)
-```
+VM snapshots
+============
 
-then import "full.vhd" into it:
+Let's say we have a VM, "VM1" that has 2 disks. Concentrating only
+on the VM, VBDs and VDIs, we have the following structure:
 
-```sh
-xe vdi-import uuid=$RESTORE filename=full.vhd format=vhd --progress
-```
+![VM objects](vm.png)
 
-Once "full.vhd" has been imported, the incremental backup can be restored
-on top:
+When we take a snapshot, we first ask the storage backends to snapshot
+all of the VDIs associated with the VM, producing new VDI objects.
+Then we copy all of the metadata, producing a new 'snapshot' VM
+object, complete with its own VBDs copied from the original, but now
+pointing at the snapshot VDIs. We also copy the VIFs and VGPUs
+but for now we will ignore those.
 
-```sh
-xe vdi-import uuid=$RESTORE filename=delta.vhd format=vhd --progress
-```
+This process leads to a set of objects that look like this:
 
-Note there is no need to supply a "base" parameter when importing; Xapi will
-treat the "vhd differencing disk" as a set of blocks and import them. It
-is up to you to check you are importing them to the right place.
+![VM and snapshot objects](vm-snapshot.png)
 
-Now the VDI $RESTORE should have the same contents as $DELTA.
+We have fields that help navigate the new objects: ```VM.snapshot_of```,
+and ```VDI.snapshot_of```. These, like you would expect, point to the
+relevant other objects.
 
-XenAPI
-======
+Reverting VM snapshots
+======================
 
-When integrating with Xapi from another tool it is easiest to use the
-XenAPI directly rather than invoking the CLI.
-
-Each of the ```xe``` commands above works by making an HTTP GET (for export)
-or HTTP PUT (for import).
-
-For import we send an HTTP 1.0 PUT request (Note with no transfer-encoding)
-as follows:
-
-```
-PUT /import_raw_vdi?session_id=%s&task_id=%s&vdi=%s&format=%s HTTP/1.0\r\n
-Connection: close\r\n
-\r\n
-\r\n
-```
-
-where
-
-- ```session_id``` is a currently logged-in session
-- ```task_id``` is a ```Task``` reference which will be used to monitor the
-  progress of this task and receive errors from it
-- ```vdi``` is the reference of the ```VDI``` into which the data will be
-  imported
-- ```format``` is either ```vhd``` or ```raw```
-
-For export we send an HTTP 1.0 GET request as follows:
-
-```
-GET /export_raw_vdi?session_id=%s&task_id=%s&vdi=%s&format=%s[&base=%s] HTTP/1.0\r\n
-Connection: close\r\n
-\r\n
-\r\n
-```
-
-where the common parameters have the same meaning as in the import case. The
-new optional parameter has the following meaning:
-
-- ```base``` is the reference of a ```VDI``` which has already been
-  exported and this export should only contain the blocks which have changed
-  since then.
-
-To see the XenAPI in action, have a look at the
-[example included in the xen-api tree](https://github.com/xapi-project/xen-api/blob/b07fd68347e53635d87f6ff0eac325337c123605/scripts/examples/python/exportimport.py#L24).
+This is the process by which we revert a VM to a snapshot. The
+first thing to notice is that there is some logic that is called
+from [message_forwarding.ml](https://github.com/xapi-project/xen-api/blob/ce6d3f276f0a56ef57ebcf10f45b0f478fd70322/ocaml/xapi/message_forwarding.ml#L1528),
+which uses some low-level database magic to turn the current VM
+record into one that looks like the snapshot object. We then go
+to the rest of the implementation in [xapi_vm_snapshot.ml](https://github.com/xapi-project/xen-api/blob/ce6d3f276f0a56ef57ebcf10f45b0f478fd70322/ocaml/xapi/xapi_vm_snapshot.ml#L403).
+First,
+we shut down the VM if it is currently running. Then, we revert
+all of the [VBDs, VIFs and VGPUs](https://github.com/xapi-project/xen-api/blob/ce6d3f276f0a56ef57ebcf10f45b0f478fd70322/ocaml/xapi/xapi_vm_snapshot.ml#L270).
+To revert the VBDs, we need to deal with the VDIs underneath them.
+In order to create space, the first thing we do is [delete all of
+the VDIs](https://github.com/xapi-project/xen-api/blob/ce6d3f276f0a56ef57ebcf10f45b0f478fd70322/ocaml/xapi/xapi_vm_snapshot.ml#L287) currently attached via VBDs to the VM.
+We then _clone_ the disks from the snapshot. Note that there is
+no SMAPI operation 'revert' currently - we simply clone from
+the snapshot VDI. It's important to note that cloning
+creates a _new_ VDI object: this is not the one we started with gone.
