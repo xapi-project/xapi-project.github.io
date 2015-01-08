@@ -21,6 +21,7 @@
   - xen-api/wire-protocol.md
   - xen-api/evolution.md
   - xen-api/vm-lifecycle.md
+  - xen-api/snapshots.md
   - xen-api/udhcp.md
   - xen-api/index.html
 - title: Xapi
