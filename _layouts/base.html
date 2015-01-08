@@ -36,13 +36,9 @@
         </div>
         <nav>
           <ul class="nav navbar-nav navbar-right">
-            <li>
-              <a href="http://www.xenproject.org/developers/teams/xapi.html">
-                LF project
-              </a>
-            </li>
-            <li><a href="{{site.baseurl}}/">Documentation</a></li>
-            <li><a href="http://github.com/xapi-project">Github</a></li>
+            <li><a href="{{site.baseurl}}/xen-api">XenAPI</a></li>
+            <li><a href="{{site.baseurl}}/getting-started/architecture.html">Architecture</a></li>
+            <li><a href="{{site.baseurl}}/design-docs">Designs</a></li>
           </ul>
         </nav>
       </div>
@@ -52,22 +48,30 @@
         <div class="col-md-3">
         <nav>
           <ul id="menu" class="nav" data-spy="scroll">
-            {% for section in site.data.navbar %}
-              <li>
-                <div class="menu-header">{{section.title}}</div>
-                <ul class="nav">
-                {% for d in section.docs %}
-                  {% for p in site.pages %}
-                    {% if p.path == d %}
-                      <li data-section="{{p.path}}">
-                        <a href="{{site.baseurl}}{{p.url}}">{{p.title}}</a>
-                      </li>
-                    {% endif %}
+          {% for chapter in site.data.navbar %}
+            {% for section in chapter %}
+              {% for d in section.docs %}
+                {% if page.path == d %}
+                  {% for section in chapter %}
+                  <li>
+                    <div class="menu-header">{{section.title}}</div>
+                    <ul class="nav">
+                    {% for d in section.docs %}
+                      {% for p in site.pages %}
+                        {% if p.path == d %}
+                          <li data-section="{{p.path}}">
+                            <a href="{{site.baseurl}}{{p.url}}">{{p.title}}</a>
+                          </li>
+                        {% endif %}
+                      {% endfor %}
+                    {% endfor %}
+                    </ul>
+                  </li>
                   {% endfor %}
-                {% endfor %}
-                </ul>
-              </li>
+                {% endif %}
+              {% endfor %}
             {% endfor %}
+          {% endfor %}
           </ul>
       </nav>
         </div>
