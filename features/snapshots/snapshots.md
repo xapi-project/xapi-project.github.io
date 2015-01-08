@@ -121,22 +121,25 @@ run a garbage collector process.
 
 The garbage collector will first determine whether a "coalesce" should happen i.e.
 whether any parent nodes have only one child i.e. the "shared" blocks are only
-shared with one other node. In the following example the snapshot delete leaves
+"shared" with one other node. In the following example the snapshot delete leaves
 such a parent node and the coalesce process copies blocks from the redundant
 parent's only child into the parent:
 
 ![We coalesce parent blocks into grand parent nodes](coalesce1.png)
+
+Note that if the vhd data is being stored in LVM, then the parent node will
+have had to be expanded to full size to accommodate the writes. Unfortunately
+this means the act of reclaiming space actually consumes space itself, which
+means it is important to never completely run out of space in such an SR.
 
 Once the blocks have been copied, we can now cut one of the parents out of the
 tree by relinking its children into their grandparent:
 
 ![Relink children into grand parent](coalesce2.png)
 
-Finally the garbage collector can remove unused leftovers:
+Finally the garbage collector can remove unused vhd files / LVM LVs:
 
 ![Clean up](coalesce3.png)
-
-TODO: space requirements
 
 Reverting VM snapshots
 ======================
