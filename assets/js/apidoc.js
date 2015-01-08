@@ -431,7 +431,7 @@ function class_list()
 
 function release_list()
 {
-	html = '<h3>Release notes</h3>';
+	html = '<h2>Release notes</h2>';
 	
 	releases = releases.slice(releases.indexOf(first_release))
 	for (i in releases) {
