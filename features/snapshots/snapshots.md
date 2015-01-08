@@ -29,10 +29,10 @@ conform to an api (the SMAPI) which has operations including
 - vdi_snapshot: create a snapshot of a disk
 
 
-Example vhd implementation
-==========================
+File-based vhd implementation
+=============================
 
-The existing "EXT" and "NFS" Xapi SM plugins store disk data in
+The existing "EXT" and "NFS" file-based Xapi SM plugins store disk data in
 trees of .vhd files as in the following diagram:
 
 ![Relationship between VDIs and vhd files](vhd-trees.png)
@@ -41,6 +41,21 @@ From the XenAPI point of view, we have one current VDI and a set of snapshots,
 each taken at a different point in time. These VDIs correspond to leaf vhds in
 a tree stored on disk, where the non-leaf nodes contain all the shared blocks.
 
+TODO: show space usage
+
+Block-based vhd implementation
+==============================
+
+The existing "LVM", "LVMoISCSI" and "LVMoHBA" block-based Xapi SM plugins store
+disk data in trees of .vhd files contained within LVM logical volumes:
+
+![Relationship between VDIs and LVs containing vhd data](lun-trees.png)
+
+Non-snapshot VDIs are always stored full size (a.k.a. thickly-provisioned).
+When parent nodes are created they are automatically shrunk to the minimum size
+needed to store the shared blocks. The LVs corresponding with snapshot VDIs
+only contain vhd metadata and by default consume 8MiB. Note: this is different
+to VDI.clones which are stored full size.
 
 Hypothetical LUN implementation
 ===============================
@@ -84,6 +99,11 @@ This process leads to a set of objects that look like this:
 We have fields that help navigate the new objects: ```VM.snapshot_of```,
 and ```VDI.snapshot_of```. These, like you would expect, point to the
 relevant other objects.
+
+Deleting VM snapshots
+=====================
+
+TODO: describe coalesce
 
 Reverting VM snapshots
 ======================
