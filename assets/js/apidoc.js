@@ -431,9 +431,8 @@ function class_list()
 
 function release_list()
 {
-	html = '<h3>Release notes</h3>';
+	html = '<h2>Release notes</h2>';
 	
-	releases = releases.slice(releases.indexOf(first_release))
 	for (i in releases) {
 		r = releases[i];
 		html += '<a href="?r=' + r + '">' + get_release_name(r) + '</a><br>';
@@ -449,20 +448,7 @@ function build()
 
 	if (cls != "")
 		class_doc();
-	else if (rel != "") {
-		if (rel == first_release)
-			rels = releases.slice(0, releases.indexOf(first_release) + 1);
-		else
-			rels = [rel];
-		function ld(info, done) {
-			if (rels.length > 0)
-				load_script('api/' + rels.pop() + '.json', function(){return ld(info.concat(release_info), done);});
-			else {
-				release_info = info;
-				done();
-			}
-		}
-		ld([], release_doc);
-	}
+	else if (rel != "")
+		load_script('api/' + rel + '.json', release_doc);
 }
 
