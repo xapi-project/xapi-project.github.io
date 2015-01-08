@@ -1,3 +1,8 @@
+---
+title: Using the API
+layout: default
+---
+
 This chapter describes how to use the XenServer Management API from real programs to manage XenServer Hosts and VMs. The chapter begins with a walk-through of a typical client application and demonstrates how the API can be used to perform common tasks. Example code fragments are given in python syntax but equivalent code in the other programming languages would look very similar. The language bindings themselves are discussed afterwards and the chapter finishes with walk-throughs of two complete examples.
 
 Anatomy of a typical application

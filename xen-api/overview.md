@@ -1,3 +1,8 @@
+---
+title: Overview of the XenAPI
+layout: default
+---
+
 This chapter introduces the XenAPI and its associated object model. The API has the following key features:
 
 -   *Management of all aspects of the XenServer Host*.
