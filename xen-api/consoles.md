@@ -5,7 +5,8 @@ layout: default
 
 Most XenAPI graphical interfaces will want to gain access to the VM consoles, in order to render them to the user as if they were physical machines. There are several types of consoles available, depending on the type of guest or if the physical host console is being accessed:
 
-**Console access**
+Types of consoles
+=================
 
 |Operating System|Text|Graphical|Optimized graphical|
 |:---------------|:---|:--------|:------------------|
@@ -21,7 +22,8 @@ The physical host console is only available as a `vt100` console, which is expos
 
 RFB (Remote Framebuffer) is the protocol which underlies VNC, specified in [The RFB Protocol](http://www.realvnc.com/docs/rfbproto.pdf). Third-party developers are expected to provide their own VNC viewers, and many freely available implementations can be adapted for this purpose. RFB 3.3 is the minimum version which viewers must support.
 
-### Retrieving VNC consoles using the API
+Retrieving VNC consoles using the API
+=====================================
 
 VNC consoles are retrieved using a special URL passed through to the host agent. The sequence of API calls is as follows:
 
@@ -49,35 +51,46 @@ This scheme requires direct access from the client to the control domain's IP, a
 
 Retrieve the VM UUID by running:
 
-xe vm-list params=uuid --minimal name-label=
+```sh
+$ VM=$(xe vm-list params=uuid --minimal name-label=<name>)
+```
 
 Retrieve the console information:
 
-xe console-list vm-uuid=
-uuid ( RO): 714f388b-31ed-67cb-617b-0276e35155ef
-vm-uuid ( RO): 8acb7723-a5f0-5fc5-cd53-9f1e3a7d3069
-vm-name-label ( RO): etch
-protocol ( RO): RFB
-location ( RO): https://192.168.0.1/console?ref=(...)
+```sh
+$ xe console-list vm-uuid=$VM
+uuid ( RO)             : 8013b937-ff7e-60d1-ecd8-e52d66c5879e
+          vm-uuid ( RO): 2d7c558a-8f03-b1d0-e813-cbe7adfa534c
+    vm-name-label ( RO): 6
+         protocol ( RO): RFB
+         location ( RO): https://10.80.228.30/console?uuid=8013b937-ff7e-60d1-ecd8-e52d66c5879e
+```
 
 Use command-line utilities like `ping` to test connectivity to the IP address provided in the `location` field.
 
-### Disabling VNC forwarding for Linux VM
+Disabling VNC forwarding for Linux VM
+=====================================
 
 When creating and destroying Linux VMs, the host agent automatically manages the `vncterm` processes which convert the text console into VNC. Advanced users who wish to directly access the text console can disable VNC forwarding for that VM. The text console can then only be accessed directly from the control domain directly, and graphical interfaces such as XenCenter will not be able to render a console for that VM.
 
 Before starting the guest, set the following parameter on the VM record:
 
-xe vm-param-set uuid=uuid other-config:disable_pv_vnc=1
+```sh
+$ xe vm-param-set uuid=$VM other-config:disable_pv_vnc=1
+```
 
 Start the VM.
 
 Use the CLI to retrieve the underlying domain ID of the VM with:
 
-xe vm-list params=dom-id uuid= --minimal
+```sh
+$ DOMID=$(xe vm-list params=dom-id uuid=$VM --minimal)
+```
 
 On the host console, connect to the text console directly by:
 
-/usr/lib/xen/bin/xenconsole
+```sh
+$ /usr/lib/xen/bin/xenconsole $DOMID
+```
 
 This configuration is an advanced procedure, and we do not recommend that the text console is directly used for heavy I/O operations. Instead, connect to the guest over SSH or some other network-based connection mechanism.
