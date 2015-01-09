@@ -24,27 +24,6 @@ If it is a Linux-based VM, install the COMPANY\_TOOLS and use the `xenstore-read
 >
 > Only prefixes beginning with `vm-data` are permitted, and anything not in this name-space will be silently ignored when starting the VM.
 
-Security enhancements
----------------------
-
-The control domain in XenServer PRODUCT\_VERSION and above has various security enhancements in order to harden it against attack from malicious guests. Developers should never notice any loss of correct functionality as a result of these changes, but they are documented here as variations of behavior from other distributions.
-
--   The socket interface, `xenstored`, access using `libxenstore`. Interfaces are restricted by `xs_restrict()`.
-
--   The device `/dev/xen/evtchn`, which is accessed by calling `xs_evtchn_open()` in `libxenctrl`. A handle can be restricted using `xs_evtchn_restrict()`.
-
--   The device `/proc/xen/privcmd`, accessed through `xs_interface_open()` in `libxenctrl`. A handle is restricted using `xc_interface_restrict()`. Some privileged commands are naturally hard to restrict (e.g. the ability to make arbitrary hypercalls), and these are simply prohibited on restricted handles.
-
--   A restricted handle cannot later be granted more privilege, and so the interface must be closed and re-opened. Security is only gained if the process cannot subsequently open more handles.
-
-The control domain privileged user-space interfaces can now be restricted to only work for certain domains. There are three interfaces affected by this change:
-
--   The `qemu` device emulation processes and `vncterm` terminal emulation processes run as a non-root user ID and are restricted into an empty directory. They uses the restriction API above to drop privileges where possible.
-
--   Access to xenstore is rate-limited to prevent malicious guests from causing a denial of service on the control domain. This is implemented as a token bucket with a restricted fill-rate, where most operations take one token and opening a transaction takes 20. The limits are set high enough that they should never be hit when running even a large number of concurrent guests under loaded operation.
-
--   The VNC guest consoles are bound only to the `localhost` interface, so that they are not exposed externally even if the control domain packet filter is disabled by user intervention.
-
 Internationalization for SR names
 ---------------------------------
 
