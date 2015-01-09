@@ -25,6 +25,7 @@
   - xen-api/consoles.md
   - xen-api/install-vms.md
   - xen-api/networking.md
+  - xen-api/xencenter.md
   - xen-api/udhcp.md
   - xen-api/index.html
 - title: Xapi
