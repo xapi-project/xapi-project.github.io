@@ -1,12 +1,7 @@
 ---
-title: Using HTTP to interact with XenServer
+title: Metrics
 layout: default
 ---
-
-XenServer exposes an HTTP interface on each host, that can be used
-to perform various operations. This chapter describes the available
-mechanisms.
-
 
 Getting XenServer Performance Statistics
 ---------------------------------------------
