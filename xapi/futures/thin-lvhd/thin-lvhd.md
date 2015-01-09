@@ -37,7 +37,11 @@ I/O in order to provide the local allocator more time.
 Eventually if ```tapdisk3``` runs
 out of space before the local allocator can satisfy the request then
 guest I/O will block. Note Windows VMs will start to crash if guest
-I/O blocks for more than 70s.
+I/O blocks for more than 70s. Linux VMs, no matter PV or HVM, may suffer
+from "block for more than 120 seconds" issue due to slow I/O. This
+known issue is that, slow I/O during dirty pages writeback/flush may
+cause memory starvation, then other userland process or kernel threads
+would be blocked.
 
 Every host has a "local allocator" daemon which manages a host-wide
 pool of blocks (represented by an LVM LV) and provides them to ```tapdisk3```
