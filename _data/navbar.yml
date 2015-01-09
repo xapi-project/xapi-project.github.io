@@ -16,15 +16,16 @@
   docs:
   - xen-api/overview.md
   - xen-api/usage.md
-  - xen-api/http.md
   - xen-api/wire-protocol.md
   - xen-api/evolution.md
   - xen-api/vm-lifecycle.md
   - xen-api/snapshots.md
+  - xen-api/importexport.md
   - xen-api/consoles.md
   - xen-api/install-vms.md
   - xen-api/networking.md
   - xen-api/guest-agents.md
+  - xen-api/metrics.md
   - xen-api/xencenter.md
   - xen-api/udhcp.md
   - xen-api/index.html
