@@ -21,6 +21,7 @@
   - xen-api/evolution.md
   - xen-api/vm-lifecycle.md
   - xen-api/snapshots.md
+  - xen-api/importexport.md
   - xen-api/consoles.md
   - xen-api/install-vms.md
   - xen-api/networking.md
