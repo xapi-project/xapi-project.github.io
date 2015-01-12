@@ -50,6 +50,9 @@
   - squeezed/overview.md
   - squeezed/architecture/architecture.md
   - squeezed/design/design.md
+- title: Networkd
+  docs:
+  - networkd/overview.md
 - title: Design Docs
   docs:
   - design-docs/index.md
