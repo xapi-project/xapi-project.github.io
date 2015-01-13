@@ -36,8 +36,7 @@ body {
   font-family: 'ProximaNova-Regular', Helvetica, sans-serif;
 }
 
-.navbar-inner {
-  padding: 5px 0px;
+header {
   background-image: none;
   background-color: #333333;
   box-shadow: none !important;
@@ -45,32 +44,32 @@ body {
   -moz-box-shadow: none !important;
 }
 
-.navbar .nav.pull-right li {
-  line-height: 42px
+header .navbar-header {
+  padding: 10px 20px 10px 0px;
 }
-.navbar .nav.pull-right a {
+
+header .nav>li>a {
+  line-height: 32px;
   margin-right: 40px;
   text-decoration: none;
   color: #ccc;
-  font-size: 13px;
+  font-size: 16px;
   font-family: 'ProximaNova-Bold';
   font-weight: normal;
   text-shadow: none;
 }
-.navbar .nav.pull-right li:last-child a {
+header .nav>li:last-child>a {
   margin-right: 0px;
 }
-.navbar .nav.pull-right a:hover {
+header .nav>li>a:hover, .nav>li>a:focus {
+  background-color: inherit;
   color: #fff;
-}
-.navbar .nav.pull-right a.orange-button {
-  display: inline-block;
 }
 
 #menu {
   min-height: 800px;
   border-right: 1px solid #eee;
-  width: 180px;
+  width: 220px;
 }
 @media (min-width: 1200px) {
   width: 200px;
@@ -91,47 +90,39 @@ body {
   }
 }
 
-#menu li.nav-header {
+#menu.nav .menu-header {
   color: #111;
   font-family: 'ProximaNova-Bold';
   font-weight: normal;
+  font-size: 11px;
   letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-top: 9px;
+  padding: 8px 15px;
 }
-#menu li a {
-  padding-top: 8px;
-  padding-bottom: 8px;
+#menu.nav li:first-child .menu-header {
+  margin-top: 0;
 }
-#menu li a {
+#menu.nav li a {
+  padding: 8px 15px;
   color: #999;
   text-shadow: none;
 }
-#menu li.active a {
+#menu.nav li.active a {
   background-color: #33a5c8;
   color: #fff;
 }
 
-.orange-button {
-  display: inline-block;
-  line-height: 20px;
-  border-radius: 20px;
-  vertical-align: middle;
-  color: #ffffff !important;
-  background-image: linear-gradient(90deg, #dc534b 0%, #d96f5f 100%);
-  background-image: -moz-linear-gradient(90deg, #dc534b 0%, #d96f5f 100%);
-  background-image: -webkit-linear-gradient(90deg, #dc534b 0%, #d96f5f 100%);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, .2)
-  padding: 0px 10px;
-}
-.orange-button {
+.container {
+  padding-left: 0;
+  padding-right: 0;
 }
 
-@media (max-width: 979px) {
-  body {
-    padding-top: 0px;
-  }
+h1:first-child {
+  margin-top: 0;
 }
 
-h1, h2, h3, h4 {
-  margin: 20px 0 10px;
+#content img {
+  max-width: 100%;
 }
 
