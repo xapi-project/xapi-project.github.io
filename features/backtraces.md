@@ -1,6 +1,9 @@
 ---
 title: Backtrace support
 layout: default
+design_doc: true
+revision: 1
+status: Confirmed
 ---
 
 We want to make debugging easier by recording exception backtraces which are
