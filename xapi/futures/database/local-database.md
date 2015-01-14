@@ -49,7 +49,7 @@ with writes going to the master first and then filtering down to all slaves.
 Using the replica as a cache
 ----------------------------
 
-We will re-use the [Disaster Recovery](../../features/DR/DR.html) multiple
+We will re-use the [Disaster Recovery](../../../features/DR/DR.html) multiple
 database mechanism to allow slaves to access their local database. We will
 change the defalult database "context" to snapshot the local database,
 perform reads locally and write-through to the master.
