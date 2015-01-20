@@ -151,27 +151,35 @@ There is one local allocator process per attached SR. The process will be
 spawned by the SM ```sr_attach``` call, and sent a shutdown message from
 the ```sr_detach``` call.
 
+The local-allocator should be configured by command-line arguments:
 
-The ```sr_attach``` call shall
+```
+thin-lvhd-local-allocator     \
+  --socket <path>             \
+  --journal <path>            \
+  --freePool <path>           \
+  --fromLVM <path>            \
+  --toLVM <path>
+```
+where
 
-- include an argument
-  ```--listen <path>``` where ```<path>``` is a name for the local Unix domain
-  socket.
-- ensure the host local LVs have been created and device-mapper devices
-  created
+- `--socket` names the Unix domain socket used for receiving allocation requests
+from `tapdisk3`
+- `--journal` names the host local journal which is used to cope with daemon crashes
+- `--freePool` names the device-mapper device containing the blocks free for
+local allocation
+- `--fromLVM` names the device containing new free block allocations from
+the host which controls the LVM metadata
+- `--toLVM` names the device containing the local allocations which should be
+replayed against the LVM metadata
 
 When the host allocator process starts up it will read the host local
 journal and
 
 - ensure the local device mapper devices have been reloaded with the
-  recently-allocated blocks
-- compute the lowest still-free block in the local free block LV for
-  future allocations 
-
-The ```sr_detach``` call shall
-
-- send the shutdown request to the local allocator
-- wait for the local allocator to exit
+recently-allocated blocks
+- compute the lowest still-free block in the local free block device for
+future allocations
 
 The shutdown request
 --------------------
@@ -191,7 +199,10 @@ Handling extend requests
 
 When the local allocator receives an extend request it will examine
 the device mapper tables of the local free block LV and choose the first
-free blocks, up to the "vdi-allocation-quantum" in the ```/etc/tapdisk-allocator.conf```.
+free blocks, up to the "vdi-allocation-quantum" in the
+```/etc/thin-lvhd-allocator.conf```.
+
+
 The local allocator will append an entry to the host local journal recording
 this choice of blocks (always using unambiguous physical block addresses).
 Once the journal entry it committed, the host local allocator will reload
