@@ -41,6 +41,9 @@ restore     | if `true`, the import is treated as replacing the original VM - th
 force       | if `true`, any checksum failures will be ignored (the default is to destroy the VM if a checksum error is detected)
 sr_id       | the reference of an SR into which the VM should be imported. The default behavior is to import into the `Pool.default_SR`
 
+Note there is no need to specify whether the export is compressed, as Xapi
+will automatically detect and decompress gzip-encoded streams.
+
 For example, again using cURL:
 
 ```sh
