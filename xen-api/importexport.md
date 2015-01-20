@@ -3,16 +3,24 @@ title: VM import/export
 layout: default
 ---
 
-VMs can be exported to a file and later imported to any XenServer host. The export protocol is a simple HTTP(S) GET, which should be performed on the master if the VM is on a pool member. Authorization is either standard HTTP basic authentication, or if a session has already been obtained, this can be used. The VM to export is specified either by UUID or by reference. To keep track of the export, a task can be created and passed in using its reference. The request might result in a redirect if the VM's disks are only accessible on a pool member.
+VMs can be exported to a file and later imported to any Xapi host. The export
+protocol is a simple HTTP(S) GET, which should be sent to the Pool master.
+Authorization is either via a pre-created `session_id` or by HTTP basic
+authentication (particularly useful on the command-line).
+The VM to export is specified either by UUID or by reference. To keep track of
+the export, a task can be created and passed in using its reference. Note that
+Xapi may send an HTTP redirect if a different host has better access to the
+disk data.
 
-The following arguments are passed on the command line:
+The following arguments are passed as URI query parameters or HTTP cookies:
 
-Argument    | Description
-------------|---------------------------------------------------------
-session_id  | the reference of the session being used to authenticate; required only when not using HTTP basic authentication
-task_id     | the reference of the task object with which to keep track of the operation; optional, required only if you have created a task object to keep track of the export
-ref         | the reference of the VM; required only if not using the UUID
-uuid        | the UUID of the VM; required only if not using the reference
+Argument        | Description
+----------------|---------------------------------------------------------
+session_id      | the reference of the session being used to authenticate; required only when not using HTTP basic authentication
+task_id         | the reference of the task object with which to keep track of the operation; optional, required only if you have created a task object to keep track of the export
+ref             | the reference of the VM; required only if not using the UUID
+uuid            | the UUID of the VM; required only if not using the reference
+use_compression | an optional boolean "true" or "false" (defaulting to "false"). If "true" then the output will be gzip-compressed before transmission.
 
 
 For example, using the Linux command line tool cURL:
@@ -32,6 +40,9 @@ Argument    | Description
 restore     | if `true`, the import is treated as replacing the original VM - the implication of this currently is that the MAC addresses on the VIFs are exactly as the export was, which will lead to conflicts if the original VM is still being run.
 force       | if `true`, any checksum failures will be ignored (the default is to destroy the VM if a checksum error is detected)
 sr_id       | the reference of an SR into which the VM should be imported. The default behavior is to import into the `Pool.default_SR`
+
+Note there is no need to specify whether the export is compressed, as Xapi
+will automatically detect and decompress gzip-encoded streams.
 
 For example, again using cURL:
 
