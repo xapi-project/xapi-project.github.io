@@ -3,9 +3,6 @@ title: Metrics
 layout: default
 ---
 
-Getting Performance Statistics
-==============================
-
 [xcp-rrdd](https://github.com/xapi-project/xcp-rrdd)
 records statistics about the host and the VMs running on top.
 The metrics are stored
@@ -38,19 +35,19 @@ RRDs are saved to disk as uncompressed XML. The size of each RRD when
 written to disk ranges from 200KiB to approximately 1.2MiB when the RRD
 stores the full year of statistics.
 
-By default each RRD contains only averaged data. To record minimum and
-maximum values, set the Pool-wide flag:
+By default each RRD contains only averaged data to save storage space.
+To record minimum and maximum values in future RRDs, set the Pool-wide flag
 
 ```sh
-xe pool-param-set uuid= other-config:create_min_max_in_new_VM_RRDs
+xe pool-param-set uuid= other-config:create_min_max_in_new_VM_RRDs=true
 ```
 
 Downloading
 ===========
 
 Statistics can be downloaded over HTTP in XML format, for example using
-`wget`. See [](http://oss.oetiker.ch/rrdtool/doc/rrddump.en.html) and
-[](http://oss.oetiker.ch/rrdtool/doc/rrdxport.en.html) for information
+`wget`. See [rrddump](http://oss.oetiker.ch/rrdtool/doc/rrddump.en.html) and
+[rrdxport](http://oss.oetiker.ch/rrdtool/doc/rrdxport.en.html) for information
 about the XML format. HTTP authentication can take the form of a
 username and password or a session token. Parameters are appended to the
 URL following a question mark (?) and separated by ampersands (&).
@@ -147,11 +144,12 @@ To obtain an update of all VM statistics on a host, the URL would be of
 the form:
 
 ```sh
-wget http://user:password@host/rrd_updates?start=0
+wget http://user:password@host/rrd_updates?start=<secondsinceepoch>
 ```
 
 This request returns data in an rrdtool `xport` style XML format, for
-every VM resident on the particular host that is being queried. To
+every VM resident on the particular host that is being queried.
+To
 differentiate which column in the export is associated with which VM,
 the `legend` field is prefixed with the UUID of the VM.
 
@@ -205,7 +203,7 @@ An example `rrd_updates` output:
 To obtain host updates too, use the query parameter `host=true`:
 
 ```sh
-wget http://user:password@host/rrd_updates?start=0&host=true
+wget http://user:password@host/rrd_updates?start=<secondssinceepoch>&host=true
 ```
 
 The step will decrease as the period decreases, which means that if you
@@ -213,10 +211,10 @@ request statistics for a shorter time period you will get more detailed
 statistics.
 
 To download updates containing only the averages, or minimums or maximums,
-add the parameter `cf=ave|min|max` e.g.
+add the parameter `cf=AVERAGE|MIN|MAX` (note case is important) e.g.
 
 ```sh
-wget http://user:password@host/rrd_updates?start=0&cf=max
+wget http://user:password@host/rrd_updates?start=0&cf=MAX
 ```
 
 To request a different update interval, add the parameter `interval=seconds` e.g.
