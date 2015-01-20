@@ -11,8 +11,10 @@ VLANs. The number of possible VLANs on a network, however, is limited, and
 setting up a VLAN requires configuring the physical switches in the network.
 GRE tunnels provide a similar, though more flexible solution. This document
 proposes a design that integrates the use of tunnelling in the XenAPI. The
-design relies on the recent introduction of the Open vSwitch in XCP, and
-requires an Open vSwitch ([[OpenFlow]]) controller (further referred to as
+design relies on the recent introduction of the Open vSwitch, and
+requires an Open vSwitch
+([OpenFlow](https://www.opennetworking.org/sdn-resources/openflow)) controller
+(further referred to as
 _the controller_) to set up and maintain the actual GRE tunnels.
 
 We suggest following the way VLANs are modelled in the datamodel. Introducing a
@@ -81,14 +83,14 @@ tunnelling functionality is enabled) a key `network_backend` is added to the
   not be set up, an error code (to be defined) will be written to
   `tunnel.status:error`, and `tunnel.status:active` will be `"false"`.
 
-XAPI
+Xapi
 ----
 
 ### tunnel.create
 
-* Fails with OPENVSWITCH_NOT_ACTIVE if the Open vSwitch networking sub-system
+* Fails with `OPENVSWITCH_NOT_ACTIVE` if the Open vSwitch networking sub-system
   is not active (the host uses linux bridging).
-* Fails with IS_TUNNEL_ACCESS_PIF if the specified transport PIF is a tunnel access PIF.
+* Fails with `IS_TUNNEL_ACCESS_PIF` if the specified transport PIF is a tunnel access PIF.
 * Takes care of creating and connecting the new tunnel and PIF objects.
   * Sets a random MAC on the access PIF.
   * IP configuration of the tunnel
@@ -107,10 +109,10 @@ XAPI
 
 ### PIF.plug on a tunnel access PIF
 
-* Fails with TRANSPORT_PIF_NOT_CONFIGURED if the underlying transport PIF has
+* Fails with `TRANSPORT_PIF_NOT_CONFIGURED` if the underlying transport PIF has
   `PIF.ip_configuration_mode = None`, as this interface needs to be configured
   for the tunnelling to work. Otherwise, the transport PIF will be plugged.
-* XAPI requests `interface-reconfigure` to "bring up" the tunnel access PIF,
+* Xapi requests `interface-reconfigure` to "bring up" the tunnel access PIF,
   which causes it to create a local bridge.
 * No link will be made between the
   new bridge and the physical interface by `interface-reconfigure`. The
@@ -121,7 +123,7 @@ XAPI
 
 ### PIF.unplug on a tunnel access PIF
 
-* XAPI requests `interface-reconfigure` to "bring down" the tunnel PIF, which
+* Xapi requests `interface-reconfigure` to "bring down" the tunnel PIF, which
   causes it to destroy the local bridge.
 * `PIF.currently_attached` is set to `false`.
 
@@ -131,12 +133,12 @@ XAPI
 
 ### PIF.forget on a tunnel access of transport PIF
 
-* Fails with PIF_TUNNEL_STILL_EXISTS.
+* Fails with `PIF_TUNNEL_STILL_EXISTS`.
 
 ### VLAN.create
 
 * Tunnels can only exist on top of physical/VLAN/Bond PIFs, and not the other
-  way around. `VLAN.create` fails with IS_TUNNEL_ACCESS_PIF if given an
+  way around. `VLAN.create` fails with `IS_TUNNEL_ACCESS_PIF` if given an
   underlying PIF that is a tunnel access PIF.
 
 ### Pool join
@@ -187,9 +189,9 @@ CLI
 ---
 
 New `xe` commands (analogous to `xe vlan-`):
+
 * `tunnel-create`
 * `tunnel-destroy`
 * `tunnel-list`
 * `tunnel-param-get`
 * `tunnel-param-list`
-
