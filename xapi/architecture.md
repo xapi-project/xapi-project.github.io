@@ -7,8 +7,8 @@ Xapi is responsible for
 
 - providing a stable interface (the XenAPI)
 - allowing one client to manage multiple hosts
-- hosting the "xe" CLI
 - authenticating users and applying role-based access control
+- hosting the "xe" CLI
 - locking resources (in particular disks)
 - allowing storage to be managed through plugins
 - planning and coping with host failures ("High Availability")
