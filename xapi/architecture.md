@@ -4,6 +4,7 @@ layout: default
 ---
 
 Xapi is responsible for
+
 - providing a stable interface (the XenAPI)
 - allowing one client to manage multiple hosts
 - hosting the "xe" CLI
@@ -16,6 +17,7 @@ Xapi is responsible for
 - managing software patching
 
 Note that Xapi delegates core functions such as
+
 - starting VMs to [Xenopsd](https://github.com/xapi-project/xenopsd)
 - monitoring performance counters to [Xcp-rrdd](https://github.com/xapi-project/xcp-rrdd)
 - setting up host networking to [Xcp-networkd](https://github.com/xapi-project/xcp-networkd)
