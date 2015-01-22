@@ -5,8 +5,8 @@ layout: default
 
 Xapi is responsible for
 - providing a stable interface (the XenAPI)
-- hosting the "xe" CLI
 - allowing one client to manage multiple hosts
+- hosting the "xe" CLI
 - authenticating users and applying role-based access control
 - locking resources (in particular disks)
 - allowing storage to be managed through plugins
