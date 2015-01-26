@@ -300,18 +300,50 @@ Modifications to LVHD SR
 ========================
 
 - `sr_attach` should:
+  - if an SRmaster, update the `MGT` major version number to prevent
   - if an SRmaster, spawn `SRmaster-allocator`
   - if the `toLVM`, `fromLVM`, free block LVs don't exist then create them
   - spawn `local-allocator`
 - `sr_detach` should:
   - shut down the `local-allocator`
   - if an SRmaster, shut down the `SRmaster-allocator`
+- `vdi_deactivate` should:
+  - run a plugin on the SRmaster to wait for all already-generated LVM updates
+    to be flushed to the LVM metadata
+- `vdi_activate` should:
+  - if necessary, run a plugin on the SRmaster to deflate the LV to the new
+    minimum size (+ some slack), 
 
 Note that it is possible to attach and detach the individual hosts in any order
 but when the SRmaster is unplugged then there will be no "refilling" of the host
 local free LVs; it will behave as if the master host has failed.
 
+Enabling thin provisioning
+==========================
 
+Thin provisioning will be automatically enabled on upgrade. When the SRmaster
+plugs in `PBD` the `MGT` major version number will be bumped to prevent old
+hosts from plugging in the SR and getting confused. When any host plugs in a
+`PBD` it will create the necessary metadata volumes.
+When a VDI is activated, it will be deflated to the new low size.
+
+Disabling thin provisioning
+===========================
+
+We shall make a tool which will
+
+- allow someone to downgrade their pool after enabling thin provisioning
+- allow developers to test the upgrade logic without fully downgrading their
+  hosts
+
+The tool will
+
+- check if there is enough space to fully inflate all non-snapshot leaves
+- unplug all the non-SRmaster `PBD`s
+- unplug the SRmaster `PBD`. As a side-effect all pending LVM updates will be
+  written to the LVM metadata.
+- modify the `MGT` volume to have the lower metadata version
+- fully inflate all non-snapshot leaves
 
 Walk-through: upgrade
 =====================
@@ -325,14 +357,8 @@ Walk-through: downgrade
 =======================
 
 A pool may be safely downgraded to a previous version without thin provisioning
-provided that *storage is unplugged cleanly* so that journals are replayed.
-We should document how the journal replay tool works so people can work around
-problems for themselves. If journals are not replayed then VM disks will be
-corrupted.
-
-TODO: when thin provisioing is first enabled, should we rename or update the
-LVM `MGT` volume to make the SR deliberately incompatible with previous versions?
-We could then "downgrade on clean detach"
+provided that the downgrade tool is run. If the tool hasn't run then the old
+pool will refuse to attach the SR because the metadata has been upgraded.
 
 Walk-through: after a host failure
 ==================================
