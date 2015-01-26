@@ -221,29 +221,6 @@ Octet offsets | Name     | Description
 There is no response to the shutdown request. The `local-allocator` will
 terminate as soon as it is able.
 
-The extend request
-------------------
-
-The extend request has the following format:
-
-Octet offsets | Name     | Description
---------------|----------|------------
-0,1           | tl       | Total length (including this field) of message (in network byte order)
-2             | type     | The value '2' indicating an extend request
-3,4           | len      | Length of name field (in network byte order)
-5,5+len       | name     | The name of the LV to extend
-
-The extend response
--------------------
-
-The extend response has the following format:
-
-Octet offsets | Name     | Description
---------------|----------|------------
-0,1           | tl       | Total length (including this field) of message (in network byte order)
-2             | type     | The value '3' indicating an extend response
-
-
 The SRmaster-allocator
 ======================
 
