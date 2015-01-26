@@ -2,7 +2,7 @@
 title: thin LVHD storage
 layout: default
 design_doc: true
-revision: 1
+revision: 2
 status: proposed
 ---
 
@@ -30,7 +30,7 @@ LVHD such that
 All VM disk writes are channeled through ```tapdisk3``` which keeps
 track of how much space remains reserved in the LVM LV. When the
 free space drops below a "low-water mark" (configurable via a host
-config file), ```tapdisk3``` opens a connection to a "local allocator"
+config file), ```tapdisk3``` opens a connection to a `local-allocator`
 process and requests more space asynchronously. If ```tapdisk3```
 notices the free space approach zero then it should start to slow
 I/O in order to provide the local allocator more time.
@@ -39,16 +39,18 @@ out of space before the local allocator can satisfy the request then
 guest I/O will block. Note Windows VMs will start to crash if guest
 I/O blocks for more than 70s.
 
-Every host has a "local allocator" daemon which manages a host-wide
+Every host has a `local-allocator` daemon which manages a host-wide
 pool of blocks (represented by an LVM LV) and provides them to ```tapdisk3```
 on demand. When it receives a request, the local allocator decides
-which blocks to provide from its local free pool, writes to the journal
-and then reloads the device mapper table to extend the LV. The journal
-is replayed on the SRmaster when any VDI on the host is deactivated.
+which blocks to provide from its local free pool, writes to the journal,
+writes the update to an outgoing `toLVM` queue and then reloads the device mapper
+table to extend the LV. When a VDI is deactivated, the current items on the
+`toLVM` queue are flushed synchonously.
 
-The local allocator also has a "low-water mark" (configurable via a
-host config file) and will request additional blocks from the SRmaster
-when it is running low.
+As well as waiting for requests from `tapdisk3`, the `local-allocator` also
+watches for new block allocations from the `SRmaster-allocator` via the
+`fromLVM` queue. These allocations are used to resize the local host free
+block LV locally via device mapper.
 
 Interaction with HA
 ===================
@@ -69,16 +71,19 @@ implementations, we will allow HA to be disabled.
 Host-local LVs
 ==============
 
-When a host calls SMAPI ```sr_attach```, it will attach two host-local
-LVs:
+When a host calls SMAPI ```sr_attach```, it will attach three LVM volumes:
 
 - ```host-<uuid>-free```: these are free blocks cached on the host.
-- ```host-<uuid>-journal```: this contains a sequence of block allocation
-  records describing where the free blocks have been allocated.
+- ```host-<uuid>-toLVM```: these are metadata changes made locally which need
+  to be replayed against the LVM metadata by the SRmaster
+  ```host-<uuid>-fromLVM```: these are metadata changes made by the SRmaster
+  to extend the ```host-<uuid>-free``` which should be replayed against
+  local device mapper.
 
-On ```sr_attach``` and ```sr_detach``` the journal should be replayed
-and then emptied. The journal replay code must be run on the SRmaster
-since this host is the only one with read/write access to the LVM metadata.
+The ```sr_attach``` will also ensure a "local journal" exists (a local sparse
+  file big enough to contain at least one operation + overheads). When
+the `local-allocator` starts up it will first replay any pending operations found
+in the local journal before inspecting the other volumes.
 
 For ease of debugging and troubleshooting, we should create command-line
 tools to dump and replay the journal.
@@ -90,15 +95,17 @@ The local allocator process should export RRD datasources over shared
 memory named
 
 - ```sr_<SR uuid>_<host uuid>_free```: the number of free blocks in
-  the local cache
-- ```sr_<SR uuid>_<host uuid>_allocations```: a counter of the number
-  of times the local cache had to be refilled from the SRmaster
-
-The admin should examine the allocations counter in particular as if
-the rate of allocations is too high it means the local host's allocation
-quantum should be increased. For a particular workload, the allocation
-quantum should be increased just enough to prevent any allocations
-being necessary during the HA timeout period.
+  the local cache. It's useful to look at this and verify that it doesn't
+  usually hit zero, since that's when allocations will start to block.
+  For this reason we should use the `MIN` consolidation function.
+- ```sr_<SR uuid>_<host uuid>_requests```: a counter of the number
+  of satisfied allocation requests. If this number is too high then the quantum
+  of allocation should be increased. For this reason we should use the
+  `MAX` consolidation function.
+- ```sr_<SR uuid>_<host uuid>_allocations```: a counter of the number of
+  bytes being allocated. If the allocation rate is too high compared with
+  the number of free blocks divided by the HA timeout period then the
+  `SRmaster-allocator` should be reconfigured to supply more blocks with the host.
 
 Modifications to tapdisk3
 =========================
@@ -289,6 +296,23 @@ We shall
   is forgotten
 - install a ```host-pre-forget``` script to destroy the host's local LVs
 
+Modifications to LVHD SR
+========================
+
+- `sr_attach` should:
+  - if an SRmaster, spawn `SRmaster-allocator`
+  - if the `toLVM`, `fromLVM`, free block LVs don't exist then create them
+  - spawn `local-allocator`
+- `sr_detach` should:
+  - shut down the `local-allocator`
+  - if an SRmaster, shut down the `SRmaster-allocator`
+
+Note that it is possible to attach and detach the individual hosts in any order
+but when the SRmaster is unplugged then there will be no "refilling" of the host
+local free LVs; it will behave as if the master host has failed.
+
+
+
 Walk-through: upgrade
 =====================
 
@@ -306,6 +330,10 @@ We should document how the journal replay tool works so people can work around
 problems for themselves. If journals are not replayed then VM disks will be
 corrupted.
 
+TODO: when thin provisioing is first enabled, should we rename or update the
+LVM `MGT` volume to make the SR deliberately incompatible with previous versions?
+We could then "downgrade on clean detach"
+
 Walk-through: after a host failure
 ==================================
 
@@ -314,16 +342,16 @@ If HA is enabled:
 - ```xhad``` elects a new master if necessary
 - the ```xhad``` tells ```Xapi``` which hosts are alive and which have failed.
 - ```Xapi``` runs the ```host-pre-declare-dead``` scripts for every failed host
-- the ```host-pre-declare-dead``` scripts replay the host local journals and
-  update the LVM metadata on the SRmaster
+- the ```host-pre-declare-dead``` wait for the `toLVM` operations to be replayed
+  against the LVM metadata on the SRmaster
 - ```Xapi``` unlocks the VMs and restarts them on new hosts.
 
 If HA is not enabled:
 
 - the admin must tell ```Xapi``` which hosts have failed with ```xe host-declare-dead```
 - ```Xapi``` runs the ```host-pre-declare-dead``` scripts for every failed host
-- the ```host-pre-declare-dead``` scripts replay the host local journals and
-  update the LVM metadata on the SRmaster
+- the ```host-pre-declare-dead``` wait for the `toLVM` operations to be replayed
+against the LVM metadata on the SRmaster
 - ```Xapi``` unlocks the VMs
 - the admin may now restart the VMs on new hosts.
 
@@ -341,3 +369,7 @@ Summary of the impact on the admin
   enable HA.
 - The admin *must* not downgrade the pool without first cleanly detaching the
   storage.
+- Extra metadata is needed to track thin provisioing, reducing the amount of
+  space available for user volumes.
+- If an SR is completely full then it will not be possible to enable thin
+  provisioning.
