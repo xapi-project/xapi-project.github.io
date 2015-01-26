@@ -76,7 +76,7 @@ When a host calls SMAPI ```sr_attach```, it will attach three LVM volumes:
 - ```host-<uuid>-free```: these are free blocks cached on the host.
 - ```host-<uuid>-toLVM```: these are metadata changes made locally which need
   to be replayed against the LVM metadata by the SRmaster
-  ```host-<uuid>-fromLVM```: these are metadata changes made by the SRmaster
+- ```host-<uuid>-fromLVM```: these are metadata changes made by the SRmaster
   to extend the ```host-<uuid>-free``` which should be replayed against
   local device mapper.
 
@@ -150,6 +150,35 @@ request will block for a long time if
   existing free space graphs/alerts and perform an SR resize.
 - the master has failed and HA is disabled. The admin should re-enable
   HA or fix the problem manually.
+
+Shared-block-rings
+==================
+
+The `toLVM` and `fromLVM` queues will be implemented as rings over the shared
+storage blocks, similar to the Xenstore and Console ring protocols over
+shared memory. The ring will have the following format:
+
+Sector | Name     | Description
+-------|----------|----------------------
+0      | magic    | Well-known magic string to identify an intact ring
+1      | producer | Producer pointer (byte offset)
+2      | consumer | Consumer pointer (byte offset)
+3...   | data     | Arbitrary data
+
+When data is to be written to the ring the updates are ordered:
+
+1. the data is written to the data section
+2. the producer pointer is incremented to "expose" the data to the consumer
+
+When data is to be read from the ring the updates are similarly ordered:
+
+1. the data is read from the data section and processed
+2. when the side-effects are fully persisted, the consumer pointer is incremented
+
+The ring implementation will expect the ring data size to be always larger than
+any individual write.
+
+Example ring implementation: [shared-block-ring](https://github.com/mirage/shared-block-ring).
 
 The local-allocator
 ===================
@@ -312,7 +341,7 @@ Modifications to LVHD SR
     to be flushed to the LVM metadata
 - `vdi_activate` should:
   - if necessary, run a plugin on the SRmaster to deflate the LV to the new
-    minimum size (+ some slack), 
+    minimum size (+ some slack),
 
 Note that it is possible to attach and detach the individual hosts in any order
 but when the SRmaster is unplugged then there will be no "refilling" of the host
