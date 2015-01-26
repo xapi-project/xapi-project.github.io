@@ -144,17 +144,18 @@ request will block for a long time if
 - the master has failed and HA is disabled. The admin should re-enable
   HA or fix the problem manually.
 
-The local allocator
+The local-allocator
 ===================
 
-There is one local allocator process per attached SR. The process will be
+There is one `local-allocator` process per attached SR. The process will be
 spawned by the SM ```sr_attach``` call, and sent a shutdown message from
 the ```sr_detach``` call.
 
-The local-allocator should be configured by command-line arguments:
+The `local-allocator` accepts command-line arguments:
 
 ```
 thin-lvhd-local-allocator     \
+  --config <path>             \
   --socket <path>             \
   --journal <path>            \
   --freePool <path>           \
@@ -163,6 +164,7 @@ thin-lvhd-local-allocator     \
 ```
 where
 
+- `--config` names the config file
 - `--socket` names the Unix domain socket used for receiving allocation requests
 from `tapdisk3`
 - `--journal` names the host local journal which is used to cope with daemon crashes
@@ -173,13 +175,38 @@ the host which controls the LVM metadata
 - `--toLVM` names the device containing the local allocations which should be
 replayed against the LVM metadata
 
-When the host allocator process starts up it will read the host local
+The `local-allocator` also reads a config file containing:
+
+```
+# global section
+
+# amount to provide to an LV when requested
+vdi-allocation-quantum=100M
+```
+
+When the `local-allocator` process starts up it will read the host local
 journal and
 
-- ensure the local device mapper devices have been reloaded with the
-recently-allocated blocks
+- re-execute any pending allocation requests from tapdisk
 - compute the lowest still-free block in the local free block device for
 future allocations
+
+The procedure for handling an allocation request from tapdisk is:
+
+1. if there aren't enough free blocks in the free pool, wait polling the
+   `fromLVM` queue
+2. choose a range of blocks to assign to the tapdisk LV from the free LV
+3. write the operation (i.e. exactly what we are about to do) to the journal.
+   This ensures that it will be repeated if the allocator crashes and restarts.
+   Note that, since the operation may be repeated multiple times, it must be
+   idempotent.
+5. push the block assignment to the `toLVM` queue
+6. suspend the device mapper device
+7. add/modify the device mapper target
+8. resume the device mapper device
+9. remove the operation from the local journal (i.e. there's no need to repeat
+   it now)
+10. reply to tapdisk
 
 The shutdown request
 --------------------
@@ -191,50 +218,94 @@ Octet offsets | Name     | Description
 0,1           | tl       | Total length (including this field) of message (in network byte order)
 2             | type     | The value '1' indicating a shutdown request
 
-There is no response to the shutdown request. The local allocator will
+There is no response to the shutdown request. The `local-allocator` will
 terminate as soon as it is able.
 
-Handling extend requests
-------------------------
+The extend request
+------------------
 
-When the local allocator receives an extend request it will examine
-the device mapper tables of the local free block LV and choose the first
-free blocks, up to the "vdi-allocation-quantum" in the
-```/etc/thin-lvhd-allocator.conf```.
+The extend request has the following format:
+
+Octet offsets | Name     | Description
+--------------|----------|------------
+0,1           | tl       | Total length (including this field) of message (in network byte order)
+2             | type     | The value '2' indicating an extend request
+3,4           | len      | Length of name field (in network byte order)
+5,5+len       | name     | The name of the LV to extend
+
+The extend response
+-------------------
+
+The extend response has the following format:
+
+Octet offsets | Name     | Description
+--------------|----------|------------
+0,1           | tl       | Total length (including this field) of message (in network byte order)
+2             | type     | The value '3' indicating an extend response
 
 
-The local allocator will append an entry to the host local journal recording
-this choice of blocks (always using unambiguous physical block addresses).
-Once the journal entry it committed, the host local allocator will reload
-the device mapper tables of the ```tapdisk3``` device and then reply to
-tapdisk.
-
-TODO: describe the journal format
-
-TODO: describe the journal replay tool here
-
-The SRmaster allocator
+The SRmaster-allocator
 ======================
 
-The SRmaster allocator is a XenAPI host plugin ```lvhd-allocator```.
-The local host allocator calls the SRmaster allocator when it is
-running low on free blocks on the host. The SRmaster allocator will
-perform an LVM resize of the host's local free block LV.
+The `SRmaster-allocator` is a daemon run on the SRmaster node, started in
+`sr_attach` and shutdown in `sr_detach`.
 
-TODO: what should the default resize amount be?
+The `SRmaster-allocator` accepts command-line arguments:
 
+```
+SRmaster-allocator          \
+--config <path>             \
+--journal <path>
+```
+where
+
+- `--config` names the config file
+- `--journal` names the host local journal which is used to cope with daemon crashes
+
+The config file contains the paths for all the control volumes and global
+configuration,
+for example
+
+```
+# global section
+host-allocation-quantum=1G
+
+[host1]
+to-LVM=<path>
+from-LVM=<path>
+
+[host2]
+to-LVM=<path>
+from-LVM=<path>
+```
+
+The `SRmaster-allocator` continually
+
+- peeks at updates from all the `to-LVM` queues
+- calculates how much free space each host still has
+- if the free space for a host drops below some threshold:
+  - choose some free blocks
+- writes the change it is going to make to the local journal
+- pops the updates from the `to-LVM` queues
+- pushes the updates to the `from-LVM` queues
+- rewrites the LVM metadata
+- removes the change from the local journal
 
 The membership monitor
 ======================
 
 The role of the membership monitor is to
 
-- replay a host's journal when it has failed
-- destroy a host's local LVs when it has left the pool
+- destroy a host's local LVs when it has left the pool and the `toLVM` queue
+  has been flushed
+- rewrite the `SRmaster-allocator` config file when hosts have joined or left
+  the pool
 
 We shall
 
-- install a ```host-pre-declare-dead``` script to replay the journal
+- install a ```host-pre-declare-dead``` script to wait for the `SRmaster-allocator`
+  to flush the `toLVM` queue (i.e. when `peek` returns 0 elements) and delete
+  the LV
 - modify XenAPI ```Host.declare_dead``` to call ```host-pre-declare-dead``` before
   the VMs are unlocked
 - add a ```host-pre-forget``` hook type which will be called just before a Host
