@@ -2,7 +2,7 @@
 title: Integrated GPU passthrough support
 layout: default
 design_doc: true
-revision: 2
+revision: 3
 status: proposed
 ---
 
@@ -21,24 +21,30 @@ GPUs.
 Host Configuration
 ------------------
 
-A new PGPU field will be added:
+New fields will be added:
 
+- `host.display enum(enabled|disable_on_reboot|disabled|enable_on_reboot)`
 - `PGPU.dom0_access enum(enabled|disable_on_reboot|disabled|enable_on_reboot)`
 
 as well as new API calls:
 
-- `PGPU.enable_dom0_access`
-- `PGPU.disable_dom0_access`
+- `host.enable_GPU_access`
+- `host.disable_GPU_access`
 
-Disabling dom0 access will modify the xen commandline (using the xen-cmdline
-tool) such that dom0 will not be able to access the GPU on next boot.
+Calling `host.disable_GPU_access` will modify the host boot config (using the
+xen-cmdline tool) such that after the next boot dom0 will not be able to access
+any integrated GPUs, and neither xen nor dom0 will attempt to use the the VGA
+graphics adapter on next boot.
 
-A state diagram for the field PGPU.dom0_access is shown below:
+A state diagram for the fields PGPU.dom0_access and host.display is shown below:
 
 ![host.integrated_GPU_passthrough flow diagram](integrated-gpu-passthrough.png)
 
-Note that when a client enables or disables dom0 access for a PGPU, the change
-can be cancelled until the host is rebooted.
+Although the two fields will be modified in unison, they represent different
+settings and we may wish to modify them independently in the future.
+
+Note that when a client enables or disables host GPU access, the change can be
+cancelled until the host is rebooted.
 
 Handling vga_arbiter
 --------------------
