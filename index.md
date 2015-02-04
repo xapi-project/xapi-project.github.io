@@ -14,7 +14,7 @@ title: Welcome
 - simplifies maintainence through [Rolling Pool Upgrade](features/RPU/RPU.html)
 - collects performance statistics for historical analysis and for alerting
 - has a full-featured
-  [XML-RPC based API](xen-api),
+  [XML-RPC based API](xen-api/index.html),
   used by clients such as
   [XenCenter](https://github.com/xenserver/xenadmin),
   [Xen Orchestra](https://xen-orchestra.com),

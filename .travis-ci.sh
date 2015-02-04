@@ -18,4 +18,4 @@ mv _site ${TEST_BASEURL}
 mkdir _site
 mv ${TEST_BASEURL} _site
 export NOKOGIRI_USE_SYSTEM_LIBRARIES=true  # speeds up install of html-proofer
-htmlproof --validate_html ./_site
+htmlproof --check-html ./_site

@@ -199,7 +199,7 @@ isolate) nodes when they are not part of the cluster. In general there are
   the customer buy more hardware and set it up correctly.
 - rely on the remote hosts using a watchdog to cut their own power (i.e.
   halt or reboot) after a timeout. This relies on the watchdog being
-  reliable. Most other people [don't trust the Linux watchdog](http://doc.opensuse.org/products/draft/SLE-HA/SLE-ha-guide_sd_draft/cha.ha.requirements.html); 
+  reliable. Most other people [don't trust the Linux watchdog](https://www.suse.com/documentation/sle_ha/singlehtml/book_sleha/book_sleha.html); 
   after all the Linux kernel is highly threaded, performs a lot of (useful)
   functions and kernel bugs which result in deadlocks do happen.
   We use the Xen watchdog because we believe that the Xen hypervisor is
