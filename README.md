@@ -73,6 +73,8 @@ $ jekyll serve -w --baseurl '/xapi-project'
 
 You will then be able to view the page at `localhost:4000/xapi-project`.
 
+For more detailed setup (or if you do not have the correct prerequisite ruby environment, check out [these instructions](https://help.github.com/articles/using-jekyll-with-pages/#installing-jekyll).
+
 ## A note on images
 If you are contributing images, consider compressing them to keep this repo as
 slim as possible:
