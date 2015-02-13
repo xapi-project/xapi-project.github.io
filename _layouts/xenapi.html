@@ -1,0 +1,38 @@
+---
+layout: default
+---
+
+{{ content }}
+
+<h2>XenAPI Fields and Functions</h2>
+
+<h3>Fields</h3>
+
+<table>
+  <tr><th>Field name</th><th>Type</th><th>Description</th></tr>
+  {% for c in site.data.xenapi %}
+    {% assign class = c.name %}
+    {% assign fields = c.fields | where:"tag",page.xenapi_tag | sort: "name" %}
+    {% for f in fields %}
+      <tr>
+        <td><a href="{{site.baseurl}}/xen-api/index.html?c={{class}}">{{class}}.{{f.name}}</a></td>
+        <td>{{f.type}}</td>
+        <td>{{f.description}}</td>
+      </tr>
+    {% endfor %}
+  {% endfor %}
+</table>
+
+<h3>Functions</h3>
+
+<table>
+  <tr><th>Function name</th><th>Description</th></tr>
+  {% for c in site.data.xenapi %}
+    {% assign class = c.name %}
+    {% assign messages = c.messages | where:"tag",page.xenapi_tag | sort: "name" %}
+    {% for m in messages %}
+      <tr><td><a href="{{site.baseurl}}/xen-api/index.html?c={{class}}">{{class}}.{{m.name}}</a></td><td>{{m.description}}</td></tr>
+    {% endfor %}
+  {% endfor %}
+</table>
+

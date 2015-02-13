@@ -1,6 +1,7 @@
 ---
 title: Snapshots
-layout: default
+layout: xenapi
+xenapi_tag: snapshots
 ---
 
 Snapshots represent the state of a VM, or a disk (VDI) at a point in time.
