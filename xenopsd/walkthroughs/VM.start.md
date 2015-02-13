@@ -51,6 +51,7 @@ The Xenopsd "VM.add" function has code like this:
 ```
 
 This function does 2 things:
+
 - it stores the VM configuration in the "database"
 - it tells the "backend" that the VM exists
 
@@ -79,6 +80,7 @@ performant Xenstore to realise.
 
 Every running Xenopsd process is linked with a single backend. Currently backends
 exist for:
+
 - Xen via libxc, libxenguest and xenstore
 - Xen via libxl, libxc and xenstore
 - Xen via libvirt
@@ -121,6 +123,7 @@ again see the [Task handling design](../design/Tasks.html) to understand how thi
 implemented.
 
 When the Task has completed successfully, then calls to *.stat will show:
+
 - the power state is Paused
 - exactly one valid Xen domain id
 - all VBDs have active = plugged = true
@@ -185,6 +188,7 @@ The "task" is a record containing Task metadata plus a "do it now" function
 which will be executed by a thread from the thread pool.  The
 [module Redirector](https://github.com/xapi-project/xenopsd/blob/524d57b3c70/lib/xenops_server.ml#L396)
 takes care of:
+
 - pushing operations to the right queue
 - ensuring at most one worker thread is working on a VM's operations
 - reducing the queue size by coalescing items together
@@ -405,6 +409,7 @@ the VM might execute without all the port locking properly configured.
 --------------------------
 
 The `VM_create_device_model` micro-op will create a qemu device model if
+
 - the VM is HVM; or
 - the VM uses a PV keyboard or mouse (since only qemu currently has backend
   support for these devices).
@@ -412,6 +417,7 @@ The `VM_create_device_model` micro-op will create a qemu device model if
 The function
 [VM.create_device_model_exn](https://github.com/xapi-project/xenopsd/blob/b33bab13080cea91e2fd59d5088622cd68152339/xc/xenops_server_xen.ml#L1090)
 will
+
 - (if using a qemu stubdom) it will create and build the qemu domain
 - compute the necessary qemu arguments and launch it.
 
