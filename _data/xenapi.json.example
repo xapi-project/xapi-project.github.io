@@ -1,0 +1,24 @@
+[
+	{
+		"name": "VM",
+		"fields": [
+			{name: "a", description: "Awesome", tag: "snapshots"},
+			{name: "b", description: "Brilliant", tag: "networking"},
+			{name: "d", description: "Disastrous", tag: "snapshots"},
+			{name: "c", description: "Crazy", tag: "snapshots"},
+		],
+		"messages": [
+			{name: "snapshot", description: "Make a snapshot", tag: "snapshots"}
+		]
+	},
+	{
+		"name": "Host",
+		"fields": [
+			{name: "a", description: "Awesome", tag: "snapshots"},
+			{name: "b", description: "Brilliant", tag: "networking"},
+			{name: "d", description: "Disastrous", tag: "snapshots"},
+			{name: "c", description: "Crazy", tag: "snapshots"},
+		],
+		"messages": []
+	}
+]
