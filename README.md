@@ -58,10 +58,10 @@ revision: [iteration of document]
 If you wish to preview the site that will be generated before pushing, you can
 do so from your own machine.
 
-Install Jekyll:
+Install the `github-pages` gem (this includes `jekyll`):
 
 ```
-$ gem install jekyll
+$ gem install github-pages
 ```
 
 Then you can host the site locally with the following command from the root
