@@ -1,0 +1,17 @@
+rio: XenServer 4.0
+miami: XenServer 4.1
+symc: XenServer 4.1.1
+orlando: XenServer 5.0
+orlando-update-1: XenServer 5.0 Update 1
+george: XenServer 5.5
+midnight-ride: XenServer 5.6 (XCP 0.5)
+cowley: XenServer 5.6 FP1 (XCP 1.0)
+boston: XenServer 6.0 (XCP 1.5)
+tampa: XenServer 6.1 (XCP 1.6)
+clearwater: XenServer 6.2
+vgpu-tech-preview: XenServer 6.2 vGPU preview
+vgpu-productisation: XenServer 6.2 SP1
+clearwater-felton: XenServer 6.2 SP1 Hotfix 4
+clearwater-whetstone: XenServer 6.2 SP1 Hotfix 11
+creedence: XenServer 6.5
+
