@@ -8,11 +8,11 @@
     <meta name="author" content="">
     <!-- Le styles -->
     <link href="{{site.baseurl}}/assets/css/bootstrap.css" rel="stylesheet">
-    <style>
+ <!--   <style>
       body { padding-top: 60px; /* 60px to make the container go all the way
-      to the bottom of the topbar */ }
-    </style>
-    <link href="{{site.baseurl}}/assets/css/bootstrap-responsive.css" rel="stylesheet">
+       to the bottom of the topbar */ }
+    </style-->
+    <link href="{{site.baseurl}}/assets/css/bootstrap.min.css" rel="stylesheet">
     <link href="{{site.baseurl}}/assets/css/docs.css" rel="stylesheet">
     <link href="{{site.baseurl}}/assets/css/pygments-github.css" rel="stylesheet">
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -22,16 +22,20 @@
     <![endif]-->
     <!-- Le fav and touch icons -->
     <link rel="shortcut icon" href="{{site.baseurl}}/assets/img/favicon.ico">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
     </script>
   </head>
   <body>
-    <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <a href="{{site.baseurl}}/" class="brand"><img alt="Xapi Project"
-              src="{{site.baseurl}}/assets/img/xapi-project.png"></a>
-          <ul class="nav pull-right">
+    <header class="navbar navbar-fixed-top">
+      <div class="container">
+         <div class="navbar-header">
+          <a href="{{site.baseurl}}/">
+            <img alt="Xapi Project"
+              src="{{site.baseurl}}/assets/img/xapi-project.png">
+          </a>
+        </div>
+        <nav>
+          <ul class="nav navbar-nav navbar-right">
             <li>
               <a href="http://www.xenproject.org/developers/teams/xapi.html">
                 LF project
@@ -40,37 +44,41 @@
             <li><a href="{{site.baseurl}}/">Documentation</a></li>
             <li><a href="http://github.com/xapi-project">Github</a></li>
           </ul>
-        </div>
+        </nav>
       </div>
-    </div>
+    </header>
     <div class="container">
       <div class="row">
-        <div class="span3">
-          <ul id="menu" class="nav nav-list" data-spy="scroll">
+        <div class="col-md-3">
+        <nav>
+          <ul id="menu" class="nav" data-spy="scroll">
             {% for section in site.data.navbar %}
-              <li class="nav-header">{{section.title}}<li>
-              {% for d in section.docs %}
-                {% for p in site.pages %}
-                  {% if p.path == d %}
-                    <li data-section="{{p.path}}">
-                      <a href="{{site.baseurl}}{{p.url}}">{{p.title}}</a>
-                    </li>
-                  {% endif %}
+              <li>
+                <div class="menu-header">{{section.title}}</div>
+                <ul class="nav">
+                {% for d in section.docs %}
+                  {% for p in site.pages %}
+                    {% if p.path == d %}
+                      <li data-section="{{p.path}}">
+                        <a href="{{site.baseurl}}{{p.url}}">{{p.title}}</a>
+                      </li>
+                    {% endif %}
+                  {% endfor %}
                 {% endfor %}
-              {% endfor %}
+                </ul>
+              </li>
             {% endfor %}
           </ul>
+      </nav>
         </div>
-        <div class="span9">
-          <div class="page-header">
-            <h1>{{page.title}}</h1>
-          </div>
+        <div class="col-md-9">
+          <h1>{{page.title}}</h1>
           {{content}}
         </div>
       </div>
     </div>
 
-    <script src="{{site.baseurl}}/assets/js/bootstrap.js">
+    <script src="{{site.baseurl}}/assets/js/bootstrap.min.js">
     </script>
 
     <script>
