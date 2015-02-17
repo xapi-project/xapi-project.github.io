@@ -4,7 +4,7 @@ layout: default
 
 {{ content }}
 
-<h2>XenAPI Fields and Functions</h2>
+<h2>XenAPI Fields and Messages</h2>
 
 <h3>Fields</h3>
 
@@ -23,10 +23,10 @@ layout: default
   {% endfor %}
 </table>
 
-<h3>Functions</h3>
+<h3>Messages</h3>
 
 <table>
-  <tr><th>Function name</th><th>Description</th></tr>
+  <tr><th>Message name</th><th>Description</th></tr>
   {% for c in site.data.xenapi %}
     {% assign class = c.name %}
     {% assign messages = c.messages | where:"tag",page.xenapi_tag | sort: "name" %}
