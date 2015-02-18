@@ -1,0 +1,211 @@
+---
+layout: base
+title: XenAPI Reference
+---
+
+{% assign obj = site.data.xenapi | where:"name",page.class | first %}
+{% assign docs = site.pages | where:"class",page.class %}
+
+<link rel="stylesheet" href="{{site.baseurl}}/assets/css/xenapi.css" />
+<script type="text/javascript" src="{{site.baseurl}}/assets/js/apidoc.js"></script>
+
+<link rel="stylesheet" href="{{site.baseurl}}/assets/css/xenapi.css" />
+<div class="row">
+<div class="col-md-9" id="content">
+
+<div class="lifecycle">
+  {% assign cur = obj.lifecycle | last %}
+  {% case cur.transition %}
+  {% when "prototyped" %}
+    Prototype
+  {% when "deprecated" %}
+    Deprecated
+  {% when "removed" %}
+    Removed
+  {% endcase %}
+</div>
+
+<h2 class="title" onclick="showhide(document.getElementById('class_details'))" style="cursor: pointer">Class: {{ page.class }}</h2>
+
+<div class="description">
+{% assign n = content | number_of_words %}
+{% if n == 0 %}
+  {{ obj.description | escape }}
+{% else %}
+  {{ content }}
+{% endif %}
+</div>
+
+<div id="class_details" style="display: none">
+  <table class="field-table">
+    {% for t in obj.lifecycle %}
+    <tr>
+      <td style="white-space: nowrap"><span class="field-head">{{ t.transition | capitalize }}  in:</span></td>
+      <td style="white-space: nowrap">{{ site.data.releases[t.release] }} ({{ t.release }})</td>
+      <td>{{ t.description | escape }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+
+{% if obj.enums.size > 0 %}
+  <h3>Enums</h3>
+
+  {% for x in obj.enums %}
+  <div id="enum_{{x.name}}" class="{% cycle 'field', 'field2' %}" onclick="showhide(document.getElementById('enum_{{x.name}}_details'))">
+    <div class="field-name">{{x.name}}</div>
+    <div id="enum_{{x.name}}_details" style="display: none">
+
+    <table class="field-table">
+      {% for v in x.values %}
+      <tr>
+        <td style="white-space: nowrap"><span class="field-head">{% if forloop.first %}Values:{% endif %}</span></td>
+        <td style="white-space: nowrap">{{ v.name }}</td>
+        <td>{{ v.doc | escape }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    </div>
+  </div>
+  {% endfor %}
+{% endif %}
+
+<h3>Fields</h3>
+
+{% assign fields = obj.fields | sort: "name" %}
+{% for x in fields %}
+<div class="{% cycle 'field', 'field2' %}" onclick="showhide(document.getElementById('{{x.name}}_details'))">
+  <div class="lifecycle">
+    {% assign cur = x.lifecycle | last %}
+    {% case cur.transition %}
+    {% when "prototyped" %}
+      Prototype
+    {% when "deprecated" %}
+      Deprecated
+    {% when "removed" %}
+      Removed
+    {% endcase %}
+  </div>
+  <div id="{{x.name}}">
+    <span class="inline-type">{{x.type | replace:"->","&rarr;"}}</span>
+    <span class="field-name">{{x.name}}</span>
+    <span class="inline-qualifier">[{{x.qualifier}}]</span>
+  </div>
+  <div id="{{x.name}}_details" style="display: none">
+    <div class="field-description">
+      {% capture override %}
+      {% for d in docs %}
+        {% if d.field == x.name %}{{ d.content }}{% endif %}
+      {% endfor %}
+      {% endcapture %}
+      {% assign n = override | number_of_words %}
+      {% if n == 0 %}
+        {{ x.description | escape }}
+      {% else %}
+        {{ override }}
+      {% endif %}
+    </div>
+    <table class="field-table">
+      {% if x.default %}
+      <tr>
+        <td style="white-space: nowrap"><span class="field-head">Default value:</span></td>
+        <td colspan="2">{{x.default}}</td>
+      </tr>
+      {% endif %}
+      {% for t in x.lifecycle %}
+      <tr>
+        <td style="white-space: nowrap"><span class="field-head">{{ t.transition | capitalize }}  in:</span></td>
+        <td style="white-space: nowrap">{{ site.data.releases[t.release] }} ({{ t.release }})</td>
+        <td>{{ t.description | escape }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+{% endfor %}
+
+<h3>Messages</h3>
+
+{% assign messages = obj.messages | sort: "name" %}
+{% for x in messages %}
+<div class="{% cycle 'field', 'field2' %}" onclick="showhide(document.getElementById('{{x.name}}_details'))">
+  <div class="lifecycle">
+    {% assign cur = x.lifecycle | last %}
+    {% case cur.transition %}
+    {% when "prototyped" %}
+      Prototype
+    {% when "deprecated" %}
+      Deprecated
+    {% when "removed" %}
+      Removed
+    {% endcase %}
+  </div>
+  <div id="{{x.name}}">
+    <span class="inline-type">{{x.result[0] | replace:"->","&rarr;"}}</span>
+    <span class="field-name">{{x.name}}</span>
+    <span class="inline-params">({{ x.params | map:"type" | join:", " | replace:"->","&rarr;"}})</span>
+  </div>
+  <div id="{{x.name}}_details" style="display: none">
+    <div class="field-description">
+      {% capture override %}
+      {% for d in docs %}
+        {% if d.message == x.name %}{{ d.content }}{% endif %}
+      {% endfor %}
+      {% endcapture %}
+      {% assign n = override | number_of_words %}
+      {% if n == 0 %}
+        {{ x.description | escape }}
+      {% else %}
+        {{ override }}
+      {% endif %}
+    </div>
+    <table class="field-table">
+      {% for p in x.params %}
+      <tr>
+        <td style="white-space: nowrap"><span class="field-head">{% if forloop.first %}Parameters:{% endif %}</span></td>
+        <td style="white-space: nowrap">{{ p.type | replace:"->","&rarr;" }} {{ p.name }}</td>
+        <td>{{ p.doc | escape }}</td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <td style="white-space: nowrap"><span class="field-head">Minimum role:</span></td>
+        <td colspan="2">{{ x.roles | last }}</td>
+      </tr>
+      {% if x.result[0] != "void" %}
+      <tr>
+        <td style="white-space: nowrap"><span class="field-head">Result:</span></td>
+        <td colspan="2">{{x.result[1]}}</td>
+      </tr>
+      {% endif %}
+      {% for e in x.errors %}
+      <tr>
+        <td style="white-space: nowrap"><span class="field-head">{% if forloop.first %}Errors:{% endif %}</span></td>
+        <td style="white-space: nowrap">{{ e.name }}</td>
+        <td>{{ e.doc }}</td>
+      </tr>
+      {% endfor %}
+      {% for t in x.lifecycle %}
+      <tr>
+        <td style="white-space: nowrap"><span class="field-head">{{ t.transition | capitalize }}  in:</span></td>
+        <td style="white-space: nowrap">{{ site.data.releases[t.release] }} ({{ t.release }})</td>
+        <td>{{ t.description | escape }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+{% endfor %}
+
+</div>
+
+<div class="col-md-3" id="sidebar">
+  <h2 class="title">Classes</h2>
+  <div id="class_overview"><a href="{{ site.baseurl }}/xen-api/index.html">Overview</a></div>
+  {% assign classes = site.pages | where:"class_index",true %}
+  {% for c in classes %}
+    <a href="{{ site.baseurl }}{{ c.url }}">{{ c.class }}</a><br/>
+  {% endfor %}
+</div>
+
+</div>
+
