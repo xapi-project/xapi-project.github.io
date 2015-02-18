@@ -58,3 +58,4 @@
 - title: Developer Guide
   docs:
   - devguide/howtos/add-field.md
+  - devguide/howtos/add-function.md
