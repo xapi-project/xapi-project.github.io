@@ -25,7 +25,9 @@ title: XenAPI Reference
   {% endcase %}
 </div>
 
-<h2 class="title" onclick="showhide(document.getElementById('class_details'))" style="cursor: pointer">Class: {{ page.class }}</h2>
+<h2 class="title" onclick="showhide(document.getElementById('class_{{page.class}}_details'))" style="cursor: pointer">
+  Class: {{ page.class }}
+</h2>
 
 <div class="description">
 {% assign n = content | number_of_words %}
@@ -36,7 +38,7 @@ title: XenAPI Reference
 {% endif %}
 </div>
 
-<div id="class_details" style="display: none">
+<div id="class_{{page.class}}_details" style="display: none">
   <table class="field-table">
     {% for t in obj.lifecycle %}
     <tr>
