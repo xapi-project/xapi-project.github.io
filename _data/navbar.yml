@@ -55,3 +55,7 @@
 - title: Design Docs
   docs:
   - design-docs/index.md
+- title: Developer Guide
+  docs:
+  - devguide/howtos/add-field.md
+  - devguide/howtos/add-function.md
