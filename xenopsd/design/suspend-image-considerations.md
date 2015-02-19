@@ -123,9 +123,10 @@ And the suspend-resume on same backends work by virtue of:
 New components
 --------------
 The output of the changes above are:
-    * A new xenops-xc binary for NC
-    * A new xenops-xl binary for XL
-    * A new libxenguest.4.3 for both of NC and XL
+
+- A new xenops-xc binary for NC
+- A new xenops-xl binary for XL
+- A new libxenguest.4.3 for both of NC and XL
 
 Future considerations
 ---------------------
