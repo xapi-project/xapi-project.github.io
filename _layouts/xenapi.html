@@ -6,12 +6,28 @@ layout: default
 
 {{ content }}
 
-<h2>XenAPI Fields and Messages</h2>
+<h2>Related XenAPI Classes, Fields and Messages</h2>
+
+<h3>Classes</h3>
+
+<table>
+  <tr><th>Name</th><th>Description</th></tr>
+  {% for c in site.data.xenapi %}
+    {% assign class = c.name %}
+    {% assign url = class-pages | where:"class",class | first | map: "url" %}
+    {% if c.tag == page.xenapi_tag %}
+      <tr>
+        <td><a href="{{site.baseurl}}{{url}}">{{class}}</a></td>
+        <td>{{c.description}}</td>
+      </tr>
+    {% endif %}
+  {% endfor %}
+</table>
 
 <h3>Fields</h3>
 
 <table>
-  <tr><th>Field name</th><th>Type</th><th>Description</th></tr>
+  <tr><th>Name</th><th>Description</th></tr>
   {% for c in site.data.xenapi %}
     {% assign class = c.name %}
     {% assign url = class-pages | where:"class",class | first | map: "url" %}
@@ -19,7 +35,6 @@ layout: default
     {% for f in fields %}
       <tr>
         <td><a href="{{site.baseurl}}{{url}}">{{class}}.{{f.name}}</a></td>
-        <td>{{f.type}}</td>
         <td>{{f.description | escape}}</td>
       </tr>
     {% endfor %}
@@ -29,7 +44,7 @@ layout: default
 <h3>Messages</h3>
 
 <table>
-  <tr><th>Message name</th><th>Description</th></tr>
+  <tr><th>Name</th><th>Description</th></tr>
   {% for c in site.data.xenapi %}
     {% assign class = c.name %}
     {% assign url = class-pages | where:"class",class | first | map: "url" %}
