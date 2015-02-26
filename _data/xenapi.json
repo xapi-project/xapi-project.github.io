@@ -258,7 +258,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "rio",
-    "description": "A session" } ] }, { "name": "auth",
+    "description": "A session" } ],
+"tag": "" }, { "name": "auth",
 "description": "Management of remote authentication services",
 "fields": [  ],
 "messages": [ 
@@ -308,7 +309,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "george",
-    "description": "Management of remote authentication services" } ] }, { "name": "subject",
+    "description": "Management of remote authentication services" } ],
+"tag": "" }, { "name": "subject",
 "description": "A user or group that can log in xapi",
 "fields": [ 
   { "name": "uuid",
@@ -403,7 +405,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "george",
-    "description": "A user or group that can log in xapi" } ] }, { "name": "role",
+    "description": "A user or group that can log in xapi" } ],
+"tag": "" }, { "name": "role",
 "description": "A set of permissions associated with a subject",
 "fields": [ 
   { "name": "uuid",
@@ -506,7 +509,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "midnight-ride",
-    "description": "A set of permissions associated with a subject" } ] }, { "name": "task",
+    "description": "A set of permissions associated with a subject" } ],
+"tag": "" }, { "name": "task",
 "description": "A long-running asynchronous task",
 "fields": [ 
   { "name": "uuid",
@@ -737,7 +741,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "rio",
-    "description": "A long-running asynchronous task" } ] }, { "name": "event",
+    "description": "A long-running asynchronous task" } ],
+"tag": "" }, { "name": "event",
 "description": "Asynchronous event registration and handling",
 "fields": [ 
   { "name": "id",
@@ -899,7 +904,8 @@
         "doc": "An object has been deleted" }, 
       { "name": "mod",
         "doc": "An object has been modified" } ] } ],
-"lifecycle": [  ] }, { "name": "pool",
+"lifecycle": [  ],
+"tag": "" }, { "name": "pool",
 "description": "Pool-wide information",
 "fields": [ 
   { "name": "uuid",
@@ -1827,7 +1833,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "rio",
-    "description": "Pool-wide information" } ] }, { "name": "pool_patch",
+    "description": "Pool-wide information" } ],
+"tag": "" }, { "name": "pool_patch",
 "description": "Pool-wide patches",
 "fields": [ 
   { "name": "uuid",
@@ -2040,7 +2047,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "miami",
-    "description": "Pool-wide patches" } ] }, { "name": "VM",
+    "description": "Pool-wide patches" } ],
+"tag": "" }, { "name": "VM",
 "description": "A virtual machine (or 'guest').",
 "fields": [ 
   { "name": "uuid",
@@ -2270,7 +2278,7 @@
     "description": "virtual network interfaces",
     "type": "VIF ref set",
     "qualifier": "read only",
-    "tag": "",
+    "tag": "networking",
     "lifecycle": [ 
       { "transition": "published",
         "release": "rio",
@@ -4344,7 +4352,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "rio",
-    "description": "A virtual machine (or 'guest')." } ] }, { "name": "VM_metrics",
+    "description": "A virtual machine (or 'guest')." } ],
+"tag": "" }, { "name": "VM_metrics",
 "description": "The metrics associated with a VM",
 "fields": [ 
   { "name": "uuid",
@@ -4461,7 +4470,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "rio",
-    "description": "The metrics associated with a VM" } ] }, { "name": "VM_guest_metrics",
+    "description": "The metrics associated with a VM" } ],
+"tag": "" }, { "name": "VM_guest_metrics",
 "description": "The metrics reported by the guest (as opposed to inferred from outside)",
 "fields": [ 
   { "name": "uuid",
@@ -4576,7 +4586,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "rio",
-    "description": "The metrics reported by the guest (as opposed to inferred from outside)" } ] }, { "name": "VMPP",
+    "description": "The metrics reported by the guest (as opposed to inferred from outside)" } ],
+"tag": "" }, { "name": "VMPP",
 "description": "VM Protection Policy",
 "fields": [ 
   { "name": "uuid",
@@ -5315,7 +5326,8 @@
     "description": "" }, 
   { "transition": "removed",
     "release": "clearwater",
-    "description": "The VMPR feature was removed" } ] }, { "name": "VM_appliance",
+    "description": "The VMPR feature was removed" } ],
+"tag": "" }, { "name": "VM_appliance",
 "description": "VM appliance",
 "fields": [ 
   { "name": "uuid",
@@ -5514,7 +5526,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "boston",
-    "description": "VM appliance" } ] }, { "name": "DR_task",
+    "description": "VM appliance" } ],
+"tag": "" }, { "name": "DR_task",
 "description": "DR task",
 "fields": [ 
   { "name": "uuid",
@@ -5574,7 +5587,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "boston",
-    "description": "DR task" } ] }, { "name": "host",
+    "description": "DR task" } ],
+"tag": "" }, { "name": "host",
 "description": "A physical host",
 "fields": [ 
   { "name": "uuid",
@@ -5755,7 +5769,7 @@
     "description": "physical network interfaces",
     "type": "PIF ref set",
     "qualifier": "read only",
-    "tag": "",
+    "tag": "networking",
     "lifecycle": [ 
       { "transition": "published",
         "release": "rio",
@@ -5828,7 +5842,7 @@
     "description": "The hostname of this host",
     "type": "string",
     "qualifier": "read/write",
-    "tag": "",
+    "tag": "networking",
     "lifecycle": [ 
       { "transition": "published",
         "release": "rio",
@@ -5837,7 +5851,7 @@
     "description": "The address by which this host can be contacted from any other host in the pool",
     "type": "string",
     "qualifier": "read/write",
-    "tag": "",
+    "tag": "networking",
     "lifecycle": [ 
       { "transition": "published",
         "release": "rio",
@@ -6447,7 +6461,7 @@
         "doc": "Which host's management interface is required" } ],
     "errors": [  ],
     "roles": [ "pool-admin", "pool-operator" ],
-    "tag": "",
+    "tag": "networking",
     "lifecycle": [ 
       { "transition": "prototyped",
         "release": "tampa",
@@ -6458,7 +6472,7 @@
     "params": [  ],
     "errors": [  ],
     "roles": [ "pool-admin", "pool-operator" ],
-    "tag": "",
+    "tag": "networking",
     "lifecycle": [ 
       { "transition": "published",
         "release": "miami",
@@ -6486,7 +6500,7 @@
         "doc": "reference to a PIF object corresponding to the management interface" } ],
     "errors": [  ],
     "roles": [ "pool-admin", "pool-operator" ],
-    "tag": "",
+    "tag": "networking",
     "lifecycle": [ 
       { "transition": "published",
         "release": "miami",
@@ -6858,7 +6872,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "rio",
-    "description": "A physical host" } ] }, { "name": "host_crashdump",
+    "description": "A physical host" } ],
+"tag": "" }, { "name": "host_crashdump",
 "description": "Represents a host crash dump",
 "fields": [ 
   { "name": "uuid",
@@ -6946,7 +6961,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "rio",
-    "description": "Represents a host crash dump" } ] }, { "name": "host_patch",
+    "description": "Represents a host crash dump" } ],
+"tag": "" }, { "name": "host_patch",
 "description": "Represents a patch stored on a server",
 "fields": [ 
   { "name": "uuid",
@@ -7082,7 +7098,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "rio",
-    "description": "Represents a patch stored on a server" } ] }, { "name": "host_metrics",
+    "description": "Represents a patch stored on a server" } ],
+"tag": "" }, { "name": "host_metrics",
 "description": "The metrics associated with a host",
 "fields": [ 
   { "name": "uuid",
@@ -7148,7 +7165,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "rio",
-    "description": "The metrics associated with a host" } ] }, { "name": "host_cpu",
+    "description": "The metrics associated with a host" } ],
+"tag": "" }, { "name": "host_cpu",
 "description": "A physical CPU",
 "fields": [ 
   { "name": "uuid",
@@ -7277,7 +7295,8 @@
     "description": "A physical CPU" }, 
   { "transition": "deprecated",
     "release": "midnight-ride",
-    "description": "Deprecated in favour of the Host.cpu_info field" } ] }, { "name": "network",
+    "description": "Deprecated in favour of the Host.cpu_info field" } ],
+"tag": "" }, { "name": "network",
 "description": "A virtual network",
 "fields": [ 
   { "name": "uuid",
@@ -7468,7 +7487,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "rio",
-    "description": "A virtual network" } ] }, { "name": "VIF",
+    "description": "A virtual network" } ],
+"tag": "networking" }, { "name": "VIF",
 "description": "A virtual network interface",
 "fields": [ 
   { "name": "uuid",
@@ -7848,7 +7868,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "rio",
-    "description": "A virtual network interface" } ] }, { "name": "VIF_metrics",
+    "description": "A virtual network interface" } ],
+"tag": "networking" }, { "name": "VIF_metrics",
 "description": "The metrics associated with a virtual network device",
 "fields": [ 
   { "name": "uuid",
@@ -7902,7 +7923,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "rio",
-    "description": "The metrics associated with a virtual network device" } ] }, { "name": "PIF",
+    "description": "The metrics associated with a virtual network device" } ],
+"tag": "networking" }, { "name": "PIF",
 "description": "A physical network interface (note separate VLANs are represented as several PIFs)",
 "fields": [ 
   { "name": "uuid",
@@ -8538,7 +8560,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "rio",
-    "description": "A physical network interface (note separate VLANs are represented as several PIFs)" } ] }, { "name": "PIF_metrics",
+    "description": "A physical network interface (note separate VLANs are represented as several PIFs)" } ],
+"tag": "networking" }, { "name": "PIF_metrics",
 "description": "The metrics associated with a physical network interface",
 "fields": [ 
   { "name": "uuid",
@@ -8664,7 +8687,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "rio",
-    "description": "The metrics associated with a physical network interface" } ] }, { "name": "Bond",
+    "description": "The metrics associated with a physical network interface" } ],
+"tag": "networking" }, { "name": "Bond",
 "description": "",
 "fields": [ 
   { "name": "uuid",
@@ -8835,7 +8859,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "miami",
-    "description": "" } ] }, { "name": "VLAN",
+    "description": "" } ],
+"tag": "networking" }, { "name": "VLAN",
 "description": "A VLAN mux/demux",
 "fields": [ 
   { "name": "uuid",
@@ -8926,7 +8951,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "miami",
-    "description": "A VLAN mux/demux" } ] }, { "name": "SM",
+    "description": "A VLAN mux/demux" } ],
+"tag": "networking" }, { "name": "SM",
 "description": "A storage manager plugin",
 "fields": [ 
   { "name": "uuid",
@@ -9057,7 +9083,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "rio",
-    "description": "A storage manager plugin" } ] }, { "name": "SR",
+    "description": "A storage manager plugin" } ],
+"tag": "" }, { "name": "SR",
 "description": "A storage repository",
 "fields": [ 
   { "name": "uuid",
@@ -9658,7 +9685,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "rio",
-    "description": "A storage repository" } ] }, { "name": "VDI",
+    "description": "A storage repository" } ],
+"tag": "" }, { "name": "VDI",
 "description": "A virtual disk image",
 "fields": [ 
   { "name": "uuid",
@@ -10564,7 +10592,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "rio",
-    "description": "A virtual disk image" } ] }, { "name": "VBD",
+    "description": "A virtual disk image" } ],
+"tag": "" }, { "name": "VBD",
 "description": "A virtual block device",
 "fields": [ 
   { "name": "uuid",
@@ -10902,7 +10931,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "rio",
-    "description": "A virtual block device" } ] }, { "name": "VBD_metrics",
+    "description": "A virtual block device" } ],
+"tag": "" }, { "name": "VBD_metrics",
 "description": "The metrics associated with a virtual block device",
 "fields": [ 
   { "name": "uuid",
@@ -10956,7 +10986,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "rio",
-    "description": "The metrics associated with a virtual block device" } ] }, { "name": "PBD",
+    "description": "The metrics associated with a virtual block device" } ],
+"tag": "" }, { "name": "PBD",
 "description": "The physical block devices through which hosts access SRs",
 "fields": [ 
   { "name": "uuid",
@@ -11066,7 +11097,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "rio",
-    "description": "The physical block devices through which hosts access SRs" } ] }, { "name": "crashdump",
+    "description": "The physical block devices through which hosts access SRs" } ],
+"tag": "" }, { "name": "crashdump",
 "description": "A VM crashdump",
 "fields": [ 
   { "name": "uuid",
@@ -11125,7 +11157,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "rio",
-    "description": "A VM crashdump" } ] }, { "name": "VTPM",
+    "description": "A VM crashdump" } ],
+"tag": "" }, { "name": "VTPM",
 "description": "A virtual TPM device",
 "fields": [ 
   { "name": "uuid",
@@ -11160,7 +11193,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "rio",
-    "description": "A virtual TPM device" } ] }, { "name": "console",
+    "description": "A virtual TPM device" } ],
+"tag": "" }, { "name": "console",
 "description": "A console",
 "fields": [ 
   { "name": "uuid",
@@ -11221,7 +11255,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "rio",
-    "description": "A console" } ] }, { "name": "user",
+    "description": "A console" } ],
+"tag": "" }, { "name": "user",
 "description": "A user of the system",
 "fields": [ 
   { "name": "uuid",
@@ -11269,7 +11304,8 @@
     "description": "A user of the system" }, 
   { "transition": "deprecated",
     "release": "george",
-    "description": "Deprecated in favor of subject" } ] }, { "name": "data_source",
+    "description": "Deprecated in favor of subject" } ],
+"tag": "" }, { "name": "data_source",
 "description": "Data sources for logging in RRDs",
 "fields": [ 
   { "name": "label",
@@ -11351,7 +11387,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "orlando",
-    "description": "Data sources for logging in RRDs" } ] }, { "name": "blob",
+    "description": "Data sources for logging in RRDs" } ],
+"tag": "" }, { "name": "blob",
 "description": "A placeholder for a binary blob",
 "fields": [ 
   { "name": "uuid",
@@ -11456,7 +11493,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "orlando",
-    "description": "A placeholder for a binary blob" } ] }, { "name": "message",
+    "description": "A placeholder for a binary blob" } ],
+"tag": "" }, { "name": "message",
 "description": "An message for the attention of the administrator",
 "fields": [ 
   { "name": "uuid",
@@ -11677,7 +11715,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "orlando",
-    "description": "An message for the attention of the administrator" } ] }, { "name": "secret",
+    "description": "An message for the attention of the administrator" } ],
+"tag": "" }, { "name": "secret",
 "description": "A secret",
 "fields": [ 
   { "name": "uuid",
@@ -11713,7 +11752,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "midnight-ride",
-    "description": "A secret" } ] }, { "name": "tunnel",
+    "description": "A secret" } ],
+"tag": "" }, { "name": "tunnel",
 "description": "A tunnel for network traffic",
 "fields": [ 
   { "name": "uuid",
@@ -11807,7 +11847,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "cowley",
-    "description": "A tunnel for network traffic" } ] }, { "name": "PCI",
+    "description": "A tunnel for network traffic" } ],
+"tag": "networking" }, { "name": "PCI",
 "description": "A PCI device",
 "fields": [ 
   { "name": "uuid",
@@ -11913,7 +11954,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "boston",
-    "description": "" } ] }, { "name": "PGPU",
+    "description": "" } ],
+"tag": "" }, { "name": "PGPU",
 "description": "A physical GPU (pGPU)",
 "fields": [ 
   { "name": "uuid",
@@ -12150,7 +12192,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "boston",
-    "description": "" } ] }, { "name": "GPU_group",
+    "description": "" } ],
+"tag": "" }, { "name": "GPU_group",
 "description": "A group of compatible GPUs across the resource pool",
 "fields": [ 
   { "name": "uuid",
@@ -12310,7 +12353,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "boston",
-    "description": "" } ] }, { "name": "VGPU",
+    "description": "" } ],
+"tag": "" }, { "name": "VGPU",
 "description": "A virtual GPU (vGPU)",
 "fields": [ 
   { "name": "uuid",
@@ -12435,7 +12479,8 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "boston",
-    "description": "" } ] }, { "name": "VGPU_type",
+    "description": "" } ],
+"tag": "" }, { "name": "VGPU_type",
 "description": "A type of virtual GPU",
 "fields": [ 
   { "name": "uuid",
@@ -12557,4 +12602,5 @@
 "lifecycle": [ 
   { "transition": "published",
     "release": "vgpu-tech-preview",
-    "description": "" } ] } ]
+    "description": "" } ],
+"tag": "" } ]

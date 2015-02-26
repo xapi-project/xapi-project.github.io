@@ -1,6 +1,7 @@
 ---
 title: Networking
-layout: default
+layout: xenapi
+xenapi_tag: networking
 ---
 
 Advanced settings for network interfaces
