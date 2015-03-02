@@ -1,35 +1,51 @@
 /* queue suspend/resume protocol */
 
+/* flags in the shared disk */
+bool suspend /* suspend requested */
+bool suspend_ack /* suspend acknowledged *.
 
-mtype = { data, rst, dunno, one, two }
-
-bool suspend
-bool suspend_ack
-bool inflight_data
+/* the queue may have no data (none); a delta or a full sync.
+   the full sync is performed immediately on resume. */
+mtype = { sync delta none }
+mtype inflight_data = none
 
 proctype consumer(){
-  printf("consumer")
 
   do
-  :: (inflight_data == true) ->
+  /* Consumer.pop */
+  :: (inflight_data != none) ->
+    /* In steady state we receive deltas */
     assert (suspend_ack == false);
-    inflight_data = false
+    assert (inflight_data == delta);
+    inflight_data = none
+  /* Consumer.suspend */
   :: (suspend == false) ->
     suspend = true;
     /* ordering important here */
     (suspend_ack == true);
-    inflight_data = false;
+    inflight_data = none;
+  /* Consumer.resume */
   :: (suspend == true) ->
     suspend = false;
     (suspend_ack == false)
+    /* Wait for initial resync */
+    (inflight_data == sync)
+    inflight_data = none
   od;
 }
 
 proctype producer(){
-  printf("producer")
   do
-  :: (suspend != suspend_ack) -> suspend_ack = suspend
-  :: ((suspend == false) && (suspend_ack == false)) -> inflight_data = true
+  /* Producer.state = Running */
+  :: ((suspend == false)&&(suspend_ack==true)) ->
+    suspend_ack = false;
+    inflight_data = sync
+  /* Producer.state = Suspended */
+  :: ((suspend == true) && (suspend_ack == false)) ->
+    suspend_ack = true
+  /* Producer.push */
+  :: ((suspend == false) && (suspend_ack == false) && (inflight_data != sync)) ->
+    inflight_data = delta
   od
 }
 
