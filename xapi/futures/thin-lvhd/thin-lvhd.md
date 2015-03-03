@@ -71,6 +71,30 @@ known issue is that, slow I/O during dirty pages writeback/flush may
 cause memory starvation, then other userland process or kernel threads
 would be blocked.
 
+The following diagram shows the Control-plane:
+
+![Control plane](control-plane.png)
+
+When thin-provisioning is enabled we will be modifying the LVM metadata at
+an increased rate. We will cache the current metadata in the `xenvmd` process
+and funnel all queries through it, rather than "peeking" at the metadata
+on-disk using the LVM `metadata_read_only` mode. The `xenvm` CLI uses a simple
+RPC interface to query the `xenvmd` process, tunnelled through `xapi` over
+the management network. The RPC interface can be used for
+
+- activating volumes locally: `xenvm` will query the LV segments and program
+  device mapper
+- deactivating volumes locally
+- listing LVs, PVs etc
+
+When the SM backend wishes to query or update volume group metadata it should use the
+`xenvm` CLI while thin-provisioning is enabled.
+
+The `xenvmd` process shall use a redo-log to ensure that metadata updates are
+persisted in constant time and flushed lazily to the regular metadata area.
+
+
+
 Interaction with HA
 ===================
 
