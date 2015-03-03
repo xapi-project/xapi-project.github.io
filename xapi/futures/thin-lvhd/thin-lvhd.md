@@ -17,24 +17,52 @@ LVHD such that
 - disks only consume the space they need (plus an adjustable small
   overhead)
 - when a disk needs more space, the allocation can be done *locally*
-  in the common-case; in particular there is no network RPC in the
-  common-case
+  in the common-case; in particular there is no network RPC needed
 - when the resource pool master host has failed, allocations can still
   continue, up to some limit, allowing time for the master host to be
   recovered; in particular there is no need for very low HA timeouts.
 - we can (in future) support in-kernel block allocation through the
   device mapper dm-thin target.
 
-![Architecture](thin-lvhd.png)
+The following diagram shows the "Allocation plane":
 
-All VM disk writes are channeled through ```tapdisk3``` which keeps
-track of how much space remains reserved in the LVM LV. When the
-free space drops below a "low-water mark" (configurable via a host
-config file), ```tapdisk3``` opens a connection to a `local-allocator`
-process and requests more space asynchronously. If ```tapdisk3```
-notices the free space approach zero then it should start to slow
+![Allocation plane](allocation-plane.png)
+
+All VM disk writes are channelled through `tapdisk3` which keeps track
+of the remaining reserved space within the device mapper device. When
+the free space drops below a "low-water mark", tapdisk sends a message
+to a local per-SR daemon called `local-allocator` and requests more
+space.
+
+The `local-allocator` maintains a free pool of blocks available for
+allocation locally (hence the name). It will pick some blocks and
+transactionally send the update to the `xenvmd` process running
+on the SRmaster via the shared ring (labelled `ToLVM queue` in the diagram)
+and update the device mapper tables locally.
+
+There is one `xenvmd` process per SR on the SRmaster. `xenvmd` receives
+local allocations from all the host shared rings (labelled `ToLVM queue`
+in the diagram) and combines them together, appending them to a redo-log
+also on shared storage. When `xenvmd` notices that a host's free space
+(represented in the metadata as another LV) is low it allocates new free blocks
+and pushes these to the host via another shared ring (labaelled `FromLVM queue`
+in the diagram).
+
+The `xenvmd` process maintains a cache of the current VG metadata for
+fast query and update. All updates are appended to the redo-log to ensure
+they operate in O(1) time. The redo log updates are periodically flushed
+to the primary LVM metadata.
+
+Note on running out of blocks
+-----------------------------
+
+Note that, while the host has plenty of free blocks, local allocations should
+be fast. If the master fails and the local free pool starts running out
+and `tapdisk` asks for more blocks, then the local allocator won't be able
+to provide them.
+`tapdisk` should start to slow
 I/O in order to provide the local allocator more time.
-Eventually if ```tapdisk3``` runs
+Eventually if ```tapdisk``` runs
 out of space before the local allocator can satisfy the request then
 guest I/O will block. Note Windows VMs will start to crash if guest
 I/O blocks for more than 70s. Linux VMs, no matter PV or HVM, may suffer
@@ -42,19 +70,6 @@ from "block for more than 120 seconds" issue due to slow I/O. This
 known issue is that, slow I/O during dirty pages writeback/flush may
 cause memory starvation, then other userland process or kernel threads
 would be blocked.
-
-Every host has a `local-allocator` daemon which manages a host-wide
-pool of blocks (represented by an LVM LV) and provides them to ```tapdisk3```
-on demand. When it receives a request, the local allocator decides
-which blocks to provide from its local free pool, writes to the journal,
-writes the update to an outgoing `toLVM` queue and then reloads the device mapper
-table to extend the LV. When a VDI is deactivated, the current items on the
-`toLVM` queue are flushed synchonously.
-
-As well as waiting for requests from `tapdisk3`, the `local-allocator` also
-watches for new block allocations from the `SRmaster-allocator` via the
-`fromLVM` queue. These allocations are used to resize the local host free
-block LV locally via device mapper.
 
 Interaction with HA
 ===================
