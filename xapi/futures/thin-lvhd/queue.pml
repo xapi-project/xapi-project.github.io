@@ -11,6 +11,20 @@ mtype inflight_data = none
 
 proctype consumer(){
 
+  /* get the channel back to a known state by suspending,
+     resuming and receiving the initial resync */
+resync:
+  (suspend == suspend_ack)
+  suspend = true;
+  (suspend == suspend_ack)
+resync2:
+  /* drop old data */
+  inflight_data = none;
+  suspend = false;
+  (suspend == suspend_ack)
+  (inflight_data == sync)
+  /* receive initial sync */
+  inflight_data = none;
   do
   /* Consumer.pop */
   :: (inflight_data != none) ->
@@ -19,18 +33,11 @@ proctype consumer(){
     assert (inflight_data == delta);
     inflight_data = none
   /* Consumer.suspend */
-  :: (suspend == false) ->
-    suspend = true;
-    /* ordering important here */
-    (suspend_ack == true);
-    inflight_data = none;
+  :: ((suspend == false)&&(suspend_ack == false)) ->
+    goto resync
   /* Consumer.resume */
-  :: (suspend == true) ->
-    suspend = false;
-    (suspend_ack == false)
-    /* Wait for initial resync */
-    (inflight_data == sync)
-    inflight_data = none
+  :: ((suspend == true)&&(suspend_ack == true)) ->
+    goto resync2
   od;
 }
 
