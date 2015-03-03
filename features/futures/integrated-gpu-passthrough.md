@@ -3,7 +3,7 @@ title: Integrated GPU passthrough support
 layout: default
 design_doc: true
 revision: 3
-status: proposed
+status: confirmed
 ---
 
 Introduction
