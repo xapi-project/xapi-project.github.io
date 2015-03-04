@@ -392,15 +392,15 @@ implementations, we will allow HA to be disabled.
 Host-local LVs
 ==============
 
-When a host calls SMAPI ```sr_attach```, it will tell `xenvmd` on the
-SRmaster to connect to the local allocator on the host. The `xenvmd`
+When a host calls SMAPI `sr_attach`, it will use `xenvm` to tell `xenvmd` on the
+SRmaster to connect to the `local_allocator` on the host. The `xenvmd`
 daemon will create the volumes for queues and a volume to represent the
 "free blocks" which a host is allowed to allocate.
 
 Monitoring
 ==========
 
-The local allocator process should export RRD datasources over shared
+The `local_allocator` process should export RRD datasources over shared
 memory named
 
 - ```sr_<SR uuid>_<host uuid>_free```: the number of free blocks in
@@ -464,86 +464,36 @@ request will block for a long time if
 - the master has failed and HA is disabled. The admin should re-enable
   HA or fix the problem manually.
 
-Shared-block-rings
-==================
-
-The `toLVM` and `fromLVM` queues will be implemented as rings over the shared
-storage blocks, similar to the Xenstore and Console ring protocols over
-shared memory. The ring will have the following format:
-
-Sector | Name     | Description
--------|----------|----------------------
-0      | magic    | Well-known magic string to identify an intact ring
-1      | producer | Producer pointer (byte offset)
-2      | consumer | Consumer pointer (byte offset)
-3...   | data     | Arbitrary data
-
-When data is to be written to the ring the updates are ordered:
-
-1. the data is written to the data section
-2. the producer pointer is incremented to "expose" the data to the consumer
-
-When data is to be read from the ring the updates are similarly ordered:
-
-1. the data is read from the data section and processed
-2. when the side-effects are fully persisted, the consumer pointer is incremented
-
-The ring implementation will expect the ring data size to be always larger than
-any individual write.
-
-Example ring implementation: [shared-block-ring](https://github.com/mirage/shared-block-ring).
-
-The local-allocator
+The local_allocator
 ===================
 
-There is one `local-allocator` process per attached SR. The process will be
-spawned by the SM ```sr_attach``` call, and sent a shutdown message from
-the ```sr_detach``` call.
+There is one `local_allocator` process per plugged PBD.
+The process will be
+spawned by the SM `sr_attach` call, and shutdown from the `sr_detach` call.
 
-The `local-allocator` accepts command-line arguments:
+The `local_allocator` accepts the following configuration (via a config file):
 
-```
-thin-lvhd-local-allocator     \
-  --config <path>             \
-  --socket <path>             \
-  --journal <path>            \
-  --freePool <path>           \
-  --fromLVM <path>            \
-  --toLVM <path>
-```
-where
+- `socket`: path to a local Unix domain socket. This is where the `local_allocator`
+  listens for requests from `tapdisk`
+- `allocation_quantum`: number of megabytes to allocate to each tapdisk on request
+- `local_journal`: path to a block device or file used for local journalling. This
+  should be deleted on reboot.
+- `free_pool`: name of the LV used to store the host's free blocks
+- `devices`: list of local block devices containing the PVs
+- `to_LVM`: name of the LV containing the queue of block allocations sent to `xenvmd`
+- `from_LVM`: name of the LV containing the queue of free blocks sent from `xenvmd`
 
-- `--config` names the config file
-- `--socket` names the Unix domain socket used for receiving allocation requests
-from `tapdisk3`
-- `--journal` names the host local journal which is used to cope with daemon crashes
-- `--freePool` names the device-mapper device containing the blocks free for
-local allocation
-- `--fromLVM` names the device containing new free block allocations from
-the host which controls the LVM metadata
-- `--toLVM` names the device containing the local allocations which should be
-replayed against the LVM metadata
-
-The `local-allocator` also reads a config file containing:
-
-```
-# global section
-
-# amount to provide to an LV when requested
-vdi-allocation-quantum=100M
-```
-
-When the `local-allocator` process starts up it will read the host local
+When the `local_allocator` process starts up it will read the host local
 journal and
 
 - re-execute any pending allocation requests from tapdisk
-- compute the lowest still-free block in the local free block device for
-future allocations
+- suspend and resume the `from_LVM` queue to trigger a full retransmit
+  of free blocks from `xenvmd`
 
 The procedure for handling an allocation request from tapdisk is:
 
 1. if there aren't enough free blocks in the free pool, wait polling the
-   `fromLVM` queue
+   `from_LVM` queue
 2. choose a range of blocks to assign to the tapdisk LV from the free LV
 3. write the operation (i.e. exactly what we are about to do) to the journal.
    This ensures that it will be repeated if the allocator crashes and restarts.
@@ -557,65 +507,41 @@ The procedure for handling an allocation request from tapdisk is:
    it now)
 10. reply to tapdisk
 
-The shutdown request
---------------------
+Shutting down the local-allocator
+---------------------------------
 
-The shutdown request has the following format:
+The SM `sr_detach` called from `PBD.unplug` will use the `xenvm` CLI to request
+that `xenvmd` disconnects from a host. The procedure is:
 
-Octet offsets | Name     | Description
---------------|----------|------------
-0,1           | tl       | Total length (including this field) of message (in network byte order)
-2             | type     | The value '1' indicating a shutdown request
+1. SM calls `xenvm disconnect host`
+2. `xenvm` sends an RPC to `xenvmd` tunnelled through `xapi`
+3. `xenvmd` suspends the `to_LVM` queue
+4. the `local_allocator` acknowledges the suspend and exits
+5. `xenvmd` flushes all updates from the `to_LVM` queue and stops listening
 
-There is no response to the shutdown request. The `local-allocator` will
-terminate as soon as it is able.
+xenvmd
+======
 
-The SRmaster-allocator
-======================
+`xenvmd` is a daemon running per SRmaster PBD, started in `sr_attach` and
+terminated in `sr_detach`. `xenvmd` has a config file containing:
 
-The `SRmaster-allocator` is a daemon run on the SRmaster node, started in
-`sr_attach` and shutdown in `sr_detach`.
+- `socket`: Unix domain socket where `xenvmd` listens for requests from
+  `xenvm` tunnelled by `xapi`
+- `host_allocation_quantum`: number of megabytes to hand to a host at a time
+- `host_low_water_mark`: threshold below which we will hand blocks to a host
+- `devices`: local devices containing the PVs
 
-The `SRmaster-allocator` accepts command-line arguments:
+`xenvmd` continually
 
-```
-SRmaster-allocator          \
---config <path>             \
---journal <path>
-```
-where
-
-- `--config` names the config file
-- `--journal` names the host local journal which is used to cope with daemon crashes
-
-The config file contains the paths for all the control volumes and global
-configuration,
-for example
-
-```
-# global section
-host-allocation-quantum=1G
-
-[host1]
-to-LVM=<path>
-from-LVM=<path>
-
-[host2]
-to-LVM=<path>
-from-LVM=<path>
-```
-
-The `SRmaster-allocator` continually
-
-- peeks at updates from all the `to-LVM` queues
+- peeks updates from all the `to_LVM` queues
 - calculates how much free space each host still has
 - if the free space for a host drops below some threshold:
   - choose some free blocks
-- writes the change it is going to make to the local journal
-- pops the updates from the `to-LVM` queues
-- pushes the updates to the `from-LVM` queues
-- rewrites the LVM metadata
-- removes the change from the local journal
+- writes the change it is going to make to a journal stored in an LV
+- pops the updates from the `to_LVM` queues
+- pushes the updates to the `from_LVM` queues
+- pushes updates to the LVM redo-log
+- periodically flush the LVM redo-log to the LVM metadata area
 
 The membership monitor
 ======================
