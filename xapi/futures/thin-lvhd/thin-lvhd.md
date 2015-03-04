@@ -172,15 +172,15 @@ The extend request
 
 The request has the following format:
 
-Octet offsets | Name     | Description
---------------|----------|------------
-0,1           | tl       | Total length (including this field) of message (in network byte order)
-2             | type     | The value '0' indicating an extend request
-3             | nl       | The length of the LV name in octets, including NULL terminator
-4,...,4+nl-1  | name     | The LV name
-4+nl-12+nl-1  | vdi_size | The virtual size of the logical VDI (in network byte order)
-12+nl-20+nl-1 | lv_size  | The current size of the LV (in network byte order)
-20+nl-28+nl-1 | cur_size | The current size of the vhd metadata (in network byte order)
+Octet offsets    | Name     | Description
+-----------------|----------|------------
+0,1              | tl       | Total length (including this field) of message (in network byte order)
+2                | type     | The value '0' indicating an extend request
+3                | nl       | The length of the LV name in octets, including NULL terminator
+4,..,4+nl-1      | name     | The LV name
+4+nl,..,12+nl-1  | vdi_size | The virtual size of the logical VDI (in network byte order)
+12+nl,..,20+nl-1 | lv_size  | The current size of the LV (in network byte order)
+20+nl,..,28+nl-1 | cur_size | The current size of the vhd metadata (in network byte order)
 
 The extend response
 -------------------
