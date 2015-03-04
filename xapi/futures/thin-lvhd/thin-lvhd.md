@@ -45,7 +45,7 @@ local allocations from all the host shared rings (labelled `ToLVM queue`
 in the diagram) and combines them together, appending them to a redo-log
 also on shared storage. When `xenvmd` notices that a host's free space
 (represented in the metadata as another LV) is low it allocates new free blocks
-and pushes these to the host via another shared ring (labaelled `FromLVM queue`
+and pushes these to the host via another shared ring (labelled `FromLVM queue`
 in the diagram).
 
 The `xenvmd` process maintains a cache of the current VG metadata for
@@ -71,15 +71,15 @@ known issue is that, slow I/O during dirty pages writeback/flush may
 cause memory starvation, then other userland process or kernel threads
 would be blocked.
 
-The following diagram shows the Control-plane:
+The following diagram shows the control-plane:
 
-![Control plane](control-plane.png)
+![control plane](control-plane.png)
 
 When thin-provisioning is enabled we will be modifying the LVM metadata at
 an increased rate. We will cache the current metadata in the `xenvmd` process
 and funnel all queries through it, rather than "peeking" at the metadata
 on-disk. Note it will still be possible to peek at the on-disk metadata but it
-will be out-of-date. It can still be used to query the PV state of the volume
+will be out-of-date. Peeking can still be used to query the PV state of the volume
 group.
 
 The `xenvm` CLI uses a simple
@@ -90,6 +90,9 @@ the management network. The RPC interface can be used for
   device mapper
 - deactivating volumes locally
 - listing LVs, PVs etc
+
+Note that current LVHD requires the management network for these control-plane
+functions.
 
 When the SM backend wishes to query or update volume group metadata it should use the
 `xenvm` CLI while thin-provisioning is enabled.
@@ -112,7 +115,7 @@ Components: roles and responsibilities
 `xenvm`:
 
 - a CLI which talks the `xenvmd` protocol to query / update LVs
-- can be run on any host, calls are forwarded by `xapi`
+- can be run on any host, calls (except "format" and "upgrade") are forwarded by `xapi`
 - can "format" a LUN to prepare it for `xenvmd`
 - can "upgrade" a LUN to prepare it for `xenvmd`
 
@@ -245,11 +248,13 @@ clean shutdown by:
 - when the `xenvmd` sees the acknowlegement, we know that the
   `local_allocator` is offline and it doesn't need to poll the queue any more
 
-Shutting down xenvmd
+Downgrading metadata
 --------------------
 
-Shutting down the `xenvmd` is really a "downgrade": when using
-thin provisioning, `xenvmd` should be running all the time.
+`xenvmd` can be terminated at any time and restarted, since all compound
+operations are journalled.
+
+Downgrade is a special case of shutdown.
 To downgrade, we need to stop all hosts allocating and ensure all updates
 are flushed to the global LVM metadata. `xenvmd` can shutdown
 by:
