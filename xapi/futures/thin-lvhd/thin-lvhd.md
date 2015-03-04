@@ -137,6 +137,10 @@ Components: roles and responsibilities
 - has an on/off switch for thin-provisioning
 - can use either normal LVM or the `xenvm` CLI
 
+`membership_monitor`
+
+- configures and manages the connections between `xenvmd` and the `local_allocator`
+
 Queues on the shared disk
 =========================
 
@@ -225,9 +229,9 @@ Starting xenvmd
 The device containing the volume group should be written to a config
 file when the SR is plugged.
 
-TODO: decide how we should maintain the list of hosts to connect to?
-or should we reconnect to all hosts? We probably can discover the metadata
-volumes by querying the VG.
+`xenvmd` does not remember which hosts it is listening to across crashes,
+restarts or master failovers. The `membership_monitor` will keep the
+`xenvmd` list in sync with the `PBD.currently_attached` fields.
 
 Shutting down the local_allocator
 ---------------------------------
@@ -546,41 +550,36 @@ terminated in `sr_detach`. `xenvmd` has a config file containing:
 The membership monitor
 ======================
 
-The role of the membership monitor is to
-
-- destroy a host's local LVs when it has left the pool and the `toLVM` queue
-  has been flushed
-- rewrite the `SRmaster-allocator` config file when hosts have joined or left
-  the pool
+The role of the membership monitor is to keep the list of `xenvmd` connections
+in sync with the `PBD.currently_attached` fields.
 
 We shall
 
-- install a ```host-pre-declare-dead``` script to wait for the `SRmaster-allocator`
-  to flush the `toLVM` queue (i.e. when `peek` returns 0 elements) and delete
-  the LV
+- install a ```host-pre-declare-dead``` script to use `xenvm` to send an RPC
+  to `xenvmd` to forcibly flush (without acknowledgement) the `to_LVM` queue
+  and destroy the LVs.
 - modify XenAPI ```Host.declare_dead``` to call ```host-pre-declare-dead``` before
   the VMs are unlocked
 - add a ```host-pre-forget``` hook type which will be called just before a Host
   is forgotten
-- install a ```host-pre-forget``` script to destroy the host's local LVs
+- install a ```host-pre-forget``` script to use `xenvm` to call `xenvmd` to
+  destroy the host's local LVs
 
 Modifications to LVHD SR
 ========================
 
 - `sr_attach` should:
   - if an SRmaster, update the `MGT` major version number to prevent
-  - if an SRmaster, spawn `SRmaster-allocator`
-  - if the `toLVM`, `fromLVM`, free block LVs don't exist then create them
-  - spawn `local-allocator`
+  - if an SRmaster, spawn `xenvmd`
+  - spawn `local_allocator`
 - `sr_detach` should:
-  - shut down the `local-allocator`
-  - if an SRmaster, shut down the `SRmaster-allocator`
+  - call `xenvm` to request the shutdown of `local_allocator`
+  - if an SRmaster, terminate `xenvmd`
 - `vdi_deactivate` should:
-  - run a plugin on the SRmaster to wait for all already-generated LVM updates
-    to be flushed to the LVM metadata
+  - call `xenvm` to request the flushing of all the `to_LVM` queues to the
+    redo log
 - `vdi_activate` should:
-  - if necessary, run a plugin on the SRmaster to deflate the LV to the new
-    minimum size (+ some slack),
+  - if necessary, call `xenvm` to deflate the LV to the minimum size (with some slack)
 
 Note that it is possible to attach and detach the individual hosts in any order
 but when the SRmaster is unplugged then there will be no "refilling" of the host
@@ -591,8 +590,7 @@ Enabling thin provisioning
 
 Thin provisioning will be automatically enabled on upgrade. When the SRmaster
 plugs in `PBD` the `MGT` major version number will be bumped to prevent old
-hosts from plugging in the SR and getting confused. When any host plugs in a
-`PBD` it will create the necessary metadata volumes.
+hosts from plugging in the SR and getting confused.
 When a VDI is activated, it will be deflated to the new low size.
 
 Disabling thin provisioning
@@ -636,16 +634,14 @@ If HA is enabled:
 - ```xhad``` elects a new master if necessary
 - the ```xhad``` tells ```Xapi``` which hosts are alive and which have failed.
 - ```Xapi``` runs the ```host-pre-declare-dead``` scripts for every failed host
-- the ```host-pre-declare-dead``` wait for the `toLVM` operations to be replayed
-  against the LVM metadata on the SRmaster
+- the ```host-pre-declare-dead``` tells `xenvmd` to flush the `to_LVM` updates
 - ```Xapi``` unlocks the VMs and restarts them on new hosts.
 
 If HA is not enabled:
 
 - the admin must tell ```Xapi``` which hosts have failed with ```xe host-declare-dead```
 - ```Xapi``` runs the ```host-pre-declare-dead``` scripts for every failed host
-- the ```host-pre-declare-dead``` wait for the `toLVM` operations to be replayed
-against the LVM metadata on the SRmaster
+- the ```host-pre-declare-dead``` tells `xenvmd` to flush the `to_LVM` updates
 - ```Xapi``` unlocks the VMs
 - the admin may now restart the VMs on new hosts.
 
@@ -667,3 +663,5 @@ Summary of the impact on the admin
   space available for user volumes.
 - If an SR is completely full then it will not be possible to enable thin
   provisioning.
+- There will be more fragmentation, but the extent size is large (4MiB) so it
+  shouldn't be too bad.
