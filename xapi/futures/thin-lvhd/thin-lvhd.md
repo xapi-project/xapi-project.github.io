@@ -28,7 +28,7 @@ The following diagram shows the "Allocation plane":
 
 ![Allocation plane](allocation-plane.png)
 
-All VM disk writes are channelled through `tapdisk3` which keeps track
+All VM disk writes are channelled through `tapdisk` which keeps track
 of the remaining reserved space within the device mapper device. When
 the free space drops below a "low-water mark", tapdisk sends a message
 to a local per-SR daemon called `local-allocator` and requests more
@@ -78,7 +78,11 @@ The following diagram shows the Control-plane:
 When thin-provisioning is enabled we will be modifying the LVM metadata at
 an increased rate. We will cache the current metadata in the `xenvmd` process
 and funnel all queries through it, rather than "peeking" at the metadata
-on-disk using the LVM `metadata_read_only` mode. The `xenvm` CLI uses a simple
+on-disk. Note it will still be possible to peek at the on-disk metadata but it
+will be out-of-date. It can still be used to query the PV state of the volume
+group.
+
+The `xenvm` CLI uses a simple
 RPC interface to query the `xenvmd` process, tunnelled through `xapi` over
 the management network. The RPC interface can be used for
 
@@ -93,7 +97,45 @@ When the SM backend wishes to query or update volume group metadata it should us
 The `xenvmd` process shall use a redo-log to ensure that metadata updates are
 persisted in constant time and flushed lazily to the regular metadata area.
 
+Components: roles and responsibilities
+======================================
 
+`xenvmd`:
+
+- one per plugged SRmaster PBD
+- owns the LVM metadata
+- provides a fast query/update API so we can (for example) create lots of LVs very fast
+- allocates free blocks to hosts when they are running low
+- receives block allocations from hosts and incorporates them in the LVM metadata
+- can safely flush all updates and downgrade to regular LVM
+
+`xenvm`:
+
+- a CLI which talks the `xenvmd` protocol to query / update LVs
+- can be run on any host, calls are forwarded by `xapi`
+- can "format" a LUN to prepare it for `xenvmd`
+- can "upgrade" a LUN to prepare it for `xenvmd`
+
+`local_allocator`:
+
+- one per plugged PBD
+- exposes a simple interface to `tapdisk` for requesting more space
+- receives free block allocations via a queue on the shared disk from `xenvmd`
+- sends block allocations to `xenvmd` and updates the device mapper target locally
+
+`tapdisk`:
+
+- monitors the free space inside LVs and requests more space when running out
+- slows down I/O when nearly out of space
+
+`xapi`:
+
+- provides authenticated communication tunnels
+
+`SM`:
+
+- has an on/off switch for thin-provisioning
+- can use either normal LVM or the `xenvm` CLI
 
 Interaction with HA
 ===================
@@ -114,22 +156,10 @@ implementations, we will allow HA to be disabled.
 Host-local LVs
 ==============
 
-When a host calls SMAPI ```sr_attach```, it will attach three LVM volumes:
-
-- ```host-<uuid>-free```: these are free blocks cached on the host.
-- ```host-<uuid>-toLVM```: these are metadata changes made locally which need
-  to be replayed against the LVM metadata by the SRmaster
-- ```host-<uuid>-fromLVM```: these are metadata changes made by the SRmaster
-  to extend the ```host-<uuid>-free``` which should be replayed against
-  local device mapper.
-
-The ```sr_attach``` will also ensure a "local journal" exists (a local sparse
-  file big enough to contain at least one operation + overheads). When
-the `local-allocator` starts up it will first replay any pending operations found
-in the local journal before inspecting the other volumes.
-
-For ease of debugging and troubleshooting, we should create command-line
-tools to dump and replay the journal.
+When a host calls SMAPI ```sr_attach```, it will tell `xenvmd` on the
+SRmaster to connect to the local allocator on the host. The `xenvmd`
+daemon will create the volumes for queues and a volume to represent the
+"free blocks" which a host is allowed to allocate.
 
 Monitoring
 ==========
@@ -150,10 +180,12 @@ memory named
   the number of free blocks divided by the HA timeout period then the
   `SRmaster-allocator` should be reconfigured to supply more blocks with the host.
 
-Modifications to tapdisk3
-=========================
+Modifications to tapdisk
+========================
 
-```tapdisk3``` will be modified to
+TODO: to be updated by Germano
+
+```tapdisk``` will be modified to
 
 - on open: discover the current maximum size of the file/LV (for a file
   we assume there is no limit for now)
@@ -169,6 +201,8 @@ Modifications to tapdisk3
 
 The extend request
 ------------------
+
+TODO: to be updated by Germano
 
 The request has the following format:
 
