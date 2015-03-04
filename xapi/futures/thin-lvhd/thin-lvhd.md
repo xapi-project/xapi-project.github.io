@@ -2,7 +2,7 @@
 title: thin LVHD storage
 layout: default
 design_doc: true
-revision: 2
+revision: 3
 status: proposed
 ---
 
