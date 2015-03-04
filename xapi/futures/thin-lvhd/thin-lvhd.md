@@ -140,7 +140,7 @@ Components: roles and responsibilities
 Queues on the shared disk
 =========================
 
-The local allocator communicates with the remote allocator via a pair
+The `local_allocator` communicates with `xenvmd` via a pair
 of queues on the shared disk. Using the disk rather than the network means
 that VMs will continue to run even if the management network is not working.
 In particular
@@ -152,13 +152,13 @@ In particular
 Logical messages in the queues
 ------------------------------
 
-The local allocator needs to tell the remote allocator which blocks have
-been allocated to which guest LV. The remote allocator needs to tell the
-local allocator which blocks have become free. Since we are based on
+The `local_allocator` needs to tell the `xenvmd` which blocks have
+been allocated to which guest LV. `xenvmd` needs to tell the
+`local_allocator` which blocks have become free. Since we are based on
 LVM, a "block" is an extent, and an "allocation" is a segment i.e. the
 placing of a physical extent at a logical extent in the logical volume.
 
-The local allocator needs to send a message with logical contents:
+The `local_allocator` needs to send a message with logical contents:
 
 - `volume`: a human-readable name of the LV
 - `segments`: a list of LVM segments which says
@@ -166,25 +166,26 @@ The local allocator needs to send a message with logical contents:
 
 Note this message is idempotent.
 
-The remote allocator needs to send a message with logical contents:
+The `xenvmd` needs to send a message with logical contents:
 
 - `extents`: a list of physical extents which are free for the host to use
 
 Although
-for internal housekeeping the remote allocator will want to assign these
-physical extents to logical extents within the host's free LV, the local
-allocator doesn't need to know the logical extents. It only needs to know
+for internal housekeeping `xenvmd` will want to assign these
+physical extents to logical extents within the host's free LV, the
+`local_allocator`
+doesn't need to know the logical extents. It only needs to know
 the set of blocks which it is free to allocate.
 
-Starting up the local allocator
+Starting up the local_allocator
 -------------------------------
 
-What happens when a local allocator (re)starts, after a
+What happens when a `local_allocator` (re)starts, after a
 
 - process crash, respawn
 - host crash, reboot?
 
-When the local-allocator starts up, there are 2 cases:
+When the `local_allocator` starts up, there are 2 cases:
 
 1. the host has just rebooted, there are no attached disks and no running VMs
 2. the process has just crashed, there are attached disks and running VMs
@@ -195,14 +196,14 @@ the operation is journalled in a local filesystem in a directory which
 is deliberately deleted on host reboot (Case 1). The allocation operation
 consists of:
 
-1. `push`ing the allocation to the master
+1. `push`ing the allocation to `xenvmd` on the SRmaster
 2. updating the device mapper
 
 Note that both parts of the allocation operation are idempotent and hence
 the whole operation is idempotent. The journalling will guarantee it executes
 at-least-once.
 
-When the local-allocator starts up it needs to discover the list of
+When the `local_allocator` starts up it needs to discover the list of
 free blocks. Rather than have 2 code paths, it's best to treat everything
 as if it is a cold start (i.e. no local caches already populated) and to
 ask the master to resync the free block list. The resync is performed by
@@ -213,10 +214,10 @@ the remote allocator to:
 - send the complete set of free blocks "now" (i.e. while the queue is
   suspended) to the local allocator.
 
-Starting the remote allocator
------------------------------
+Starting xenvmd
+---------------
 
-The remote allocator needs to know
+`xenvmd` needs to know
 
 - the device containing the volume group
 - the hosts to "connect" to via the shared queues
@@ -228,28 +229,28 @@ TODO: decide how we should maintain the list of hosts to connect to?
 or should we reconnect to all hosts? We probably can discover the metadata
 volumes by querying the VG.
 
-Shutting down the local allocator
+Shutting down the local_allocator
 ---------------------------------
 
-The local allocator should be able to crash at any time and recover
+The `local_allocator` should be able to crash at any time and recover
 afterwards. If the user requests a `PBD.unplug` we can perform a 
 clean shutdown by:
 
-- signalling the remote allocator to suspend the block allocation queue
-- arranging for the local allocator to acknowledge the suspension and exit
-- when the remote allocator sees the acknowlegement, we know that the
-  local allocator is offline and it doesn't need to poll the queue any more
+- signalling `xenvmd` to suspend the block allocation queue
+- arranging for the `local_allocator` to acknowledge the suspension and exit
+- when the `xenvmd` sees the acknowlegement, we know that the
+  `local_allocator` is offline and it doesn't need to poll the queue any more
 
-Shutting down the remote allocator
-----------------------------------
+Shutting down xenvmd
+--------------------
 
-Shutting down the remote allocator is really a "downgrade": when using
-thin provisioning, the remote allocator should be running all the time.
+Shutting down the `xenvmd` is really a "downgrade": when using
+thin provisioning, `xenvmd` should be running all the time.
 To downgrade, we need to stop all hosts allocating and ensure all updates
-are flushed to the global LVM metadata. The remote allocator can shutdown
+are flushed to the global LVM metadata. `xenvmd` can shutdown
 by:
 
-- shutting down all local allocators (see previous section)
+- shutting down all `local_allocator`s (see previous section)
 - flushing all outstanding block allocations to the LVM redo log
 - flushing the LVM redo log to the global LVM metadata
 
@@ -371,6 +372,7 @@ code) we aren't suspended and we expect deltas, not full syncs.
 
 The model-checker [spin](http://spinroot.com/spin/whatispin.html)
 verifies this property holds.
+
 Interaction with HA
 ===================
 
