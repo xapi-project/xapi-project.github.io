@@ -14,4 +14,6 @@ vgpu-productisation: XenServer 6.2 SP1
 clearwater-felton: XenServer 6.2 SP1 Hotfix 4
 clearwater-whetstone: XenServer 6.2 SP1 Hotfix 11
 creedence: XenServer 6.5
+cream: XenServer Cream (unreleased)
+dundee: XenServer Dundee (unreleased)
 
