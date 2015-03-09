@@ -1,6 +1,6 @@
 ---
 class: VM
-field: overhead
+field: memory_overhead
 ---
 
 The `VM.memory_*` fields describe how much virtual RAM the
