@@ -25,6 +25,7 @@
   - xen-api/networking.md
   - xen-api/guest-agents.md
   - xen-api/metrics.md
+  - xen-api/memory.md
   - xen-api/xencenter.md
   - xen-api/udhcp.md
   - xen-api/index.html
