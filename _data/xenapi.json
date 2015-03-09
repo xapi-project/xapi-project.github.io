@@ -2156,7 +2156,7 @@
     "description": "Virtualization memory overhead (bytes).",
     "type": "int",
     "qualifier": "read only",
-    "tag": "",
+    "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
         "release": "rio",
@@ -2166,7 +2166,7 @@
     "description": "Dynamically-set memory target (bytes). The value of this field indicates the current target for memory available to this VM.",
     "type": "int",
     "qualifier": "read only",
-    "tag": "",
+    "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
         "release": "rio",
@@ -2179,7 +2179,7 @@
     "description": "Statically-set (i.e. absolute) maximum (bytes). The value of this field at VM start time acts as a hard limit of the amount of memory a guest can use. New values only take effect on reboot.",
     "type": "int",
     "qualifier": "read only",
-    "tag": "",
+    "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
         "release": "rio",
@@ -2188,7 +2188,7 @@
     "description": "Dynamic maximum (bytes)",
     "type": "int",
     "qualifier": "read only",
-    "tag": "",
+    "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
         "release": "rio",
@@ -2197,7 +2197,7 @@
     "description": "Dynamic minimum (bytes)",
     "type": "int",
     "qualifier": "read only",
-    "tag": "",
+    "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
         "release": "rio",
@@ -2206,7 +2206,7 @@
     "description": "Statically-set (i.e. absolute) mininum (bytes). The value of this field indicates the least amount of memory this VM can boot with without crashing.",
     "type": "int",
     "qualifier": "read only",
-    "tag": "",
+    "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
         "release": "rio",
@@ -3080,7 +3080,7 @@
       { "name": "VM_HOST_INCOMPATIBLE_VERSION",
         "doc": "This VM operation cannot be performed on an older-versioned host during an upgrade." } ],
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
-    "tag": "",
+    "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
         "release": "rio",
@@ -3312,7 +3312,7 @@
         "doc": "If false the limit is calculated with the guest's current exact configuration. Otherwise a more approximate calculation is performed" } ],
     "errors": [  ],
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
-    "tag": "",
+    "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
         "release": "miami",
@@ -3432,7 +3432,7 @@
         "doc": "The VM" } ],
     "errors": [  ],
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
-    "tag": "",
+    "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
         "release": "midnight-ride",
@@ -3449,7 +3449,7 @@
         "doc": "The VM" } ],
     "errors": [  ],
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
-    "tag": "",
+    "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
         "release": "orlando",
@@ -3469,7 +3469,7 @@
         "doc": "The target in bytes" } ],
     "errors": [  ],
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin" ],
-    "tag": "",
+    "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
         "release": "rio",
@@ -3498,7 +3498,7 @@
         "doc": "The new value of memory_dynamic_max." } ],
     "errors": [  ],
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin" ],
-    "tag": "",
+    "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
         "release": "midnight-ride",
@@ -3518,7 +3518,7 @@
         "doc": "The new maximum value" } ],
     "errors": [  ],
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin" ],
-    "tag": "",
+    "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
         "release": "midnight-ride",
@@ -3535,7 +3535,7 @@
         "doc": "The new value of memory_static_min" } ],
     "errors": [  ],
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin" ],
-    "tag": "",
+    "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
         "release": "midnight-ride",
@@ -3554,7 +3554,7 @@
       { "name": "HA_OPERATION_WOULD_BREAK_FAILOVER_PLAN",
         "doc": "This operation cannot be performed because it would invalidate VM failover planning such that the system would be unable to guarantee to restart protected VMs after a Host failure." } ],
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin" ],
-    "tag": "",
+    "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
         "release": "orlando",
@@ -3574,7 +3574,7 @@
         "doc": "The new maximum value" } ],
     "errors": [  ],
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin" ],
-    "tag": "",
+    "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
         "release": "midnight-ride",
@@ -3591,7 +3591,7 @@
         "doc": "The new value of memory_dynamic_min" } ],
     "errors": [  ],
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin" ],
-    "tag": "",
+    "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
         "release": "midnight-ride",
@@ -3608,7 +3608,7 @@
         "doc": "The new value of memory_dynamic_max" } ],
     "errors": [  ],
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin" ],
-    "tag": "",
+    "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
         "release": "midnight-ride",
@@ -3622,7 +3622,7 @@
         "doc": "The VM for which to compute the memory overhead" } ],
     "errors": [  ],
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
-    "tag": "",
+    "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
         "release": "midnight-ride",
@@ -5624,7 +5624,7 @@
     "description": "Virtualization memory overhead (bytes).",
     "type": "int",
     "qualifier": "read only",
-    "tag": "",
+    "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
         "release": "rio",
@@ -6413,7 +6413,7 @@
         "doc": "The host for which to compute the memory overhead" } ],
     "errors": [  ],
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
-    "tag": "",
+    "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
         "release": "midnight-ride",
@@ -6427,7 +6427,7 @@
         "doc": "The host to send the request to" } ],
     "errors": [  ],
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
-    "tag": "",
+    "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
         "release": "orlando",
@@ -7163,7 +7163,7 @@
     "description": "Total host memory (bytes)",
     "type": "int",
     "qualifier": "read only",
-    "tag": "",
+    "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
         "release": "rio",
@@ -7172,7 +7172,7 @@
     "description": "Free host memory (bytes)",
     "type": "int",
     "qualifier": "read only",
-    "tag": "",
+    "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
         "release": "rio",
