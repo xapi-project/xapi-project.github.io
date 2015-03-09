@@ -1,6 +1,7 @@
 ---
 title: Host memory accounting
-layout: default
+layout: xenapi
+xenapi_tag: memory
 ---
 
 Memory is used for many things:
