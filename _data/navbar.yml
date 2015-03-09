@@ -28,6 +28,7 @@
   - xen-api/xencenter.md
   - xen-api/udhcp.md
   - xen-api/index.html
+  - xen-api/releases.html
 - title: Xapi
   docs:
   - xapi/overview.md

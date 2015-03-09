@@ -1,0 +1,52 @@
+---
+layout: base
+title: XenAPI Releases
+---
+
+{% assign changes = site.data.release_info[page.release] %}
+{% assign classes = site.pages | where:"class_index",true %}
+{% assign releases = site.pages | where:"release_index",true %}
+
+<link rel="stylesheet" href="{{site.baseurl}}/assets/css/xenapi.css" />
+<script type="text/javascript" src="{{site.baseurl}}/assets/js/apidoc.js"></script>
+
+<link rel="stylesheet" href="{{site.baseurl}}/assets/css/xenapi.css" />
+<div class="row">
+<div class="col-md-9" id="content">
+
+<h2 class="title">
+  {{ site.data.releases[page.release] }}
+</h2>
+
+Code name: "{{ page.release }}".
+
+{{ content }}
+
+<h3>Changes</h3>
+
+<table class="table table-bordered table-striped">
+  <tr><th>Change</th><th>Element</th><th>Description</th></tr>
+  {% for x in changes %}
+    {% assign class = x.name | split:"." | first }} %}
+    {% capture url %}{{ site.baseurl }}{{ classes | where:"class",class | map:"url" }}{% endcapture %}
+    <tr>
+      <td style="white-space: nowrap">{{x.transition | capitalize}}</td>
+      <td><a href="{{ url }}">{{x.name}}</a></td>
+      <td>{{x.log | escape }}</td>
+    </tr>
+  {% endfor %}
+</table>
+
+</div>
+
+<div class="col-md-3" id="sidebar">
+  <h2 class="title">Releases</h2>
+  {% for r in site.data.releases %}
+    {% assign release = r | first }} %}
+    {% capture url %}{{ site.baseurl }}{{ releases | where:"release",release | map:"url" }}{% endcapture %}
+    <a href="{{ url }}">{{ r | last }}</a><br/>
+  {% endfor %}
+</div>
+
+</div>
+
