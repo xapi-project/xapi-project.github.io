@@ -126,11 +126,15 @@ title: XenAPI Reference
 </div>
 {% endfor %}
 
-<h3>Messages</h3>
+<h3>
+  Messages
+  <button onclick="toggle_implicit()" type="button" class="btn btn-primary btn-xs pull-right">Show/hide implicit</button>
+</h3>
 
 {% assign messages = obj.messages | sort: "name" %}
 {% for x in messages %}
-<div class="{% cycle 'field', 'field2' %}" onclick="showhide(document.getElementById('{{x.name}}_details'))">
+<div class="{% cycle 'field', 'field2' %} {% if x.implicit %}implicit{% endif %}"
+  onclick="showhide(document.getElementById('{{x.name}}_details'))">
   <div class="lifecycle">
     {% assign cur = x.lifecycle | last %}
     {% case cur.transition %}
