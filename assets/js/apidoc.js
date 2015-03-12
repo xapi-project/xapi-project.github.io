@@ -62,10 +62,17 @@ function toggle(i)
 
 function showhide(obj)
 {
-	if (obj.style.display == '')
-		obj.style.display = 'none';
+	if ($(obj).css('display') == 'none')
+		obj.style.display = 'inherit';
 	else
-		obj.style.display = '';
+		obj.style.display = 'none';
+}
+
+function toggle_implicit()
+{
+	var elements = document.querySelectorAll(".implicit");
+	for (var i=0; i < elements.length; i++)
+		showhide(elements[i]);
 }
 
 // functional stuff

@@ -114,3 +114,7 @@ th { text-align: left;
 	margin: auto 0.5em;
 }
 
+.implicit {
+	display: none;
+}
+
