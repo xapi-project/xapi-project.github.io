@@ -940,7 +940,7 @@
         "description": "A user or group that can log in xapi" } ],
     "implicit": true }, 
   { "name": "create",
-    "description": "Create a new subject instance, and return its handle.",
+    "description": "Create a new subject instance, and return its handle.\nThe constructor args are: subject_identifier, other_config (* = non-optional).",
     "result": [ "subject ref", "reference to the newly created object" ],
     "params": [ 
       { "type": "session ref",
@@ -9465,7 +9465,7 @@
         "description": "A virtual machine (or 'guest')." } ],
     "implicit": true }, 
   { "name": "create",
-    "description": "Create a new VM instance, and return its handle.",
+    "description": "Create a new VM instance, and return its handle.\nThe constructor args are: name_label, name_description, user_version*, is_a_template*, affinity*, memory_target, memory_static_max*, memory_dynamic_max*, memory_dynamic_min*, memory_static_min*, VCPUs_params*, VCPUs_max*, VCPUs_at_startup*, actions_after_shutdown*, actions_after_reboot*, actions_after_crash*, PV_bootloader*, PV_kernel*, PV_ramdisk*, PV_args*, PV_bootloader_args*, PV_legacy_args*, HVM_boot_policy*, HVM_boot_params*, HVM_shadow_multiplier, platform*, PCI_bus*, other_config*, recommendations*, xenstore_data, ha_always_run, ha_restart_priority, tags, blocked_operations, protection_policy, is_snapshot_from_vmpp, appliance, start_delay, shutdown_delay, order, suspend_SR, version, generation_id (* = non-optional).",
     "result": [ "VM ref", "reference to the newly created object" ],
     "params": [ 
       { "type": "session ref",
@@ -11938,7 +11938,7 @@
         "description": "The VMPR feature was removed" } ],
     "implicit": true }, 
   { "name": "create",
-    "description": "Create a new VMPP instance, and return its handle.",
+    "description": "Create a new VMPP instance, and return its handle.\nThe constructor args are: name_label, name_description, is_policy_enabled, backup_type, backup_retention_value, backup_frequency, backup_schedule, archive_target_type, archive_target_config, archive_frequency, archive_schedule, is_alarm_enabled, alarm_config (* = non-optional).",
     "result": [ "VMPP ref", "reference to the newly created object" ],
     "params": [ 
       { "type": "session ref",
@@ -12470,7 +12470,7 @@
         "description": "VM appliance" } ],
     "implicit": true }, 
   { "name": "create",
-    "description": "Create a new VM_appliance instance, and return its handle.",
+    "description": "Create a new VM_appliance instance, and return its handle.\nThe constructor args are: name_label, name_description (* = non-optional).",
     "result": [ "VM_appliance ref", "reference to the newly created object" ],
     "params": [ 
       { "type": "session ref",
@@ -18006,7 +18006,7 @@
         "description": "A virtual network" } ],
     "implicit": true }, 
   { "name": "create",
-    "description": "Create a new network instance, and return its handle.",
+    "description": "Create a new network instance, and return its handle.\nThe constructor args are: name_label, name_description, MTU, other_config*, tags (* = non-optional).",
     "result": [ "network ref", "reference to the newly created object" ],
     "params": [ 
       { "type": "session ref",
@@ -19052,7 +19052,7 @@
         "description": "A virtual network interface" } ],
     "implicit": true }, 
   { "name": "create",
-    "description": "Create a new VIF instance, and return its handle.",
+    "description": "Create a new VIF instance, and return its handle.\nThe constructor args are: device*, network*, VM*, MAC*, MTU*, other_config*, qos_algorithm_type*, qos_algorithm_params*, locking_mode, ipv4_allowed, ipv6_allowed (* = non-optional).",
     "result": [ "VIF ref", "reference to the newly created object" ],
     "params": [ 
       { "type": "session ref",
@@ -25713,7 +25713,7 @@
         "description": "A virtual disk image" } ],
     "implicit": true }, 
   { "name": "create",
-    "description": "Create a new VDI instance, and return its handle.",
+    "description": "Create a new VDI instance, and return its handle.\nThe constructor args are: name_label, name_description, SR*, virtual_size*, type*, sharable*, read_only*, other_config*, xenstore_data, sm_config, tags (* = non-optional).",
     "result": [ "VDI ref", "reference to the newly created object" ],
     "params": [ 
       { "type": "session ref",
@@ -26850,7 +26850,7 @@
         "description": "A virtual block device" } ],
     "implicit": true }, 
   { "name": "create",
-    "description": "Create a new VBD instance, and return its handle.",
+    "description": "Create a new VBD instance, and return its handle.\nThe constructor args are: VM*, VDI*, userdevice*, bootable*, mode*, type*, unpluggable, empty*, other_config*, qos_algorithm_type*, qos_algorithm_params* (* = non-optional).",
     "result": [ "VBD ref", "reference to the newly created object" ],
     "params": [ 
       { "type": "session ref",
@@ -27558,7 +27558,7 @@
         "description": "The physical block devices through which hosts access SRs" } ],
     "implicit": true }, 
   { "name": "create",
-    "description": "Create a new PBD instance, and return its handle.",
+    "description": "Create a new PBD instance, and return its handle.\nThe constructor args are: host*, SR*, device_config*, other_config (* = non-optional).",
     "result": [ "PBD ref", "reference to the newly created object" ],
     "params": [ 
       { "type": "session ref",
@@ -27988,7 +27988,7 @@
         "description": "A virtual TPM device" } ],
     "implicit": true }, 
   { "name": "create",
-    "description": "Create a new VTPM instance, and return its handle.",
+    "description": "Create a new VTPM instance, and return its handle.\nThe constructor args are: VM*, backend* (* = non-optional).",
     "result": [ "VTPM ref", "reference to the newly created object" ],
     "params": [ 
       { "type": "session ref",
@@ -28300,7 +28300,7 @@
         "description": "A console" } ],
     "implicit": true }, 
   { "name": "create",
-    "description": "Create a new console instance, and return its handle.",
+    "description": "Create a new console instance, and return its handle.\nThe constructor args are: other_config* (* = non-optional).",
     "result": [ "console ref", "reference to the newly created object" ],
     "params": [ 
       { "type": "session ref",
@@ -28588,7 +28588,7 @@
         "description": "Deprecated in favor of subject" } ],
     "implicit": true }, 
   { "name": "create",
-    "description": "Create a new user instance, and return its handle.",
+    "description": "Create a new user instance, and return its handle.\nThe constructor args are: short_name*, fullname*, other_config (* = non-optional).",
     "result": [ "user ref", "reference to the newly created object" ],
     "params": [ 
       { "type": "session ref",
@@ -29608,7 +29608,7 @@
         "description": "A secret" } ],
     "implicit": true }, 
   { "name": "create",
-    "description": "Create a new secret instance, and return its handle.",
+    "description": "Create a new secret instance, and return its handle.\nThe constructor args are: value*, other_config (* = non-optional).",
     "result": [ "secret ref", "reference to the newly created object" ],
     "params": [ 
       { "type": "session ref",
