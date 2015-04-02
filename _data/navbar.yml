@@ -43,6 +43,7 @@
   - xenopsd/futures/roadmap.md
   - xenopsd/design/Events.md
   - xenopsd/design/Tasks.md
+  - xenopsd/design/hooks.md
   - xenopsd/design/suspend-image-considerations.md
   - xenopsd/design/suspend-image-framing-format.md
   - xenopsd/walkthroughs/VM.start.md
