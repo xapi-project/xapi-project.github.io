@@ -53,6 +53,13 @@ fast query and update. All updates are appended to the redo-log to ensure
 they operate in O(1) time. The redo log updates are periodically flushed
 to the primary LVM metadata.
 
+Since the operations are stored in the redo-log and will only be removed
+after the real metadata has been written, the implication is that it is
+possible for the operations to be performed more than once. This will
+occur if the xenvmd process exits between flushing to the real metadata
+and acknowledging the operations as completed. For this to work as expected,
+every individual operation stored in the redo-log _must_ be idempotent.
+
 Note on running out of blocks
 -----------------------------
 
