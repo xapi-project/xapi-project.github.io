@@ -107,6 +107,14 @@ When the SM backend wishes to query or update volume group metadata it should us
 The `xenvmd` process shall use a redo-log to ensure that metadata updates are
 persisted in constant time and flushed lazily to the regular metadata area.
 
+Tunnelling through xapi will be done by POSTing to the localhost URI
+
+    /services/xenvmd/<SR uuid>
+
+Xapi will the either proxy the request transparently to the SRmaster, or issue an
+http level redirect that the xenvm CLI would need to follow.
+
+
 Components: roles and responsibilities
 ======================================
 
