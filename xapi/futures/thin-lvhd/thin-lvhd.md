@@ -53,6 +53,13 @@ fast query and update. All updates are appended to the redo-log to ensure
 they operate in O(1) time. The redo log updates are periodically flushed
 to the primary LVM metadata.
 
+Since the operations are stored in the redo-log and will only be removed
+after the real metadata has been written, the implication is that it is
+possible for the operations to be performed more than once. This will
+occur if the xenvmd process exits between flushing to the real metadata
+and acknowledging the operations as completed. For this to work as expected,
+every individual operation stored in the redo-log _must_ be idempotent.
+
 Note on running out of blocks
 -----------------------------
 
@@ -99,6 +106,14 @@ When the SM backend wishes to query or update volume group metadata it should us
 
 The `xenvmd` process shall use a redo-log to ensure that metadata updates are
 persisted in constant time and flushed lazily to the regular metadata area.
+
+Tunnelling through xapi will be done by POSTing to the localhost URI
+
+    /services/xenvmd/<SR uuid>
+
+Xapi will the either proxy the request transparently to the SRmaster, or issue an
+http level redirect that the xenvm CLI would need to follow.
+
 
 Components: roles and responsibilities
 ======================================
