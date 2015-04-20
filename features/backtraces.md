@@ -251,7 +251,7 @@ The XenAPI
 We already store error information in the XenAPI "Task" object and so we
 can store backtraces at the same time. We shall add a field "backtrace"
 which will have type "string" but which will contain s-expression encoded
-backtrace data. Clients should not attempt to parse this string: it's
+backtrace data. Clients should not attempt to parse this string: its
 contents may change in future. The reason it is different from the json
 mentioned before is that it also contains host and process information
 supplied by Xapi, and may be extended in future to contain other diagnostic
@@ -294,5 +294,5 @@ the backtrace is appended to the current Task backtrace. From the client's
 point of view the final exception should look the same, but Xapi will have
 a chance to see and log the whole backtrace.
 
-As a side-effect, it is possible to SM plugins to throw XenAPI errors directly,
+As a side-effect, it is possible for SM plugins to throw XenAPI errors directly,
 without interpretation by Xapi.
