@@ -108,7 +108,7 @@ module Vm = struct
 
   type video_card =
     | Cirrus
-    | Standard_VGAS
+    | Standard_VGA
     | Vgpu
     | Igd_passthrough of igd_passthrough
 
