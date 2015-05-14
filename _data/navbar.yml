@@ -1,64 +1,77 @@
-- title: Getting Started
-  docs:
-  - index.md
-  - getting-started/architecture.md
-  - getting-started/designs.md
-- title: High-level Features
-  docs:
-  - features/DR/DR.md
-  - features/HA/HA.md
-  - features/XSM/XSM.md
-  - features/RPU/RPU.md
-  - features/VGPU/vgpu.md
-  - features/snapshots/snapshots.md
-- title: XenAPI
-  docs:
-  - xen-api/overview.md
-  - xen-api/usage.md
-  - xen-api/wire-protocol.md
-  - xen-api/evolution.md
-  - xen-api/vm-lifecycle.md
-  - xen-api/snapshots.md
-  - xen-api/importexport.md
-  - xen-api/consoles.md
-  - xen-api/install-vms.md
-  - xen-api/networking.md
-  - xen-api/guest-agents.md
-  - xen-api/metrics.md
-  - xen-api/memory.md
-  - xen-api/xencenter.md
-  - xen-api/udhcp.md
-  - xen-api/index.html
-  - xen-api/releases.html
-- title: Xapi
-  docs:
-  - xapi/overview.md
-  - xapi/architecture.md
-  - xapi/design/memory-accounting.md
-- title: Xenopsd
-  docs:
-  - xenopsd/overview.md
-  - xenopsd/features.md
-  - xenopsd/architecture.md
-  - xenopsd/futures/roadmap.md
-  - xenopsd/design/Events.md
-  - xenopsd/design/Tasks.md
-  - xenopsd/design/hooks.md
-  - xenopsd/design/suspend-image-considerations.md
-  - xenopsd/design/suspend-image-framing-format.md
-  - xenopsd/walkthroughs/VM.start.md
-- title: Squeezed
-  docs:
-  - squeezed/overview.md
-  - squeezed/architecture/architecture.md
-  - squeezed/design/design.md
-- title: Networkd
-  docs:
-  - networkd/overview.md
-- title: Design Docs
-  docs:
-  - design-docs/index.md
-- title: Developer Guide
-  docs:
-  - devguide/howtos/add-field.md
-  - devguide/howtos/add-function.md
+-
+    - title: Welcome
+      docs:
+      - index.md
+-
+    - title: General
+      docs:
+      - xen-api/overview.md
+      - xen-api/wire-protocol.md
+      - xen-api/evolution.md
+      - xen-api/index.html
+      - xen-api/releases.html
+    - title: VM Lifecycle
+      docs:
+      - xen-api/vm-lifecycle.md
+      - xen-api/install-vms.md
+      - xen-api/snapshots.md
+      - xen-api/importexport.md
+    - title: Networking
+      docs:
+      - xen-api/networking.md
+      - xen-api/udhcp.md
+    - title: Other
+      docs:
+      - xen-api/usage.md
+      - xen-api/http.md
+      - xen-api/extensions.md
+      - xen-api/consoles.md
+      - xen-api/guest-agents.md
+      - xen-api/metrics.md
+      - xen-api/memory.md
+      - xen-api/xencenter.md
+-
+    - title: Architecture
+      docs:
+      - getting-started/architecture.md
+      - getting-started/designs.md
+    - title: High-level Features
+      docs:
+      - features/DR/DR.md
+      - features/HA/HA.md
+      - features/XSM/XSM.md
+      - features/RPU/RPU.md
+      - features/VGPU/vgpu.md
+      - features/snapshots/snapshots.md
+    - title: Xapi
+      docs:
+      - xapi/overview.md
+      - xapi/architecture.md
+      - xapi/design/memory-accounting.md
+    - title: Xenopsd
+      docs:
+      - xenopsd/overview.md
+      - xenopsd/features.md
+      - xenopsd/architecture.md
+      - xenopsd/futures/roadmap.md
+      - xenopsd/design/Events.md
+      - xenopsd/design/Tasks.md
+      - xenopsd/design/suspend-image-considerations.md
+      - xenopsd/design/suspend-image-framing-format.md
+      - xenopsd/walkthroughs/VM.start.md
+    - title: Squeezed
+      docs:
+      - squeezed/overview.md
+      - squeezed/architecture/architecture.md
+      - squeezed/design/design.md
+    - title: Networkd
+      docs:
+      - networkd/overview.md
+    - title: Developer Guide
+      docs:
+      - devguide/howtos/add-field.md
+      - devguide/howtos/add-function.md
+-
+    - title: Design Docs
+      docs:
+      - design-docs/index.md
