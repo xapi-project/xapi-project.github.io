@@ -3,7 +3,7 @@ title: FCoE capable NICs
 layout: default
 design_doc: true
 revision: 1
-status: confirmed
+status: proposed
 ---
 
 It has been possible to identify the NICs of a Host which can support FCoE.
