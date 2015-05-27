@@ -2,7 +2,9 @@
 title: RDP control
 layout: default
 design_doc: true
+revision: 2
 status: released (XenServer 6.5 SP1)
+design_review: 12
 ---
 ### Purpose
 
