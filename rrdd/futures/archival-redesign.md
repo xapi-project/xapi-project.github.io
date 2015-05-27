@@ -76,7 +76,7 @@ VMs, and archive the rrd to the specified host. When a VM has finished shutting
 down or suspending, the xapi process on the host on which the VM was running
 will call archive_rrd to ask the local rrdd to archive back to the master rrdd.
 
-### VM.reboot
+#### VM.reboot
 
 Removing rrdd's ability to automatically archive the rrds for disappeared
 domains will have the bonus effect of fixing how the rrds of rebooting VMs are
