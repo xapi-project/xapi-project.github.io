@@ -114,6 +114,9 @@ Tunnelling through xapi will be done by POSTing to the localhost URI
 Xapi will the either proxy the request transparently to the SRmaster, or issue an
 http level redirect that the xenvm CLI would need to follow.
 
+If the xenvmd process is not running on the host on which it should
+be, xapi will start it.
+
 
 Components: roles and responsibilities
 ======================================
@@ -149,9 +152,11 @@ Components: roles and responsibilities
 `xapi`:
 
 - provides authenticated communication tunnels
+- ensures the xenvmd daemons are only running on the correct hosts.
 
 `SM`:
 
+- writes the configuration file for xenvmd (though doesn't start it)
 - has an on/off switch for thin-provisioning
 - can use either normal LVM or the `xenvm` CLI
 
@@ -590,11 +595,10 @@ Modifications to LVHD SR
 
 - `sr_attach` should:
   - if an SRmaster, update the `MGT` major version number to prevent
-  - if an SRmaster, spawn `xenvmd`
+  - Write the xenvmd configuration file (on _all_ hosts, not just SRmaster)
   - spawn `local_allocator`
 - `sr_detach` should:
   - call `xenvm` to request the shutdown of `local_allocator`
-  - if an SRmaster, terminate `xenvmd`
 - `vdi_deactivate` should:
   - call `xenvm` to request the flushing of all the `to_LVM` queues to the
     redo log
@@ -604,6 +608,18 @@ Modifications to LVHD SR
 Note that it is possible to attach and detach the individual hosts in any order
 but when the SRmaster is unplugged then there will be no "refilling" of the host
 local free LVs; it will behave as if the master host has failed.
+
+Modifications to xapi
+=====================
+
+- Xapi needs to learn how to forward xenvm connections to the SR master.
+- Xapi needs to start and stop xenvmd at the appropriate times
+- We must disable unplugging the PBDs for shared SRs on the pool master
+  if any other slave has its PBD plugging. This is actually fixing an
+  issue that exists today - LVHD SRs require the master PBD to be
+  plugged to do many operations.
+- Xapi should provide a mechanism by which the xenvmd process can be killed
+  once the last PBD for an SR has been unplugged.
 
 Enabling thin provisioning
 ==========================
@@ -652,6 +668,7 @@ Walk-through: after a host failure
 If HA is enabled:
 
 - ```xhad``` elects a new master if necessary
+- ```Xapi``` on the master will start xenvmd processes for shared thin-lvhd SRs
 - the ```xhad``` tells ```Xapi``` which hosts are alive and which have failed.
 - ```Xapi``` runs the ```host-pre-declare-dead``` scripts for every failed host
 - the ```host-pre-declare-dead``` tells `xenvmd` to flush the `to_LVM` updates
@@ -659,11 +676,23 @@ If HA is enabled:
 
 If HA is not enabled:
 
+- The admin should verify the host is definitely dead
+- If the dead host was the master, a new master must be designated. This will
+  start the xenvmd processes for the shared thin-lvhd SRs.
 - the admin must tell ```Xapi``` which hosts have failed with ```xe host-declare-dead```
 - ```Xapi``` runs the ```host-pre-declare-dead``` scripts for every failed host
 - the ```host-pre-declare-dead``` tells `xenvmd` to flush the `to_LVM` updates
 - ```Xapi``` unlocks the VMs
 - the admin may now restart the VMs on new hosts.
+
+Walk-through: co-operative master transition
+============================================
+
+The admin calls Pool.designate_new_master. This initiates a two-phase
+commit of the new master. As part of this, the slaves will restart,
+and on restart each host's xapi will kill any xenvmd that should only
+run on the pool master. The new designated master will then restart itself
+and start up the xenvmd process on itself.
 
 Future use of dm-thin?
 ======================
