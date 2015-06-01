@@ -52,3 +52,34 @@ Command Line Interface
 ----------------------
 
 * The `PIF_metrics.fcoe_supported` field is exposed through `xe pif-list` and `xe pif-param-list` as usual.
+
+----------------------------------------------------------------------------------------------------------------------------
+
+Configure FCoE on Xapi Startup
+--------------------
+
+Introduction
+--------------------
+
+We need to setup certain configuration on NICs of a Host for enabling FCoE traffic.
+
+Xcp-Networkd
+-------------------
+
+New Function: 
+* unit start_fcoe_service (string)
+Argument: the device_name for the PIF. 
+* This function will setup fcoe service on intel and broadcom NICs. Only if "network mode = bridge". [We are not clear for OVS] 
+
+Steps:
+1) run "ebtables -t broute -A BROUTING -p 0x8914 -j DROP"
+2) service start lldp
+3) If NIC is FCoE capable and not blacklisted [checked via `is_fcoe_supported` and `is_fcoe_dev_blacklisted`]:
+	A) Then: If broadcom NICs: Then "make lldp adminStatus=disabled using lldptool"
+	B) cp /etc/fcoe/cfg-ethx /etc/fcoe/cfg-eth<?> ethname
+	C) service fcoe start
+
+Pending Work
+------------------
+* Where to call this function `start_fcoe_service`
+
