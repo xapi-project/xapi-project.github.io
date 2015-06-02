@@ -22,28 +22,31 @@ PIF Object
 
 New field:
 * Field `PIF.capabilities` will be type `Set(string)`.
-* Default value in PIF capabilities will have empty string "".
+* Default value in PIF capabilities will have an empty set.
 
 Xapi Changes
-------
+-------
 
-New function:
-* String `string get_fcoe_capability (string)`
-* Argument: device_name for the PIF.
-* This function calls method `capable` exposed by `fcoe_driver.py` as part of dom0.
-* It returns string "fcoe" or "" depending on `capable` method output. 
-
-Set and Update of capabilities field:
+* Set the field capabilities "fcoe" depending on output of xcp-networkd call `get_capabilities`.
 * Field capabilities "fcoe" can be set during `introduce_internal` on PIF scan.
 * Field capabilities "fcoe" can be updated during `refresh_all` on xapi startup sequence.
 * The above field will be set everytime when xapi-restart.
 
+XCP-Networkd Changes
+-------
+
+New function:
+* String list `string list get_capabilties (string)`
+* Argument: device_name for the PIF.
+* This function calls method `capable` exposed by `fcoe_driver.py` as part of dom0.
+* It returns string list ["fcoe"] or [] depending on `capable` method output.
+
 Defaults, Installation and Upgrade
 ------------------------
-* Any newly introduced PIF will have its capabilities field set to empty string "" until `fcoe_driver` method `capable` states FCoE is supported on the NIC.
-* It includes PIFs obtained after a fresh install of Xenserver, as well as PIFs created using `PIF.introduce` then `PIF.scan`.
-* During an upgrade Xapi Restart will call `refresh_all` which then populate the capabilities field set to empty string "".
 
+* Any newly introduced PIF will have its capabilities field as empty set until `fcoe_driver` method `capable` states FCoE is supported on the NIC.
+* It includes PIFs obtained after a fresh install of Xenserver, as well as PIFs created using `PIF.introduce` then `PIF.scan`.
+* During an upgrade Xapi Restart will call `refresh_all` which then populate the capabilities field as empty set.
 
 Command Line Interface
 ----------------------
