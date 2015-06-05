@@ -21,6 +21,7 @@ PIF Object
 -------
 
 New field:
+
 * Field `PIF.capabilities` will be type `Set(string)`.
 * Default value in PIF capabilities will have an empty set.
 
@@ -28,14 +29,15 @@ Xapi Changes
 -------
 
 * Set the field capabilities "fcoe" depending on output of xcp-networkd call `get_capabilities`.
-* Field capabilities "fcoe" can be set during `introduce_internal` on PIF scan.
-* Field capabilities "fcoe" can be updated during `refresh_all` on xapi startup sequence.
+* Field capabilities "fcoe" can be set during `introduce_internal` on when creating a PIF.
+* Field capabilities "fcoe" can be updated during `refresh_all` on xapi startup.
 * The above field will be set everytime when xapi-restart.
 
 XCP-Networkd Changes
 -------
 
 New function:
+
 * String list `string list get_capabilties (string)`
 * Argument: device_name for the PIF.
 * This function calls method `capable` exposed by `fcoe_driver.py` as part of dom0.
