@@ -2,7 +2,7 @@
 title: GPU support evolution
 layout: default
 design_doc: true
-revision: 1
+revision: 2
 status: confirmed
 ---
 
