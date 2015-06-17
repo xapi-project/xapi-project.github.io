@@ -160,3 +160,42 @@ If a GVT-g-capable GPU is detected, and it is not hidden from dom0, xapi will
 create a set of VGPU_type objects to represent the vGPU presets which can run on
 the physical GPU. Exactly how these presets are defined is TBD, but a likely
 solution is via a set of config files as with NVIDIA vGPU.
+
+__Allocation of vGPUs to physical GPUs__
+
+For NVIDIA vGPU, when starting a VM, each vGPU attached to the VM is assigned
+to a physical GPU as a result of capacity planning at the pool level. The
+resulting configuration is stored in the VM.platform dictionary, under
+pecific keys:
+
+- `vgpu_pci_id` - the address of the physical GPU on which the vGPU will run
+- `vgpu_config` - the path to the vGPU config file which the emulator will use
+
+Instead of storing the assignment in these fields, we will add a new database
+field:
+
+- `VGPU.scheduled_to_be_resident_on (API.ref_PGPU)`
+
+This will be set to the ref of the physical GPU on which the vGPU will run. From
+here, xapi can easily obtain the GPU's PCI address. Capacity planning will also
+take into account which vGPUs are scheduled to be resident on a physical GPU,
+which will avoid races resulting from many vGPU-enabled VMs being started at
+once.
+
+The path to the config file is already stored in the `VGPU_type.internal_config`
+dictionary, under the key `vgpu_config`. xapi will use this value directly
+rather than copying it to VM.platform.
+
+To support other vGPU implementations, we will add another database field:
+
+- `VGPU_type.implementation enum(Passthrough|Nvidia|GVT_g)`
+
+For the `GVT_g` implementation, no config file is needed. Instead,
+`VGPU_type.internal_config` will contain three key-value pairs, with the keys
+
+- `vgt_low_gm_sz`
+- `vgt_high_gm_sz`
+- `vgt_fence_sz`
+
+The values of these pairs will be used to construct a value of type
+`Xenops_interface.Vgpu.gvt_g`, which will be passed down to xenopsd.
