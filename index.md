@@ -20,6 +20,7 @@ title: Welcome
   [Xen Orchestra](https://xen-orchestra.com),
   [OpenStack](http://www.openstack.org)
   and [CloudStack](http://cloudstack.apache.org)
+- foo
 
 The xapi toolstack is developed by the
 [xapi project](http://www.xenproject.org/developers/teams/xapi.html):
