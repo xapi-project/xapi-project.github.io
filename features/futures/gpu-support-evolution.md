@@ -4,6 +4,11 @@ layout: default
 design_doc: true
 revision: 2
 status: confirmed
+revision_history:
+- revision_number: 1
+  description: Documented interface changes between xapi and xenopsd for vGPU
+- revision_number: 2
+  description: Added design for storing vGPU-to-pGPU allocation in xapi database
 ---
 
 Introduction
