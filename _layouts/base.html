@@ -119,6 +119,17 @@
                 {% endif %}
               </td>
             </tr>
+            {% if page.revision_history %}
+            <tr>
+              <th colspan="2">Revision history</th>
+            </tr>
+            {% for revision in page.revision_history %}
+            <tr>
+                <td>{{revision.revision_number}}</td>
+                <td>{{revision.description}}</td>
+            </tr>
+            {% endfor %}
+            {% endif %}
           </table>
           {% endif %}
 
