@@ -2,13 +2,15 @@
 title: GPU support evolution
 layout: default
 design_doc: true
-revision: 2
+revision: 3
 status: confirmed
 revision_history:
 - revision_number: 1
   description: Documented interface changes between xapi and xenopsd for vGPU
 - revision_number: 2
   description: Added design for storing vGPU-to-pGPU allocation in xapi database
+- revision_number: 3
+  description: Marked new xapi DB fields as internal-only
 ---
 
 Introduction
@@ -176,8 +178,8 @@ pecific keys:
 - `vgpu_pci_id` - the address of the physical GPU on which the vGPU will run
 - `vgpu_config` - the path to the vGPU config file which the emulator will use
 
-Instead of storing the assignment in these fields, we will add a new database
-field:
+Instead of storing the assignment in these fields, we will add a new
+internal-only database field:
 
 - `VGPU.scheduled_to_be_resident_on (API.ref_PGPU)`
 
@@ -191,7 +193,8 @@ The path to the config file is already stored in the `VGPU_type.internal_config`
 dictionary, under the key `vgpu_config`. xapi will use this value directly
 rather than copying it to VM.platform.
 
-To support other vGPU implementations, we will add another database field:
+To support other vGPU implementations, we will add another internal-only
+database field:
 
 - `VGPU_type.implementation enum(Passthrough|Nvidia|GVT_g)`
 
