@@ -60,4 +60,4 @@ subdirectory `<cluster-stack-root>/foo` exists. If it does not exist, then
 the call will fail with `UNKNOWN_CLUSTER_STACK`.
 
 Alternative cluster stacks will need to conform to the exact same interface
-as [xhad](../../features/HA/HA.md).
+as [xhad](../../features/HA/HA.html).
