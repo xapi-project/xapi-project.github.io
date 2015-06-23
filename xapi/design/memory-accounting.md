@@ -4,6 +4,7 @@ layout: default
 ---
 
 Memory is used for many things:
+
 - the hypervisor code: this is the Xen executable itself
 - the hypervisor heap: this is needed for per-domain structures and per-vCPU
   structures
@@ -29,9 +30,10 @@ VM overhead
 ------------
 
 The inputs to the model are
-- VM.memory_static_max: the maximum amount of RAM the domain will be able to use
-- VM.HVM_shadow_multiplier: allows the shadow memory to be increased
-- VM.VCPUs_max: the maximum number of vCPUs the domain will be able to use
+
+- `VM.memory_static_max`: the maximum amount of RAM the domain will be able to use
+- `VM.HVM_shadow_multiplier`: allows the shadow memory to be increased
+- `VM.VCPUs_max`: the maximum number of vCPUs the domain will be able to use
 
 First the shadow memory is calculated, in MiB
 
