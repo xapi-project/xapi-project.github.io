@@ -24,7 +24,10 @@ at system boot time and model the per-VM overheads.
 Host overhead
 -------------
 
-TBD
+The host overhead is not managed by xapi, instead it is sampled. After the host
+boots and before any VMs start, xapi asks Xen how much memory the host has in
+total, and how much memory is currently free. Xapi subtracts the free from the
+total and stores this as the host overhead.
 
 VM overhead
 ------------
@@ -46,9 +49,18 @@ Second the VM overhead is calculated, in MiB
 Memory required to start a VM
 -----------------------------
 
-TBD
+If ballooning is disabled, the memory required to start a VM is the same as the VM
+overhead above.
+
+If ballooning is enabled then the memory calculation above is modified to use the
+`VM.memory_dynamic_max` rather than the `VM.memory_static_max`.
 
 Memory required to migrate a VM
 -------------------------------
 
-TBD
+If ballooning is disabled, the memory required to receive a migrating VM is the same
+as the VM overhead above.
+
+If ballooning is enabled, then the VM will first be ballooned down to `VM.memory_dynamic_min`
+and then it will be migrated across. If the VM fails to balloon all the way down, then
+correspondingly more memory will be required on the receiving side.
