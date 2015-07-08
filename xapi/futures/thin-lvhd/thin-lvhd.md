@@ -429,7 +429,7 @@ daemon will create the volumes for queues and a volume to represent the
 Monitoring
 ==========
 
-The `local_allocator` process should export RRD datasources over shared
+The `xenvmd` process should export RRD datasources over shared
 memory named
 
 - ```sr_<SR uuid>_<host uuid>_free```: the number of free blocks in
