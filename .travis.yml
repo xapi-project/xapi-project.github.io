@@ -2,3 +2,4 @@ language: ruby
 rvm:
   - 2.1.0
 script: bash -ex .travis-ci.sh
+sudo: false
