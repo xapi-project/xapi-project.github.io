@@ -2,9 +2,15 @@
 title: SR-Level RRDs
 layout: default
 design_doc: true
-revision: 1
+revision: 2
 status: proposed
 design_review: 139
+revision_history:
+- revision_number: 1
+  description: Initial version
+- revision_number: 2
+  description: Added details about the VDI's binary format and size, and the SR capability name.
+
 ---
 
 ## Introduction
@@ -21,11 +27,11 @@ It follows that each SR will need its own `xcp-rrdd` plugin, which runs on the S
 
 SR-level RRDs will be archived in the SR itself, in a VDI, rather than in the local filesystem of the SR master. This way, we don't need to worry about master failover.
 
-The VDI will be 4MB in size (smallest possible logical volume?). It will not have a filesystem on it for simplicity and performance.
+The VDI will be 4MB in size. This is a little more space than we would need for the RRDs we have in mind at the moment, but will give us enough headroom for the foreseeable future. It will not have a filesystem on it for simplicity and performance. We will use a `tar` archive to store the RRD files (which are `gzip`ed by `xcp-rrdd`).
 
 Xapi will be in charge of the lifecycle of this VDI, not the plugin or `xcp-rrdd`, which will make it a little easier to manage them. Only xapi will attach/detach and read from/write to this VDI. We will keep `xcp-rrdd` as simple as possible, and have it archive to its standard path in the local file system. Xapi will then copy the RRDs in and out of the VDI.
 
-Because we will not write plugins for all SRs at once, and therefore do not need xapi to set up the VDI for all SRs, we will add an SR "capability" for the backends to be able to tell xapi whether it has the ability to record stats and will need storage for them.
+Because we will not write plugins for all SRs at once, and therefore do not need xapi to set up the VDI for all SRs, we will add an SR "capability" for the backends to be able to tell xapi whether it has the ability to record stats and will need storage for them. The capability name will be: `SR_STATS`.
 
 ## Management of the SR-stats VDI
 
