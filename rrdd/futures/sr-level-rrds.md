@@ -2,7 +2,7 @@
 title: SR-Level RRDs
 layout: default
 design_doc: true
-revision: 3
+revision: 4
 status: confirmed
 design_review: 139
 revision_history:
@@ -12,7 +12,8 @@ revision_history:
   description: Added details about the VDI's binary format and size, and the SR capability name.
 - revision_number: 3
   description: Tar was not needed after all!
-
+- revision_number: 4
+  description: Add details about discovering the VDI using a new vdi_type.
 ---
 
 ## Introduction
@@ -33,6 +34,8 @@ The VDI will be 4MB in size. This is a little more space than we would need for 
 
 Xapi will be in charge of the lifecycle of this VDI, not the plugin or `xcp-rrdd`, which will make it a little easier to manage them. Only xapi will attach/detach and read from/write to this VDI. We will keep `xcp-rrdd` as simple as possible, and have it archive to its standard path in the local file system. Xapi will then copy the RRDs in and out of the VDI.
 
+A new value `"rrd"` in the `vdi_type` enum of the datamodel will be defined, and the `VDI.type` of the VDI will be set to that value. The storage backend will write the VDI type to the LVM metadata of the VDI, so that xapi can discover the VDI containing the SR-level RRDs when attaching an SR to a new pool. This means that SR-level RRDs are currently restricted to LVM SRs.
+
 Because we will not write plugins for all SRs at once, and therefore do not need xapi to set up the VDI for all SRs, we will add an SR "capability" for the backends to be able to tell xapi whether it has the ability to record stats and will need storage for them. The capability name will be: `SR_STATS`.
 
 ## Management of the SR-stats VDI
@@ -40,7 +43,7 @@ Because we will not write plugins for all SRs at once, and therefore do not need
 The SR-stats VDI will be attached/detached on `PBD.plug`/`unplug` on the SR master.
 
 * On `PBD.plug` on the SR master, if the SR has the stats capability, xapi:
-	* Creates a stats VDI if not already there.
+	* Creates a stats VDI if not already there (search for an existing one based on the VDI type).
 	* Attaches the stats VDI if it did already exist, and copies the RRDs to the local file system (standard location in the filesystem; asks `xcp-rrdd` where to put them).
 	* Informs `xcp-rrdd` about the RRDs so that it will load the RRDs and add newly recorded data to them (needs a function like `push_rrd_local` for VM-level RRDs).
 	* Detaches stats VDI.
