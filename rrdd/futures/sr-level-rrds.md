@@ -16,6 +16,9 @@ revision_history:
   description: Add details about discovering the VDI using a new vdi_type.
 - revision_number: 5
   description: Add details about the http handlers and interaction with xapi's database
+- revision_number: 6
+  description: Add details about the framing of the data within the VDI
+
 ---
 
 ## Introduction
@@ -32,7 +35,16 @@ It follows that each SR will need its own `xcp-rrdd` plugin, which runs on the S
 
 SR-level RRDs will be archived in the SR itself, in a VDI, rather than in the local filesystem of the SR master. This way, we don't need to worry about master failover.
 
-The VDI will be 4MB in size. This is a little more space than we would need for the RRDs we have in mind at the moment, but will give us enough headroom for the foreseeable future. It will not have a filesystem on it for simplicity and performance. There will only be one RRD archive file for each SR (possibly containing data for multiple metrics), which is gzipped by `xcp-rrdd`, and can be copied directly onto the VDI.
+The VDI will be 4MB in size. This is a little more space than we would need for the RRDs we have in mind at the moment, but will give us enough headroom for the foreseeable future. It will not have a filesystem on it for simplicity and performance. There will only be one RRD archive file for each SR (possibly containing data for multiple metrics), which is gzipped by `xcp-rrdd`, and can be copied onto the VDI.
+
+There will be a simple framing format for the data on the VDI. This will be as follows:
+
+Offset | Type                     | Name    | Comment
+-------|--------------------------|---------|--------------------------
+0      | 32 bit network-order int | magic   | Magic number = 0xda7ada7a
+4      | 32 bit network-order int | version | 1
+8      | 32 bit network-order int | length  | length of payload
+12     | gzipped data             | data    |
 
 Xapi will be in charge of the lifecycle of this VDI, not the plugin or `xcp-rrdd`, which will make it a little easier to manage them. Only xapi will attach/detach and read from/write to this VDI. We will keep `xcp-rrdd` as simple as possible, and have it archive to its standard path in the local file system. Xapi will then copy the RRDs in and out of the VDI.
 
