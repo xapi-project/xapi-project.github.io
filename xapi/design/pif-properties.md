@@ -28,12 +28,14 @@ New API
 -------
 
 New field:
+
 * Field `PIF.properties` of type `(string -> string) map`.
 * Physical and bond PIFs have a `gro` key in their `properties`, with possible values `on` and `off`. There are currently no other properties defined.
 * VLAN and Tunnel PIFs do not have any properties. They implicitly inherit the properties from the PIF they are based upon (either a physical PIF or a bond).
 * For backwards compatibility, if there is a `other-config:ethtool-gro` key present on the PIF, it will be treated as an override of the `gro` key in `PIF.properties`.
 
 New function:
+
 * Message `void PIF.set_property (PIF ref, string, string)`.
  * First argument: the reference of the PIF to act on.
  * Second argument: the key to change in the `properties` field.
