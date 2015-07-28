@@ -2,12 +2,14 @@
 title: Aggregated Local Storage and Host Reboots
 layout: default
 design_doc: true
-revision: 1
+revision: 2
 status: proposed
 design_review: 144
 revision_history:
 - revision_number: 1
   description: Initial version
+- revision_number: 2
+  description: Included some open questions under Xapi point 2
 ---
 
 ## Introduction
@@ -37,7 +39,9 @@ Clients, such as XenCenter, can use `host.allowed_operations`, when applying an 
 Xapi needs to be able to:
 
 1. Determine whether aggregated local storage is in use; this just means that a PBD for such an SR present.
-2. Determine whether the storage system is resynchronising its mirrors; it will need to be able to query the storage backend for this kind of information.
+2. Determine whether the storage system is resynchronising its mirrors; it will need to be able to query the storage backend for this kind of information. _Open questions_: 
+	* Does this fit in the SMAPI-v3 model or does it need to be something separate?
+	* What is the exact way to get the syncing information from the storage backend?
 3. Update `host.allowed_operations` for all hosts in the pool according to the rules described above. This comes down to updating the function `valid_operations` in `xapi_host_helpers.ml`, and will need to use a combination of the functionality from the two points above, plus and indication of host liveness from `host_metrics.live`.
 4. Trigger an update of the allowed operations when a host shuts down or reboots (due to a XenAPI call or otherwise), and when it has finished resynchronising when back up. Triggers must be in the following places (some may already be present, but are listed for completeness, and to confirm this):
 	* Wherever `host_metrics.live` is updated to detect pool slaves going up and down (probably at least in `Db_gc.check_host_liveness` and `Xapi_ha`).
