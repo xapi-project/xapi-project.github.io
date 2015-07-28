@@ -2,7 +2,7 @@
 title: SR-Level RRDs
 layout: default
 design_doc: true
-revision: 4
+revision: 5
 status: confirmed
 design_review: 139
 revision_history:
@@ -14,6 +14,8 @@ revision_history:
   description: Tar was not needed after all!
 - revision_number: 4
   description: Add details about discovering the VDI using a new vdi_type.
+- revision_number: 5
+  description: Add detauls about the http handlers and interaction with xapi's database
 ---
 
 ## Introduction
@@ -55,3 +57,32 @@ The SR-stats VDI will be attached/detached on `PBD.plug`/`unplug` on the SR mast
 ## Periodic Archiving
 	
 Xapi's periodic scheduler regularly triggers `xcp-rrdd` to archive the host and VM RRDs. It will need to do this for the SR ones as well. Furthermore, xapi will need to attach the stats VDI and copy the RRD archives into it (as on `PBD.unplug`).
+
+## Exporting
+
+There will be a new handler for downloading an SR RRD:
+
+    http://<server>/sr_rrd?session_id=<SESSION HANDLE>&uuid=<SR UUID>
+
+The rrd_updates handler will also be updated. Currently the URL looks
+like this:
+
+    http://<server>/rrd_updates?session_id=<SESSION HANDLE>&start=10258122541&host=true
+
+This will be extended with a 'sr=true' parameter, which will cause
+updates to be sent for the SR.
+
+## Database updating.
+
+If the SR is presenting a data source called 'physical_utilisation',
+xapi will record this periodically in its database. In order to do
+this, xapi will fork a thread that, every n minutes (2 suggested, but
+open to suggestions here), will query the attached SRs, then query
+RRDD for the latest data source for these, and update the database.
+
+The utilisation of VDIs will _not_ be updated in this way until
+scalability worries for RRDs are addressed.
+
+Xapi will cache whether it is SR master for every attached SR and only
+attempt to update if it is the SR master.
+
