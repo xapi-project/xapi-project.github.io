@@ -15,7 +15,7 @@ revision_history:
 - revision_number: 4
   description: Add details about discovering the VDI using a new vdi_type.
 - revision_number: 5
-  description: Add detauls about the http handlers and interaction with xapi's database
+  description: Add details about the http handlers and interaction with xapi's database
 ---
 
 ## Introduction
