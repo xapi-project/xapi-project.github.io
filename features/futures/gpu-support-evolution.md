@@ -37,7 +37,7 @@ __Generic GPU passthrough__
 __Intel integrated GPU passthrough (GVT-d)__
 
 - As well as the `-priv` flag, qemu must be launched with the `-std-vga` and
-  `gfx_passthru` flags. The actual PCI passthrough is handled separately
+  `-gfx_passthru` flags. The actual PCI passthrough is handled separately
   via xen.
 
 __NVIDIA vGPU__
