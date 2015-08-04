@@ -205,7 +205,7 @@ The following simple examples are included with the C bindings:
 
 -   `test_enumerate`: demonstrates how to enumerate the various API objects.
 
-### C\#
+### C&#35;
 
 The C\# bindings are contained within the directory `XenServer-SDK/XenServer.NET` and include project files suitable for building under Microsoft Visual Studio. Every API object is associated with one C\# file; for example the functions implementing the VM operations are contained within the file `VM.cs`.
 
