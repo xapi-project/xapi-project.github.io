@@ -173,7 +173,7 @@ __Allocation of vGPUs to physical GPUs__
 For NVIDIA vGPU, when starting a VM, each vGPU attached to the VM is assigned
 to a physical GPU as a result of capacity planning at the pool level. The
 resulting configuration is stored in the VM.platform dictionary, under
-pecific keys:
+specific keys:
 
 - `vgpu_pci_id` - the address of the physical GPU on which the vGPU will run
 - `vgpu_config` - the path to the vGPU config file which the emulator will use
