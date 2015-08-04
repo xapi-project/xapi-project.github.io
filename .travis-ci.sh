@@ -1,9 +1,5 @@
 TEST_BASEURL="baseurl_travis_test"
 
-echo "Installing dependencies..."
-which jekyll || gem install github-pages
-which htmlproof || gem install html-proofer
-
 echo "Running jekyll's sanity test..."
 jekyll doctor
 
