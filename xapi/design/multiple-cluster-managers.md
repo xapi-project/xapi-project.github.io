@@ -3,7 +3,7 @@ title: Multiple Cluster Managers
 layout: default
 design_doc: true
 revision: 2
-status: proposed
+status: confirmed
 revision_history:
 - revision_number: 1
   description: Initial revision
