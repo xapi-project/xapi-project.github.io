@@ -59,6 +59,7 @@ All of the above runs on the pool master (= SR master) only.
 The above will be safe if the storage cluster is equal to the XenServer pool. In general, however, it may be desirable to have a storage cluster that is larger than the pool, have multiple XS pools on a single cluster, or even share the cluster with other kinds of nodes.
 
 To ensure that the storage is "safe" in these scenarios, xapi needs to be able to ask the storage backend:
+
 1. if a mirror is being rebuilt "somewhere" in the cluster, AND
 2. if "some node" in the cluster is offline (even if the node is not in the XS pool).
 
