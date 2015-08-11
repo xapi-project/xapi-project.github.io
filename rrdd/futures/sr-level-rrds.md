@@ -2,7 +2,7 @@
 title: SR-Level RRDs
 layout: default
 design_doc: true
-revision: 5
+revision: 7
 status: confirmed
 design_review: 139
 revision_history:
@@ -18,6 +18,8 @@ revision_history:
   description: Add details about the http handlers and interaction with xapi's database
 - revision_number: 6
   description: Add details about the framing of the data within the VDI
+- revision_number: 7
+  description: Redesign semantics of the rrd_updates handler
 
 ---
 
@@ -76,13 +78,38 @@ There will be a new handler for downloading an SR RRD:
 
     http://<server>/sr_rrd?session_id=<SESSION HANDLE>&uuid=<SR UUID>
 
-The rrd_updates handler will also be updated. Currently the URL looks
-like this:
+The rrd_updates handler will also be updated. Currently, the host RRD
+updates can be downloaded from this URL:
 
     http://<server>/rrd_updates?session_id=<SESSION HANDLE>&start=10258122541&host=true
 
-This will be extended with a 'sr=true' parameter, which will cause
-updates to be sent for the SR.
+By omitting the `host=true` parameter the updates for all VMs running on the
+host can be downloaded:
+
+    http://<server>/rrd_updates?session_id=<SESSION HANDLE>&start=10258122541
+
+Or updates for a single VM can be downloaded like so:
+
+    http://<server>/rrd_updates?session_id=<SESSION HANDLE>&start=10258122541&vm_uuid=<VM UUID>
+
+We would like the URLs for getting RRD updates for one or all SRs to be
+semantically the same as getting RRD updates for one or all VMs, however the
+current URL for getting all VM RRD updates makes this impossible. Therefore
+we will alter the handler such that passing an empty string as the `vm_uuid`
+will return all VM RRD updates:
+
+    http://<server>/rrd_updates?session_id=<SESSION HANDLE>&start=10258122541&vm_uuid=
+
+Similarly, this URL will return all SR RRD updates:
+
+    http://<server>/rrd_updates?session_id=<SESSION HANDLE>&start=10258122541&sr_uuid=
+
+And this URL will return RRD updates for a specific SR:
+
+    http://<server>/rrd_updates?session_id=<SESSION HANDLE>&start=10258122541&sr_uuid=<SR UUID>
+
+For backwards compatibility, we will keep the current functionality whereby
+passing no parameters returns all the VM RRD updates.
 
 ## Database updating.
 
