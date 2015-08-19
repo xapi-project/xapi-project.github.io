@@ -2,7 +2,7 @@
 title: SR-Level RRDs
 layout: default
 design_doc: true
-revision: 7
+revision: 8
 status: confirmed
 design_review: 139
 revision_history:
@@ -20,6 +20,8 @@ revision_history:
   description: Add details about the framing of the data within the VDI
 - revision_number: 7
   description: Redesign semantics of the rrd_updates handler
+- revision_number: 7
+  description: Redesign semantics of the rrd_updates handler (again)
 
 ---
 
@@ -78,38 +80,39 @@ There will be a new handler for downloading an SR RRD:
 
     http://<server>/sr_rrd?session_id=<SESSION HANDLE>&uuid=<SR UUID>
 
-The rrd_updates handler will also be updated. Currently, the host RRD
-updates can be downloaded from this URL:
+RRD updates are handled via a single handler for the host, VM and SR UUIDs
+RRD updates for the host, VMs and SRs are handled by a a single handler at
+`/rrd_updates`.  Exactly what is returned will be determined by the parameters
+passed to this handler.
 
-    http://<server>/rrd_updates?session_id=<SESSION HANDLE>&start=10258122541&host=true
+Whether the host RRD updates are returned is governed by the presence of
+`host=true` in the parameters. `host=<anything else>` or the absence of the
+`host` key will mean the host RRD is not returned.
 
-By omitting the `host=true` parameter the updates for all VMs running on the
-host can be downloaded:
+Whether the VM RRD updates are returned is governed by the `vm_uuid` key in the
+URL parameters. `vm_uuid=all` will return RRD updates for all VM RRDs.
+`vm_uuid=xxx` will return the RRD updates for VM `xxx` only. `vm_uuid=none` will
+return no VM RRD updates. If the `vm_uuid` key is absent, RRD updates for all
+VMs will be returned.
 
-    http://<server>/rrd_updates?session_id=<SESSION HANDLE>&start=10258122541
+Whether the SR RRD updates are returned is governed by the `sr_uuid` key in the
+URL parameters. `sr_uuid=all` will return RRD updates for all SR RRDs.
+`sr_uuid=xxx` will return the RRD updates for SR `xxx` only. `sr_uuid=none` will
+return no SR RRD updates.  If the `sr_uuid` key is absent, no SR RRD RRD updates
+will be returned.
 
-Or updates for a single VM can be downloaded like so:
+It will be possible to mix and match these parameters; for example to return
+RRD updates for the host and all VMs, the URL to use would be:
 
-    http://<server>/rrd_updates?session_id=<SESSION HANDLE>&start=10258122541&vm_uuid=<VM UUID>
+    http://<server>/rrd_updates?session_id=<SESSION HANDLE>&start=10258122541&host=true&vm_uuid=all&sr_uuid=none
 
-We would like the URLs for getting RRD updates for one or all SRs to be
-semantically the same as getting RRD updates for one or all VMs, however the
-current URL for getting all VM RRD updates makes this impossible. Therefore
-we will alter the handler such that passing an empty string as the `vm_uuid`
-will return all VM RRD updates:
+Or, to return RRD updates for all SRs but nothing else, the URL to use would be:
 
-    http://<server>/rrd_updates?session_id=<SESSION HANDLE>&start=10258122541&vm_uuid=
+    http://<server>/rrd_updates?session_id=<SESSION HANDLE>&start=10258122541&host=false&vm_uuid=none&sr_uuid=all
 
-Similarly, this URL will return all SR RRD updates:
-
-    http://<server>/rrd_updates?session_id=<SESSION HANDLE>&start=10258122541&sr_uuid=
-
-And this URL will return RRD updates for a specific SR:
-
-    http://<server>/rrd_updates?session_id=<SESSION HANDLE>&start=10258122541&sr_uuid=<SR UUID>
-
-For backwards compatibility, we will keep the current functionality whereby
-passing no parameters returns all the VM RRD updates.
+While behaviour is defined if any of the keys `host`, `vm_uuid` and `sr_uuid` is
+missing, this is for backwards compatibility and it is recommended that clients
+specify each parameter explicitly.
 
 ## Database updating.
 
