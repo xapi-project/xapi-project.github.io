@@ -92,4 +92,4 @@ The following diagram shows what a plugin would look like:
 The SMAPIv3
 ===========
 
-Please read [the current SMAPIv3 documentation](https://djs55.github.io/xapi-storage).
+Please read [the current SMAPIv3 documentation](https://xapi-project.github.io/xapi-storage).
