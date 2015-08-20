@@ -4,5 +4,5 @@ release: cream
 release_index: true
 ---
 
-Currently unreleased
+Released in May 2015.
 
