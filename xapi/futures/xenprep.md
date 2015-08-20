@@ -2,7 +2,7 @@
 title: XenPrep
 layout: default
 design_doc: true
-revision: 1
+revision: 2
 status: proposed
 ---
 
@@ -48,7 +48,7 @@ If `xenprep_start` is called on a VM already undergoing xenprep, the call will r
 If the VM does not have an empty virtual CD drive, the call will fail with a suitable error.
 
 #### Cancellation
-While xenprep is in progress, any request to eject the xenprep ISO (except from inside the guest) will be rejected with a new error "XENPREP_IN_PROGRESS".
+While xenprep is in progress, any request to eject the xenprep ISO (except from inside the guest) will be rejected with a new error "VBD_XENPREP_CD_IN_USE".
 
 There will be a new XenAPI call `VM.xenprep_abort` which will:
 
