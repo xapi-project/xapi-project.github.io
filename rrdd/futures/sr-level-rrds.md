@@ -91,15 +91,17 @@ Whether the host RRD updates are returned is governed by the presence of
 
 Whether the VM RRD updates are returned is governed by the `vm_uuid` key in the
 URL parameters. `vm_uuid=all` will return RRD updates for all VM RRDs.
-`vm_uuid=xxx` will return the RRD updates for VM `xxx` only. `vm_uuid=none` will
-return no VM RRD updates. If the `vm_uuid` key is absent, RRD updates for all
-VMs will be returned.
+`vm_uuid=xxx` will return the RRD updates for the VM with uuid `xxx` only.
+If `vm_uuid` is `none` (or any other string which is not a valid VM UUID) then
+the handler will return no VM RRD updates. If the `vm_uuid` key is absent, RRD
+updates for all VMs will be returned.
 
 Whether the SR RRD updates are returned is governed by the `sr_uuid` key in the
 URL parameters. `sr_uuid=all` will return RRD updates for all SR RRDs.
-`sr_uuid=xxx` will return the RRD updates for SR `xxx` only. `sr_uuid=none` will
-return no SR RRD updates.  If the `sr_uuid` key is absent, no SR RRD RRD updates
-will be returned.
+`sr_uuid=xxx` will return the RRD updates for the SR with uuid `xxx` only.
+If `sr_uuid` is `none` (or any other string which is not a valid SR UUID) then
+the handler will return no SR RRD updates.  If the `sr_uuid` key is absent, no
+SR RRD updates will be returned.
 
 It will be possible to mix and match these parameters; for example to return
 RRD updates for the host and all VMs, the URL to use would be:
