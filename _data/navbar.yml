@@ -71,6 +71,7 @@
       docs:
       - devguide/howtos/add-field.md
       - devguide/howtos/add-function.md
+      - devguide/howtos/add-api-extension.md
 -
     - title: Design Docs
       docs:
