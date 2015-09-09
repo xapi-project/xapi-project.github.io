@@ -22,6 +22,8 @@ revision_history:
   description: Redesign semantics of the rrd_updates handler
 - revision_number: 7
   description: Redesign semantics of the rrd_updates handler (again)
+- revision_number: 8
+  description: Magic number change in framing format of vdi
 
 ---
 
@@ -45,7 +47,7 @@ There will be a simple framing format for the data on the VDI. This will be as f
 
 Offset | Type                     | Name    | Comment
 -------|--------------------------|---------|--------------------------
-0      | 32 bit network-order int | magic   | Magic number = 0xda7ada7a
+0      | 32 bit network-order int | magic   | Magic number = 0x7ada7ada
 4      | 32 bit network-order int | version | 1
 8      | 32 bit network-order int | length  | length of payload
 12     | gzipped data             | data    |
