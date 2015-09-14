@@ -20,7 +20,7 @@ revision_history:
   description: Add details about the framing of the data within the VDI
 - revision_number: 7
   description: Redesign semantics of the rrd_updates handler
-- revision_number: 7
+- revision_number: 8
   description: Redesign semantics of the rrd_updates handler (again)
 
 ---
