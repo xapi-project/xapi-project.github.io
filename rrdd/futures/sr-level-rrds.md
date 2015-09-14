@@ -22,8 +22,10 @@ revision_history:
   description: Redesign semantics of the rrd_updates handler
 - revision_number: 8
   description: Redesign semantics of the rrd_updates handler (again)
-- revision_number: 8
+- revision_number: 9
   description: Magic number change in framing format of vdi
+- revision_number: 10
+  description: Add details of new APIs added to xapi and xcp-rrdd
 
 ---
 
@@ -131,4 +133,20 @@ scalability worries for RRDs are addressed.
 
 Xapi will cache whether it is SR master for every attached SR and only
 attempt to update if it is the SR master.
+
+## New APIs.
+
+#### xcp-rrdd:
+
+* Get the filesystem location where sr rrds are archived: `val sr_rrds_path : uid:string -> string`
+
+* Archive the sr rrds to the filesystem: `val archive_sr_rrd : sr_uuid:string -> unit`
+
+* Load the sr rrds from the filesystem: `val push_sr_rrd : sr_uuid:string -> unit`
+
+* Backup sr rrds, it will archive all sr rrds and then copy them to filesystem: `val backup_sr_rrds : unit -> unit`
+
+#### xapi:
+
+* Binds the xcp-rrdd function `backup_sr_rrds` to Xapi_periodic_scheduler thread. In order to archive the sr rrds to filesystem on regular interval: `val backup_sr_rrds : __context:Context.t -> host:'b -> delay:float -> unit`
 
