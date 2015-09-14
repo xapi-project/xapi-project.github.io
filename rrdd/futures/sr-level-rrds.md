@@ -22,7 +22,7 @@ revision_history:
   description: Redesign semantics of the rrd_updates handler
 - revision_number: 8
   description: Redesign semantics of the rrd_updates handler (again)
-- revision_number: 8
+- revision_number: 9
   description: Magic number change in framing format of vdi
 
 ---
