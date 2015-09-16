@@ -3,12 +3,14 @@ title: CPU feature levelling 2.0
 layout: default
 design_doc: true
 status: proposed
-revision: 2
+revision: 3
 revision_history:
 - revision_number: 1
   description: Initial version
 - revision_number: 2
   description: Add details about VM migration and import
+- revision_number: 3
+  description: Included and excluded use cases
 ---
 
 Executive Summary
