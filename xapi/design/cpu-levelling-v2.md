@@ -24,6 +24,35 @@ History
 High-level Interfaces and Behaviour
 ===================================
 
+A VM can only be migrated safely from one host to another if both hosts offer the set of CPU features which the VM expects.  If this is not the case, CPU features may appear or disappear as the VM is migrated, causing it to crash.   The purpose of feature levelling is to hide features which the hosts do not have in common from the VM, so that it does not see any change in CPU capabilities when it is migrated.
+
+Most pools start off with homogenous hardware, but over time it may become impossible to source new hosts with the same specifications as the ones already in the pool.   The main use of feature levelling is to allow such newer, more capable hosts to be added to an existing pool while preserving the ability to migrate existing VMs to any host in the pool.
+
+If all the hosts in a pool are upgraded to more capable models, the overall feature set offered by the pool could also be updated to be the intersection of the features offered by the upgraded hosts.   This use case will not be implemented in the first release of this feature.
+
+Included use cases
+------
+
+ 1. A user wants to add a new host to an existing XenServer pool.   The new host has all the features of the existing hosts, plus extra features which the existing hosts do not.   The new host will be allowed to join the pool, but its extra features will be hidden from VMs.
+ 
+ 2. A user wants to add a new host to an existing XenServer pool.   The new host does not have all the features of the existing ones.   The new host will not be allowed to join the pool.
+ 
+ 3. A user wants to upgrade or repair the hardware of a host in an existing XenServer pool.   After upgrade the host has all the features it used to have, plus extra features which other hosts in the pool do not have.   The extra features are masked out and the host resumes its place in the pool when it is booted up again.
+ 
+ 4. A user wants to upgrade or repair the hardware of a host in an existing XenServer pool.   After upgrade the host has fewer features than it used to have.   When the host is booted up again, it is disabled in the pool and no VMs can be started on it or migrated to it.
+ 
+ 5. A user wants to remove a host from an existing XenServer pool.    The host will be removed as normal after any VMs on it have been migrated away.   The feature set offered by the pool will not change, even if the host which was removed was the least capable in the pool and its removal would allow additional features common to the remaining hosts to be unmasked.
+ 
+ 6. A user wants to re-add a host to an existing XenServer pool from which the host had previously been removed.  The host will be allowed to join the pool, because the pool feature set was not recalculated when it was removed.   This use case ensures that a host which was removed for maintenance or to be kept as a cold spare can later be re-added.
+ 
+ Excluded use cases
+ ------
+ 
+ 1. A user wants to create a pool by joining a new host to an existing XenServer host which is not running any VMs.   The new host does not have all the features of the existing one.   The new host will not be allowed to join the pool.   In future, a 're-levelling' command could allow the user to mask features of the existing XenServer host to match those offered by the new host.   If the pool had no VMs, this operation would be safe.   To work around this problem, hosts should be added to a pool in increasing order of capability.
+ 
+ 2. A user wants to replace all the hosts in an existing XenServer pool with newer, more capable models and upgrade the pool's feature set to reveal the features offered by the new hosts.   The pool feature set will remain the same, even after the last of the older, less capable hosts is removed.   In the future, 're-levelling' could allow the pool feature set to be expanded, however this should only be done with the user's consent as doing so would prevent any older hosts from being re-added to the pool.
+ 
+
 XenAPI Changes
 ------
 
