@@ -3,10 +3,12 @@ title: CPU feature levelling 2.0
 layout: default
 design_doc: true
 status: proposed
-revision: 1
+revision: 2
 revision_history:
 - revision_number: 1
   description: Initial version
+- revision_number: 2
+  description: Add details about VM migration and import
 ---
 
 Executive Summary
@@ -37,11 +39,11 @@ XenAPI Changes
 * A new field `pool.cpu_info` of type `(string -> string) map` (read only) will be added. It will contain:
 	* `vendor`: The common CPU vendor across all hosts in the pool.
 	* `features_pv`: The intersection of `features_pv` across all hosts in the pool, representing the feature set that a PV guest will see when started on the pool.
-	* `features_hvm`: The intersection of `features_pv` across all hosts in the pool, representing the feature set that an HVM guest will see when started on the pool.
+	* `features_hvm`: The intersection of `features_hvm` across all hosts in the pool, representing the feature set that an HVM guest will see when started on the pool.
 	* `cpu_count`: the total number of CPU cores in the pool.
 	* `socket_count`: the total number of CPU sockets in the pool.
 * The `pool.other_config:cpuid_feature_mask` override key will no longer have any effect on pool join or VM migration.
-* The field `VM.last_boot_CPU_flags` will be updated to the new format (see `host.cpu_info:features`). It will still contain the feature set that the VM was started with.
+* The field `VM.last_boot_CPU_flags` will be updated to the new format (see `host.cpu_info:features`). It will still contain the feature set that the VM was started with as well as the vendor (under the `features` and `vendor` keys respectively).
 
 ### Messages
 
@@ -53,7 +55,7 @@ XenAPI Changes
 * `host.set_cpu_features` and `host.reset_cpu_features` will be removed: it is no longer to use the old method of CPU feature masking. Calls will fail with `MESSAGE_REMOVED`.
 
 CLI Changes
----
+-----------
 
 The following changes to the `xe` CLI will be made:
 
@@ -78,7 +80,7 @@ Xenopsd
 -------
 
 * Update the type `Host.cpu_info`, which contains all the fields that need to go into the `host.cpu_info` field in the xapi DB. The type already exists but is unused. Add the function `HOST.get_cpu_info` to obtain an instance of the type. Some code from xapi and the cpuid.ml from xen-api-libs can be reused.
-* Add a platform key `featureset` (`Vm.t.platformdata`), which will get passed to xenguest when a domain is created (no code change needed in xenopsd).
+* Add a platform key `featureset` (`Vm.t.platformdata`), which xenopsd will write to xenstore along with the other platform keys (no code change needed in xenopsd). Xenguest will pick this up when a domain is created.
 * Review current cpuid-related functions in `xc/domain.ml`.
 
 Xapi
@@ -96,13 +98,14 @@ Xapi
 
 ### VM migrate and resume
 
-- Keep the current checks.
-- Maintain `VM.last_boot_CPU_flags`.
+- There are already CPU compatiblity checks on migration, both in-pool and cross-pool, as well as resume. Xapi compares `VM.last_boot_CPU_flags` of the VM to-migrate with `host.cpu_info` of the receiving host. Migration is only allow if the CPU vendors and the same, and `host.cpu_info:features` ⊇ `VM.last_boot_CPU_flags:features`. The check can be overridden by setting the `force` argument to `true`.
+- These checks need to be updated to use `pool.cpu_info` (`features_pv` or `features_hvm` depending on how the VM was booted) rather than `host.cpu_info`.
+- Maintain `VM.last_boot_CPU_flags` and create a new domain with the same CPU features enabled.
 - Include feature set string in `platformdata` (see above).
 
-### VM export/import
+### VM import
 
-No special handling needed; on start after import, inherit feature set from the pool.
+The `VM.last_boot_CPU_flags` field must be upgraded to the new format (only really needed for VMs that were suspended while exported; `preserve_power_state=true`).
 
 ### Pool join
 
@@ -110,7 +113,7 @@ Update pool join checks according to the rules above (see `pool.join`).
 
 ### Upgrade
 
-* Upgrade `VM.last_boot_CPU_flags` for running and suspended VMs.
+* Upgrade `VM.last_boot_CPU_flags` to the new format for running and suspended VMs.
 
 *More details needed here!!*
 
