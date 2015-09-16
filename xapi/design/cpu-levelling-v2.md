@@ -35,7 +35,7 @@ Most pools start off with homogenous hardware, but over time it may become impos
 If all the hosts in a pool are upgraded to more capable models, the overall feature set offered by the pool could also be updated to be the intersection of the features offered by the upgraded hosts.   This use case will not be implemented in the first release of this feature.
 
 Included use cases
-------
+------------------
 
  1. A user wants to add a new host to an existing XenServer pool.   The new host has all the features of the existing hosts, plus extra features which the existing hosts do not.   The new host will be allowed to join the pool, but its extra features will be hidden from VMs.
  
@@ -49,8 +49,8 @@ Included use cases
  
  6. A user wants to re-add a host to an existing XenServer pool from which the host had previously been removed.  The host will be allowed to join the pool, because the pool feature set was not recalculated when it was removed.   This use case ensures that a host which was removed for maintenance or to be kept as a cold spare can later be re-added.
  
- Excluded use cases
- ------
+Excluded use cases
+------------------
  
  1. A user wants to create a pool by joining a new host to an existing XenServer host which is not running any VMs.   The new host does not have all the features of the existing one.   The new host will not be allowed to join the pool.   In future, a 're-levelling' command could allow the user to mask features of the existing XenServer host to match those offered by the new host.   If the pool had no VMs, this operation would be safe.   To work around this problem, hosts should be added to a pool in increasing order of capability.
  
@@ -58,7 +58,7 @@ Included use cases
  
 
 XenAPI Changes
-------
+--------------
 
 ### Fields
 
