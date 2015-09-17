@@ -32,7 +32,7 @@ A VM can only be migrated safely from one host to another if both hosts offer th
 
 Most pools start off with homogenous hardware, but over time it may become impossible to source new hosts with the same specifications as the ones already in the pool.   The main use of feature levelling is to allow such newer, more capable hosts to be added to an existing pool while preserving the ability to migrate existing VMs to any host in the pool.
 
-If all the hosts in a pool are upgraded to more capable models, the overall feature set offered by the pool could also be updated to be the intersection of the features offered by the upgraded hosts.   This use case will not be implemented in the first release of this feature.
+If all the hosts in a pool are upgraded to more capable models, the overall feature set offered by the pool could also be updated to be the intersection of the features offered by the upgraded hosts.   Upgrading the pool-level feature set will not be implemented in the first release of this feature.
 
 Included use cases
 ------------------
