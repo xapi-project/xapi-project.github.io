@@ -3,7 +3,7 @@ title: CPU feature levelling 2.0
 layout: default
 design_doc: true
 status: proposed
-revision: 4
+revision: 5
 revision_history:
 - revision_number: 1
   description: Initial version
@@ -13,6 +13,8 @@ revision_history:
   description: Included and excluded use cases
 - revision_number: 4
   description: Rolling Pool Upgrade use cases
+- revision_number: 5
+  description: Lots of changes to simplify the design
 ---
 
 Executive Summary
@@ -34,7 +36,24 @@ A VM can only be migrated safely from one host to another if both hosts offer th
 
 Most pools start off with homogenous hardware, but over time it may become impossible to source new hosts with the same specifications as the ones already in the pool.   The main use of feature levelling is to allow such newer, more capable hosts to be added to an existing pool while preserving the ability to migrate existing VMs to any host in the pool.
 
-If all the hosts in a pool are upgraded to more capable models, the overall feature set offered by the pool could also be updated to be the intersection of the features offered by the upgraded hosts.   Upgrading the pool-level feature set will not be implemented in the first release of this feature.
+XXX: If all the hosts in a pool are upgraded to more capable models, the overall feature set offered by the pool could also be updated to be the intersection of the features offered by the upgraded hosts.   Upgrading the pool-level feature set will not be implemented in the first release of this feature.
+
+Principles
+----------
+
+The CPU levelling feature aims to both:
+
+1. Make VM migrations _safe_ by ensuring that a VM will see the same CPU features before and after a migration.
+2. Make VMs as _mobile_ as possible, so that it can be freely migrated around in a XenServer pool.
+
+To make migrations safe:
+
+* A migration request will be blocked if the destination host does not offer the some of the CPU features that the VM currently sees.
+* Any additional CPU features that the destination host is able to offer will be hidden from the VM.
+
+To make VMs mobile:
+
+* A VM that is started in a XenServer pool will be able to see only CPU features that are common to all hosts in the pool.
 
 Included use cases
 ------------------
@@ -79,7 +98,7 @@ XenAPI Changes
 
 * `host.cpu_info` is a field of type `(string -> string) map` that contains information about the CPUs in a host. It contains the following keys: `cpu_count`, `socket_count`, `vendor`, `speed`, `modelname`, `family`, `model`, `stepping`, `flags`, `features`, `features_after_reboot`, `physical_features` and `maskable`.
 	* The following keys are specific to hardware-based CPU masking and will be removed: `features_after_reboot`, `physical_features` and `maskable`.
-	* The `features` key will continue to hold the current CPU features that the host is able to use. In practise, these features will be available to Xen itself and dom0; guests may only see a subset. The current format is a string of four 32-bit words represented as four groups of 8 hexadecimal digits, separated by dashes. This will change to an arbitrary number of 32-bit words. Each bit at a particular position (starting from the left) still refers to a distinct CPU feature (`1`: feature is present; `0`: feature is absent), and feature strings may be compared between hosts.
+	* The `features` key will continue to hold the current CPU features that the host is able to use. In practise, these features will be available to Xen itself and dom0; guests may only see a subset. The current format is a string of four 32-bit words represented as four groups of 8 hexadecimal digits, separated by dashes. This will change to an arbitrary number of 32-bit words. Each bit at a particular position (starting from the left) still refers to a distinct CPU feature (`1`: feature is present; `0`: feature is absent), and feature strings may be compared between hosts. The old format simply becomes a special (4 word) case of the new format, and bits in the same position may be compared between old and new feature strings.
 	* The new key `features_pv` will be added, representing the subset of `features` that the host is able to offer to a PV guest.
 	* The new key `features_hvm` will be added, representing the subset of `features` that the host is able to offer to an HVM guest.
 * A new field `pool.cpu_info` of type `(string -> string) map` (read only) will be added. It will contain:
@@ -93,12 +112,19 @@ XenAPI Changes
 
 ### Messages
 
-* `pool.join` currently requires that the CPU vendor and feature set (according to `host.cpu_info:vendor` and `host.cpu_info:features`) of the joining host are equal to those of the pool master. This requirement will be loosened:
-	* The join will be allowed if `host.cpu_info:vendor` equals `pool.cpu_info:vendor`, and `host.cpu_info:features_pv` ⊇ `pool.cpu_info:features_pv`, and `host.cpu_info:features_hvm` ⊇ `pool.cpu_info:features_hvm`.
-	* That means that xapi will additionally allow hosts that have a more extensive feature set than the pool (as long as the CPU vendor is common). Such hosts are transparently down-levelled (without needing a reboot).
-	* The current error raised in case of a CPU mismatch is `POOL_HOSTS_NOT_HOMOGENEOUS` with `reason` argument `"CPUs differ"`. This doesn't quite capture the new situation, and is hard to internationalise (the error code is used for other situations as well). We will introduce a new error `POOL_JOINING_HOST_CPUS_INCOMPATIBLE`, which is raised if the above criterion is not met.
+* `pool.join` currently requires that the CPU vendor and feature set (according to `host.cpu_info:vendor` and `host.cpu_info:features`) of the joining host are equal to those of the pool master. This requirement will be loosened to mandate only equality in CPU vendor:
+	* The join will be allowed if `host.cpu_info:vendor` equals `pool.cpu_info:vendor`.
+	* This means that xapi will additionally allow hosts that have a _more_ extensive feature set than the pool (as long as the CPU vendor is common). Such hosts are transparently down-levelled to the pool level (without needing reboots).
+	* This further means that xapi will additionally allow hosts that have a _less_ extensive feature set than the pool (as long as the CPU vendor is common). In this case, the pool is transparently down-levelled to the new host's level (without needing reboots). Note that this does not affect any running VMs in any way; the mobility of running VMs will not be restricted.
+	* The current error raised in case of a CPU mismatch is `POOL_HOSTS_NOT_HOMOGENEOUS` with `reason` argument `"CPUs differ"`. This will remain the error that is raised if the pool join fails due to incompatible CPU vendors.
 	* The `pool.other_config:cpuid_feature_mask` override key will no longer have any effect.
-* `host.set_cpu_features` and `host.reset_cpu_features` will be removed: it is no longer to use the old method of CPU feature masking. Calls will fail with `MESSAGE_REMOVED`.
+* `host.set_cpu_features` and `host.reset_cpu_features` will be removed: it is no longer to use the old method of CPU feature masking (CPU feature sets are controlled automatically by xapi). Calls will fail with `MESSAGE_REMOVED`.
+* VM lifecycle operations will be updated internally to use the new feature fields, to ensure that:
+	* Newly started VMs will be given CPU features according to the pool level for maximal mobility.
+	* For safety, running VMs will maintain their feature set across migrations and suspend/resume cycles. CPU features will transparently be hidden from VMs.
+	* Furthermore, migrate and resume will only be allowed in case the target host's CPUs are capable enough, i.e. `host.cpu_info:vendor` = `VM.last_boot_CPU_flags:vendor` and `host.cpu_info:features_{pv,hvm}` ⊇ `VM.last_boot_CPU_flags:features`. A `VM_INCOMPATIBLE_WITH_THIS_HOST` error will be returned otherwise (as happens today).
+	* For cross pool migrations, to ensure maximal mobility in the target pool, a stricter condition will apply: the VM must satisfy the pool CPU level rather than just the target host's level: `pool.cpu_info:vendor` = `VM.last_boot_CPU_flags:vendor` and `pool.cpu_info:features_{pv,hvm}` ⊇ `VM.last_boot_CPU_flags:features`
+
 
 CLI Changes
 -----------
@@ -122,11 +148,13 @@ The old `xc_get_boot_cpufeatures` hypercall will be removed, and replaced by two
 	type featureset_index = Featureset_host | Featureset_pv | Featureset_hvm
 	external get_featureset : handle -> featureset_index -> int64 array = "stub_xc_get_featureset"
 
+In particular, the `get_featureset` function will be used by xapi/xenopsd to ask Xen which are the widest sets of CPU features that it can offer to a VM (PV or HVM). I don't think there is a use for `get_levelling_caps` yet.
+
 Xenopsd
 -------
 
 * Update the type `Host.cpu_info`, which contains all the fields that need to go into the `host.cpu_info` field in the xapi DB. The type already exists but is unused. Add the function `HOST.get_cpu_info` to obtain an instance of the type. Some code from xapi and the cpuid.ml from xen-api-libs can be reused.
-* Add a platform key `featureset` (`Vm.t.platformdata`), which xenopsd will write to xenstore along with the other platform keys (no code change needed in xenopsd). Xenguest will pick this up when a domain is created.
+* Add a platform key `featureset` (`Vm.t.platformdata`), which xenopsd will write to xenstore along with the other platform keys (no code change needed in xenopsd). Xenguest will pick this up when a domain is created, and will apply the CPUID policy to the domain. This has the effect of masking out features that the host may have, but which have a `0` in the feature set bitmap.
 * Review current cpuid-related functions in `xc/domain.ml`.
 
 Xapi
@@ -135,33 +163,36 @@ Xapi
 ### Xapi startup
 
 * Update `Create_misc.create_host_cpu` function to use the new xenopsd call. 
-* If the host features fall below pool level, e.g. due to a change in hardware: Do no enable the host (leave it disabled in the startup sequence) and send a XenAPI alert `host_cpus_downgraded`.
+* If the host features fall below pool level, e.g. due to a change in hardware: down-level the pool by updating `pool.cpu_info.features_{pv,hvm}`. Newly started VMs will inherit the new level; already running VMs will not be affected, but will not be able to migrate to this host.
 	
 ### VM start
 
-- Inherit feature set from pool (PV or HVM) and set `VM.last_boot_CPU_flags` (`cpuid_helpers.ml`).
-- Include feature set string in `platformdata` (see above).
+- Inherit feature set from pool (`pool.cpu_info.features_{pv,hvm}`) and set `VM.last_boot_CPU_flags` (`cpuid_helpers.ml`).
+- The domain will be started with this CPU feature set enabled, by writing the feature set string to `platformdata` (see above).
 
 ### VM migrate and resume
 
-- There are already CPU compatiblity checks on migration, both in-pool and cross-pool, as well as resume. Xapi compares `VM.last_boot_CPU_flags` of the VM to-migrate with `host.cpu_info` of the receiving host. Migration is only allow if the CPU vendors and the same, and `host.cpu_info:features` ⊇ `VM.last_boot_CPU_flags:features`. The check can be overridden by setting the `force` argument to `true`.
-- These checks need to be updated to use `pool.cpu_info` (`features_pv` or `features_hvm` depending on how the VM was booted) rather than `host.cpu_info`.
-- Maintain `VM.last_boot_CPU_flags` and create a new domain with the same CPU features enabled.
-- Include feature set string in `platformdata` (see above).
+- There are already CPU compatiblity checks on migration, both in-pool and cross-pool, as well as resume. Xapi compares `VM.last_boot_CPU_flags` of the VM to-migrate with `host.cpu_info` of the receiving host. Migration is only allowed if the CPU vendors and the same, and `host.cpu_info:features` ⊇ `VM.last_boot_CPU_flags:features`. The check can be overridden by setting the `force` argument to `true`.
+- For in-pool migrations, these checks will be updated to use the appropriate `features_pv` or `features_hvm` field.
+- For cross-pool migrations. These checks will be updated to use `pool.cpu_info` (`features_pv` or `features_hvm` depending on how the VM was booted) rather than `host.cpu_info`.
+- If the above checks pass, then the `VM.last_boot_CPU_flags` will be maintained, and the new domain will be started with the same CPU feature set enabled, by writing the feature set string to `platformdata` (see above).
+- In case the VM is migrated to a host with a higher xapi software version (e.g. a migration from a host that does not have CPU levelling v2), the feature string may be longer. This may happen during a rolling pool upgrade or a cross-pool migration, or when a suspended VM is resume after an upgrade. In this case, the following safety rules apply:
+	- Only the existing (shorter) feature string will be used to determine whether the migration will be allowed. This is the best we can do, because we are unaware of the state of the extended feature set on the older host.
+	- The existing feature set in `VM.last_boot_CPU_flags` will be extended with the extra bits in `host.cpu_info:features`, i.e. the widest feature set that can possibly be granted to the VM (just in case the VM was using any of these features before the migration). (XXX: should this be based on `_{pv,hvm}`?)
 
 ### VM import
 
-The `VM.last_boot_CPU_flags` field must be upgraded to the new format (only really needed for VMs that were suspended while exported; `preserve_power_state=true`).
+The `VM.last_boot_CPU_flags` field must be upgraded to the new format (only really needed for VMs that were suspended while exported; `preserve_power_state=true`), as described above.
 
 ### Pool join
 
-Update pool join checks according to the rules above (see `pool.join`).
+Update pool join checks according to the rules above (see `pool.join`), i.e. remove the CPU features constraints.
 
 ### Upgrade
 
-* Upgrade `VM.last_boot_CPU_flags` to the new format for running and suspended VMs.
+* The pool level (`pool.cpu_info`) will be initialised when the pool master upgrades, and automatically adjusted if needed (downwards) when slaves are upgraded, by each upgraded host's started sequence (as above under "Xapi startup").
+* The `VM.last_boot_CPU_flags` fields of running and suspended VMs will be "upgraded" to the new format on demand, when a VM is migrated to or resume on an upgraded host, as described above.
 
-*More details needed here!!*
 
 XenCenter integration
 ---------------------
