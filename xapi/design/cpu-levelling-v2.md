@@ -51,6 +51,8 @@ To make migrations safe:
 * A migration request will be blocked if the destination host does not offer the some of the CPU features that the VM currently sees.
 * Any additional CPU features that the destination host is able to offer will be hidden from the VM.
 
+_Note:_ Due to the limitations of the old Heterogeneous Pools feature, we are not able to guarantee the safety of VMs that are migrated to a Levelling-v2 host from an older host, during a rolling pool upgrade. This is because such VMs may be using CPU features that were not captured in the old feature sets, of which we are therefore unaware. However, migrations between the same two hosts, but before the upgrade, may have already been unsafe. The promise is that we will not make migrations _more_ unsafe during a rolling pool upgrade.
+
 To make VMs mobile:
 
 * A VM that is started in a XenServer pool will be able to see only CPU features that are common to all hosts in the pool.
@@ -164,6 +166,7 @@ Xapi
 
 * Update `Create_misc.create_host_cpu` function to use the new xenopsd call. 
 * If the host features fall below pool level, e.g. due to a change in hardware: down-level the pool by updating `pool.cpu_info.features_{pv,hvm}`. Newly started VMs will inherit the new level; already running VMs will not be affected, but will not be able to migrate to this host.
+* To notify the admin of this event, an API alert (message) will be set: `pool_cpu_features_downgraded`.
 	
 ### VM start
 
@@ -178,7 +181,9 @@ Xapi
 - If the above checks pass, then the `VM.last_boot_CPU_flags` will be maintained, and the new domain will be started with the same CPU feature set enabled, by writing the feature set string to `platformdata` (see above).
 - In case the VM is migrated to a host with a higher xapi software version (e.g. a migration from a host that does not have CPU levelling v2), the feature string may be longer. This may happen during a rolling pool upgrade or a cross-pool migration, or when a suspended VM is resume after an upgrade. In this case, the following safety rules apply:
 	- Only the existing (shorter) feature string will be used to determine whether the migration will be allowed. This is the best we can do, because we are unaware of the state of the extended feature set on the older host.
-	- The existing feature set in `VM.last_boot_CPU_flags` will be extended with the extra bits in `host.cpu_info:features`, i.e. the widest feature set that can possibly be granted to the VM (just in case the VM was using any of these features before the migration). (XXX: should this be based on `_{pv,hvm}`?)
+	- The existing feature set in `VM.last_boot_CPU_flags` will be extended with the extra bits in `host.cpu_info:features_{pv,hvm}`, i.e. the widest feature set that can possibly be granted to the VM (just in case the VM was using any of these features before the migration).
+	- Strictly speaking, a migration of a VM from host A to B that was allowed before B was upgraded, may no longer be allowed after the upgrade, due to stricter feature sets in the new implementation (from the `xc_get_featureset` hypercall). However, the CPU features that are switched off by the new implementation are features that a VM would not have been able to actually use. We therefore need a don't-care feature set with bits that we may ignore in migration checks.
+	- XXX: Can we actually block a cross-pool migration at the receiver end??
 
 ### VM import
 
