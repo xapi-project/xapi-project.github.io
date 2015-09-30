@@ -2,7 +2,7 @@
 title: SR-Level RRDs
 layout: default
 design_doc: true
-revision: 8
+revision: 11
 status: confirmed
 design_review: 139
 revision_history:
@@ -26,6 +26,8 @@ revision_history:
   description: Magic number change in framing format of vdi
 - revision_number: 10
   description: Add details of new APIs added to xapi and xcp-rrdd
+- revision_number: 11
+  description: Remove unneeded API calls
 
 ---
 
@@ -143,10 +145,3 @@ attempt to update if it is the SR master.
 * Archive the sr rrds to the filesystem: `val archive_sr_rrd : sr_uuid:string -> unit`
 
 * Load the sr rrds from the filesystem: `val push_sr_rrd : sr_uuid:string -> unit`
-
-* Backup sr rrds, it will archive all sr rrds and then copy them to filesystem: `val backup_sr_rrds : unit -> unit`
-
-#### xapi:
-
-* Binds the xcp-rrdd function `backup_sr_rrds` to Xapi_periodic_scheduler thread. In order to archive the sr rrds to filesystem on regular interval: `val backup_sr_rrds : __context:Context.t -> host:'b -> delay:float -> unit`
-
