@@ -3,7 +3,7 @@ title: CPU feature levelling 2.0
 layout: default
 design_doc: true
 status: proposed
-revision: 5
+revision: 6
 revision_history:
 - revision_number: 1
   description: Initial version
@@ -15,6 +15,8 @@ revision_history:
   description: Rolling Pool Upgrade use cases
 - revision_number: 5
   description: Lots of changes to simplify the design
+- revision_number: 6
+  description: Use case refresh based on simplified design
 ---
 
 Executive Summary
@@ -36,10 +38,8 @@ A VM can only be migrated safely from one host to another if both hosts offer th
 
 Most pools start off with homogenous hardware, but over time it may become impossible to source new hosts with the same specifications as the ones already in the pool.   The main use of feature levelling is to allow such newer, more capable hosts to be added to an existing pool while preserving the ability to migrate existing VMs to any host in the pool.
 
-XXX: If all the hosts in a pool are upgraded to more capable models, the overall feature set offered by the pool could also be updated to be the intersection of the features offered by the upgraded hosts.   Upgrading the pool-level feature set will not be implemented in the first release of this feature.
-
-Principles
-----------
+Principles for Migration
+------------------------
 
 The CPU levelling feature aims to both:
 
@@ -55,33 +55,27 @@ _Note:_ Due to the limitations of the old Heterogeneous Pools feature, we are no
 
 To make VMs mobile:
 
-* A VM that is started in a XenServer pool will be able to see only CPU features that are common to all hosts in the pool.
+* A VM that is started in a XenServer pool will be able to see only CPU features that are common to all hosts in the pool. The set of common CPU features is referred to in this document as the _pool CPU feature level_, or simply the _pool level_.
 
-Included use cases
-------------------
+Use Cases for Pools
+-------------------
 
- 1. A user wants to add a new host to an existing XenServer pool.   The new host has all the features of the existing hosts, plus extra features which the existing hosts do not.   The new host will be allowed to join the pool, but its extra features will be hidden from VMs.
- 
- 2. A user wants to add a new host to an existing XenServer pool.   The new host does not have all the features of the existing ones.   The new host will not be allowed to join the pool.
- 
- 3. A user wants to upgrade or repair the hardware of a host in an existing XenServer pool.   After upgrade the host has all the features it used to have, plus extra features which other hosts in the pool do not have.   The extra features are masked out and the host resumes its place in the pool when it is booted up again.
- 
- 4. A user wants to upgrade or repair the hardware of a host in an existing XenServer pool.   After upgrade the host has fewer features than it used to have.   When the host is booted up again, it is disabled in the pool and no VMs can be started on it or migrated to it.
- 
- 5. A user wants to remove a host from an existing XenServer pool.    The host will be removed as normal after any VMs on it have been migrated away.   The feature set offered by the pool will not change, even if the host which was removed was the least capable in the pool and its removal would allow additional features common to the remaining hosts to be unmasked.
- 
- 6. A user wants to re-add a host to an existing XenServer pool from which the host had previously been removed.  The host will be allowed to join the pool, because the pool feature set was not recalculated when it was removed.   This use case ensures that a host which was removed for maintenance or to be kept as a cold spare can later be re-added.
- 
-Excluded use cases
-------------------
- 
- 1. A user wants to create a pool by joining a new host to an existing XenServer host which is not running any VMs.   The new host does not have all the features of the existing one.   The new host will not be allowed to join the pool.   In future, a 're-levelling' command could allow the user to mask features of the existing XenServer host to match those offered by the new host.   If the pool had no VMs, this operation would be safe.   To work around this problem, hosts should be added to a pool in increasing order of capability.
- 
- 2. A user wants to replace all the hosts in an existing XenServer pool with newer, more capable models and upgrade the pool's feature set to reveal the features offered by the new hosts.   The pool feature set will remain the same, even after the last of the older, less capable hosts is removed.   In the future, 're-levelling' could allow the pool feature set to be expanded, however this should only be done with the user's consent as doing so would prevent any older hosts from being re-added to the pool.
- 
+1. A user wants to add a new host to an existing XenServer pool.  The new host has all the features of the existing hosts, plus extra features which the existing hosts do not.  The new host will be allowed to join the pool, but its extra features will be hidden from VMs that are started on the host or migrated to it.  The join does not require any host reboots.
+
+2. A user wants to add a new host to an existing XenServer pool.  The new host does not have all the features of the existing ones.  XenCenter warns the user that adding the host to the pool is possible, but it would lower the pool's CPU feature level.  The user accepts this and continues the join.  The join does not require any host reboots.  VMs that are started anywhere on the pool, from now on, will only see the features of the new host (the lowest common denominator), such that they are migratable to any host in the pool, including the new one.  VMs that were running before the pool join will not be migratable to the new host, because these VMs may be using features that the new host does not have.  However, after a reboot, such VMs will be fully mobile.
+
+3. A user wants to add a new host to an existing XenServer pool.  The new host does not have all the features of the existing ones, and at the same time, it has certain features that the pool does not have (the feature sets overlap).  This is essentially a combination of the two use cases above, where the pool's CPU feature level will be downgraded to the intersection of the feature sets of the pool and the new host.  The join does not require any host reboots.
+
+4. A user wants to upgrade or repair the hardware of a host in an existing XenServer pool.  After upgrade the host has all the features it used to have, plus extra features which other hosts in the pool do not have.   The extra features are masked out and the host resumes its place in the pool when it is booted up again.
+
+5. A user wants to upgrade or repair the hardware of a host in an existing XenServer pool.  After upgrade the host has fewer features than it used to have.  When the host is booted up again, the pool CPU's feature level will be automatically lowered, and the user will be alerted of this fact (through the usual alerting mechanism).
+
+6. A user wants to remove a host from an existing XenServer pool.  The host will be removed as normal after any VMs on it have been migrated away.  The feature set offered by the pool will be automatically re-levelled upwards in case the host which was removed was the least capable in the pool, and additional features common to the remaining hosts will be unmasked.
+
+
 Rolling pool upgrade
 --------------------
- 
+
 * When a heterogeneous pool is upgraded, it might turn out that the master is the most capable host.   If the pool level is set to the master's level, then all the other hosts will be disabled after the upgrade.   Instead, as each host is upgraded and comes back online, we will compare its feature level with the pool level and down-level the pool if the newly-upgraded host is below the pool's level.
  
 * A VM which was running on the pool before the upgrade is expected to continue to run afterwards.   However, when the VM is migrated to an upgraded host, some of the CPU features it had been using might disappear, either because they are not offered by the host or because the new feature-levelling mechanism hides them.   To allow such a VM to continue running, it will be given a temporary VM-level feature set allowing all CPU features.   When the VM is rebooted it will inherit the pool-level feature set.
@@ -117,7 +111,7 @@ XenAPI Changes
 * `pool.join` currently requires that the CPU vendor and feature set (according to `host.cpu_info:vendor` and `host.cpu_info:features`) of the joining host are equal to those of the pool master. This requirement will be loosened to mandate only equality in CPU vendor:
 	* The join will be allowed if `host.cpu_info:vendor` equals `pool.cpu_info:vendor`.
 	* This means that xapi will additionally allow hosts that have a _more_ extensive feature set than the pool (as long as the CPU vendor is common). Such hosts are transparently down-levelled to the pool level (without needing reboots).
-	* This further means that xapi will additionally allow hosts that have a _less_ extensive feature set than the pool (as long as the CPU vendor is common). In this case, the pool is transparently down-levelled to the new host's level (without needing reboots). Note that this does not affect any running VMs in any way; the mobility of running VMs will not be restricted.
+	* This further means that xapi will additionally allow hosts that have a _less_ extensive feature set than the pool (as long as the CPU vendor is common). In this case, the pool is transparently down-levelled to the new host's level (without needing reboots). Note that this does not affect any running VMs in any way; the mobility of running VMs will not be restricted, which can still migrate to any host they could migrate to before. It does mean that those running VMs will not be migratable to the new host.
 	* The current error raised in case of a CPU mismatch is `POOL_HOSTS_NOT_HOMOGENEOUS` with `reason` argument `"CPUs differ"`. This will remain the error that is raised if the pool join fails due to incompatible CPU vendors.
 	* The `pool.other_config:cpuid_feature_mask` override key will no longer have any effect.
 * `host.set_cpu_features` and `host.reset_cpu_features` will be removed: it is no longer to use the old method of CPU feature masking (CPU feature sets are controlled automatically by xapi). Calls will fail with `MESSAGE_REMOVED`.
@@ -182,7 +176,7 @@ Xapi
 - In case the VM is migrated to a host with a higher xapi software version (e.g. a migration from a host that does not have CPU levelling v2), the feature string may be longer. This may happen during a rolling pool upgrade or a cross-pool migration, or when a suspended VM is resume after an upgrade. In this case, the following safety rules apply:
 	- Only the existing (shorter) feature string will be used to determine whether the migration will be allowed. This is the best we can do, because we are unaware of the state of the extended feature set on the older host.
 	- The existing feature set in `VM.last_boot_CPU_flags` will be extended with the extra bits in `host.cpu_info:features_{pv,hvm}`, i.e. the widest feature set that can possibly be granted to the VM (just in case the VM was using any of these features before the migration).
-	- Strictly speaking, a migration of a VM from host A to B that was allowed before B was upgraded, may no longer be allowed after the upgrade, due to stricter feature sets in the new implementation (from the `xc_get_featureset` hypercall). However, the CPU features that are switched off by the new implementation are features that a VM would not have been able to actually use. We therefore need a don't-care feature set with bits that we may ignore in migration checks.
+	- Strictly speaking, a migration of a VM from host A to B that was allowed before B was upgraded, may no longer be allowed after the upgrade, due to stricter feature sets in the new implementation (from the `xc_get_featureset` hypercall). However, the CPU features that are switched off by the new implementation are features that a VM would not have been able to actually use. We therefore need a don't-care feature set (similar to the old `pool.other_config:cpuid_feature_mask` key) with bits that we may ignore in migration checks, and switch off after the migration. This will be a xapi config file option.
 	- XXX: Can we actually block a cross-pool migration at the receiver end??
 
 ### VM import
