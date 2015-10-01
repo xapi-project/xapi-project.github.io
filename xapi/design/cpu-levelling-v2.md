@@ -3,7 +3,7 @@ title: CPU feature levelling 2.0
 layout: default
 design_doc: true
 status: proposed
-revision: 6
+revision: 7
 revision_history:
 - revision_number: 1
   description: Initial version
@@ -17,6 +17,8 @@ revision_history:
   description: Lots of changes to simplify the design
 - revision_number: 6
   description: Use case refresh based on simplified design
+- revision_number: 7
+  description: RPU refresh based on simplified design
 ---
 
 Executive Summary
@@ -73,18 +75,16 @@ Use Cases for Pools
 6. A user wants to remove a host from an existing XenServer pool.  The host will be removed as normal after any VMs on it have been migrated away.  The feature set offered by the pool will be automatically re-levelled upwards in case the host which was removed was the least capable in the pool, and additional features common to the remaining hosts will be unmasked.
 
 
-Rolling pool upgrade
+Rolling Pool Upgrade
 --------------------
 
-* When a heterogeneous pool is upgraded, it might turn out that the master is the most capable host.   If the pool level is set to the master's level, then all the other hosts will be disabled after the upgrade.   Instead, as each host is upgraded and comes back online, we will compare its feature level with the pool level and down-level the pool if the newly-upgraded host is below the pool's level.
- 
-* A VM which was running on the pool before the upgrade is expected to continue to run afterwards.   However, when the VM is migrated to an upgraded host, some of the CPU features it had been using might disappear, either because they are not offered by the host or because the new feature-levelling mechanism hides them.   To allow such a VM to continue running, it will be given a temporary VM-level feature set allowing all CPU features.   When the VM is rebooted it will inherit the pool-level feature set.
+* A VM which was running on the pool before the upgrade is expected to continue to run afterwards.  However, when the VM is migrated to an upgraded host, some of the CPU features it had been using might disappear, either because they are not offered by the host or because the new feature-levelling mechanism hides them.  To have the best chance for such a VM to successfully migrate (see the note under "Principles for Migration"), it will be given a temporary VM-level feature set providing all of the destination's CPU features that were unknown to XenServer before the upgrade.  When the VM is rebooted it will inherit the pool-level feature set.
 
-* A VM which is started during the upgrade will be given the current pool-level feature set.   The pool-level feature set may drop after the VM is started, as more hosts are upgraded and re-join the pool, however the VM is guaranteed to be able to migrate to any host which has already been upgraded.   If the VM is started on the master, there is a risk that it may only be able to run on that host.
- 
-* To allow the VMs with grandfathered-in flags to be migrated around in the pool, the intra pool VM migration pre-checks will compare the VM's feature flags to the target host's flags, not the pool flags.   This will maximise the chance that a VM can be migrated somewhere in a heterogeneous pool, particularly in the case where only a few hosts in the pool do not have features which the VMs require.   TODO: This requires that the VM's feature set describes roughly what features it requires;  with an 'allow all' feature set, we can't choose the best host for a VM.   The best we can do is to migrate the VM to the most capable host with space in the pool.
+* A VM which is started during the upgrade will be given the current pool-level feature set.  The pool-level feature set may drop after the VM is started, as more hosts are upgraded and re-join the pool, however the VM is guaranteed to be able to migrate to any host which has already been upgraded.  If the VM is started on the master, there is a risk that it may only be able to run on that host.
+
+* To allow the VMs with grandfathered-in flags to be migrated around in the pool, the intra pool VM migration pre-checks will compare the VM's feature flags to the target host's flags, not the pool flags.  This will maximise the chance that a VM can be migrated somewhere in a heterogeneous pool, particularly in the case where only a few hosts in the pool do not have features which the VMs require.
   
-* To allow cross-pool migration, we will still check the VM's requirements against the *pool-level* features of the target pool.   This is to avoid the possibility that we migrate a VM to an 'island' in the other pool, from which it cannot be migrated any further.
+* To allow cross-pool migration, including to pool of a higher XenServer version, we will still check the VM's requirements against the *pool-level* features of the target pool.  This is to avoid the possibility that we migrate a VM to an 'island' in the other pool, from which it cannot be migrated any further.
 
 
 XenAPI Changes
