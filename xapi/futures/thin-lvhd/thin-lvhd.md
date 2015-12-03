@@ -726,11 +726,17 @@ Ring protocols
 Each ring consists of 3 sectors of metadata followed by the data area. The
 contents of the first 3 sectors are:
 
-  0. Signature ("mirage shared-block-device 1.0")
-  1. Producer pointer (bytes 0-7, unsigned int64, stored as little endian)
-     Suspend acknowledgement (byte 8, unsigned char)
-  2. Consumer pointer (bytes 0-7, unsigned int64, stored as little endian)
-     Suspend (byte 8, unsigned char)
+Sector, Octet offsets | Name        | Type   | Description
+----------------------|-------------|--------|------
+0,0-30                | signature   | string | Signature ("mirage shared-block-device 1.0")
+1,0-7                 | producer    | uint64 | Pointer to the end of data written by the producer
+1,8                   | suspend_ack | uint8  | Suspend acknowledgement byte
+2,0-7                 | consumer    | uint64 | Pointer to the end of data read by the consumer
+2,8                   | suspend     | uint8  | Suspend request byte
+
+
+Note. producer and consumer pointers are stored in little endian
+format.
 
 The pointers are free running byte offsets rounded up to the next
 4-byte boundary, and the position of the actual data is found by
