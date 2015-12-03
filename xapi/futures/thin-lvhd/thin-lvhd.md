@@ -510,7 +510,10 @@ The `local_allocator` accepts the following configuration (via a config file):
 - `free_pool`: name of the LV used to store the host's free blocks
 - `devices`: list of local block devices containing the PVs
 - `to_LVM`: name of the LV containing the queue of block allocations sent to `xenvmd`
-- `from_LVM`: name of the LV containing the queue of free blocks sent from `xenvmd`
+- `from_LVM`: name of the LV containing the queue of messages sent from `xenvmd`.
+  There are two types of messages:
+  1. Free blocks to put into the free pool
+  2. Cap requests to remove blocks from the free pool.
 
 When the `local_allocator` process starts up it will read the host local
 journal and
@@ -564,8 +567,10 @@ terminated in `sr_detach`. `xenvmd` has a config file containing:
 
 - peeks updates from all the `to_LVM` queues
 - calculates how much free space each host still has
-- if the free space for a host drops below some threshold:
+- if the size of a host's free pool drops below some threshold:
   - choose some free blocks
+- if the size of a host's free pool goes above some threshold:
+  - request a cap of the host's free pool
 - writes the change it is going to make to a journal stored in an LV
 - pops the updates from the `to_LVM` queues
 - pushes the updates to the `from_LVM` queues
@@ -714,3 +719,154 @@ Summary of the impact on the admin
   provisioning.
 - There will be more fragmentation, but the extent size is large (4MiB) so it
   shouldn't be too bad.
+
+Ring protocols
+==============
+
+Each ring consists of 3 sectors of metadata followed by the data area. The
+contents of the first 3 sectors are:
+
+  0. Signature ("mirage shared-block-device 1.0")
+  1. Producer pointer (bytes 0-7, unsigned int64, stored as little endian)
+     Suspend acknowledgement (byte 8, unsigned char)
+  2. Consumer pointer (bytes 0-7, unsigned int64, stored as little endian)
+     Suspend (byte 8, unsigned char)
+
+The pointers are free running byte offsets rounded up to the next
+4-byte boundary, and the position of the actual data is found by
+finding the remainder when dividing by the size of the data area. The
+producer pointer points to the first free byte, and the consumer
+pointer points to the byte after the last data consumed. The actual
+payload is preceded by a 4-byte length field, stored in little endian
+format. When writing a 1 byte payload, the next value of the producer
+pointer will therefore be 8 bytes on from the previous - 4 for the
+length (which will contain [0x01,0x00,0x00,0x00]), 1 byte for the
+payload, and 3 bytes padding.
+
+A ring is suspended and resumed by the consumer. To suspend, the
+consumer first checks that the producer and consumer agree on the
+current suspend status. If they do not, the ring cannot be
+suspended. The consumer then writes the byte 0x02 into byte 8 of
+sector 2. The consumer must then wait for the producer to acknowledge
+the suspend, which it will do by writing 0x02 into byte 8 of sector 1.
+
+The FromLVM ring
+----------------
+
+Two different types of message can be sent on the FromLVM ring.
+
+The FreeAllocation message contains the blocks for the free pool.
+Example message:
+
+    (FreeAllocation((blocks((pv0(12326 12249))(pv0(11 1))))(generation 2)))
+
+Pretty-printed:
+
+    (FreeAllocation
+        (
+            (blocks
+                (
+                    (pv0(12326 12249))
+                    (pv0(11 1))
+                )
+            )
+            (generation 2)
+        )
+    )
+
+This is a message to add two new sets of extents to the free pool.  A
+span of length 12249 extents starting at extent 12326, and a span of
+length 1 starting from extent 11, both within the physical volume
+'pv0'. The generation count of this message is '2'. The semantics of
+the generation is that the local allocator must record the generation
+of the last message it received since the FromLVM ring was resumed,
+and ignore any message with a generated less than or equal to the last
+message received.
+
+The CapRequest message contains a request to cap the free pool at
+a maximum size.
+Example message:
+
+    (CapRequest((cap 6127)(name host1-freeme)))
+
+Pretty-printed:
+
+    (CapRequest
+        (
+            (cap 6127)
+            (name host1-freeme)
+        )
+    )
+
+This is a request to cap the free pool at a maximum size of 6127
+extents. The 'name' parameter reflects the name of the LV into which
+the extents should be transferred.
+
+The ToLVM Ring
+--------------
+
+The ToLVM ring only contains 1 type of message. Example:
+
+    ((volume test5)(segments(((start_extent 1)(extent_count 32)(cls(Linear((name pv0)(start_extent 12328))))))))
+
+Pretty-printed:
+
+    (
+        (volume test5)
+        (segments
+            (
+                (
+                    (start_extent 1)
+                    (extent_count 32)
+                    (cls
+                        (Linear
+                            (
+                                (name pv0)
+                                (start_extent 12328)
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+
+This message is extending an LV named 'test5' by giving it 32 extents
+starting at extent 1, coming from PV 'pv0' starting at extent
+12328. The 'cls' field should always be 'Linear' - this is the only
+acceptable value.
+
+
+Cap requests
+============
+
+Xenvmd will try to keep the free pools of the hosts within a range
+set as a fraction of free space. There are 3 parameters adjustable
+via the config file:
+
+- low_water_mark_factor
+- medium_water_mark_factor
+- high_water_mark_factor
+
+These three are all numbers between 0 and 1. Xenvmd will sum the free
+size and the sizes of all hosts' free pools to find the total
+effective free size in the VG, `F`. It will then subtract the sizes of
+any pending desired space from in-flight create or resize calls `s`.  This
+will then be divided by the number of hosts connected, `n`, and
+multiplied by the three factors above to find the 3 absolute values
+for the high, medium and low watermarks.
+
+    {high, medium, low} * (F - s) / n
+
+When xenvmd notices that a host's free pool size has dropped below
+the low watermark, it will be topped up such that the size is equal
+to the medium watermark. If xenvmd notices that a host's free pool
+size is above the high watermark, it will issue a 'cap request' to
+the host's local allocator, which will then respond by allocating
+from its free pool into the fake LV, which xenvmd will then delete
+as soon as it gets the update.
+
+Xenvmd keeps track of the last update it has sent to the local
+allocator, and will not resend the same request twice, unless it
+is restarted.
+
