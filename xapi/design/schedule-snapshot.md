@@ -2,6 +2,7 @@
 title: Schedule Snapshot Design
 layout: default
 design_doc: true
+design_review: 186
 revision: 1
 status: proposed
 ---
