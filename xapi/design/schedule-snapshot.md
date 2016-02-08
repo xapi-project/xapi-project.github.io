@@ -10,6 +10,8 @@ revision_history:
   description: Initial version
 - revision_number: 2
   description: Renaming VMSS fields and APIs. API message_create superseeds vmss_create_alerts.
+- revision_number: 3
+  description: Remove VMSS alarm_config details and use existing pool wide alarm config
 ---
 
 The scheduled snapshot feature will utilize the existing architecture of VMPR. In terms of functionality, schedule snapshot is basically VMPR without its archiving capability.
@@ -56,12 +58,6 @@ New fields:
 	* min : [0;15;30;45]
 	* days : [`Monday`,`Tuesday`,`Wednesday`,`Thursday`,`Friday`,`Saturday`,`Sunday`]
 * `last-run-time` type Date : DateTime of last execution of VMSS.
-* `is-alarm-enabled` type Bool : Alarm enable/disable for VMSS.
-* `alarm-config` : `Map(String,String)` with (key, value) pair:
-	* email_address : ((String), "")
-	* smtp_server : ((String), "")
-	* smtp_port : ((IntRange(1,65535)), "25")
-Sets the alarm config field for VMSS.
 * `VMs` type VM refs : List of VMs part of VMSS.
 
 New fields to VM record:
@@ -73,21 +69,16 @@ New APIs
 --------
 
 * vmss_snapshot_now (Ref vmss, Pool_Operater) -> String : This call executes the schedule snapshot immediately.
-* vmss_get_alerts (Ref vmss, Int "hours_from_now", Pool_Operater) -> Set String : This call fetches a history of alerts for a given schedule snapshot.
 * vmss_set_retention_value (Ref vmss, Int value, Pool_Operater) -> unit : Set the value of vmss retention value, max is 10.
 * vmss_set_frequency (Ref vmss, String "value", Pool_Operater) -> unit : Set the value of the vmss frequency field.
 * vmss_set_type (Ref vmss, String "value", Pool_Operater) -> unit : Set the snapshot type of the vmss type field.
 * vmss_set_schedule (Ref vmss, Map(String,String) "value", Pool_Operater) -> unit : Set the vmss schedule to take snapshot.
-* vmss_set_is_alarm_enabled (Ref vmss, Bool "value", Pool_Operater) -> unit : Set the value of the is_alarm_enabled field.
-* vmss_set_alarm_config (Ref vmss, Map(String,String) "value", Pool_Operater) -> unit : Set the alarm_config.
 * vmss_add_to_schedule (Ref vmss, String "key", String "value", Pool_Operater) -> unit : Add key value pair to VMSS schedule.
-* vmss_add_to_alarm_config (Ref vmss, String "key", String "value", Pool_Operater) -> unit : Add key value pair to VMSS alarm_config field.
 * vmss_remove_from_schedule (Ref vmss, String "key", Pool_Operater) -> unit : Remove key from VMSS schedule.
-* vmss_remove_from_alarm_config (Ref vmss, String "key", Pool_Operater) -> unit : Remove key from VMSS alarm_config field.
 * vmss_set_last_run_time (Ref vmss, DateTime "value", Local_Root) -> unit : Set the last run time for VMSS.
 
 New CLIs
 --------
 
-* vmss-create (required : "name-label";"type";"frequency", optional : "name-description";"is-enabled";"schedule:";"retention-value";"is-alarm-enabled";"alarm-config:") -> unit : Creates VM schedule snapshot.
+* vmss-create (required : "name-label";"type";"frequency", optional : "name-description";"enabled";"schedule:";"retention-value") -> unit : Creates VM schedule snapshot.
 * vmss-destroy (required : uuid) -> unit : Destroys a VM schedule snapshot.
