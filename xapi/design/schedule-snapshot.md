@@ -12,9 +12,11 @@ revision_history:
   description: Renaming VMSS fields and APIs. API message_create superseeds vmss_create_alerts.
 - revision_number: 3
   description: Remove VMSS alarm_config details and use existing pool wide alarm config
+- revision_number: 4
+  description: Renaming field from retention-value to retained-snapshots and schedule-snapshot to scheduled-snapshot
 ---
 
-The scheduled snapshot feature will utilize the existing architecture of VMPR. In terms of functionality, schedule snapshot is basically VMPR without its archiving capability.
+The scheduled snapshot feature will utilize the existing architecture of VMPR. In terms of functionality, scheduled snapshot is basically VMPR without its archiving capability.
 
 Introduction
 ------------
@@ -33,12 +35,12 @@ Datapath Design
 ---------------
 
 * There will be a cron job for VMSS.
-* VMSS plugin will go through all the schedule snapshot policies in the pool and check if any of them are due.
-* If a snapshot is due then : Go through all the VM objects in XAPI associated with this schedule snapshot policy and create a new snapshot.
+* VMSS plugin will go through all the scheduled snapshot policies in the pool and check if any of them are due.
+* If a snapshot is due then : Go through all the VM objects in XAPI associated with this scheduled snapshot policy and create a new snapshot.
 * If the snapshot operation fails, create a notification alert for the event and move to the next VM.
-* Check if an older snapshot now needs to be deleted to comply with the retention value defined in the schedule policy.
-* If we need to delete any existing snapshots, delete the oldest snapshot created via schedule policy.
-* Set the last-run timestamp in the schedule policy.
+* Check if an older snapshot now needs to be deleted to comply with the retained snapshots defined in the scheduled policy.
+* If we need to delete any existing snapshots, delete the oldest snapshot created via scheduled policy.
+* Set the last-run timestamp in the scheduled policy.
 
 Xapi Changes
 ------------
@@ -51,7 +53,7 @@ New fields:
 * `name-description` type `String` : Name description for VMSS.
 * `enabled` type `Bool` : Enable/Disable VMSS to take snapshot.
 * `type` type `Enum` [`snapshot`; `checkpoint`; `snapshot_with_quiesce`] : Type of snapshot VMSS takes.
-* `retention-value` type `Int64` : Number of snapshots limit for a VM, max limit is 10 and default is 7.
+* `retained-snapshots` type `Int64` : Number of snapshots limit for a VM, max limit is 10 and default is 7.
 * `frequency` type `Enum` [`hourly`; `daily`; `weekly`] : Frequency of taking snapshot of VMs.
 * `schedule` type `Map(String,String)` with (key, value) pair:
 	* hour : 0 to 23
@@ -62,17 +64,17 @@ New fields:
 
 New fields to VM record:
 
-* `schedule-snapshot` type VMSS ref : VM part of VMSS.
+* `scheduled-snapshot` type VMSS ref : VM part of VMSS.
 * `is-vmss-snapshot` type Bool : If snapshot created from VMSS.
 
 New APIs
 --------
 
-* vmss_snapshot_now (Ref vmss, Pool_Operater) -> String : This call executes the schedule snapshot immediately.
-* vmss_set_retention_value (Ref vmss, Int value, Pool_Operater) -> unit : Set the value of vmss retention value, max is 10.
+* vmss_snapshot_now (Ref vmss, Pool_Operater) -> String : This call executes the scheduled snapshot immediately.
+* vmss_set_retained_snapshots (Ref vmss, Int value, Pool_Operater) -> unit : Set the value of vmss retained snapshots, max is 10.
 * vmss_set_frequency (Ref vmss, String "value", Pool_Operater) -> unit : Set the value of the vmss frequency field.
 * vmss_set_type (Ref vmss, String "value", Pool_Operater) -> unit : Set the snapshot type of the vmss type field.
-* vmss_set_schedule (Ref vmss, Map(String,String) "value", Pool_Operater) -> unit : Set the vmss schedule to take snapshot.
+* vmss_set_scheduled (Ref vmss, Map(String,String) "value", Pool_Operater) -> unit : Set the vmss scheduled to take snapshot.
 * vmss_add_to_schedule (Ref vmss, String "key", String "value", Pool_Operater) -> unit : Add key value pair to VMSS schedule.
 * vmss_remove_from_schedule (Ref vmss, String "key", Pool_Operater) -> unit : Remove key from VMSS schedule.
 * vmss_set_last_run_time (Ref vmss, DateTime "value", Local_Root) -> unit : Set the last run time for VMSS.
@@ -80,5 +82,5 @@ New APIs
 New CLIs
 --------
 
-* vmss-create (required : "name-label";"type";"frequency", optional : "name-description";"enabled";"schedule:";"retention-value") -> unit : Creates VM schedule snapshot.
-* vmss-destroy (required : uuid) -> unit : Destroys a VM schedule snapshot.
+* vmss-create (required : "name-label";"type";"frequency", optional : "name-description";"enabled";"schedule:";"retained-snapshots") -> unit : Creates VM scheduled snapshot.
+* vmss-destroy (required : uuid) -> unit : Destroys a VM scheduled snapshot.
