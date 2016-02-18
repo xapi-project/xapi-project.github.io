@@ -10,7 +10,7 @@ prefer, you can view the rendered output which is hosted using Github Pages.
 ## Contributing documentation
 This repository is treated differently by Github. Due to its name, the `master`
 branch of this repository is compiled with Jekyll and hosted at
-[http://xapi-project.github.io/].
+[https://xapi-project.github.io/](https://xapi-project.github.io/).
 
 Documentation is written in markdown and can be placed in a semantically
 meaningful place in the directory hierarchy.
