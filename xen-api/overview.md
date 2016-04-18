@@ -293,10 +293,10 @@ In this chapter we have presented a brief high-level overview of the API and its
 
 There are a number of places you can find more information:
 
--   The [XenServer Administrators Guide](http://support.citrix.com/article/CTX134585) contains an overview of the `xe`
+-   The [XenServer Administrators Guide](http://docs.vmd.citrix.com/XenServer/6.5.0/1.0/en_gb/reference.html) contains an overview of the `xe`
     1.  Since a good deal of `xe` commands are a thin veneer over the API, playing with `xe` is a good way to start finding your way around the API object model described in this chapter.
 -   The code samples in the next chapter provide some concrete instances of API coding in a variety of client languages.
 
--   The [XenServer API Reference](http://support.citrix.com/article/CTX134590) reference document provides a more detailed description of the API semantics as well as describing the format of XML/RPC messages on the wire.
+-   The [XenServer API Reference](http://docs.vmd.citrix.com/XenServer/6.5.0/1.0/en_gb/api/) reference document provides a more detailed description of the API semantics as well as describing the format of XML/RPC messages on the wire.
 
 -   There are a few scripts that use the API in the XenServer Host dom0 itself. For example, "/opt/xensource/libexec/shutdown" is a python program that cleanly shuts VMs down. This script is invoked when the host itself is shut down.
