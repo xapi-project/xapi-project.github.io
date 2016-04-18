@@ -385,7 +385,7 @@ Besides using raw XML-RPC or one of the supplied language bindings, third-party 
 |Binary:|xe (xe.exe on Windows)|
 |Dependencies:|None|
 
-The CLI allows almost every API call to be directly invoked from a script or other program, silently taking care of the required session management. The XE CLI syntax and capabilities are described in detail in the [XenServer Administrator's Guide](http://support.citrix.com/article/CTX134585). For additional resources and examples, visit the [Citrix Knowledge Center](http://support.citrix.com).
+The CLI allows almost every API call to be directly invoked from a script or other program, silently taking care of the required session management. The XE CLI syntax and capabilities are described in detail in the [XenServer Administrator's Guide](http://docs.vmd.citrix.com/XenServer/6.5.0/1.0/en_gb/reference.html). For additional resources and examples, visit the [Citrix Knowledge Center](http://support.citrix.com).
 
 > **Note**
 >
