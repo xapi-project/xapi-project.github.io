@@ -10030,10 +10030,7 @@
     "lifecycle": [ 
       { "transition": "published",
         "release": "rio",
-        "description": "" }, 
-      { "transition": "deprecated",
-        "release": "dundee",
-        "description": "Use VM.clone, copy or import instead: see description for details." } ],
+        "description": "" } ],
     "implicit": true }, 
   { "name": "get_by_uuid",
     "description": "Get a reference to the VM instance with the specified UUID.",
