@@ -5,11 +5,12 @@
 -
     - title: General
       docs:
-      - xen-api/overview.md
+      - xen-api/basics.md
       - xen-api/wire-protocol.md
-      - xen-api/evolution.md
+      - xen-api/overview.md
       - xen-api/index.html
       - xen-api/releases.html
+      - xen-api/evolution.md
     - title: VM Lifecycle
       docs:
       - xen-api/vm-lifecycle.md
