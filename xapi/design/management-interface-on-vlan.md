@@ -7,6 +7,8 @@ status: proposed
 revision_history:
 - revision_number: 1
   description: Initial version
+- revision_number: 2
+  description: Addition of `networkd_db` update for Upgrade
 ---
 
 This document describes design details for the
@@ -17,7 +19,8 @@ XAPI and XCP-Networkd
 
 ### Creating a VLAN
 
-Steps for a user to create a VLAN via CLI.
+Creating a VLAN is already there, Lisiting the steps to create a VLAN which is used later in the document.
+Steps:
 
 1.  Check the PIFs created on a Host for physical devices `eth0`, `eth1`.
     `xe pif-list params=uuid physical=true host-uuid=UUID` this will list `pif-UUID`
@@ -29,7 +32,10 @@ Steps for a user to create a VLAN via CLI.
     It returns a new VLAN PIF `new-pif-UUID`
 4.  Plug the VLAN PIF.
     `xe pif-plug uuid=new-pif-UUID`
-We can configure IP on this new PIF via `pif-reconfigure-ip` call with possible `DHCP` or `STATIC` mode.
+5.  Configure IP on the VLAN PIF.
+    `xe pif-reconfigure-ip uuid=new-pif-UUID mode= IP= netmask= gateway= DNS= `
+    This will configure IP on the PIF, here `mode` is must and other parametrs are needed on selecting mode=static
+
 Similarly, creating a vlan pif can be achieved by corresponding XenAPI calls.
 
 Recognise VLAN config from management.conf
@@ -37,7 +43,8 @@ Recognise VLAN config from management.conf
 
 For a newly installed host, If host installer was asked to put the management interface on given VLAN.
 We will expect a new entry `VLAN=ID` under `/etc/firstboot.d/data/management.conf`.
-Current contents of management.conf:
+
+Listing current contents of management.conf which will be used later in the document.
 `LABEL`=`eth0`          -> Represents Pyhsical device on which Management Interface must reside.
 `MODE`=`dhcp`||`static` -> Represents IP configuration mode for the Management Interface. There can be other parameters like IP, NETMASK, GATEWAY and DNS when we have `static` mode.
 `VLAN`=`ID`             -> New entry for specifying VLAN TAG going to be configured on device `LABEL`.
@@ -58,7 +65,7 @@ Steps to be followed:
 
 ### XCP-Networkd need to recognise VLAN config during startup
 
-XCP-Networkd on startup get the initial network setup from the `management.conf` and `xensource-inventory` file to update the network.db for management interface info.
+XCP-Networkd during first boot and boot after pool eject gets the initial network setup from the `management.conf` and `xensource-inventory` file to update the network.db for management interface info.
 XCP-Networkd must honour the new VLAN config.
 
 Steps to be followed:
@@ -68,6 +75,17 @@ Steps to be followed:
 3.  There can be two possible MODE `static` or `dhcp` taken from management.conf.
 4.  `bridge_name` is taken as `MANAGEMENT_INTERFACE` from xensource-inventory, further `bridge_config` and `interface_config` are build based on MODE.
 5.  Call `Bridge.make_config()` and `Interface.make_config()` are performed with respective `bridge_config` and `interface_config`.
+
+Updating networkd_db program
+----------------------------
+
+`networkd_db` provides the management interface info to the host installer during upgrade.
+It reads `/var/lib/xcp/networkd.db` file to output the Management Interface information. Here we need to update the networkd_db to handle the VLAN information.
+
+Steps to be followed:
+
+1.  Update the bridge info to provide `port.interfaces` for the management VLAN as well.
+2,  Update the iface info to provide `ipv4_conf` or `ipv6_conf` with `dhcp` or `static` mode.
 
 Additional VLAN parameter for Emergency Network Reset
 -----------------------------------------------------
@@ -84,6 +102,8 @@ Steps to be followed:
 2.  Write the `bridge=xapi0` into xensource-inventory file, This should work as Xapi check avialable bridges while creating networks.
 3.  Write the `VLAN=vlanID` into `management.conf` and `/tmp/network-reset`.
 4.  Modify `check_network_reset` under xapi.ml to perform steps `Creating a VLAN` and perform `management_reconfigure` on vlan pif.
+    Step `Creating a VLAN` must have created the VLAN record in Xapi DB similar to firstboot script.
+5.  If no VLANID is specified then retain the current one, This utility must take the management interface info from `networkd_db` program and handle the VLAN config.
 
 ### VLAN parameter addition to xsconsole Emergency Network Reset
 
@@ -125,9 +145,14 @@ Steps to be followed:
 New API for Pool Management Reconfigure
 ---------------------------------------
 
+Currently there is no Pool Level API to reconfigure management_interface for all of the Hosts in a Pool at once.
+API `Pool.management_reconfigure` will be needed in order to reconfigure `manamegemnt_interface` on all hosts in a Pool to the same Network either VLAN or Physical.
+ 
+
 ### Current behaviour to change the Management Interface on Host
 
-Currently call `Host.management_reconfigure` with VLAN pif-uuid can change the management_interface on specified VLAN.
+Currently call `Host.management_reconfigure` with VLAN pif-uuid can change the management_interface to specified VLAN.
+Listing the steps to understand the workflow of `management_interface` reconfigure. We will be using `Host.management_reconfigure` call inside the new API.
 
 Steps performed during management_reconfigure:
 
@@ -140,16 +165,19 @@ Steps performed during management_reconfigure:
 
 ### Management Reconfigure on Pool from Physical Network to VLAN Network or from VLAN Network to Other VLAN Network or from VLAN Network to Physical Network
 
+Listing steps to be performed manually on each Host or Pool as a prerequisite to use the New API.
 We need to make sure that new network which is going to be a management interface has PIFs configured on each Host.
 In case of pyhsical network we will assume pifs are configured on each host, In case of vlan network we need to create vlan pifs on each Host.
 We would assume that VLAN is available on the switch/network.
 
-Steps to be performed before calling new API:
+Manual steps to be performed before calling new API:
 
 1.  Create a vlan network on pool via `network.create`, In case of pyhsical NICs network must be present.
 2.  Create a vlan pif on each host via `VLAN.create` using above network ref, physical PIF ref  and vlanID, Not needed in case of pyhsical network.
-3.  Plug the vlan pif on each host via `PIF.plug` using above vlan pif. This might be needed in case pyhsical network.
-4.  Perform `PIF.reconfigure_ip` for each new Network PIF on each Host.
+    Or An Alternate call `pool.create_VLAN` providing `device` and above `network` will create vlan PIFs for all hosts in a pool.
+3.  Perform `PIF.reconfigure_ip` for each new Network PIF on each Host.
+
+If User wishes to change the management interface manually on each Host in a Pool, We should allow it, There will be a guideline for that:
 
 User can individually change management interface on each host calling `Host.management_reconfigure` using pifs on physical devices or vlan pifs.
 This must be perfomed on slaves first and lastly on Master, As changing management_interface on master will disconnect slaves from master then further calls `Host.management_reconfigure` cannot be performed till master recover slaves via call `pool.recover_slaves`.
@@ -159,10 +187,10 @@ This must be perfomed on slaves first and lastly on Master, As changing manageme
 -   `Pool.management_reconfigure`
     -   Parameter: network reference `network`.
     -   Calling this function configures `management_interface` on each host of a pool.
-    -   For the `network` provided it will check pifs are attached on each Host,
-        In case of VLAN network it will check vlan pifs on provided network are attached on each Host of Pool.
-    -   Check IP is configured on pif attached to each Host.
-    -   If PIFs are not attached or IP is not configured on PIFs this call must fail gracefully, Asking user to configure them.
+    -   For the `network` provided it will check pifs are present on each Host,
+        In case of VLAN network it will check vlan pifs on provided network are present on each Host of Pool.
+    -   Check IP is configured on above pifs on each Host.
+    -   If PIFs are not present or IP is not configured on PIFs this call must fail gracefully, Asking user to configure them.
     -   Call `Host.management_reconfigure` on each slave then lastly on master.
     -   Call `pool.recover_slaves` on master inorder to recover slaves which might have lost the connection to master.
 
