@@ -9,6 +9,8 @@ revision_history:
   description: Initial version
 - revision_number: 2
   description: Addition of `networkd_db` update for Upgrade
+- revision_number: 3
+  description: More info on `networkd_db` and API Errors
 ---
 
 This document describes design details for the
@@ -80,12 +82,18 @@ Updating networkd_db program
 ----------------------------
 
 `networkd_db` provides the management interface info to the host installer during upgrade.
-It reads `/var/lib/xcp/networkd.db` file to output the Management Interface information. Here we need to update the networkd_db to handle the VLAN information.
+It reads `/var/lib/xcp/networkd.db` file to output the Management Interface information. Here we need to update the networkd_db to output the VLAN information when vlan bridge is a input.
 
 Steps to be followed:
 
-1.  Update the bridge info to provide `port.interfaces` for the management VLAN as well.
-2,  Update the iface info to provide `ipv4_conf` or `ipv6_conf` with `dhcp` or `static` mode.
+1.  Currently VLAN interface IP information is provided correctly on passing VLAN bridge as input.
+    `networkd_db -iface xapi0` this will list `mode` as dhcp or static, if mode=static then it will provide `ipaddr` and `netmask` too.
+2.  We need to udpate this program to provide VLAN ID and parent bridge info on passing VLAN bridge as input.
+    `networkd_db -bridge xapi0` It should output the VLAN info like:
+    `interfaces=`
+    `vlan=vlanID`
+    `parent=xenbr0` using the parent bridge user can identify the physical interfaces.
+    Here we will extract VLAN and parent bridge from `bridge_config` under `networkd.db`.
 
 Additional VLAN parameter for Emergency Network Reset
 -----------------------------------------------------
@@ -193,6 +201,15 @@ This must be perfomed on slaves first and lastly on Master, As changing manageme
     -   If PIFs are not present or IP is not configured on PIFs this call must fail gracefully, Asking user to configure them.
     -   Call `Host.management_reconfigure` on each slave then lastly on master.
     -   Call `pool.recover_slaves` on master inorder to recover slaves which might have lost the connection to master.
+
+### API errors
+
+Possible API errors that may be raised by `pool.management_reconfigure`:
+
+-   `INTERFACE_HAS_NO_IP` : the specified PIF (`pif` parameter) has no IP configuration. The new API checks for all PIFs on the new Network has IP configured. There might be a case when user has forgotten to configure IP on PIF on one or many of the Hosts in a Pool.
+
+New API ERROR:
+-   `REQUIRED_PIF_NOT_PRESENT` : the specified Network (`network` parameter) has no PIF present on the host in pool. There might be a case when user has forgotten to create vlan pif on one or many of the Hosts in a Pool.
 
 CP-Tickets
 ----------
