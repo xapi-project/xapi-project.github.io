@@ -4,7 +4,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13,7 +13,7 @@
   { "name": "this_host",
     "description": "Currently connected host",
     "type": "host ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -22,7 +22,7 @@
   { "name": "this_user",
     "description": "Currently connected user",
     "type": "user ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -31,7 +31,7 @@
   { "name": "last_active",
     "description": "Timestamp for last time session was active",
     "type": "datetime",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -40,7 +40,7 @@
   { "name": "pool",
     "description": "True if this session relates to a intra-pool login, false otherwise",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -49,7 +49,7 @@
   { "name": "other_config",
     "description": "additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -59,7 +59,7 @@
   { "name": "is_local_superuser",
     "description": "true iff this session was created using local superuser credentials",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -69,7 +69,7 @@
   { "name": "subject",
     "description": "references the subject instance that created the session. If a session instance has is_local_superuser set, then the value of this field is undefined.",
     "type": "subject ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -79,7 +79,7 @@
   { "name": "validation_time",
     "description": "time when session was last validated",
     "type": "datetime",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -89,7 +89,7 @@
   { "name": "auth_user_sid",
     "description": "the subject identifier of the user that was externally authenticated. If a session instance has is_local_superuser set, then the value of this field is undefined.",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -99,7 +99,7 @@
   { "name": "auth_user_name",
     "description": "the subject name of the user that was externally authenticated. If a session instance has is_local_superuser set, then the value of this field is undefined.",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -109,7 +109,7 @@
   { "name": "rbac_permissions",
     "description": "list with all RBAC permissions for this session",
     "type": "string set",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -119,7 +119,7 @@
   { "name": "tasks",
     "description": "list of tasks created using the current session",
     "type": "task ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -128,7 +128,7 @@
   { "name": "parent",
     "description": "references the parent session that created this session",
     "type": "session ref",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -138,7 +138,7 @@
   { "name": "originator",
     "description": "a key string provided by a API user to distinguish itself from other users sharing the same login name",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -740,7 +740,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -749,7 +749,7 @@
   { "name": "subject_identifier",
     "description": "the subject identifier, unique in the external directory service",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -759,7 +759,7 @@
   { "name": "other_config",
     "description": "additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -769,7 +769,7 @@
   { "name": "roles",
     "description": "the roles associated with this subject",
     "type": "role ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -1022,7 +1022,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -1031,7 +1031,7 @@
   { "name": "name_label",
     "description": "a short user-friendly name for the role",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -1041,7 +1041,7 @@
   { "name": "name_description",
     "description": "what this role is for",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -1051,7 +1051,7 @@
   { "name": "subroles",
     "description": "a list of pointers to other roles or permissions",
     "type": "role ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -1298,7 +1298,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -1307,7 +1307,7 @@
   { "name": "name_label",
     "description": "a human-readable name",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -1317,7 +1317,7 @@
   { "name": "name_description",
     "description": "a notes field containing human-readable description",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -1327,7 +1327,7 @@
   { "name": "allowed_operations",
     "description": "list of the operations allowed in this state. This list is advisory only and the server state may have changed by the time this field is read by a client.",
     "type": "enum task_allowed_operations set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -1337,7 +1337,7 @@
   { "name": "current_operations",
     "description": "links each of the running tasks using this object (by reference) to a current_operation enum which describes the nature of the task.",
     "type": "(string -> enum task_allowed_operations) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -1347,7 +1347,7 @@
   { "name": "created",
     "description": "Time task was created",
     "type": "datetime",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -1356,7 +1356,7 @@
   { "name": "finished",
     "description": "Time task finished (i.e. succeeded or failed). If task-status is pending, then the value of this field has no meaning",
     "type": "datetime",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -1365,7 +1365,7 @@
   { "name": "status",
     "description": "current status of the task",
     "type": "enum task_status_type",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -1374,7 +1374,7 @@
   { "name": "resident_on",
     "description": "the host on which the task is running",
     "type": "host ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -1383,7 +1383,7 @@
   { "name": "progress",
     "description": "This field contains the estimated fraction of the task which is complete. This field should not be used to determine whether the task is complete - for this the status field of the task should be used.",
     "type": "float",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -1392,7 +1392,7 @@
   { "name": "type",
     "description": "if the task has completed successfully, this field contains the type of the encoded result (i.e. name of the class whose reference is in the result field). Undefined otherwise.",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -1401,7 +1401,7 @@
   { "name": "result",
     "description": "if the task has completed successfully, this field contains the result value (either Void or an object reference). Undefined otherwise.",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -1410,7 +1410,7 @@
   { "name": "error_info",
     "description": "if the task has failed, this field contains the set of associated error strings. Undefined otherwise.",
     "type": "string set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -1419,7 +1419,7 @@
   { "name": "other_config",
     "description": "additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -1429,7 +1429,7 @@
   { "name": "subtask_of",
     "description": "Ref pointing to the task this is a substask of.",
     "type": "task ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -1439,7 +1439,7 @@
   { "name": "subtasks",
     "description": "List pointing to all the substasks.",
     "type": "task ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -1448,7 +1448,7 @@
   { "name": "backtrace",
     "description": "Function call trace for debugging.",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2000,7 +2000,7 @@
   { "name": "id",
     "description": "An ID, monotonically increasing, and local to the current session",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2009,7 +2009,7 @@
   { "name": "timestamp",
     "description": "The time at which the event occurred",
     "type": "datetime",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2018,7 +2018,7 @@
   { "name": "class",
     "description": "The name of the class of the object that changed",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2027,7 +2027,7 @@
   { "name": "operation",
     "description": "The operation that was performed",
     "type": "enum event_operation",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2036,7 +2036,7 @@
   { "name": "ref",
     "description": "A reference to the object that changed",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2045,7 +2045,7 @@
   { "name": "obj_uuid",
     "description": "The uuid of the object that changed",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2187,7 +2187,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2196,7 +2196,7 @@
   { "name": "name_label",
     "description": "Short name",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2205,7 +2205,7 @@
   { "name": "name_description",
     "description": "Description",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2214,7 +2214,7 @@
   { "name": "master",
     "description": "The host that is pool master",
     "type": "host ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2223,7 +2223,7 @@
   { "name": "default_SR",
     "description": "Default SR for VDIs",
     "type": "SR ref",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2232,7 +2232,7 @@
   { "name": "suspend_image_SR",
     "description": "The SR in which VDIs for suspend images are created",
     "type": "SR ref",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2241,7 +2241,7 @@
   { "name": "crash_dump_SR",
     "description": "The SR in which VDIs for crash dumps are created",
     "type": "SR ref",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2250,7 +2250,7 @@
   { "name": "other_config",
     "description": "additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2259,7 +2259,7 @@
   { "name": "ha_enabled",
     "description": "true if HA is enabled on the pool, false otherwise",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2269,7 +2269,7 @@
   { "name": "ha_configuration",
     "description": "The current HA configuration",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2279,7 +2279,7 @@
   { "name": "ha_statefiles",
     "description": "HA statefile VDIs in use",
     "type": "string set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2289,7 +2289,7 @@
   { "name": "ha_host_failures_to_tolerate",
     "description": "Number of host failures to tolerate before the Pool is declared to be overcommitted",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2299,7 +2299,7 @@
   { "name": "ha_plan_exists_for",
     "description": "Number of future host failures we have managed to find a plan for. Once this reaches zero any future host failures will cause the failure of protected VMs.",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2309,7 +2309,7 @@
   { "name": "ha_allow_overcommit",
     "description": "If set to false then operations which would cause the Pool to become overcommitted will be blocked.",
     "type": "bool",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2319,7 +2319,7 @@
   { "name": "ha_overcommitted",
     "description": "True if the Pool is considered to be overcommitted i.e. if there exist insufficient physical resources to tolerate the configured number of host failures",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2329,7 +2329,7 @@
   { "name": "blobs",
     "description": "Binary blobs associated with this pool",
     "type": "(string -> blob ref) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2339,7 +2339,7 @@
   { "name": "tags",
     "description": "user-specified tags for categorization purposes",
     "type": "string set",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2349,7 +2349,7 @@
   { "name": "gui_config",
     "description": "gui-specific configuration for pool",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2359,7 +2359,7 @@
   { "name": "health_check_config",
     "description": "Configuration for the automatic health check feature",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2369,7 +2369,7 @@
   { "name": "wlb_url",
     "description": "Url for the configured workload balancing host",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2379,7 +2379,7 @@
   { "name": "wlb_username",
     "description": "Username for accessing the workload balancing host",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2389,7 +2389,7 @@
   { "name": "wlb_enabled",
     "description": "true if workload balancing is enabled on the pool, false otherwise",
     "type": "bool",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2399,7 +2399,7 @@
   { "name": "wlb_verify_cert",
     "description": "true if communication with the WLB server should enforce SSL certificate verification.",
     "type": "bool",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2409,7 +2409,7 @@
   { "name": "redo_log_enabled",
     "description": "true a redo-log is to be used other than when HA is enabled, false otherwise",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2419,7 +2419,7 @@
   { "name": "redo_log_vdi",
     "description": "indicates the VDI to use for the redo-log other than when HA is enabled",
     "type": "VDI ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2429,7 +2429,7 @@
   { "name": "vswitch_controller",
     "description": "address of the vswitch controller",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2439,7 +2439,7 @@
   { "name": "restrictions",
     "description": "Pool-wide restrictions currently in effect",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2449,7 +2449,7 @@
   { "name": "metadata_VDIs",
     "description": "The set of currently known metadata VDIs for this pool",
     "type": "VDI ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2458,7 +2458,7 @@
   { "name": "ha_cluster_stack",
     "description": "The HA cluster stack that is currently in use. Only valid when HA is enabled.",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2468,7 +2468,7 @@
   { "name": "allowed_operations",
     "description": "list of the operations allowed in this state. This list is advisory only and the server state may have changed by the time this field is read by a client.",
     "type": "enum pool_allowed_operations set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2478,7 +2478,7 @@
   { "name": "current_operations",
     "description": "links each of the running tasks using this object (by reference) to a current_operation enum which describes the nature of the task.",
     "type": "(string -> enum pool_allowed_operations) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2488,7 +2488,7 @@
   { "name": "guest_agent_config",
     "description": "Pool-wide guest agent configuration information",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2498,7 +2498,7 @@
   { "name": "cpu_info",
     "description": "Details about the physical CPUs on the pool",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -2508,7 +2508,7 @@
   { "name": "policy_no_vendor_device",
     "description": "The pool-wide policy for clients on whether to use the vendor device or not on newly created VMs. This field will also be consulted if the 'has_vendor_device' field is not specified in the VM.create call.",
     "type": "bool",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -4594,7 +4594,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -4603,7 +4603,7 @@
   { "name": "name_label",
     "description": "a human-readable name",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -4613,7 +4613,7 @@
   { "name": "name_description",
     "description": "a notes field containing human-readable description",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -4623,7 +4623,7 @@
   { "name": "version",
     "description": "Patch version number",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -4633,7 +4633,7 @@
   { "name": "size",
     "description": "Size of the patch",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -4643,7 +4643,7 @@
   { "name": "pool_applied",
     "description": "This patch should be applied across the entire pool",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -4653,7 +4653,7 @@
   { "name": "host_patches",
     "description": "This hosts this patch is applied to.",
     "type": "host_patch ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -4662,7 +4662,7 @@
   { "name": "after_apply_guidance",
     "description": "What the client should do after this patch has been applied.",
     "type": "enum after_apply_guidance set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -4672,7 +4672,7 @@
   { "name": "other_config",
     "description": "additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5148,7 +5148,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5157,7 +5157,7 @@
   { "name": "allowed_operations",
     "description": "list of the operations allowed in this state. This list is advisory only and the server state may have changed by the time this field is read by a client.",
     "type": "enum vm_operations set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5167,7 +5167,7 @@
   { "name": "current_operations",
     "description": "links each of the running tasks using this object (by reference) to a current_operation enum which describes the nature of the task.",
     "type": "(string -> enum vm_operations) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5177,7 +5177,7 @@
   { "name": "power_state",
     "description": "Current power state of the machine",
     "type": "enum vm_power_state",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5186,7 +5186,7 @@
   { "name": "name_label",
     "description": "a human-readable name",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5196,7 +5196,7 @@
   { "name": "name_description",
     "description": "a notes field containing human-readable description",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5206,7 +5206,7 @@
   { "name": "user_version",
     "description": "Creators of VMs and templates may store version information here.",
     "type": "int",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5215,7 +5215,7 @@
   { "name": "is_a_template",
     "description": "true if this is a template. Template VMs can never be started, they are used only for cloning other VMs",
     "type": "bool",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5224,7 +5224,7 @@
   { "name": "suspend_VDI",
     "description": "The VDI that a suspend image is stored on. (Only has meaning if VM is currently suspended)",
     "type": "VDI ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5233,7 +5233,7 @@
   { "name": "resident_on",
     "description": "the host the VM is currently resident on",
     "type": "host ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5242,7 +5242,7 @@
   { "name": "affinity",
     "description": "a host which the VM has some affinity for (or NULL). This is used as a hint to the start call when it decides where to run the VM. Implementations are free to ignore this field.",
     "type": "host ref",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5251,7 +5251,7 @@
   { "name": "memory_overhead",
     "description": "Virtualization memory overhead (bytes).",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
@@ -5261,7 +5261,7 @@
   { "name": "memory_target",
     "description": "Dynamically-set memory target (bytes). The value of this field indicates the current target for memory available to this VM.",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
@@ -5274,7 +5274,7 @@
   { "name": "memory_static_max",
     "description": "Statically-set (i.e. absolute) maximum (bytes). The value of this field at VM start time acts as a hard limit of the amount of memory a guest can use. New values only take effect on reboot.",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
@@ -5283,7 +5283,7 @@
   { "name": "memory_dynamic_max",
     "description": "Dynamic maximum (bytes)",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
@@ -5292,7 +5292,7 @@
   { "name": "memory_dynamic_min",
     "description": "Dynamic minimum (bytes)",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
@@ -5301,7 +5301,7 @@
   { "name": "memory_static_min",
     "description": "Statically-set (i.e. absolute) mininum (bytes). The value of this field indicates the least amount of memory this VM can boot with without crashing.",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
@@ -5310,7 +5310,7 @@
   { "name": "VCPUs_params",
     "description": "configuration parameters for the selected VCPU policy",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5319,7 +5319,7 @@
   { "name": "VCPUs_max",
     "description": "Max number of VCPUs",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5328,7 +5328,7 @@
   { "name": "VCPUs_at_startup",
     "description": "Boot number of VCPUs",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5337,7 +5337,7 @@
   { "name": "actions_after_shutdown",
     "description": "action to take after the guest has shutdown itself",
     "type": "enum on_normal_exit",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5346,7 +5346,7 @@
   { "name": "actions_after_reboot",
     "description": "action to take after the guest has rebooted itself",
     "type": "enum on_normal_exit",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5355,7 +5355,7 @@
   { "name": "actions_after_crash",
     "description": "action to take if the guest crashes",
     "type": "enum on_crash_behaviour",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5364,7 +5364,7 @@
   { "name": "consoles",
     "description": "virtual console devices",
     "type": "console ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5373,7 +5373,7 @@
   { "name": "VIFs",
     "description": "virtual network interfaces",
     "type": "VIF ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "networking",
     "lifecycle": [ 
       { "transition": "published",
@@ -5382,7 +5382,7 @@
   { "name": "VBDs",
     "description": "virtual block devices",
     "type": "VBD ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5391,7 +5391,7 @@
   { "name": "crash_dumps",
     "description": "crash dumps associated with this VM",
     "type": "crashdump ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5400,7 +5400,7 @@
   { "name": "VTPMs",
     "description": "virtual TPMs",
     "type": "VTPM ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5409,7 +5409,7 @@
   { "name": "PV_bootloader",
     "description": "name of or path to bootloader",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5418,7 +5418,7 @@
   { "name": "PV_kernel",
     "description": "path to the kernel",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5427,7 +5427,7 @@
   { "name": "PV_ramdisk",
     "description": "path to the initrd",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5436,7 +5436,7 @@
   { "name": "PV_args",
     "description": "kernel command-line arguments",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5445,7 +5445,7 @@
   { "name": "PV_bootloader_args",
     "description": "miscellaneous arguments for the bootloader",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5454,7 +5454,7 @@
   { "name": "PV_legacy_args",
     "description": "to make Zurich guests boot",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5463,7 +5463,7 @@
   { "name": "HVM_boot_policy",
     "description": "HVM boot policy",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5472,7 +5472,7 @@
   { "name": "HVM_boot_params",
     "description": "HVM boot params",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5481,7 +5481,7 @@
   { "name": "HVM_shadow_multiplier",
     "description": "multiplier applied to the amount of shadow that will be made available to the guest",
     "type": "float",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5491,7 +5491,7 @@
   { "name": "platform",
     "description": "platform-specific configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5500,7 +5500,7 @@
   { "name": "PCI_bus",
     "description": "PCI bus path for pass-through devices",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5512,7 +5512,7 @@
   { "name": "other_config",
     "description": "additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5521,7 +5521,7 @@
   { "name": "domid",
     "description": "domain ID (if available, -1 otherwise)",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5530,7 +5530,7 @@
   { "name": "domarch",
     "description": "Domain architecture (if available, null string otherwise)",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5539,7 +5539,7 @@
   { "name": "last_boot_CPU_flags",
     "description": "describes the CPU flags on which the VM was last booted",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5548,7 +5548,7 @@
   { "name": "is_control_domain",
     "description": "true if this is a control domain (domain 0 or a driver domain)",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5557,7 +5557,7 @@
   { "name": "metrics",
     "description": "metrics associated with this VM",
     "type": "VM_metrics ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5566,7 +5566,7 @@
   { "name": "guest_metrics",
     "description": "metrics associated with the running guest",
     "type": "VM_guest_metrics ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5575,7 +5575,7 @@
   { "name": "last_booted_record",
     "description": "marshalled value containing VM record at time of last boot, updated dynamically to reflect the runtime state of the domain",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5585,7 +5585,7 @@
   { "name": "recommendations",
     "description": "An XML specification of recommended values and ranges for properties of this VM",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5594,7 +5594,7 @@
   { "name": "xenstore_data",
     "description": "data to be inserted into the xenstore tree (/local/domain/<domid>/vm-data) after the VM is created.",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5604,7 +5604,7 @@
   { "name": "ha_always_run",
     "description": "if true then the system will attempt to keep the VM running as much as possible.",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5617,7 +5617,7 @@
   { "name": "ha_restart_priority",
     "description": "has possible values: \"best-effort\" meaning \"try to restart this VM if possible but don't consider the Pool to be overcommitted if this is not possible\"; \"restart\" meaning \"this VM should be restarted\"; \"\" meaning \"do not try to restart this VM\"",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5627,7 +5627,7 @@
   { "name": "is_a_snapshot",
     "description": "true if this is a snapshot. Snapshotted VMs can never be started, they are used only for cloning other VMs",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5637,7 +5637,7 @@
   { "name": "snapshot_of",
     "description": "Ref pointing to the VM this snapshot is of.",
     "type": "VM ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5647,7 +5647,7 @@
   { "name": "snapshots",
     "description": "List pointing to all the VM snapshots.",
     "type": "VM ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5656,7 +5656,7 @@
   { "name": "snapshot_time",
     "description": "Date/time when this snapshot was created.",
     "type": "datetime",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5666,7 +5666,7 @@
   { "name": "transportable_snapshot_id",
     "description": "Transportable ID of the snapshot VM",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5676,7 +5676,7 @@
   { "name": "blobs",
     "description": "Binary blobs associated with this VM",
     "type": "(string -> blob ref) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5686,7 +5686,7 @@
   { "name": "tags",
     "description": "user-specified tags for categorization purposes",
     "type": "string set",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5696,7 +5696,7 @@
   { "name": "blocked_operations",
     "description": "List of operations which have been explicitly blocked and an error code",
     "type": "(enum vm_operations -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5706,7 +5706,7 @@
   { "name": "snapshot_info",
     "description": "Human-readable information concerning this snapshot",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5716,7 +5716,7 @@
   { "name": "snapshot_metadata",
     "description": "Encoded information about the VM's metadata this is a snapshot of",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5726,7 +5726,7 @@
   { "name": "parent",
     "description": "Ref pointing to the parent of this VM",
     "type": "VM ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5736,7 +5736,7 @@
   { "name": "children",
     "description": "List pointing to all the children of this VM",
     "type": "VM ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5745,7 +5745,7 @@
   { "name": "bios_strings",
     "description": "BIOS strings",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5755,7 +5755,7 @@
   { "name": "protection_policy",
     "description": "Ref pointing to a protection policy for this VM",
     "type": "VMPP ref",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5768,7 +5768,7 @@
   { "name": "is_snapshot_from_vmpp",
     "description": "true if this snapshot was created by the protection policy",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5781,7 +5781,7 @@
   { "name": "appliance",
     "description": "the appliance to which this VM belongs",
     "type": "VM_appliance ref",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5791,7 +5791,7 @@
   { "name": "start_delay",
     "description": "The delay to wait before proceeding to the next order in the startup sequence (seconds)",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5801,7 +5801,7 @@
   { "name": "shutdown_delay",
     "description": "The delay to wait before proceeding to the next order in the shutdown sequence (seconds)",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5811,7 +5811,7 @@
   { "name": "order",
     "description": "The point in the startup or shutdown sequence at which this VM will be started",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5821,7 +5821,7 @@
   { "name": "VGPUs",
     "description": "Virtual GPUs",
     "type": "VGPU ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5830,7 +5830,7 @@
   { "name": "attached_PCIs",
     "description": "Currently passed-through PCI devices",
     "type": "PCI ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5839,7 +5839,7 @@
   { "name": "suspend_SR",
     "description": "The SR on which a suspend image is stored",
     "type": "SR ref",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5849,7 +5849,7 @@
   { "name": "version",
     "description": "The number of times this VM has been recovered",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5859,7 +5859,7 @@
   { "name": "generation_id",
     "description": "Generation ID of the VM",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5869,7 +5869,7 @@
   { "name": "hardware_platform_version",
     "description": "The host virtual hardware platform version the VM can run on",
     "type": "int",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -5879,7 +5879,7 @@
   { "name": "has_vendor_device",
     "description": "When an HVM guest starts, this controls the presence of the emulated C000 PCI device which triggers Windows Update to fetch or update PV drivers.",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "windows-vm",
     "lifecycle": [ 
       { "transition": "published",
@@ -10205,7 +10205,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -10214,7 +10214,7 @@
   { "name": "memory_actual",
     "description": "Guest's actual memory (bytes)",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -10223,7 +10223,7 @@
   { "name": "VCPUs_number",
     "description": "Current number of VCPUs",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -10232,7 +10232,7 @@
   { "name": "VCPUs_utilisation",
     "description": "Utilisation for all of guest's current VCPUs",
     "type": "(int -> float) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -10241,7 +10241,7 @@
   { "name": "VCPUs_CPU",
     "description": "VCPU to PCPU map",
     "type": "(int -> int) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -10250,7 +10250,7 @@
   { "name": "VCPUs_params",
     "description": "The live equivalent to VM.VCPUs_params",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -10259,7 +10259,7 @@
   { "name": "VCPUs_flags",
     "description": "CPU flags (blocked,online,running)",
     "type": "(int -> string set) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -10268,7 +10268,7 @@
   { "name": "state",
     "description": "The state of the guest, eg blocked, dying etc",
     "type": "string set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -10277,7 +10277,7 @@
   { "name": "start_time",
     "description": "Time at which this VM was last booted",
     "type": "datetime",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -10286,7 +10286,7 @@
   { "name": "install_time",
     "description": "Time at which the VM was installed",
     "type": "datetime",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -10295,7 +10295,7 @@
   { "name": "last_updated",
     "description": "Time at which this information was last updated",
     "type": "datetime",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -10304,7 +10304,7 @@
   { "name": "other_config",
     "description": "additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -10671,7 +10671,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -10680,7 +10680,7 @@
   { "name": "os_version",
     "description": "version of the OS",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -10689,7 +10689,7 @@
   { "name": "PV_drivers_version",
     "description": "version of the PV drivers",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -10698,7 +10698,7 @@
   { "name": "PV_drivers_up_to_date",
     "description": "Logically equivalent to PV_drivers_detected",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -10710,7 +10710,7 @@
   { "name": "memory",
     "description": "This field exists but has no data. Use the memory and memory_internal_free RRD data-sources instead.",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -10722,7 +10722,7 @@
   { "name": "disks",
     "description": "This field exists but has no data.",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -10734,7 +10734,7 @@
   { "name": "networks",
     "description": "network configuration",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -10743,7 +10743,7 @@
   { "name": "other",
     "description": "anything else",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -10752,7 +10752,7 @@
   { "name": "last_updated",
     "description": "Time at which this information was last updated",
     "type": "datetime",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -10761,7 +10761,7 @@
   { "name": "other_config",
     "description": "additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -10771,7 +10771,7 @@
   { "name": "live",
     "description": "True if the guest is sending heartbeat messages via the guest agent",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -10781,7 +10781,7 @@
   { "name": "can_use_hotplug_vbd",
     "description": "The guest's statement of whether it supports VBD hotplug, i.e. whether it is capable of responding immediately to instantiation of a new VBD by bringing online a new PV block device. If the guest states that it is not capable, then the VBD plug and unplug operations will not be allowed while the guest is running.",
     "type": "enum tristate_type",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -10791,7 +10791,7 @@
   { "name": "can_use_hotplug_vif",
     "description": "The guest's statement of whether it supports VIF hotplug, i.e. whether it is capable of responding immediately to instantiation of a new VIF by bringing online a new PV network device. If the guest states that it is not capable, then the VIF plug and unplug operations will not be allowed while the guest is running.",
     "type": "enum tristate_type",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -10801,7 +10801,7 @@
   { "name": "PV_drivers_detected",
     "description": "At least one of the guest's devices has successfully connected to the backend.",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -11221,7 +11221,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -11233,7 +11233,7 @@
   { "name": "name_label",
     "description": "a human-readable name",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -11243,7 +11243,7 @@
   { "name": "name_description",
     "description": "a notes field containing human-readable description",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -11253,7 +11253,7 @@
   { "name": "is_policy_enabled",
     "description": "enable or disable this policy",
     "type": "bool",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -11266,7 +11266,7 @@
   { "name": "backup_type",
     "description": "type of the backup sub-policy",
     "type": "enum vmpp_backup_type",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -11279,7 +11279,7 @@
   { "name": "backup_retention_value",
     "description": "maximum number of backups that should be stored at any time",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -11292,7 +11292,7 @@
   { "name": "backup_frequency",
     "description": "frequency of the backup schedule",
     "type": "enum vmpp_backup_frequency",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -11305,7 +11305,7 @@
   { "name": "backup_schedule",
     "description": "schedule of the backup containing 'hour', 'min', 'days'. Date/time-related information is in Local Timezone",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -11318,7 +11318,7 @@
   { "name": "is_backup_running",
     "description": "true if this protection policy's backup is running",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -11330,7 +11330,7 @@
   { "name": "backup_last_run_time",
     "description": "time of the last backup",
     "type": "datetime",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -11343,7 +11343,7 @@
   { "name": "archive_target_type",
     "description": "type of the archive target config",
     "type": "enum vmpp_archive_target_type",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -11356,7 +11356,7 @@
   { "name": "archive_target_config",
     "description": "configuration for the archive, including its 'location', 'username', 'password'",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -11369,7 +11369,7 @@
   { "name": "archive_frequency",
     "description": "frequency of the archive schedule",
     "type": "enum vmpp_archive_frequency",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -11382,7 +11382,7 @@
   { "name": "archive_schedule",
     "description": "schedule of the archive containing 'hour', 'min', 'days'. Date/time-related information is in Local Timezone",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -11395,7 +11395,7 @@
   { "name": "is_archive_running",
     "description": "true if this protection policy's archive is running",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -11407,7 +11407,7 @@
   { "name": "archive_last_run_time",
     "description": "time of the last archive",
     "type": "datetime",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -11420,7 +11420,7 @@
   { "name": "VMs",
     "description": "all VMs attached to this protection policy",
     "type": "VM ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -11432,7 +11432,7 @@
   { "name": "is_alarm_enabled",
     "description": "true if alarm is enabled for this policy",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -11445,7 +11445,7 @@
   { "name": "alarm_config",
     "description": "configuration for the alarm",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -11458,7 +11458,7 @@
   { "name": "recent_alerts",
     "description": "recent alerts",
     "type": "string set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -12694,7 +12694,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -12703,7 +12703,7 @@
   { "name": "name_label",
     "description": "a human-readable name",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -12713,7 +12713,7 @@
   { "name": "name_description",
     "description": "a notes field containing human-readable description",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -12723,7 +12723,7 @@
   { "name": "allowed_operations",
     "description": "list of the operations allowed in this state. This list is advisory only and the server state may have changed by the time this field is read by a client.",
     "type": "enum vm_appliance_operation set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -12733,7 +12733,7 @@
   { "name": "current_operations",
     "description": "links each of the running tasks using this object (by reference) to a current_operation enum which describes the nature of the task.",
     "type": "(string -> enum vm_appliance_operation) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -12743,7 +12743,7 @@
   { "name": "VMs",
     "description": "all VMs in this appliance",
     "type": "VM ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13194,7 +13194,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13203,7 +13203,7 @@
   { "name": "introduced_SRs",
     "description": "All SRs introduced by this appliance",
     "type": "SR ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13365,7 +13365,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13374,7 +13374,7 @@
   { "name": "name_label",
     "description": "a human-readable name",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13384,7 +13384,7 @@
   { "name": "name_description",
     "description": "a notes field containing human-readable description",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13394,7 +13394,7 @@
   { "name": "memory_overhead",
     "description": "Virtualization memory overhead (bytes).",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
@@ -13404,7 +13404,7 @@
   { "name": "allowed_operations",
     "description": "list of the operations allowed in this state. This list is advisory only and the server state may have changed by the time this field is read by a client.",
     "type": "enum host_allowed_operations set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13414,7 +13414,7 @@
   { "name": "current_operations",
     "description": "links each of the running tasks using this object (by reference) to a current_operation enum which describes the nature of the task.",
     "type": "(string -> enum host_allowed_operations) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13424,7 +13424,7 @@
   { "name": "API_version_major",
     "description": "major version number",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13433,7 +13433,7 @@
   { "name": "API_version_minor",
     "description": "minor version number",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13442,7 +13442,7 @@
   { "name": "API_version_vendor",
     "description": "identification of vendor",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13451,7 +13451,7 @@
   { "name": "API_version_vendor_implementation",
     "description": "details of vendor implementation",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13460,7 +13460,7 @@
   { "name": "enabled",
     "description": "True if the host is currently enabled",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13469,7 +13469,7 @@
   { "name": "software_version",
     "description": "version strings",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13478,7 +13478,7 @@
   { "name": "other_config",
     "description": "additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13487,7 +13487,7 @@
   { "name": "capabilities",
     "description": "Xen capabilities",
     "type": "string set",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13496,7 +13496,7 @@
   { "name": "cpu_configuration",
     "description": "The CPU configuration on this host.  May contain keys such as \"nr_nodes\", \"sockets_per_node\", \"cores_per_socket\", or \"threads_per_core\"",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13505,7 +13505,7 @@
   { "name": "sched_policy",
     "description": "Scheduler policy currently in force on this host",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13514,7 +13514,7 @@
   { "name": "supported_bootloaders",
     "description": "a list of the bootloaders installed on the machine",
     "type": "string set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13523,7 +13523,7 @@
   { "name": "resident_VMs",
     "description": "list of VMs currently resident on host",
     "type": "VM ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13532,7 +13532,7 @@
   { "name": "logging",
     "description": "logging configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13541,7 +13541,7 @@
   { "name": "PIFs",
     "description": "physical network interfaces",
     "type": "PIF ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "networking",
     "lifecycle": [ 
       { "transition": "published",
@@ -13550,7 +13550,7 @@
   { "name": "suspend_image_sr",
     "description": "The SR in which VDIs for suspend images are created",
     "type": "SR ref",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13559,7 +13559,7 @@
   { "name": "crash_dump_sr",
     "description": "The SR in which VDIs for crash dumps are created",
     "type": "SR ref",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13568,7 +13568,7 @@
   { "name": "crashdumps",
     "description": "Set of host crash dumps",
     "type": "host_crashdump ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13577,7 +13577,7 @@
   { "name": "patches",
     "description": "Set of host patches",
     "type": "host_patch ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13586,7 +13586,7 @@
   { "name": "PBDs",
     "description": "physical blockdevices",
     "type": "PBD ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13595,7 +13595,7 @@
   { "name": "host_CPUs",
     "description": "The physical CPUs on this host",
     "type": "host_cpu ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13604,7 +13604,7 @@
   { "name": "cpu_info",
     "description": "Details about the physical CPUs on this host",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13614,7 +13614,7 @@
   { "name": "hostname",
     "description": "The hostname of this host",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "networking",
     "lifecycle": [ 
       { "transition": "published",
@@ -13623,7 +13623,7 @@
   { "name": "address",
     "description": "The address by which this host can be contacted from any other host in the pool",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "networking",
     "lifecycle": [ 
       { "transition": "published",
@@ -13632,7 +13632,7 @@
   { "name": "metrics",
     "description": "metrics associated with this host",
     "type": "host_metrics ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13641,7 +13641,7 @@
   { "name": "license_params",
     "description": "State of the current license",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13650,7 +13650,7 @@
   { "name": "ha_statefiles",
     "description": "The set of statefiles accessible from this host",
     "type": "string set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13660,7 +13660,7 @@
   { "name": "ha_network_peers",
     "description": "The set of hosts visible via the network from this host",
     "type": "string set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13670,7 +13670,7 @@
   { "name": "blobs",
     "description": "Binary blobs associated with this host",
     "type": "(string -> blob ref) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13680,7 +13680,7 @@
   { "name": "tags",
     "description": "user-specified tags for categorization purposes",
     "type": "string set",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13690,7 +13690,7 @@
   { "name": "external_auth_type",
     "description": "type of external authentication service configured; empty if none configured.",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13700,7 +13700,7 @@
   { "name": "external_auth_service_name",
     "description": "name of external authentication service configured; empty if none configured.",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13710,7 +13710,7 @@
   { "name": "external_auth_configuration",
     "description": "configuration specific to external authentication service",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13720,7 +13720,7 @@
   { "name": "edition",
     "description": "Product edition",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13730,7 +13730,7 @@
   { "name": "license_server",
     "description": "Contact information of the license server",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13740,7 +13740,7 @@
   { "name": "bios_strings",
     "description": "BIOS strings",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13750,7 +13750,7 @@
   { "name": "power_on_mode",
     "description": "The power on mode",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13760,7 +13760,7 @@
   { "name": "power_on_config",
     "description": "The power on config",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13770,7 +13770,7 @@
   { "name": "local_cache_sr",
     "description": "The SR that is used as a local cache",
     "type": "SR ref",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13780,7 +13780,7 @@
   { "name": "chipset_info",
     "description": "Information about chipset features",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13790,7 +13790,7 @@
   { "name": "PCIs",
     "description": "List of PCI devices in the host",
     "type": "PCI ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13799,7 +13799,7 @@
   { "name": "PGPUs",
     "description": "List of physical GPUs in the host",
     "type": "PGPU ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13808,7 +13808,7 @@
   { "name": "ssl_legacy",
     "description": "Allow SSLv3 protocol and ciphersuites as used by older XenServers. This controls both incoming and outgoing connections. When this is set to a different value, the host immediately restarts its SSL/TLS listening service; typically this takes less than a second but existing connections to it will be broken. XenAPI login sessions will remain valid.",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13818,7 +13818,7 @@
   { "name": "guest_VCPUs_params",
     "description": "VCPUs params to apply to all resident guests",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13828,7 +13828,7 @@
   { "name": "display",
     "description": "indicates whether the host is configured to output its console to a physical display device",
     "type": "enum host_display",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -13838,7 +13838,7 @@
   { "name": "virtual_hardware_platform_versions",
     "description": "The set of versions of the virtual hardware platform that the host can offer to its guests",
     "type": "int set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -16480,7 +16480,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -16489,7 +16489,7 @@
   { "name": "host",
     "description": "Host the crashdump relates to",
     "type": "host ref",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -16498,7 +16498,7 @@
   { "name": "timestamp",
     "description": "Time the crash happened",
     "type": "datetime",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -16507,7 +16507,7 @@
   { "name": "size",
     "description": "Size of the crashdump",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -16516,7 +16516,7 @@
   { "name": "other_config",
     "description": "additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -16799,7 +16799,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -16808,7 +16808,7 @@
   { "name": "name_label",
     "description": "a human-readable name",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -16818,7 +16818,7 @@
   { "name": "name_description",
     "description": "a notes field containing human-readable description",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -16828,7 +16828,7 @@
   { "name": "version",
     "description": "Patch version number",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -16837,7 +16837,7 @@
   { "name": "host",
     "description": "Host the patch relates to",
     "type": "host ref",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -16846,7 +16846,7 @@
   { "name": "applied",
     "description": "True if the patch has been applied",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -16855,7 +16855,7 @@
   { "name": "timestamp_applied",
     "description": "Time the patch was applied",
     "type": "datetime",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -16864,7 +16864,7 @@
   { "name": "size",
     "description": "Size of the patch",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -16873,7 +16873,7 @@
   { "name": "pool_patch",
     "description": "The patch applied",
     "type": "pool_patch ref",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -16883,7 +16883,7 @@
   { "name": "other_config",
     "description": "additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -17274,7 +17274,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -17283,7 +17283,7 @@
   { "name": "memory_total",
     "description": "Total host memory (bytes)",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
@@ -17292,7 +17292,7 @@
   { "name": "memory_free",
     "description": "Free host memory (bytes)",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "memory",
     "lifecycle": [ 
       { "transition": "published",
@@ -17304,7 +17304,7 @@
   { "name": "live",
     "description": "Pool master thinks this host is live",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -17313,7 +17313,7 @@
   { "name": "last_updated",
     "description": "Time at which this information was last updated",
     "type": "datetime",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -17322,7 +17322,7 @@
   { "name": "other_config",
     "description": "additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -17584,7 +17584,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -17593,7 +17593,7 @@
   { "name": "host",
     "description": "the host the CPU is in",
     "type": "host ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -17602,7 +17602,7 @@
   { "name": "number",
     "description": "the number of the physical CPU within the host",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -17611,7 +17611,7 @@
   { "name": "vendor",
     "description": "the vendor of the physical CPU",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -17620,7 +17620,7 @@
   { "name": "speed",
     "description": "the speed of the physical CPU",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -17629,7 +17629,7 @@
   { "name": "modelname",
     "description": "the model name of the physical CPU",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -17638,7 +17638,7 @@
   { "name": "family",
     "description": "the family (number) of the physical CPU",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -17647,7 +17647,7 @@
   { "name": "model",
     "description": "the model number of the physical CPU",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -17656,7 +17656,7 @@
   { "name": "stepping",
     "description": "the stepping of the physical CPU",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -17665,7 +17665,7 @@
   { "name": "flags",
     "description": "the flags of the physical CPU (a decoded version of the features field)",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -17674,7 +17674,7 @@
   { "name": "features",
     "description": "the physical CPU feature bitmap",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -17683,7 +17683,7 @@
   { "name": "utilisation",
     "description": "the current CPU utilisation",
     "type": "float",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -17692,7 +17692,7 @@
   { "name": "other_config",
     "description": "additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -18092,7 +18092,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -18101,7 +18101,7 @@
   { "name": "name_label",
     "description": "a human-readable name",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -18111,7 +18111,7 @@
   { "name": "name_description",
     "description": "a notes field containing human-readable description",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -18121,7 +18121,7 @@
   { "name": "allowed_operations",
     "description": "list of the operations allowed in this state. This list is advisory only and the server state may have changed by the time this field is read by a client.",
     "type": "enum network_operations set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -18131,7 +18131,7 @@
   { "name": "current_operations",
     "description": "links each of the running tasks using this object (by reference) to a current_operation enum which describes the nature of the task.",
     "type": "(string -> enum network_operations) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -18141,7 +18141,7 @@
   { "name": "VIFs",
     "description": "list of connected vifs",
     "type": "VIF ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -18150,7 +18150,7 @@
   { "name": "PIFs",
     "description": "list of connected pifs",
     "type": "PIF ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -18159,7 +18159,7 @@
   { "name": "MTU",
     "description": "MTU in octets",
     "type": "int",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -18169,7 +18169,7 @@
   { "name": "other_config",
     "description": "additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -18178,7 +18178,7 @@
   { "name": "bridge",
     "description": "name of the bridge corresponding to this network on the local host",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -18187,7 +18187,7 @@
   { "name": "blobs",
     "description": "Binary blobs associated with this network",
     "type": "(string -> blob ref) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -18197,7 +18197,7 @@
   { "name": "tags",
     "description": "user-specified tags for categorization purposes",
     "type": "string set",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -18207,7 +18207,7 @@
   { "name": "default_locking_mode",
     "description": "The network will use this value to determine the behaviour of all VIFs where locking_mode = default",
     "type": "enum network_default_locking_mode",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -18217,7 +18217,7 @@
   { "name": "assigned_ips",
     "description": "The IP addresses assigned to VIFs on networks that have active xapi-managed DHCP",
     "type": "(VIF ref -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -18858,7 +18858,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -18867,7 +18867,7 @@
   { "name": "allowed_operations",
     "description": "list of the operations allowed in this state. This list is advisory only and the server state may have changed by the time this field is read by a client.",
     "type": "enum vif_operations set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -18877,7 +18877,7 @@
   { "name": "current_operations",
     "description": "links each of the running tasks using this object (by reference) to a current_operation enum which describes the nature of the task.",
     "type": "(string -> enum vif_operations) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -18887,7 +18887,7 @@
   { "name": "device",
     "description": "order in which VIF backends are created by xapi",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -18896,7 +18896,7 @@
   { "name": "network",
     "description": "virtual network to which this vif is connected",
     "type": "network ref",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -18905,7 +18905,7 @@
   { "name": "VM",
     "description": "virtual machine to which this vif is connected",
     "type": "VM ref",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -18914,7 +18914,7 @@
   { "name": "MAC",
     "description": "ethernet MAC address of virtual interface, as exposed to guest",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -18923,7 +18923,7 @@
   { "name": "MTU",
     "description": "MTU in octets",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -18932,7 +18932,7 @@
   { "name": "other_config",
     "description": "additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -18941,7 +18941,7 @@
   { "name": "currently_attached",
     "description": "is the device currently attached (erased on reboot)",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -18950,7 +18950,7 @@
   { "name": "status_code",
     "description": "error/success code associated with last attach-operation (erased on reboot)",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -18959,7 +18959,7 @@
   { "name": "status_detail",
     "description": "error/success information associated with last attach-operation status (erased on reboot)",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -18968,7 +18968,7 @@
   { "name": "runtime_properties",
     "description": "Device runtime properties",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -18977,7 +18977,7 @@
   { "name": "qos_algorithm_type",
     "description": "QoS algorithm to use",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -18986,7 +18986,7 @@
   { "name": "qos_algorithm_params",
     "description": "parameters for chosen QoS algorithm",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -18995,7 +18995,7 @@
   { "name": "qos_supported_algorithms",
     "description": "supported QoS algorithms for this VIF",
     "type": "string set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -19004,7 +19004,7 @@
   { "name": "metrics",
     "description": "metrics associated with this VIF",
     "type": "VIF_metrics ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -19013,7 +19013,7 @@
   { "name": "MAC_autogenerated",
     "description": "true if the MAC was autogenerated; false indicates it was set manually",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -19023,7 +19023,7 @@
   { "name": "locking_mode",
     "description": "current locking mode of the VIF",
     "type": "enum vif_locking_mode",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -19033,7 +19033,7 @@
   { "name": "ipv4_allowed",
     "description": "A list of IPv4 addresses which can be used to filter traffic passing through this VIF",
     "type": "string set",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -19043,7 +19043,7 @@
   { "name": "ipv6_allowed",
     "description": "A list of IPv6 addresses which can be used to filter traffic passing through this VIF",
     "type": "string set",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -19053,7 +19053,7 @@
   { "name": "ipv4_configuration_mode",
     "description": "Determines whether IPv4 addresses are configured on the VIF",
     "type": "enum vif_ipv4_configuration_mode",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -19063,7 +19063,7 @@
   { "name": "ipv4_addresses",
     "description": "IPv4 addresses in CIDR format",
     "type": "string set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -19073,7 +19073,7 @@
   { "name": "ipv4_gateway",
     "description": "IPv4 gateway (the empty string means that no gateway is set)",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -19083,7 +19083,7 @@
   { "name": "ipv6_configuration_mode",
     "description": "Determines whether IPv6 addresses are configured on the VIF",
     "type": "enum vif_ipv6_configuration_mode",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -19093,7 +19093,7 @@
   { "name": "ipv6_addresses",
     "description": "IPv6 addresses in CIDR format",
     "type": "string set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -19103,7 +19103,7 @@
   { "name": "ipv6_gateway",
     "description": "IPv6 gateway (the empty string means that no gateway is set)",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20148,7 +20148,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20157,7 +20157,7 @@
   { "name": "io_read_kbs",
     "description": "Read bandwidth (KiB/s)",
     "type": "float",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20166,7 +20166,7 @@
   { "name": "io_write_kbs",
     "description": "Write bandwidth (KiB/s)",
     "type": "float",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20175,7 +20175,7 @@
   { "name": "last_updated",
     "description": "Time at which this information was last updated",
     "type": "datetime",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20184,7 +20184,7 @@
   { "name": "other_config",
     "description": "additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20425,7 +20425,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20434,7 +20434,7 @@
   { "name": "device",
     "description": "machine-readable name of the interface (e.g. eth0)",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20443,7 +20443,7 @@
   { "name": "network",
     "description": "virtual network to which this pif is connected",
     "type": "network ref",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20452,7 +20452,7 @@
   { "name": "host",
     "description": "physical machine to which this pif is connected",
     "type": "host ref",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20461,7 +20461,7 @@
   { "name": "MAC",
     "description": "ethernet MAC address of physical interface",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20470,7 +20470,7 @@
   { "name": "MTU",
     "description": "MTU in octets",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20479,7 +20479,7 @@
   { "name": "VLAN",
     "description": "VLAN tag for all traffic passing through this interface",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20488,7 +20488,7 @@
   { "name": "metrics",
     "description": "metrics associated with this PIF",
     "type": "PIF_metrics ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20497,7 +20497,7 @@
   { "name": "physical",
     "description": "true if this represents a physical network interface",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20507,7 +20507,7 @@
   { "name": "currently_attached",
     "description": "true if this interface is online",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20517,7 +20517,7 @@
   { "name": "ip_configuration_mode",
     "description": "Sets if and how this interface gets an IP address",
     "type": "enum ip_configuration_mode",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20527,7 +20527,7 @@
   { "name": "IP",
     "description": "IP address",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20537,7 +20537,7 @@
   { "name": "netmask",
     "description": "IP netmask",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20547,7 +20547,7 @@
   { "name": "gateway",
     "description": "IP gateway",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20557,7 +20557,7 @@
   { "name": "DNS",
     "description": "IP address of DNS servers to use",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20567,7 +20567,7 @@
   { "name": "bond_slave_of",
     "description": "Indicates which bond this interface is part of",
     "type": "Bond ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20577,7 +20577,7 @@
   { "name": "bond_master_of",
     "description": "Indicates this PIF represents the results of a bond",
     "type": "Bond ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20586,7 +20586,7 @@
   { "name": "VLAN_master_of",
     "description": "Indicates wich VLAN this interface receives untagged traffic from",
     "type": "VLAN ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20596,7 +20596,7 @@
   { "name": "VLAN_slave_of",
     "description": "Indicates which VLANs this interface transmits tagged traffic to",
     "type": "VLAN ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20605,7 +20605,7 @@
   { "name": "management",
     "description": "Indicates whether the control software is listening for connections on this interface",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20615,7 +20615,7 @@
   { "name": "other_config",
     "description": "Additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20625,7 +20625,7 @@
   { "name": "disallow_unplug",
     "description": "Prevent this PIF from being unplugged; set this to notify the management tool-stack that the PIF has a special use and should not be unplugged under any circumstances (e.g. because you're running storage traffic over it)",
     "type": "bool",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20635,7 +20635,7 @@
   { "name": "tunnel_access_PIF_of",
     "description": "Indicates to which tunnel this PIF gives access",
     "type": "tunnel ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20644,7 +20644,7 @@
   { "name": "tunnel_transport_PIF_of",
     "description": "Indicates to which tunnel this PIF provides transport",
     "type": "tunnel ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20653,7 +20653,7 @@
   { "name": "ipv6_configuration_mode",
     "description": "Sets if and how this interface gets an IPv6 address",
     "type": "enum ipv6_configuration_mode",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "prototyped",
@@ -20663,7 +20663,7 @@
   { "name": "IPv6",
     "description": "IPv6 address",
     "type": "string set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "prototyped",
@@ -20673,7 +20673,7 @@
   { "name": "ipv6_gateway",
     "description": "IPv6 gateway",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "prototyped",
@@ -20683,7 +20683,7 @@
   { "name": "primary_address_type",
     "description": "Which protocol should define the primary address of this interface",
     "type": "enum primary_address_type",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "prototyped",
@@ -20693,7 +20693,7 @@
   { "name": "managed",
     "description": "Indicates whether the interface is managed by xapi. If it is not, then xapi will not configure the interface, the commands PIF.plug/unplug/reconfigure_ip(v6) can not be used, nor can the interface be bonded or have VLANs based on top through xapi.",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20703,7 +20703,7 @@
   { "name": "properties",
     "description": "Additional configuration properties for the interface.",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -20713,7 +20713,7 @@
   { "name": "capabilities",
     "description": "Additional capabilities on the interface.",
     "type": "string set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -21835,7 +21835,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -21844,7 +21844,7 @@
   { "name": "io_read_kbs",
     "description": "Read bandwidth (KiB/s)",
     "type": "float",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -21853,7 +21853,7 @@
   { "name": "io_write_kbs",
     "description": "Write bandwidth (KiB/s)",
     "type": "float",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -21862,7 +21862,7 @@
   { "name": "carrier",
     "description": "Report if the PIF got a carrier or not",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -21871,7 +21871,7 @@
   { "name": "vendor_id",
     "description": "Report vendor ID",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -21880,7 +21880,7 @@
   { "name": "vendor_name",
     "description": "Report vendor name",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -21889,7 +21889,7 @@
   { "name": "device_id",
     "description": "Report device ID",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -21898,7 +21898,7 @@
   { "name": "device_name",
     "description": "Report device name",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -21907,7 +21907,7 @@
   { "name": "speed",
     "description": "Speed of the link (if available)",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -21916,7 +21916,7 @@
   { "name": "duplex",
     "description": "Full duplex capability of the link (if available)",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -21925,7 +21925,7 @@
   { "name": "pci_bus_path",
     "description": "PCI bus path of the pif (if available)",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -21934,7 +21934,7 @@
   { "name": "last_updated",
     "description": "Time at which this information was last updated",
     "type": "datetime",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -21943,7 +21943,7 @@
   { "name": "other_config",
     "description": "additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -22328,7 +22328,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -22337,7 +22337,7 @@
   { "name": "master",
     "description": "The bonded interface",
     "type": "PIF ref",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -22347,7 +22347,7 @@
   { "name": "slaves",
     "description": "The interfaces which are part of this bond",
     "type": "PIF ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -22356,7 +22356,7 @@
   { "name": "other_config",
     "description": "additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -22366,7 +22366,7 @@
   { "name": "primary_slave",
     "description": "The PIF of which the IP configuration and MAC were copied to the bond, and which will receive all configuration/VLANs/VIFs on the bond if the bond is destroyed",
     "type": "PIF ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -22376,7 +22376,7 @@
   { "name": "mode",
     "description": "The algorithm used to distribute traffic among the bonded NICs",
     "type": "enum bond_mode",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -22386,7 +22386,7 @@
   { "name": "properties",
     "description": "Additional configuration properties specific to the bond mode.",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -22396,7 +22396,7 @@
   { "name": "links_up",
     "description": "Number of links up in this bond",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -22792,7 +22792,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -22801,7 +22801,7 @@
   { "name": "tagged_PIF",
     "description": "interface on which traffic is tagged",
     "type": "PIF ref",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -22811,7 +22811,7 @@
   { "name": "untagged_PIF",
     "description": "interface on which traffic is untagged",
     "type": "PIF ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -22821,7 +22821,7 @@
   { "name": "tag",
     "description": "VLAN tag in use",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -22831,7 +22831,7 @@
   { "name": "other_config",
     "description": "additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23114,7 +23114,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23123,7 +23123,7 @@
   { "name": "name_label",
     "description": "a human-readable name",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23133,7 +23133,7 @@
   { "name": "name_description",
     "description": "a notes field containing human-readable description",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23143,7 +23143,7 @@
   { "name": "type",
     "description": "SR.type",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23152,7 +23152,7 @@
   { "name": "vendor",
     "description": "Vendor who created this plugin",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23161,7 +23161,7 @@
   { "name": "copyright",
     "description": "Entity which owns the copyright of this plugin",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23170,7 +23170,7 @@
   { "name": "version",
     "description": "Version of the plugin",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23179,7 +23179,7 @@
   { "name": "required_api_version",
     "description": "Minimum SM API version required on the server",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23188,7 +23188,7 @@
   { "name": "configuration",
     "description": "names and descriptions of device config keys",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23197,7 +23197,7 @@
   { "name": "capabilities",
     "description": "capabilities of the SM plugin",
     "type": "string set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "deprecated",
@@ -23207,7 +23207,7 @@
   { "name": "features",
     "description": "capabilities of the SM plugin, with capability version numbers",
     "type": "(string -> int) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23217,7 +23217,7 @@
   { "name": "other_config",
     "description": "additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23227,7 +23227,7 @@
   { "name": "driver_filename",
     "description": "filename of the storage driver",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23237,7 +23237,7 @@
   { "name": "required_cluster_stack",
     "description": "The storage plugin requires that one of these cluster stacks is configured and running.",
     "type": "string set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23658,7 +23658,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23667,7 +23667,7 @@
   { "name": "name_label",
     "description": "a human-readable name",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23677,7 +23677,7 @@
   { "name": "name_description",
     "description": "a notes field containing human-readable description",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23687,7 +23687,7 @@
   { "name": "allowed_operations",
     "description": "list of the operations allowed in this state. This list is advisory only and the server state may have changed by the time this field is read by a client.",
     "type": "enum storage_operations set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23697,7 +23697,7 @@
   { "name": "current_operations",
     "description": "links each of the running tasks using this object (by reference) to a current_operation enum which describes the nature of the task.",
     "type": "(string -> enum storage_operations) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23707,7 +23707,7 @@
   { "name": "VDIs",
     "description": "all virtual disks known to this storage repository",
     "type": "VDI ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23716,7 +23716,7 @@
   { "name": "PBDs",
     "description": "describes how particular hosts can see this storage repository",
     "type": "PBD ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23725,7 +23725,7 @@
   { "name": "virtual_allocation",
     "description": "sum of virtual_sizes of all VDIs in this storage repository (in bytes)",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23734,7 +23734,7 @@
   { "name": "physical_utilisation",
     "description": "physical space currently utilised on this storage repository (in bytes). Note that for sparse disk formats, physical_utilisation may be less than virtual_allocation",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23743,7 +23743,7 @@
   { "name": "physical_size",
     "description": "total physical size of the repository (in bytes)",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23752,7 +23752,7 @@
   { "name": "type",
     "description": "type of the storage repository",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23761,7 +23761,7 @@
   { "name": "content_type",
     "description": "the type of the SR's content, if required (e.g. ISOs)",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23770,7 +23770,7 @@
   { "name": "shared",
     "description": "true if this SR is (capable of being) shared between multiple hosts",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23779,7 +23779,7 @@
   { "name": "other_config",
     "description": "additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23788,7 +23788,7 @@
   { "name": "tags",
     "description": "user-specified tags for categorization purposes",
     "type": "string set",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23798,7 +23798,7 @@
   { "name": "sm_config",
     "description": "SM dependent data",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23808,7 +23808,7 @@
   { "name": "blobs",
     "description": "Binary blobs associated with this SR",
     "type": "(string -> blob ref) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23818,7 +23818,7 @@
   { "name": "local_cache_enabled",
     "description": "True if this SR is assigned to be the local cache for its host",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23828,7 +23828,7 @@
   { "name": "introduced_by",
     "description": "The disaster recovery task which introduced this SR",
     "type": "DR_task ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23838,7 +23838,7 @@
   { "name": "clustered",
     "description": "True if the SR is using aggregated local storage",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -23848,7 +23848,7 @@
   { "name": "is_tools_sr",
     "description": "True if this is the SR that contains the Tools ISO VDIs",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -25100,7 +25100,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -25196,7 +25196,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -25205,7 +25205,7 @@
   { "name": "name_label",
     "description": "a human-readable name",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -25215,7 +25215,7 @@
   { "name": "name_description",
     "description": "a notes field containing human-readable description",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -25225,7 +25225,7 @@
   { "name": "allowed_operations",
     "description": "list of the operations allowed in this state. This list is advisory only and the server state may have changed by the time this field is read by a client.",
     "type": "enum vdi_operations set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -25235,7 +25235,7 @@
   { "name": "current_operations",
     "description": "links each of the running tasks using this object (by reference) to a current_operation enum which describes the nature of the task.",
     "type": "(string -> enum vdi_operations) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -25245,7 +25245,7 @@
   { "name": "SR",
     "description": "storage repository in which the VDI resides",
     "type": "SR ref",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -25254,7 +25254,7 @@
   { "name": "VBDs",
     "description": "list of vbds that refer to this disk",
     "type": "VBD ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -25263,7 +25263,7 @@
   { "name": "crash_dumps",
     "description": "list of crash dumps that refer to this disk",
     "type": "crashdump ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -25272,7 +25272,7 @@
   { "name": "virtual_size",
     "description": "size of disk as presented to the guest (in bytes). Note that, depending on storage backend type, requested size may not be respected exactly",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -25281,7 +25281,7 @@
   { "name": "physical_utilisation",
     "description": "amount of physical space that the disk image is currently taking up on the storage repository (in bytes)",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -25290,7 +25290,7 @@
   { "name": "type",
     "description": "type of the VDI",
     "type": "enum vdi_type",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -25299,7 +25299,7 @@
   { "name": "sharable",
     "description": "true if this disk may be shared",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -25308,7 +25308,7 @@
   { "name": "read_only",
     "description": "true if this disk may ONLY be mounted read-only",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -25317,7 +25317,7 @@
   { "name": "other_config",
     "description": "additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -25326,7 +25326,7 @@
   { "name": "storage_lock",
     "description": "true if this disk is locked at the storage level",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -25335,7 +25335,7 @@
   { "name": "location",
     "description": "location information",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -25345,7 +25345,7 @@
   { "name": "managed",
     "description": "",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -25354,7 +25354,7 @@
   { "name": "missing",
     "description": "true if SR scan operation reported this VDI as not present on disk",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -25363,7 +25363,7 @@
   { "name": "parent",
     "description": "References the parent disk, if this VDI is part of a chain",
     "type": "VDI ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -25372,7 +25372,7 @@
   { "name": "xenstore_data",
     "description": "data to be inserted into the xenstore tree (/local/domain/0/backend/vbd/<domid>/<device-id>/sm-data) after the VDI is attached. This is generally set by the SM backends on vdi_attach.",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -25382,7 +25382,7 @@
   { "name": "sm_config",
     "description": "SM dependent data",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -25392,7 +25392,7 @@
   { "name": "is_a_snapshot",
     "description": "true if this is a snapshot.",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "snapshots",
     "lifecycle": [ 
       { "transition": "published",
@@ -25402,7 +25402,7 @@
   { "name": "snapshot_of",
     "description": "Ref pointing to the VDI this snapshot is of.",
     "type": "VDI ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "snapshots",
     "lifecycle": [ 
       { "transition": "published",
@@ -25412,7 +25412,7 @@
   { "name": "snapshots",
     "description": "List pointing to all the VDIs snapshots.",
     "type": "VDI ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "snapshots",
     "lifecycle": [ 
       { "transition": "published",
@@ -25421,7 +25421,7 @@
   { "name": "snapshot_time",
     "description": "Date/time when this snapshot was created.",
     "type": "datetime",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "snapshots",
     "lifecycle": [ 
       { "transition": "published",
@@ -25431,7 +25431,7 @@
   { "name": "tags",
     "description": "user-specified tags for categorization purposes",
     "type": "string set",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -25441,7 +25441,7 @@
   { "name": "allow_caching",
     "description": "true if this VDI is to be cached in the local cache SR",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -25451,7 +25451,7 @@
   { "name": "on_boot",
     "description": "The behaviour of this VDI on a VM boot",
     "type": "enum on_boot",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -25461,7 +25461,7 @@
   { "name": "metadata_of_pool",
     "description": "The pool whose metadata is contained in this VDI",
     "type": "pool ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -25471,7 +25471,7 @@
   { "name": "metadata_latest",
     "description": "Whether this VDI contains the latest known accessible metadata for the pool",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -25481,7 +25481,7 @@
   { "name": "is_tools_iso",
     "description": "Whether this VDI is a Tools ISO",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -27164,7 +27164,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -27173,7 +27173,7 @@
   { "name": "allowed_operations",
     "description": "list of the operations allowed in this state. This list is advisory only and the server state may have changed by the time this field is read by a client.",
     "type": "enum vbd_operations set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -27183,7 +27183,7 @@
   { "name": "current_operations",
     "description": "links each of the running tasks using this object (by reference) to a current_operation enum which describes the nature of the task.",
     "type": "(string -> enum vbd_operations) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -27193,7 +27193,7 @@
   { "name": "VM",
     "description": "the virtual machine",
     "type": "VM ref",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -27202,7 +27202,7 @@
   { "name": "VDI",
     "description": "the virtual disk",
     "type": "VDI ref",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -27211,7 +27211,7 @@
   { "name": "device",
     "description": "device seen by the guest e.g. hda1",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -27220,7 +27220,7 @@
   { "name": "userdevice",
     "description": "user-friendly device name e.g. 0,1,2,etc.",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -27229,7 +27229,7 @@
   { "name": "bootable",
     "description": "true if this VBD is bootable",
     "type": "bool",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -27238,7 +27238,7 @@
   { "name": "mode",
     "description": "the mode the VBD should be mounted with",
     "type": "enum vbd_mode",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -27247,7 +27247,7 @@
   { "name": "type",
     "description": "how the VBD will appear to the guest (e.g. disk or CD)",
     "type": "enum vbd_type",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -27256,7 +27256,7 @@
   { "name": "unpluggable",
     "description": "true if this VBD will support hot-unplug",
     "type": "bool",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -27266,7 +27266,7 @@
   { "name": "storage_lock",
     "description": "true if a storage level lock was acquired",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -27275,7 +27275,7 @@
   { "name": "empty",
     "description": "if true this represents an empty drive",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -27284,7 +27284,7 @@
   { "name": "other_config",
     "description": "additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -27293,7 +27293,7 @@
   { "name": "currently_attached",
     "description": "is the device currently attached (erased on reboot)",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -27302,7 +27302,7 @@
   { "name": "status_code",
     "description": "error/success code associated with last attach-operation (erased on reboot)",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -27311,7 +27311,7 @@
   { "name": "status_detail",
     "description": "error/success information associated with last attach-operation status (erased on reboot)",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -27320,7 +27320,7 @@
   { "name": "runtime_properties",
     "description": "Device runtime properties",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -27329,7 +27329,7 @@
   { "name": "qos_algorithm_type",
     "description": "QoS algorithm to use",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -27338,7 +27338,7 @@
   { "name": "qos_algorithm_params",
     "description": "parameters for chosen QoS algorithm",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -27347,7 +27347,7 @@
   { "name": "qos_supported_algorithms",
     "description": "supported QoS algorithms for this VBD",
     "type": "string set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -27356,7 +27356,7 @@
   { "name": "metrics",
     "description": "metrics associated with this VBD",
     "type": "VBD_metrics ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -28285,7 +28285,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -28294,7 +28294,7 @@
   { "name": "io_read_kbs",
     "description": "Read bandwidth (KiB/s)",
     "type": "float",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -28303,7 +28303,7 @@
   { "name": "io_write_kbs",
     "description": "Write bandwidth (KiB/s)",
     "type": "float",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -28312,7 +28312,7 @@
   { "name": "last_updated",
     "description": "Time at which this information was last updated",
     "type": "datetime",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -28321,7 +28321,7 @@
   { "name": "other_config",
     "description": "additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -28562,7 +28562,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -28571,7 +28571,7 @@
   { "name": "host",
     "description": "physical machine on which the pbd is available",
     "type": "host ref",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -28580,7 +28580,7 @@
   { "name": "SR",
     "description": "the storage repository that the pbd realises",
     "type": "SR ref",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -28589,7 +28589,7 @@
   { "name": "device_config",
     "description": "a config string to string map that is provided to the host's SR-backend-driver",
     "type": "(string -> string) map",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -28598,7 +28598,7 @@
   { "name": "currently_attached",
     "description": "is the SR currently attached on this host?",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -28607,7 +28607,7 @@
   { "name": "other_config",
     "description": "additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -28961,7 +28961,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -28970,7 +28970,7 @@
   { "name": "VM",
     "description": "the virtual machine",
     "type": "VM ref",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -28979,7 +28979,7 @@
   { "name": "VDI",
     "description": "the virtual disk",
     "type": "VDI ref",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -28988,7 +28988,7 @@
   { "name": "other_config",
     "description": "additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -29229,7 +29229,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -29238,7 +29238,7 @@
   { "name": "VM",
     "description": "the virtual machine",
     "type": "VM ref",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -29247,7 +29247,7 @@
   { "name": "backend",
     "description": "the domain where the backend is located",
     "type": "VM ref",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -29391,7 +29391,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -29400,7 +29400,7 @@
   { "name": "protocol",
     "description": "the protocol used by this console",
     "type": "enum console_protocol",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -29409,7 +29409,7 @@
   { "name": "location",
     "description": "URI for the console service",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -29418,7 +29418,7 @@
   { "name": "VM",
     "description": "VM to which this console is attached",
     "type": "VM ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -29427,7 +29427,7 @@
   { "name": "other_config",
     "description": "additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -29711,7 +29711,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -29720,7 +29720,7 @@
   { "name": "short_name",
     "description": "short name (e.g. userid)",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -29729,7 +29729,7 @@
   { "name": "fullname",
     "description": "full name",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -29738,7 +29738,7 @@
   { "name": "other_config",
     "description": "additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -30003,7 +30003,7 @@
   { "name": "name_label",
     "description": "a human-readable name",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -30013,7 +30013,7 @@
   { "name": "name_description",
     "description": "a notes field containing human-readable description",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -30023,7 +30023,7 @@
   { "name": "enabled",
     "description": "true if the data source is being logged",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -30032,7 +30032,7 @@
   { "name": "standard",
     "description": "true if the data source is enabled by default. Non-default data sources cannot be disabled",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -30041,7 +30041,7 @@
   { "name": "units",
     "description": "the units of the value",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -30050,7 +30050,7 @@
   { "name": "min",
     "description": "the minimum value of the data source",
     "type": "float",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -30059,7 +30059,7 @@
   { "name": "max",
     "description": "the maximum value of the data source",
     "type": "float",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -30068,7 +30068,7 @@
   { "name": "value",
     "description": "current value of the data source",
     "type": "float",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -30086,7 +30086,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -30095,7 +30095,7 @@
   { "name": "name_label",
     "description": "a human-readable name",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -30105,7 +30105,7 @@
   { "name": "name_description",
     "description": "a notes field containing human-readable description",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -30115,7 +30115,7 @@
   { "name": "size",
     "description": "Size of the binary data, in bytes",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -30124,7 +30124,7 @@
   { "name": "public",
     "description": "True if the blob is publicly accessible",
     "type": "bool",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -30134,7 +30134,7 @@
   { "name": "last_updated",
     "description": "Time at which the data in the blob was last updated",
     "type": "datetime",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -30143,7 +30143,7 @@
   { "name": "mime_type",
     "description": "The mime type associated with this object. Defaults to 'application/octet-stream' if the empty string is supplied",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -30473,7 +30473,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -30482,7 +30482,7 @@
   { "name": "name",
     "description": "The name of the message",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -30491,7 +30491,7 @@
   { "name": "priority",
     "description": "The message priority, 0 being low priority",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -30500,7 +30500,7 @@
   { "name": "cls",
     "description": "The class of the object this message is associated with",
     "type": "enum cls",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -30509,7 +30509,7 @@
   { "name": "obj_uuid",
     "description": "The uuid of the object this message is associated with",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -30518,7 +30518,7 @@
   { "name": "timestamp",
     "description": "The time at which the message was created",
     "type": "datetime",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -30527,7 +30527,7 @@
   { "name": "body",
     "description": "The body of the message",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -30731,7 +30731,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -30740,7 +30740,7 @@
   { "name": "value",
     "description": "the secret",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -30749,7 +30749,7 @@
   { "name": "other_config",
     "description": "other_config",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -31011,7 +31011,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -31020,7 +31020,7 @@
   { "name": "access_PIF",
     "description": "The interface through which the tunnel is accessed",
     "type": "PIF ref",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -31030,7 +31030,7 @@
   { "name": "transport_PIF",
     "description": "The interface used by the tunnel",
     "type": "PIF ref",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -31040,7 +31040,7 @@
   { "name": "status",
     "description": "Status information about the tunnel",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -31050,7 +31050,7 @@
   { "name": "other_config",
     "description": "Additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -31402,7 +31402,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -31411,7 +31411,7 @@
   { "name": "class_name",
     "description": "PCI class name",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -31421,7 +31421,7 @@
   { "name": "vendor_name",
     "description": "Vendor name",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -31431,7 +31431,7 @@
   { "name": "device_name",
     "description": "Device name",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -31441,7 +31441,7 @@
   { "name": "host",
     "description": "Physical machine that owns the PCI device",
     "type": "host ref",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -31451,7 +31451,7 @@
   { "name": "pci_id",
     "description": "PCI ID of the physical device",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -31461,7 +31461,7 @@
   { "name": "dependencies",
     "description": "List of dependent PCI devices",
     "type": "PCI ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -31470,7 +31470,7 @@
   { "name": "other_config",
     "description": "Additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -31480,7 +31480,7 @@
   { "name": "subsystem_vendor_name",
     "description": "Subsystem vendor name",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -31490,7 +31490,7 @@
   { "name": "subsystem_device_name",
     "description": "Subsystem device name",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -31821,7 +31821,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -31830,7 +31830,7 @@
   { "name": "PCI",
     "description": "Link to underlying PCI device",
     "type": "PCI ref",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -31840,7 +31840,7 @@
   { "name": "GPU_group",
     "description": "GPU group the pGPU is contained in",
     "type": "GPU_group ref",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -31850,7 +31850,7 @@
   { "name": "host",
     "description": "Host that own the GPU",
     "type": "host ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -31860,7 +31860,7 @@
   { "name": "other_config",
     "description": "Additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -31870,7 +31870,7 @@
   { "name": "supported_VGPU_types",
     "description": "List of VGPU types supported by the underlying hardware",
     "type": "VGPU_type ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -31879,7 +31879,7 @@
   { "name": "enabled_VGPU_types",
     "description": "List of VGPU types which have been enabled for this PGPU",
     "type": "VGPU_type ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -31888,7 +31888,7 @@
   { "name": "resident_VGPUs",
     "description": "List of VGPUs running on this PGPU",
     "type": "VGPU ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -31897,7 +31897,7 @@
   { "name": "supported_VGPU_max_capacities",
     "description": "A map relating each VGPU type supported on this GPU to the maximum number of VGPUs of that type which can run simultaneously on this GPU",
     "type": "(VGPU_type ref -> int) map",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -31907,7 +31907,7 @@
   { "name": "dom0_access",
     "description": "The accessibility of this device from dom0",
     "type": "enum pgpu_dom0_access",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -31917,7 +31917,7 @@
   { "name": "is_system_display_device",
     "description": "Is this device the system display device",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -32417,7 +32417,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -32426,7 +32426,7 @@
   { "name": "name_label",
     "description": "a human-readable name",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -32436,7 +32436,7 @@
   { "name": "name_description",
     "description": "a notes field containing human-readable description",
     "type": "string",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -32446,7 +32446,7 @@
   { "name": "PGPUs",
     "description": "List of pGPUs in the group",
     "type": "PGPU ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -32455,7 +32455,7 @@
   { "name": "VGPUs",
     "description": "List of vGPUs using the group",
     "type": "VGPU ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -32464,7 +32464,7 @@
   { "name": "GPU_types",
     "description": "List of GPU types (vendor+device ID) that can be in this group",
     "type": "string set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -32474,7 +32474,7 @@
   { "name": "other_config",
     "description": "Additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -32484,7 +32484,7 @@
   { "name": "allocation_algorithm",
     "description": "Current allocation of vGPUs to pGPUs for this group",
     "type": "enum allocation_algorithm",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -32494,7 +32494,7 @@
   { "name": "supported_VGPU_types",
     "description": "vGPU types supported on at least one of the pGPUs in this group",
     "type": "VGPU_type ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -32503,7 +32503,7 @@
   { "name": "enabled_VGPU_types",
     "description": "vGPU types supported on at least one of the pGPUs in this group",
     "type": "VGPU_type ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -32983,7 +32983,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -32992,7 +32992,7 @@
   { "name": "VM",
     "description": "VM that owns the vGPU",
     "type": "VM ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -33001,7 +33001,7 @@
   { "name": "GPU_group",
     "description": "GPU group used by the vGPU",
     "type": "GPU_group ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -33010,7 +33010,7 @@
   { "name": "device",
     "description": "Order in which the devices are plugged into the VM",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -33020,7 +33020,7 @@
   { "name": "currently_attached",
     "description": "Reflects whether the virtual device is currently connected to a physical device",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -33030,7 +33030,7 @@
   { "name": "other_config",
     "description": "Additional configuration",
     "type": "(string -> string) map",
-    "qualifier": "read/write",
+    "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -33040,7 +33040,7 @@
   { "name": "type",
     "description": "Preset type for this VGPU",
     "type": "VGPU_type ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -33050,7 +33050,7 @@
   { "name": "resident_on",
     "description": "The PGPU on which this VGPU is running",
     "type": "PGPU ref",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -33393,7 +33393,7 @@
   { "name": "uuid",
     "description": "Unique identifier/object reference",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -33402,7 +33402,7 @@
   { "name": "vendor_name",
     "description": "Name of VGPU vendor",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -33412,7 +33412,7 @@
   { "name": "model_name",
     "description": "Model name associated with the VGPU type",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -33422,7 +33422,7 @@
   { "name": "framebuffer_size",
     "description": "Framebuffer size of the VGPU type, in bytes",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -33432,7 +33432,7 @@
   { "name": "max_heads",
     "description": "Maximum number of displays supported by the VGPU type",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -33442,7 +33442,7 @@
   { "name": "max_resolution_x",
     "description": "Maximum resolution (width) supported by the VGPU type",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -33452,7 +33452,7 @@
   { "name": "max_resolution_y",
     "description": "Maximum resolution (height) supported by the VGPU type",
     "type": "int",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -33462,7 +33462,7 @@
   { "name": "supported_on_PGPUs",
     "description": "List of PGPUs that support this VGPU type",
     "type": "PGPU ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -33471,7 +33471,7 @@
   { "name": "enabled_on_PGPUs",
     "description": "List of PGPUs that have this VGPU type enabled",
     "type": "PGPU ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -33480,7 +33480,7 @@
   { "name": "VGPUs",
     "description": "List of VGPUs of this type",
     "type": "VGPU ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -33489,7 +33489,7 @@
   { "name": "supported_on_GPU_groups",
     "description": "List of GPU groups in which at least one PGPU supports this VGPU type",
     "type": "GPU_group ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -33498,7 +33498,7 @@
   { "name": "enabled_on_GPU_groups",
     "description": "List of GPU groups in which at least one have this VGPU type enabled",
     "type": "GPU_group ref set",
-    "qualifier": "read only",
+    "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -33507,7 +33507,7 @@
   { "name": "implementation",
     "description": "The internal implementation of this VGPU type",
     "type": "enum vgpu_type_implementation",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -33517,7 +33517,7 @@
   { "name": "identifier",
     "description": "Key used to identify VGPU types and avoid creating duplicates - this field is used internally and not intended for interpretation by API clients",
     "type": "string",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
@@ -33527,7 +33527,7 @@
   { "name": "experimental",
     "description": "Indicates whether VGPUs of this type should be considered experimental",
     "type": "bool",
-    "qualifier": "read only",
+    "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
