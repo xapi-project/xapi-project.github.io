@@ -85,7 +85,7 @@ We will define the following APIs:
   host software will know about the change but it may need to be restarted
   before it can take effect  
   - in:`uuid:string`: the UUID of the host to remove
-  `Plugin:Cluster.query`: queries the state of the cluster
+- `Plugin:Cluster.query`: queries the state of the cluster
   - out:`maintenance_required:bool`: true if there is some outstanding configuration
     change which cannot take effect until the cluster is restarted.
   - out:`hosts`: a list of all known hosts together with a state including:
