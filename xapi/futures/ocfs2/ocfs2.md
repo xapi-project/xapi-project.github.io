@@ -130,7 +130,7 @@ Xapi will be modified to:
     state is out-of-sync with the actual cluster state.
 - add method `XenAPI:Membership.enable`
   - in: `self:Host`: the host to modify
-  - in: `cluster:Cluster: the cluster.
+  - in: `cluster:Cluster`: the cluster.
 - add method `XenAPI:Membership.disable`
   - in: `self:Host`: the host to modify
   - in: `cluster:Cluster`: the cluster name.
