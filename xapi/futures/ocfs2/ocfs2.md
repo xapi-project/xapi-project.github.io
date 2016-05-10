@@ -99,7 +99,7 @@ Xapi will be modified to:
 - add table `Cluster` which will have columns
   - `name: string`: this is the name of the Cluster plugin (TODO: use same
     terminology as SM?)
-  - 'configuration: Map(String,String)`: this will contain any cluster-global
+  - `configuration: Map(String,String)`: this will contain any cluster-global
     information, overrides for default values etc.
   - `enabled: Bool`: this is true when the cluster "should" be running. It
     may require maintenance to synchronise changes across the hosts.
