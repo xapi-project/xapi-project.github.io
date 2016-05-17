@@ -37,6 +37,8 @@ codebase was executed.
 * is generates useful reports for interactive and non-interactive use
   that help to improve code coverage
 
+![Coverage Analysis](./coverage-screenshot.png)
+
 The individual steps of instrumenting code with [BisectPPX] are greatly
 abstracted by OCamlfind (OCaml's library manager) and OCamlbuild
 (OCaml's compilation manager):
