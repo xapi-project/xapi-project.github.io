@@ -39,6 +39,10 @@ codebase was executed.
 
 ![Coverage Analysis](./coverage-screenshot.png)
 
+Red parts indicate code that wasn't executed whereas green parts were.
+Hovering over a dark green spot reveals how often that point was
+executed.
+
 The individual steps of instrumenting code with [BisectPPX] are greatly
 abstracted by OCamlfind (OCaml's library manager) and OCamlbuild
 (OCaml's compilation manager):
@@ -113,14 +117,14 @@ clarity it is called at the begin of program execution.
 ## Instrumenting an Oasis Project
 
 While instrumentation is easy on the level of a small file or project it
-is increasingly less so in a bigger project. We decided to focus on
-projects that are build with the [Oasis] build and packaging manager. 
-These have a well-defined structure and compilation process that is
-controlled by a central `_oasis` file. This file describes for each
-library and binary its dependencies at a package level. From this, 
-[Oasis] generates a `configure` script and compilation rules for the
-[OCamlbuild] system. [Oasis] is designed that the generated files can be
-shipped without requiring [Oasis] itself being available. 
+is challenging in a bigger project. We decided to focus on projects that
+are build with the [Oasis] build and packaging manager.  These have a
+well-defined structure and compilation process that is controlled by a
+central `_oasis` file. This file describes for each library and binary
+its dependencies at a package level. From this, [Oasis] generates a
+`configure` script and compilation rules for the [OCamlbuild] system.
+[Oasis] is designed that the generated files can be shipped without
+requiring [Oasis] itself being available.
 
 Goals for instrumentation are:
 

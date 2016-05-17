@@ -31,7 +31,6 @@
       - xen-api/metrics.md
       - xen-api/memory.md
       - xen-api/xencenter.md
-        # - profiling/coverage.md
 -
     - title: Architecture
       docs:
