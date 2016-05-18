@@ -16,6 +16,20 @@ they provide operating-system-level services.  This makes it a little
 harder than profiling code that can be profiled and executed in
 isolation.
 
+## TL;DR
+
+To build binaries with coverage profiling, do:
+
+    ./configure
+    make coverage
+    make 
+
+Binaries will log coverage data to `/tmp/bisect*.out` from which a
+coverage report can be generated in `coverage/`:
+
+    bisect-ppx-report -I _build -html coverage /tmp/bisect*.out
+
+
 ## Profiling Framework Bisect-PPX
 
 The open-source [BisectPPX] instrumentation framework uses extension
