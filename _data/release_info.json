@@ -3289,4 +3289,5 @@
     "log": "Manual CPU feature setting was removed" }, 
   { "transition": "removed message",
     "name": "host.set_cpu_features",
-    "log": "Manual CPU feature setting was removed" } ] }
+    "log": "Manual CPU feature setting was removed" } ],
+"ely": [  ] }
