@@ -14,6 +14,8 @@ revision_history:
   description: Remove VMSS alarm_config details and use existing pool wide alarm config
 - revision_number: 4
   description: Renaming field from retention-value to retained-snapshots and schedule-snapshot to scheduled-snapshot
+- revision_number: 5
+  description: Add new API task_set_status
 ---
 
 The scheduled snapshot feature will utilize the existing architecture of VMPR. In terms of functionality, scheduled snapshot is basically VMPR without its archiving capability.
@@ -78,6 +80,7 @@ New APIs
 * vmss_add_to_schedule (Ref vmss, String "key", String "value", Pool_Operater) -> unit : Add key value pair to VMSS schedule.
 * vmss_remove_from_schedule (Ref vmss, String "key", Pool_Operater) -> unit : Remove key from VMSS schedule.
 * vmss_set_last_run_time (Ref vmss, DateTime "value", Local_Root) -> unit : Set the last run time for VMSS.
+* task_set_status (Ref task, status_type "value", READ_ONLY) -> unit : Set the status of task owned by same user, Pool_Operator can set status for any tasks.
 
 New CLIs
 --------
