@@ -4,5 +4,5 @@ release: dundee
 release_index: true
 ---
 
-Currently unreleased
+Released in May 2016.
 

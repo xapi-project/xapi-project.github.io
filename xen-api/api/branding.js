@@ -79,6 +79,9 @@ function get_release_name(s)
 	case 'creedence':
 		return 'XenServer 6.5';
 		break;
+	case 'dundee':
+		return 'XenServer 7.0';
+		break;
 	default:
 		return (s + ' (unreleased)');
 		break;
