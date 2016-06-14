@@ -2,3 +2,4 @@ markdown: kramdown
 highlighter: rouge
 permalink: /:title:output_ext
 exclude: [vendor]
+repository: xapi-project/xapi-project.github.io
