@@ -484,7 +484,7 @@
     "log": "action to take after the guest has shutdown itself" }, 
   { "transition": "published field",
     "name": "VM.affinity",
-    "log": "a host which the VM has some affinity for (or NULL). This is used as a hint to the start call when it decides where to run the VM. Implementations are free to ignore this field." }, 
+    "log": "A host which the VM has some affinity for (or NULL). This is used as a hint to the start call when it decides where to run the VM. Resource constraints may cause the VM to be started elsewhere." }, 
   { "transition": "published field",
     "name": "VM.allowed_operations",
     "log": "list of the operations allowed in this state. This list is advisory only and the server state may have changed by the time this field is read by a client." }, 
