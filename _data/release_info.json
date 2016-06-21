@@ -3290,5 +3290,8 @@
   { "transition": "removed message",
     "name": "host.set_cpu_features",
     "log": "Manual CPU feature setting was removed" } ],
-"dundee-plus": [  ],
+"dundee-plus": [ 
+  { "transition": "published field",
+    "name": "host.control_domain",
+    "log": "The control domain (domain 0)" } ],
 "ely": [  ] }
