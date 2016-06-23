@@ -11,7 +11,7 @@ describe how to extend an existing class:
 * [Adding a Function]
 
 As a running example, we will use the addition of a class that is part
-of the design for the [PVS Direct] feature. PVS Direct introduces
+of the design for the PVS Direct feature. PVS Direct introduces
 proxies that serve VMs with disk images. This class was added via commit
 [CP-16939] to Xen API.
 
@@ -449,6 +449,5 @@ the simple case, each methods executes locally:
 
 
 [CP-16939]:           https://github.com/xenserver/xen-api/commit/78fe558dad19458a89519fe196069317d57eac58
-[Adding a Field]:     http://xapi-project.github.io/devguide/howtos/add-field.html
-[Adding a Function]:  http://xapi-project.github.io/devguide/howtos/add-function.html
-[PVS Direct]: http://www.uk.xensource.com/~robho/pvs-direct/#external-interfaces-xenapi-pvs_farm-new-class
+[Adding a Field]:     add-field.html
+[Adding a Function]:  add-function.html
