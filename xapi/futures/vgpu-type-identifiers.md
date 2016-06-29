@@ -3,7 +3,7 @@ title: VGPU type identifiers
 layout: default
 design_doc: true
 revision: 1
-status: confirmed
+status: released (7.0)
 design_review: 156
 revision_history:
 - revision_number: 1

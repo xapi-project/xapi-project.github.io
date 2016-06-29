@@ -3,7 +3,7 @@ title: RRDD archival redesign
 layout: default
 design_doc: true
 revision: 1
-status: confirmed
+status: released (7,0)
 ---
 
 ## Introduction
