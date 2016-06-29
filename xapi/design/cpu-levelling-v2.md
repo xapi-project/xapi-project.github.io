@@ -2,7 +2,7 @@
 title: CPU feature levelling 2.0
 layout: default
 design_doc: true
-status: proposed
+status: released (7.0)
 revision: 7
 revision_history:
 - revision_number: 1

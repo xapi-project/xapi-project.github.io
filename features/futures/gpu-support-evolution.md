@@ -3,7 +3,7 @@ title: GPU support evolution
 layout: default
 design_doc: true
 revision: 3
-status: confirmed
+status: released (7.0)
 revision_history:
 - revision_number: 1
   description: Documented interface changes between xapi and xenopsd for vGPU

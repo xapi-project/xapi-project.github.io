@@ -3,7 +3,7 @@ title: Virtual Hardware Platform Version
 layout: default
 design_doc: true
 revision: 1
-status: proposed
+status: released (7.0)
 ---
 
 ### Background and goal

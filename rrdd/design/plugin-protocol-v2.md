@@ -3,7 +3,7 @@ title: RRDD plugin protocol v2
 layout: default
 design_doc: true
 revision: 1
-status: confirmed
+status: released (7.0)
 revision_history:
 - revision_number: 1
   description: Initial version
