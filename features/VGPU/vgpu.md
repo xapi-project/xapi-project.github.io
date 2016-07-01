@@ -60,6 +60,12 @@ project.
 
 ![XenServer's vGPU architecture](vgpu-arch.png)
 
+### Relevant code
+* In Xenopsd: [Xenops_server_xen:L888-913][1] is where
+Xenopsd gets the vGPU information from the values passed from Xapi;
+* In Xenopsd: [Device.__start][2] is where the `vgpu` process is started, if
+necessary, before Qemu.
+
 ## Xapi's API and data model
 
 A lot of work has gone into the toolstack to handle the creation and management
@@ -80,6 +86,12 @@ _passthrough_).
 reservation of particular PGPUs for certain workloads. VGPUs are allocated on
 PGPUs within their GPU group in either a _depth-first_ or _breadth-first_
 manner, which is configurable on a per-group basis.
+
+### Relevant code
+* In Xapi: [Xapi_vgpu_type][3] contains the type definitions and parsing logic
+for vGPUs;
+* In Xapi: [Xapi_pgpu_helpers][4] defines the functions used to allocate vGPUs
+on PGPUs.
 
 ## Usage
 
@@ -111,17 +123,7 @@ for the PGPU.  You can get the types supported or enabled for a given PGPU:
 $ xe pgpu-list uuid=... params=all
 ```
 
-## Relevant code
-* In Xapi: [Xapi_vgpu_type][1] contains the type definitions and parsing logic
-for vGPUs;
-* In Xapi: [Xapi_pgpu_helpers][2] defines the functions used to allocate vGPUs
-on PGPUs;
-* In Xenopsd: [Xenops_server_xen:L888-913][3] is where
-Xenopsd gets the vGPU information from the values passed from Xapi;
-* In Xenopsd: [Device.__start][4] is where the `vgpu` process is started, if
-necessary, before Qemu.
-
-[1]: https://github.com/xapi-project/xen-api/blob/0bbd4f5ac5/ocaml/xapi/xapi_vgpu_type.ml
-[2]: https://github.com/xapi-project/xen-api/blob/0bbd4f5ac5/ocaml/xapi/xapi_pgpu_helpers.mli
-[3]: https://github.com/xapi-project/xenopsd/blob/524d57b3c7/xc/xenops_server_xen.ml#L888-L913
-[4]: https://github.com/xapi-project/xenopsd/blob/524d57b3c7/xc/device.ml#L1883-L1895
+[1]: https://github.com/xapi-project/xenopsd/blob/524d57b3c7/xc/xenops_server_xen.ml#L888-L913
+[2]: https://github.com/xapi-project/xenopsd/blob/524d57b3c7/xc/device.ml#L1883-L1895
+[3]: https://github.com/xapi-project/xen-api/blob/0bbd4f5ac5/ocaml/xapi/xapi_vgpu_type.ml
+[4]: https://github.com/xapi-project/xen-api/blob/0bbd4f5ac5/ocaml/xapi/xapi_pgpu_helpers.mli
