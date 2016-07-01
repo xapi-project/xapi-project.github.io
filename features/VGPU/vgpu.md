@@ -61,7 +61,7 @@ project.
 ![XenServer's vGPU architecture](vgpu-arch.png)
 
 ### Relevant code
-* In Xenopsd: [Xenops_server_xen:L888-913][1] is where
+* In Xenopsd: [Xenops_server_xen][1] is where
 Xenopsd gets the vGPU information from the values passed from Xapi;
 * In Xenopsd: [Device.__start][2] is where the `vgpu` process is started, if
 necessary, before Qemu.
@@ -123,7 +123,7 @@ for the PGPU.  You can get the types supported or enabled for a given PGPU:
 $ xe pgpu-list uuid=... params=all
 ```
 
-[1]: https://github.com/xapi-project/xenopsd/blob/524d57b3c7/xc/xenops_server_xen.ml#L888-L913
-[2]: https://github.com/xapi-project/xenopsd/blob/524d57b3c7/xc/device.ml#L1883-L1895
-[3]: https://github.com/xapi-project/xen-api/blob/0bbd4f5ac5/ocaml/xapi/xapi_vgpu_type.ml
-[4]: https://github.com/xapi-project/xen-api/blob/0bbd4f5ac5/ocaml/xapi/xapi_pgpu_helpers.mli
+[1]: https://github.com/xapi-project/xenopsd/blob/8d06778db2/xc/xenops_server_xen.ml#L1107-L1113
+[2]: https://github.com/xapi-project/xenopsd/blob/8d06778db2/xc/device.ml#L1696-L1708
+[3]: https://github.com/xapi-project/xen-api/blob/7472352eeb/ocaml/xapi/xapi_vgpu_type.ml
+[4]: https://github.com/xapi-project/xen-api/blob/7472352eeb/ocaml/xapi/xapi_pgpu_helpers.mli
