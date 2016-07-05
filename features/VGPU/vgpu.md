@@ -87,6 +87,15 @@ reservation of particular PGPUs for certain workloads. VGPUs are allocated on
 PGPUs within their GPU group in either a _depth-first_ or _breadth-first_
 manner, which is configurable on a per-group basis.
 
+**`VGPU_types`** are created by xapi at startup depending on the available
+hardware and config files present in dom0. They exist in the pool database, and
+a primary key is used to avoid duplication. In XenServer 6.x the tuple of
+`(vendor_name, model_name)` was used as the primary key, however this was not
+ideal as these values are subject to change. XenServer 7.0 switched to a
+[new primary key]({{site.baseurl}}/xapi/futures/vgpu-type-identifiers.html)
+generated from static metadata, falling back to the old method for backwards
+compatibility.
+
 ### Relevant code
 * In Xapi: [Xapi_vgpu_type][3] contains the type definitions and parsing logic
 for vGPUs;
