@@ -96,6 +96,12 @@ ideal as these values are subject to change. XenServer 7.0 switched to a
 generated from static metadata, falling back to the old method for backwards
 compatibility.
 
+A **`VGPU_type`** will be garbage collected when there is no VGPU of that type
+and there is no hardware which supports that type. On VM import, all VGPUs and
+VGPU_types will be created if necessary - if this results in the creation of a
+new VGPU_type then the VM will not be usable until the required hardware and
+drivers are installed.
+
 ### Relevant code
 * In Xapi: [Xapi_vgpu_type][3] contains the type definitions and parsing logic
 for vGPUs;
