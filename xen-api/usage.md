@@ -217,7 +217,7 @@ The C\# bindings are contained within the directory `XenServer-SDK/XenServer.NET
 <tbody>
 <tr class="odd">
 <td align="left">Platform supported:</td>
-<td align="left">Windows with .NET version 2.0</td>
+<td align="left">Windows with .NET version 4.5</td>
 </tr>
 <tr class="even">
 <td align="left">Library:</td>
@@ -288,36 +288,7 @@ Running the main file `XenServer-SDK/XenServerJava/samples/RunTests.java` will r
 
 ### PowerShell
 
-In this release we include two versions of the PowerShell language bindings.
-
-The previously released PowerShell bindings are contained within the directory `XenServer-SDK/XenPSSnapIn_old`. We provide the Windows installer `XenServerPSSnapIn.msi` and source code exposing the XenServer API as Windows PowerShell 1.0 cmdlets.
-
-**Old PowerShell binding dependencies**
-
-<table>
-<col width="28%" />
-<col width="68%" />
-<tbody>
-<tr class="odd">
-<td align="left">Platform supported:</td>
-<td align="left">Windows with .NET Framework 3.5 and PowerShell v1.0</td>
-</tr>
-<tr class="even">
-<td align="left">Library:</td>
-<td align="left"><code>XenServerPSSnapIn.dll</code></td>
-</tr>
-<tr class="odd">
-<td align="left">Dependencies:</td>
-<td align="left"><code>CookComputing.XMLRpcV2.dll</code> is needed to be able to communicate with the xml-rpc server. We test with version 2.1.0.6 and recommend that you use this version, though others may work.</td>
-</tr>
-</tbody>
-</table>
-
-This example script is included with the old PowerShell bindings in the directory `XenServer-SDK/XenPSSnapIn_old/samples`:
-
--   `AutomatedTestCore.ps1`: logs into a XenServer Host a host, creates a storage repository and a VM, and then perform various powercycle operations.
-
-The new, redesigned PowerShell bindings are contained within the directory `XenServer-SDK/XenPSSnapIn`. We provide the Windows installer `XenServerPSSnapIn.msi` and source code exposing the XenServer API as Windows PowerShell 2.0 cmdlets.
+The PowerShell bindings are contained within the directory `XenServer-SDK/XenServerPowerShell`. We provide the PowerShell module `XenServerPSModule` and source code exposing the XenServer API as Windows PowerShell cmdlets.
 
 **PowerShell binding dependencies**
 
@@ -327,11 +298,11 @@ The new, redesigned PowerShell bindings are contained within the directory `XenS
 <tbody>
 <tr class="odd">
 <td align="left">Platform supported:</td>
-<td align="left">Windows with .NET Framework 3.5 and PowerShell v2.0</td>
+<td align="left">Windows with .NET Framework 4.5 and PowerShell v4.0</td>
 </tr>
 <tr class="even">
 <td align="left">Library:</td>
-<td align="left"><code>XenServerPSSnapIn.dll</code></td>
+<td align="left"><code>XenServerPSModule</code></td>
 </tr>
 <tr class="odd">
 <td align="left">Dependencies:</td>
@@ -340,9 +311,11 @@ The new, redesigned PowerShell bindings are contained within the directory `XenS
 </tbody>
 </table>
 
-This example script is included with the PowerShell bindings in the directory `XenServer-SDK/XenPSSnapIn/samples`:
+These example scripts are included with the PowerShell bindings in the directory `XenServer-SDK/XenServerPowerShell/samples`:
 
--   `AutomatedTestCore.ps1`: logs into a XenServer Host a host, creates a storage repository and a VM, and then perform various powercycle operations.
+-   `AutomatedTestCore.ps1`: demonstrates how to log into a XenServer host, create a storage repository and a VM, and then perform various powercycle operations;
+
+-   `HttpTest.ps1`: demonstrates how to log into a XenServer host, create a VM, and then perform operations such as VM importing and exporting, patch upload, and retrieval of performance statistics.
 
 ### Python
 
