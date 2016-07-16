@@ -7,7 +7,20 @@ title: XenAPI Reference
 {% assign docs = site.pages | where:"class",page.class %}
 
 <link rel="stylesheet" href="{{site.baseurl}}/assets/css/xenapi.css" />
-<script type="text/javascript" src="{{site.baseurl}}/assets/js/apidoc.js"></script>
+<script type="text/javascript">
+   function showhide(obj) {
+    if ($(obj).css('display') == 'none')
+      obj.style.display = 'inherit';
+    else
+      obj.style.display = 'none';
+  }
+
+  function toggle_implicit() {
+    var elements = document.querySelectorAll(".implicit");
+    for (var i=0; i < elements.length; i++)
+      showhide(elements[i]);
+  }
+</script>
 
 <link rel="stylesheet" href="{{site.baseurl}}/assets/css/xenapi.css" />
 <div class="row">
