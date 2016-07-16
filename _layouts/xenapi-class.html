@@ -6,7 +6,7 @@ title: XenAPI Reference
 {% assign obj = site.data.xenapi | where:"name",page.class | first %}
 {% assign docs = site.pages | where:"class",page.class %}
 
-<link rel="stylesheet" href="{{site.baseurl}}/assets/css/xenapi.css" />
+
 <script type="text/javascript">
    function showhide(obj) {
     if ($(obj).css('display') == 'none')
@@ -15,10 +15,15 @@ title: XenAPI Reference
       obj.style.display = 'none';
   }
 
-  function toggle_implicit() {
+  function toggle_implicit(button) {
     var elements = document.querySelectorAll(".implicit");
     for (var i=0; i < elements.length; i++)
       showhide(elements[i]);
+
+    if (button.textContent == 'Hide implicit')
+      button.textContent = 'Show implicit';
+    else
+      button.textContent ='Hide implicit';
   }
 </script>
 
@@ -141,7 +146,7 @@ title: XenAPI Reference
 
 <h3>
   Messages
-  <button onclick="toggle_implicit()" type="button" class="btn btn-primary btn-xs pull-right">Show/hide implicit</button>
+  <button onclick="toggle_implicit(this)" type="button" class="btn btn-primary btn-xs pull-right">Hide implicit</button>
 </h3>
 
 {% assign messages = obj.messages | sort: "name" %}

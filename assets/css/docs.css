@@ -126,3 +126,6 @@ h1:first-child {
   max-width: 100%;
 }
 
+#sidebar {
+  border-left: 1px solid #ddd;
+}

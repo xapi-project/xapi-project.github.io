@@ -16,28 +16,6 @@
 	color: #35383d
 }
 
-#sidebar {
-	border-left: 1px dotted #cccccc;
-}
-
-#sidebar th {
-	text-align: left;
-	border-bottom: 0px solid white;
-}
-
-#sidebar h2 {
-	font-weight: bold;
-	font-size: 15px;
-	line-height: 18px;
-	color: #772432;
-}
-
-#sidebar a {
-	color: #35383d;
-	font-size: 11px;
-	font-weight: bold;
-}
-
 table {
 	font-size: 100%;
 	width: 100%;
@@ -112,8 +90,5 @@ th { text-align: left;
 	font-variant:small-caps;
 	color: #306580;
 	margin: auto 0.5em;
-}
-
-.implicit {
 }
 
