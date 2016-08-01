@@ -3293,5 +3293,11 @@
 "dundee-plus": [ 
   { "transition": "published field",
     "name": "host.control_domain",
-    "log": "The control domain (domain 0)" } ],
+    "log": "The control domain (domain 0)" }, 
+  { "transition": "published message",
+    "name": "host.call_extension",
+    "log": "Call a XenAPI extension on this host" }, 
+  { "transition": "published message",
+    "name": "host.has_extension",
+    "log": "Return true if the extension is available on the host" } ],
 "ely": [  ] }
