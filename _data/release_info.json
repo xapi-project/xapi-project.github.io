@@ -3300,4 +3300,10 @@
   { "transition": "published message",
     "name": "host.has_extension",
     "log": "Return true if the extension is available on the host" } ],
-"ely": [  ] }
+"ely": [ 
+  { "transition": "published field",
+    "name": "host.patches_requiring_reboot",
+    "log": "List of patches which require reboot" }, 
+  { "transition": "published field",
+    "name": "pool.live_patching_disabled",
+    "log": "The pool-wide flag to show if the live patching feauture is disabled or not." } ] }
