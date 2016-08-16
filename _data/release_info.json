@@ -3311,5 +3311,8 @@
     "name": "pool.live_patching_disabled",
     "log": "The pool-wide flag to show if the live patching feauture is disabled or not." }, 
   { "transition": "published message",
+    "name": "VIF.move",
+    "log": "Move the specified VIF to the specified network, even while the VM is running" }, 
+  { "transition": "published message",
     "name": "VM.set_memory",
     "log": "Set the memory allocation of this VM. Sets all of memory_static_max, memory_dynamic_min, and memory_dynamic_max to the given value, and leaves memory_static_min untouched." } ] }
