@@ -3326,5 +3326,8 @@
     "name": "VM.set_memory",
     "log": "Set the memory allocation of this VM. Sets all of memory_static_max, memory_dynamic_min, and memory_dynamic_max to the given value, and leaves memory_static_min untouched." }, 
   { "transition": "changed message",
+    "name": "VM.set_VCPUs_number_live",
+    "log": "Unless the feature is explicitly enabled for every host in the pool, this fails with Api_errors.license_restriction." }, 
+  { "transition": "changed message",
     "name": "host.get_vms_which_prevent_evacuation",
     "log": "The call now retuns only one reason per VM." } ] }
