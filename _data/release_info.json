@@ -1891,7 +1891,7 @@
     "log": "This call queries the host's clock for the current time" }, 
   { "transition": "published message",
     "name": "host.get_vms_which_prevent_evacuation",
-    "log": "Return a set of VMs which prevent the host being evacuated, with per-VM error codes" }, 
+    "log": "The call returns for each VM all the reasons why a host cannot be evacuated" }, 
   { "transition": "published message",
     "name": "host.power_on",
     "log": "Attempt to power-on the host (if the capability exists)." }, 
@@ -3324,4 +3324,7 @@
     "log": "Move the specified VIF to the specified network, even while the VM is running" }, 
   { "transition": "published message",
     "name": "VM.set_memory",
-    "log": "Set the memory allocation of this VM. Sets all of memory_static_max, memory_dynamic_min, and memory_dynamic_max to the given value, and leaves memory_static_min untouched." } ] }
+    "log": "Set the memory allocation of this VM. Sets all of memory_static_max, memory_dynamic_min, and memory_dynamic_max to the given value, and leaves memory_static_min untouched." }, 
+  { "transition": "changed message",
+    "name": "host.get_vms_which_prevent_evacuation",
+    "log": "The call now retuns only one reason per VM." } ] }

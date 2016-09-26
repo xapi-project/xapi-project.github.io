@@ -14833,7 +14833,10 @@
     "lifecycle": [ 
       { "transition": "published",
         "release": "orlando",
-        "description": "Return a set of VMs which prevent the host being evacuated, with per-VM error codes" } ],
+        "description": "The call returns for each VM all the reasons why a host cannot be evacuated" }, 
+      { "transition": "changed",
+        "release": "ely",
+        "description": "The call now retuns only one reason per VM." } ],
     "implicit": false }, 
   { "name": "assert_can_evacuate",
     "description": "Check this host can be evacuated.",
