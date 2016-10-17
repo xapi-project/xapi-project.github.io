@@ -3383,6 +3383,9 @@
     "log": "" } ],
 "ely": [ 
   { "transition": "published field",
+    "name": "VM.reference_label",
+    "log": "Textual reference to the template used to create a VM. This can be used by clients in need of an immutable reference to the template since the latter's uuid and name_label may change, for example, after a package installation or upgrade." }, 
+  { "transition": "published field",
     "name": "VM.requires_reboot",
     "log": "Indicates whether a VM requires a reboot in order to update its configuration, e.g. its memory allocation." }, 
   { "transition": "published field",
