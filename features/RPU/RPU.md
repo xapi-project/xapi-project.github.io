@@ -5,6 +5,7 @@ layout: default
 
 Rolling pool upgrade allows the host software to be upgraded without incurring
 downtime. An upgrade is a sequence of operations:
+
 - *evacuating* a host: this automatically migrates all VMs to other suitable
   hosts and leaves the host in maintenance mode
 - *upgrading* a host: this is a manual step (which could be automated via e.g.

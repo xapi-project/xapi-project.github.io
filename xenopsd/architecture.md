@@ -12,13 +12,16 @@ picture shows 3 different Xenopsd instances: 2 named "xenopsd-xc" and 1 named
 Each instance is responsible for managing a disjoint set of VMs. Clients should
 never ask more than one Xenopsd to manage the same VM.
 Managing a VM means:
+
 - handling start/shutdown/suspend/resume/migrate/reboot
 - allowing devices (disks, nics, PCI cards, vCPUs etc) to be manipulated
 - providing updates to clients when things change (reboots, console becomes
   available, guest agent says something etc).
+
 For a full list of features, consult the [features list](features.html).
 
 Each Xenopsd instance has a unique name on the host. A typical name is
+
 - org.xen.xcp.xenops.classic
 - org.xen.xcp.xenops.xenlight
 
@@ -26,6 +29,7 @@ A higher-level tool, such as [xapi](https://github.com/xapi-project/xen-api)
 will associate VMs with individual Xenopsd names.
 
 Running multiple Xenopsds is necessary because
+
 - The virtual hardware supported by different technologies (libxc, libxl, qemu)
   is expected to be different. We can guarantee the virtual hardware is stable
   across a rolling upgrade by running the VM on the old Xenopsd. We can then switch
@@ -40,6 +44,7 @@ Running multiple Xenopsds is necessary because
 
 Communication with Xenopsd is handled through a Xapi-global library:
 [xcp-idl](https://github.com/xapi-project/xcp-idl). This library supports
+
 - message framing: by default using HTTP but a binary framing format is
   available
 - message encoding: by default we use JSON but XML is also available
@@ -51,6 +56,7 @@ change all the Xapi clients and servers.
 Xenopsd has a number of "backends" which perform the low-level VM operations
 such as (on Xen) "create domain" "hotplug disk" "destroy domain". These backends
 contain all the hypervisor-specific code including
+
 - connecting to Xenstore
 - opening the libxc /proc/xen/privcmd interface
 - initialising libxl contexts

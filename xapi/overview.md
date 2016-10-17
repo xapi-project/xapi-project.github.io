@@ -4,6 +4,7 @@ layout: default
 ---
 Xapi is the [xapi-project](http://github.com/xapi-project) host and cluster manager.
 Xapi is responsible for
+
 - aggregating hosts into a single entity (a "resource pool")
 - allocating VMs to hosts
 - managing shared storage
@@ -13,7 +14,7 @@ Xapi is responsible for
 - upgrading pools
 - hotfixing hosts
 - reporting bugs
-etc
+- etc
 
 ## Principles
 

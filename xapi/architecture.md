@@ -33,6 +33,7 @@ using either PAM (by default using the local passwd and group files) or through
 Active Directory.
 
 The APIs are classified into categories:
+
 * master-only: these are the majority of current APIs. The master should be called and
   relied upon to forward the call to the right place with the right locks held.
 * normally-local: these are performance special cases such as disk import/export
@@ -44,6 +45,7 @@ If the incoming API call should be resent to the master than a XenAPI `HOST_IS_S
 error message containing the master's IP is sent to the client.
 
 Once past the initial checks, API calls enter the "message forwarding" layer which
+
 - locks resources (via the `current_operations` mechanism)
 - decides which host should execute the request.
 
@@ -60,6 +62,7 @@ run in the context of a task) is bound to the Xenopsd task, so cancellation is
 passed through and progress updates are received.
 
 If the XenAPI call is a storage operation then the "storage access" layer
+
 - verifies that the storage objects are in the correct state (SR attached/detached;
   VDI attached/activated read-only/read-write)
 - invokes the relevant operation in the Storage Manager API (SMAPI) v2 interface;
@@ -71,6 +74,7 @@ If the XenAPI call is a storage operation then the "storage access" layer
 Internally the SMAPIv1 plugins use privileged access to the Xapi database to directly
 set fields (e.g. VDI.virtual_size) that would be considered read/only to other clients.
 The SMAPIv1 plugins also rely on Xapi for
+
 - knowledge of all hosts which may access the storage
 - locking of disks within the resource pool
 - safely executing code on other hosts via the "Xapi plugin" mechanism

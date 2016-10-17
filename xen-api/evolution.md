@@ -8,6 +8,7 @@ All APIs evolve as bugs are fixed, new features added and features are removed
 XenAPI evolves over time.
 
 The goals of XenAPI evolution are:
+
 - to allow bugs to be fixed efficiently;
 - to allow new, innovative features to be added easily;
 - to keep old, unmodified clients working as much as possible; and
