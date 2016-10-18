@@ -5,6 +5,7 @@ layout: default
 
 Xenopsd is the [xapi-project](http://github.com/xapi-project) VM manager.
 Xenopsd is responsible for
+
 - starting, stopping, suspending, resuming, migrating VMs
 - hotplugging and unplugging disks (VBDs)
 - hotplugging and unplugging nics (VIFs)
@@ -14,7 +15,7 @@ Xenopsd is responsible for
 - setting QoS parameters
 - configuring SMBIOS tables
 - handling crashes
-etc
+- etc
 
 Check out the [full features list](features.html).
 

@@ -4,6 +4,7 @@ layout: default
 ---
 
 The Xapi Storage Migration (XSM) also known as "Storage Motion" allows
+
 - a running VM to be migrated within a pool, between different hosts
   and different storage simultaneously;
 - a running VM to be migrated to another pool;

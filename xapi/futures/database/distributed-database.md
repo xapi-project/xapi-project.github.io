@@ -8,6 +8,7 @@ status: proposed
 
 All hosts in a pool use the shared database by sending queries to
 the pool master. This creates
+
 - a performance bottleneck as the pool size increases
 - a reliability problem when the master fails.
 
@@ -59,6 +60,7 @@ Separately each
 host will pull and push updates between each other for replication.
 
 We would avoid merge conflicts by construction; either
+
 - a host's configuration will always be "owned" by the host and it will be
   an error for anyone else to merge updates to it
 - the master's locking will guarantee that a VM is running on at most one
@@ -68,6 +70,7 @@ What we gain
 ------------
 
 We will gain the following
+
 - the master will only be a bottleneck when the number of VM locks gets
   really large;
 - you will be able to connect XenCenter to hosts without a master and manage
@@ -85,6 +88,7 @@ What we lose
 ------------
 
 We will lose the following
+
 - the ability to use the Xapi database as a "lock"
 - coherence between hosts: there will be no guarantee that an effect seen
   by host 'A' will be seen immediately by host 'B'. In particular this means
@@ -172,5 +176,6 @@ ffffff7f-ffffffff-ffffffff-ffffffff
 ```
 
 Notice how:
+
 - every object is a directory
 - every key/value pair is represented as a file

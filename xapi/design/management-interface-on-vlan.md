@@ -209,6 +209,7 @@ Possible API errors that may be raised by `pool.management_reconfigure`:
 -   `INTERFACE_HAS_NO_IP` : the specified PIF (`pif` parameter) has no IP configuration. The new API checks for all PIFs on the new Network has IP configured. There might be a case when user has forgotten to configure IP on PIF on one or many of the Hosts in a Pool.
 
 New API ERROR:
+
 -   `REQUIRED_PIF_NOT_PRESENT` : the specified Network (`network` parameter) has no PIF present on the host in pool. There might be a case when user has forgotten to create vlan pif on one or many of the Hosts in a Pool.
 
 CP-Tickets
