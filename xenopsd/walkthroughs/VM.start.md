@@ -434,7 +434,7 @@ This hack only works because we currently run everything in the same domain.
 There is an option (off by default) to list the emulated devices explicitly
 on the qemu command-line. If we switch to this by default then we ought to be
 able to start up qemu early, as soon as the domain has been created (qemu will
-need ot know the domain id so it can map the I/O request ring).
+need to know the domain id so it can map the I/O request ring).
 
 10. plug PCI devices
 --------------------
@@ -459,7 +459,7 @@ A design principle of Xenopsd is that it should tolerate failures such as being
 suddenly restarted. It guarantees to always leave the system in a valid state,
 in particular there should never be any "half-created VMs". We achieve this for
 VM start by exploiting the mechanism which is necessary for reboot. When a VM
-wishes to reboot it causes the domain to exist (via SCHEDOP_shutdown) with a
+wishes to reboot it causes the domain to exit (via SCHEDOP_shutdown) with a
 "reason code" of "reboot". When Xenopsd sees this event `VM_check_state`
 operation is queued. This operation calls
 [VM.get_domain_action_request](https://github.com/xapi-project/xenopsd/blob/b33bab13080cea91e2fd59d5088622cd68152339/xc/xenops_server_xen.ml#L1443)

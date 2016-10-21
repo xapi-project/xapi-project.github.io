@@ -11,7 +11,7 @@ title: Welcome
 - automatically restarts VMs after host failure
   ([High Availability](features/HA/HA.html))
 - allows cross-site [Disaster Recovery](features/DR/DR.html)
-- simplifies maintainence through [Rolling Pool Upgrade](features/RPU/RPU.html)
+- simplifies maintenance through [Rolling Pool Upgrade](features/RPU/RPU.html)
 - collects performance statistics for historical analysis and for alerting
 - has a full-featured
   [XML-RPC based API](xen-api/index.html),

@@ -51,7 +51,7 @@ have the following important properties:
     the farm.  Allowed at any time, even when proxies are in use. The
     proxies will be updated automatically.
 
-*   `(void) forget (PVS_server ref self)` Remove a PVS server into the
+*   `(void) forget (PVS_server ref self)` Remove a PVS server from the
     farm.  Allowed at any time, even when proxies are in use. The
     proxies will be updated automatically.
 

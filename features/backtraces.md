@@ -95,7 +95,7 @@ and handling code. In particular:
 - All exceptions should be printable -- if the generic printer doesn't do a good
   enough job then register a custom printer.
 - If you are the last person who will see an exception (because you aren't going
-  to rethow it) then you *may* log the backtrace via `Debug.log_backtrace e`
+  to rethrow it) then you *may* log the backtrace via `Debug.log_backtrace e`
   *if and only if* you reasonably expect the resulting backtrace to be helpful
   and not spammy.
 - If you aren't the last person who will see an exception (because you are going

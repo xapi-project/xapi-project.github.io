@@ -150,7 +150,7 @@ We assume:
   period. Therefore no active power fencing equipment is required.
 - VMs may only be marked as *protected* if they are fully *agile* i.e. able
   to run on any host, memory permitting. No additional constraints of any kind
-  may be specified e.g. it is not possible to make ``CPU reservations''.
+  may be specified e.g. it is not possible to make "CPU reservations".
 - Pools are assumed to be homogenous with respect to CPU type and presence of
   VT/SVM support (also known as "HVM"). If a Pool is created with
   non-homogenous hosts using the `--force` flag then the additional
@@ -349,7 +349,6 @@ is exposed as scripts:
 - `ha_set_pool_state (Init | Invalid)`: sets the global pool state to "Init" (before starting
   HA) or "Invalid" (causing all other daemons who can see the statefile to
   shutdown)
-  "Invalid"
 - `ha_start_daemon`: if the pool state is "Init" then the daemon will
   attempt to contact other daemons and enable HA. If the pool state is
   "Active" then the host will attempt to join the existing liveset.

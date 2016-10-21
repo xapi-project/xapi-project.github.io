@@ -15,7 +15,7 @@ with a single K1 card will have access to four independent PGPUs.
 
 Each of the GPUs can then be subdivided into vGPUs. For each type of PGPU,
 there are a few options of vGPU type which consume different amounts of the
-PGPU. The K1 and K2 cards can cuurently be configured in the following ways:
+PGPU. The K1 and K2 cards can currently be configured in the following ways:
 
 ![Possible VGX configurations](vgx-configs.png)
 

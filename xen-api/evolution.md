@@ -47,7 +47,7 @@ before, but its use is discouraged. The final stage of the lifecycle is the
 The numbered state changes in the diagram have the following meaning:
 
 1. Publish: declare that the XenAPI element is ready for people to use.
-2. Extend: a *backwards-compatible*extension of the XenAPI, for example an
+2. Extend: a *backwards-compatible* extension of the XenAPI, for example an
    additional parameter in a message with an appropriate default value. If the
    API is used as before, it still has the same effect.
 3. Change: a *backwards-incompatible* change. That is, the message now behaves
@@ -71,7 +71,7 @@ change and the reason for the change. This message should be enough to
 understand the semantics of the XenAPI element after the change, and in the case
 of backwards-incompatible changes or deprecation, it should give directions
 about how to modify a client to deal with the change (for example, how to avoid
-using the a deprecated field or message).
+using the deprecated field or message).
 
 ## Releases
 

@@ -54,7 +54,7 @@ set the key to True.
 _Note_: By default, the DHCP server will issue a default gateway for
 those requesting an address. Setting this key may disrupt applications
 that require the default gateway for communicating with Dom0 and so
-so should be used with care.
+should be used with care.
 
 
 

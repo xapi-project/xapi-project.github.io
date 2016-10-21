@@ -55,6 +55,7 @@ new API fields used for ActiveDirectory integration were added:
 
 Adding the new field to some existing class
 -------------------------------------------
+
 ## ocaml/idl/datamodel.ml
 Add new "field" line the class in idl/datamodel.ml. The new field might require
 a suitable default value. This default value is used in case the user does not
