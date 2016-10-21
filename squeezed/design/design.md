@@ -362,7 +362,7 @@ Each iteration of the main loop generates the following actions:
 1.  Domains which were active but have failed to make progress towards
     their target in 5s are declared *inactive*. These
     domains then have:
-    `maxmem` set to the minimum of `target` and `totpages.
+    `maxmem` set to the minimum of `target` and `totpages`.
 
 2.  Domains which were inactive but have started to make progress
     towards their target are declared *active*. These
@@ -471,7 +471,7 @@ domain `maxmem` value is used to limit memory allocations by the domain.
 The rules are:
 
 1.  if the domain has never been run and is paused then
-    `maxmem` is set to `reservation (reservations were described
+    `maxmem` is set to `reservation` (reservations were described
     in the [Toolstack interface](#toolstack-interface) section above);
 
     -   these domains are probably still being built and we must let
@@ -533,7 +533,7 @@ which would be freed if we set each of the 3 domain’s
 situation we would now have
 `x` + `s` + `d1` + `d2` + `d3` free on the host where
 `s` is the host slush fund and `x` is completely unallocated. Since we
-always want to keep the host free memory above $s$, we are free to
+always want to keep the host free memory above `s`, we are free to
 return `x` + `d1` + `d2` + `d3` to guests. If we
 use the default built-in proportional policy then, since all domains
 have the same `dynamic-min` and `dynamic-max`, each gets the same
@@ -602,7 +602,7 @@ Issues
     removed.
 
 -   It seems unnecessarily evil to modify an *inactive*
-    domain’s `maxmem` leaving `maxmem` less than `target}``, causing
+    domain’s `maxmem` leaving `maxmem` less than `target`, causing
     the guest to attempt allocations forwever. It’s probably neater to
     move the `target` at the same time.
 

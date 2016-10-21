@@ -5,7 +5,7 @@ layout: default
 
 The `xcp-networkd` daemon (hereafter simply called "networkd") is a component in the xapi toolstack that is responsible for configuring network interfaces and virtual switches (bridges) on a host.
 
-The code is on http://github.com/xapi-project/xcp-networkd.
+The code is on <http://github.com/xapi-project/xcp-networkd>.
 
 
 Principles
@@ -114,6 +114,6 @@ Monitoring
 
 Besides the ability to configure bridges and network interfaces, networkd has facilities for monitoring interfaces and bonds. When networkd starts, a monitor thread is started, which does several things (see [network_monitor_thread.ml](https://github.com/xapi-project/xcp-networkd/blob/master/networkd/network_monitor_thread.ml)):
 
-* Every 5 seconds, it gathers send/receive counters and link state of all network interfaces. It then write these stats to a shared-memory file, to be picked up by other components such as `xcp-rrdd` and `xapi` (see documentation about "xenostats" elsewhere).
+* Every 5 seconds, it gathers send/receive counters and link state of all network interfaces. It then writes these stats to a shared-memory file, to be picked up by other components such as `xcp-rrdd` and `xapi` (see documentation about "xenostats" elsewhere).
 * It monitors NIC bonds, and sends alerts through xapi in case of link state changes within a bond.
 * It uses `ip monitor address` to watch for an IP address changes, and if so, it calls xapi (`Host.signal_networking_change`) for it to update the IP addresses of the PIFs in its database that were configured by DHCP.

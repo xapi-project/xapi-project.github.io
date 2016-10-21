@@ -230,7 +230,7 @@ The C\# bindings are contained within the directory `XenServer-SDK/XenServer.NET
 </tbody>
 </table>
 
-Three examples are included with the C\# bindings in the directory `XenServer-SDK/XneServer.NET/samples` as separate projects of the `XenSdkSample.sln` solution:
+Three examples are included with the C\# bindings in the directory `XenServer-SDK/XenServer.NET/samples` as separate projects of the `XenSdkSample.sln` solution:
 
 -   `GetVariousRecords`: logs into a XenServer Host and displays information about hosts, storage and virtual machines;
 

@@ -104,8 +104,8 @@ Xenops_server_xen backend this is done by watching Xenstore for
 
 When such an event happens (for example: @releaseDomain sent when a domain
 requests a reboot) the corresponding operation does not happen inline. Instead
-the event is rebroadcast upwards to Xenops_server as a signal ("for example:
-VM _id_ needs some attention") and a "VM_stat" micro-op is queued in the
+the event is rebroadcast upwards to Xenops_server as a signal (for example:
+"VM _id_ needs some attention") and a "VM_stat" micro-op is queued in the
 appropriate queue. Xenopsd does not allow operations to run on the same VM
 in parallel and enforces this by:
 
@@ -118,7 +118,7 @@ be in a different state. Perhaps rather than being rebooted it now needs to
 be shutdown; or perhaps the domain is now in a good state because the reboot
 has already happened. The signals sent by the backend to the Xenops_server are
 a bit like event channel notifications in the Xen ring protocols: they are
-requests to ask someone to perform work, the don't themselves describe the work
+requests to ask someone to perform work, they don't themselves describe the work
 that needs to be done.
 
 An implication of this design is that it should always be possible to answer

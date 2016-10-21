@@ -48,7 +48,7 @@ following YAML front-matter:
 layout: default
 title: [title of page]
 design_doc: true
-status: [propsed|confirmed|released (version#)]
+status: [proposed|confirmed|released (version#)]
 revision: [iteration of document]
 ---
 ```
