@@ -25132,7 +25132,7 @@
         "name": "sr",
         "doc": "The SR to scan" } ],
     "errors": [  ],
-    "roles": [ "pool-admin", "pool-operator" ],
+    "roles": [ "pool-admin", "pool-operator", "vm-power-admin" ],
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
