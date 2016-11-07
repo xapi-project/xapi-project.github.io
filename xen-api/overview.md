@@ -42,9 +42,17 @@ Now that we have a snapshot of all the VM objects' field values in the memory of
 
 ### Installing the VM based on a template
 
-Continuing through our example, we must now install a new VM based on the template we selected. The installation process requires 2 API calls:
+Continuing through our example, we must now install a new VM based on the template we selected. The installation process requires 4 API calls:
 
 -   First we must now invoke the API call `VM.clone(session, t_ref, "my first VM")`. This tells the server to clone the VM object referenced by `t_ref` in order to make a new VM object. The return value of this call is the VM reference corresponding to the newly-created VM. Let's call this `new_vm_ref`.
+
+-   Next, we need to specify the UUID of the Storage Repository where the VM's
+    disks will be instantiated. We have to put this in the `sr` attribute in
+    the disk provisioning XML stored under the "`disks`" key in the
+    `other_config` map of the newly-created VM. This field can be updated by
+    calling its getter (`other_config <- VM.get_other_config(session,
+    new_vm_ref)`) and then its setter (`VM.set_other_config(session,
+    new_vm_ref, other_config)`) with the modified `other_config` map.
 
 -   At this stage the object referred to by `new_vm_ref` is still a template (just like the VM object referred to by `t_ref`, from which it was cloned). To make `new_vm_ref` into a VM object we need to call `VM.provision(session, new_vm_ref)`. When this call returns the `new_vm_ref` object will have had its `is_a_template` field set to false, indicating that `new_vm_ref` now refers to a regular VM ready for starting.
 
@@ -86,7 +94,9 @@ We have seen how the API can be used to install a VM from a XenServer template a
 
 -   One call to query the VM (and template) objects present on the XenServer installation: `VM.get_all_records()`. Recall that we used the information returned from this call to select a suitable template to install from.
 
--   Two calls to install a VM from our chosen template: `VM.clone()`, followed by `VM.provision()`.
+-   Four calls to install a VM from our chosen template: `VM.clone()`, followed
+    by the getter and setter of the `other_config` field to specify where to
+    create the disk images of the template, and then `VM.provision()`.
 
 -   One call to start the resultant VM: `VM.start()` (and similarly other single calls to suspend, resume and shutdown accordingly)
 
