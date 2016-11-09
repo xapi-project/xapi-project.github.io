@@ -14860,7 +14860,10 @@
     "lifecycle": [ 
       { "transition": "published",
         "release": "midnight-ride",
-        "description": "Refresh the list of installed Supplemental Packs." } ],
+        "description": "" }, 
+      { "transition": "deprecated",
+        "release": "ely",
+        "description": "Use Pool_update.resync_host instead" } ],
     "implicit": false }, 
   { "name": "apply_edition",
     "description": "Change to another edition, or reactivate the current edition after a license has expired. This may be subject to the successful checkout of an appropriate license.",
