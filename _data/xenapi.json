@@ -15506,7 +15506,10 @@
     "params": [ 
       { "type": "session ref",
         "name": "session_id",
-        "doc": "Reference to a valid session" } ],
+        "doc": "Reference to a valid session" }, 
+      { "type": "bool",
+        "name": "soft",
+        "doc": "Disable HA temporarily, revert upon host reboot or further changes, idempotent" } ],
     "errors": [  ],
     "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
