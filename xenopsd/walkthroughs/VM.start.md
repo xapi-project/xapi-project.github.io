@@ -216,16 +216,14 @@ no if/then/else. Some of the "micro-ops" may be a no-op depending on the VM
 configuration (for example a PV domain may not need a qemu). In the case of
 `VM_start vm` this decomposes into the sequence:
 
-1. run the "VM_pre_start" scripts
----------------------------------
+## 1. run the "VM_pre_start" scripts
 
 The `VM_hook_script` micro-op runs the corresponding "hook" scripts. The
 code is all in the
 [Xenops_hooks](https://github.com/xapi-project/xenopsd/blob/b33bab13080cea91e2fd59d5088622cd68152339/lib/xenops_hooks.ml)
 module and looks for scripts in the hardcoded path `/etc/xapi.d`.
 
-2. create a Xen domain
-----------------------
+## 2. create a Xen domain
 
 The `VM_create` micro-op calls the `VM.create` function in the backend.
 In the classic Xenopsd backend the
@@ -254,8 +252,7 @@ function must
    cheats and uses too many vCPUs would have to be caught by looking at the
    performance statistics.
 
-3. build the domain
--------------------
+## 3. build the domain
 
 On a Xen system a domain is created empty, and memory is actually allocated
 from the host in the "build" phase via functions in *libxenguest*. The
@@ -290,8 +287,7 @@ and configures
 - whether the system has nested HVM or not
 - whether the system has an HPET or not
 
-4. mark each VBD as "active"
-----------------------------
+## 4. mark each VBD as "active"
 
 VBDs and VIFs are said to be "active" when they are intended to be used by a
 particular VM, even if the backend/frontend connection hasn't been established,
@@ -312,14 +308,12 @@ because Xenopsd will not have had time to use the storage API to release locks
 on the disks. By doing all the cleanup before setting "active" to false, clients
 can be assured that the disks are now free to be reassigned.
 
-5. handle non-persistent disks
-------------------------------
+## 5. handle non-persistent disks
 
 A non-persistent disk is one which is reset to a known-good state on every
 VM start. The `VBD_epoch_begin` is the signal to perform any necessary reset.
 
-6. plug VBDs
-------------
+## 6. plug VBDs
 
 The `VBD_plug` micro-op will plug the VBD into the VM. Every VBD is plugged
 in a carefully-chosen order.
@@ -362,13 +356,11 @@ will return with "plugged=true". If the call returns before this key is written
 then sometimes we receive an event, call *VBD.stat* and conclude erroneously
 that a spontaneous VBD unplug occurred.
 
-7. mark each VIF as "active"
-----------------------------
+## 7. mark each VIF as "active"
 
 This is for the same reason as VBDs are marked "active".
 
-8. plug VIFs
-------------
+## 8. plug VIFs
 
 Again, the order matters. Unlike VBDs,
 there is no read/write read/only constraint and the devices
@@ -405,8 +397,7 @@ device has been created, and we cannot know the rules have been applied
 until after the udev script has written the key. If we didn't wait for it then
 the VM might execute without all the port locking properly configured.
 
-9. create the device model
---------------------------
+## 9. create the device model
 
 The `VM_create_device_model` micro-op will create a qemu device model if
 
@@ -436,8 +427,7 @@ on the qemu command-line. If we switch to this by default then we ought to be
 able to start up qemu early, as soon as the domain has been created (qemu will
 need to know the domain id so it can map the I/O request ring).
 
-10. plug PCI devices
---------------------
+## 10. plug PCI devices
 
 PCI devices are treated differently to VBDs and VIFs.
 If we are attaching the device to an
@@ -452,8 +442,7 @@ in the VM.
 Note that Xenopsd doesn't know anything about the PCI devices; concepts such
 as "GPU groups" belong to higher layers, such as xapi.
 
-11. mark the domain as alive
-----------------------------
+## 11. mark the domain as alive
 
 A design principle of Xenopsd is that it should tolerate failures such as being
 suddenly restarted. It guarantees to always leave the system in a valid state,
@@ -471,8 +460,7 @@ finishes starting the VM it clears this key. This means that if Xenopsd crashes
 while starting a VM, the new Xenopsd will conclude that the VM needs to be rebooted
 and will clean up the current domain and create a fresh one.
 
-12. unpause the domain
-----------------------
+## 12. unpause the domain
 
 A Xenopsd VM.start will always leave the domain paused, so strictly speaking
 this is a separate "operation" queued by the client (such as xapi) after the
