@@ -326,7 +326,7 @@ Each CLI operation that is not a getter or setter has an implementation
 in `cli_operations.ml` which is implemented in terms of the real
 implementation:
 
-    (* Cli_operations.ml *)
+    (* cli_operations.ml *)
     module PVS_farm = struct
       let introduce printer rpc session_id params =
         let name  = List.assoc "name" params in
@@ -343,7 +343,7 @@ implementation:
 Fields that should show up in the CLI interface by default are declared
 in the `gen_cmds` value:
 
-    (* Cli_operations.ml *)
+    (* cli_operations.ml *)
     let gen_cmds rpc session_id =
       let mk = make_param_funs in
       List.concat
