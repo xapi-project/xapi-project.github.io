@@ -66,8 +66,8 @@ The parameters passed to call are all optional (except ~name and ~in_product_sin
 - The ~allowed_roles parameter is used for access control (see below).
 
 Compiling `xen-api.(hg|git)` will cause the code corresponding to this message
-to be generated and output in `autogen/server.ml`. In the example above, a 
-section handling an incoming call host.price_of appeared in `autogen/server.ml`.
+to be generated and output in `ocaml/xapi/server.ml`. In the example above, a 
+section handling an incoming call host.price_of appeared in `ocaml/xapi/server.ml`.
 However, after this was generated, the rest of the build failed because this 
 call expects a price_of function in the Host object.
 
