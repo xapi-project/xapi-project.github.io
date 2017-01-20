@@ -91,10 +91,10 @@ Db.*.create – and therefore, any references to these in the code need to be
 updated. In the example, the argument ~ha_enabled:false should be added to any
 call to Db.Pool.create.
 
-## ocaml/client_records/records.ml
+## ocaml/xapi/records.ml
 If you want this field to show up in the CLI (which you probably do), you will
 also need to modify the Records module, in the file
-`ocaml/client_records/records.ml`. Find the record function for the class which
+`ocaml/xapi/records.ml`. Find the record function for the class which
 you have modified, add a new entry to the fields list using make_field, which
 has the type:
 
@@ -146,7 +146,7 @@ automatically. It requires some extra work, however, to enable such operations
 in the CLI.
 
 The CLI has commands such as host-param-list and host-param-get. To make a new
-field accessible by these command, the file client_records/records.ml needs to
+field accessible by these command, the file xapi/records.ml needs to
 be edited. For the pool.ha-enabled field, the pool_record function in this file
 contains the following (note the convention to replace underscores by hyphens
 in the CLI):

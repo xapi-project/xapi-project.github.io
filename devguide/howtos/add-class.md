@@ -64,7 +64,7 @@ The implementation of a class is distributed over several files:
 * `ocaml/idl/datamodel_types.ml` -- definition of releases
 * `ocaml/xapi/cli_frontend.ml` -- declaration of CLI operations
 * `ocaml/xapi/cli_operations.ml` -- implementation of CLI operations
-* `ocaml/client_records/records.ml` -- getters and setters
+* `ocaml/xapi/records.ml` -- getters and setters
 * `ocaml/xapi/OMakefile` -- refers to `xapi_pvs_farm.ml`
 * `ocaml/xapi/api_server.ml` -- refers to `xapi_pvs_farm.ml`
 * `ocaml/xapi/message_forwarding.ml`
@@ -248,10 +248,10 @@ conventions exist for naming fields:
 All fields can be read from the CLI and some fields can also be set via
 the CLI. These getters and setters are mostly generated automatically
 and need to be connected to the CLI through a function in
-`ocaml/client_records/records.ml`. Note that field names here use the
+`ocaml/xapi/records.ml`. Note that field names here use the
 naming convention for the CLI:
 
-    (* ocaml/client_records/records.ml *)
+    (* ocaml/xapi/records.ml *)
     let pvs_farm_record rpc session_id pvs_farm =
       let _ref = ref pvs_farm in
       let empty_record =
@@ -326,7 +326,7 @@ Each CLI operation that is not a getter or setter has an implementation
 in `cli_operations.ml` which is implemented in terms of the real
 implementation:
 
-    (* Cli_operations.ml *)
+    (* cli_operations.ml *)
     module PVS_farm = struct
       let introduce printer rpc session_id params =
         let name  = List.assoc "name" params in
@@ -343,7 +343,7 @@ implementation:
 Fields that should show up in the CLI interface by default are declared
 in the `gen_cmds` value:
 
-    (* Cli_operations.ml *)
+    (* cli_operations.ml *)
     let gen_cmds rpc session_id =
       let mk = make_param_funs in
       List.concat
@@ -361,7 +361,7 @@ in the `gen_cmds` value:
 
 Error messages used by an implementation are introduced in two files:
 
-    (* ocaml/idl/api_errors.ml *)
+    (* ocaml/xapi-consts/api_errors.ml *)
     let pvs_farm_contains_running_proxies = "PVS_FARM_CONTAINS_RUNNING_PROXIES"
     let pvs_farm_contains_servers = "PVS_FARM_CONTAINS_SERVERS"
     let pvs_farm_sr_already_added = "PVS_FARM_SR_ALREADY_ADDED"
