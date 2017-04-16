@@ -43,3 +43,5 @@ You're welcome to
   mailing list
 - join the #xen-api channel on freenode
 - checkout the [code on github](https://github.com/xapi-project/)
+
+![This image doesn't exist](img/foo/bar.png)
