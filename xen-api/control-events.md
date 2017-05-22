@@ -46,7 +46,7 @@ state change, we should in general opt for receiving events in the code
 in order to avoid adding bottlenecks in dom0 that will prevent the
 scalability of XenServer to many VMs and virtual devices.
 
-![](xapi xenopsd events.png "Connection of events between XAPI, xenopsd and xenstore, with main functions and data structures responsible for receiving and sending them")
+![Connection of events between XAPI, xenopsd and xenstore, with main functions and data structures responsible for receiving and sending them](xapi xenopsd events.png "Connection of events between XAPI, xenopsd and xenstore, with main functions and data structures responsible for receiving and sending them")
  
 
 Xapi
@@ -59,7 +59,7 @@ can register to receive events from XAPI for specific objects in the
 XAPI DB. XAPI will generate events for those registered clients whenever
 the corresponding XAPI DB object changes.
 
-![](image2016-3-18 14-28-43.png)
+![Sending events from the xenapi](image2016-3-18 14-28-43.png)
 
 This small python scripts shows how to register a simple event watch
 loop for XAPI:
@@ -122,13 +122,13 @@ which can be one of the following events:
     The function update\_task() will update the progress of the task in
     the xapi DB using the information of the task in xenopsd.
 
-![](image2016-3-18 14-3-14.png)
+![Receiving events from xenopsd](image2016-3-18 14-3-14.png)
 
 All the xapi\_xenops.update\_X() functions above will call
 Xenopsd\_client.X.stat() functions to obtain the current state of X from
 xenopsd:
 
-![](image2016-3-18 14-6-52.png)
+![Obtaining current state](image2016-3-18 14-6-52.png)
 
 There are a couple of optimisations while processing the events in
 xapi\_xenops.events\_watch():
@@ -212,7 +212,7 @@ signal for the corresponding object (VM\_check\_state, VBD\_check\_state
 etc) and send it up to xapi. Xapi will then process this event in its
 xapi\_xenops.events\_watch() function.
 
-![](image2016-3-18 14-55-36.png)
+![Sending events to xapi](image2016-3-18 14-55-36.png)
 
  
 
@@ -231,7 +231,7 @@ the watched keys change state. Xenopsd uses a xenstore client library to
 make it easier to create a callback function that is called whenever
 xenstore sends these events.
 
-![](image2016-3-18 15-7-23.png)
+![Receiving events from xenstore](image2016-3-18 15-7-23.png)
 
 Xenopsd also needs to complement sometimes these watch events with
 polling of some values. An example is the @introduceDomain event in
