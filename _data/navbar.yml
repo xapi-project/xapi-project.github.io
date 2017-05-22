@@ -31,6 +31,7 @@
       - xen-api/metrics.md
       - xen-api/memory.md
       - xen-api/xencenter.md
+      - xen-api/control-events.md
 -
     - title: Architecture
       docs:
