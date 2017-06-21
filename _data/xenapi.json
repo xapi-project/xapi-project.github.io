@@ -35880,7 +35880,7 @@
     "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ] }, 
   { "name": "name_label",
@@ -35889,7 +35889,7 @@
     "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "default": "\"\"" }, 
@@ -35899,7 +35899,7 @@
     "qualifier": "RW",
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "default": "\"\"" }, 
@@ -35909,7 +35909,7 @@
     "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "default": "\"\"" }, 
@@ -35919,7 +35919,7 @@
     "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "default": "{}" }, 
@@ -35929,7 +35929,7 @@
     "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ] }, 
   { "name": "proxies",
@@ -35938,7 +35938,7 @@
     "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ] } ],
 "messages": [ 
@@ -35953,7 +35953,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -35968,7 +35968,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -35989,7 +35989,7 @@
     "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": false }, 
@@ -36011,7 +36011,7 @@
     "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": false }, 
@@ -36035,7 +36035,7 @@
     "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": false }, 
@@ -36056,7 +36056,7 @@
     "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36077,7 +36077,7 @@
     "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36095,7 +36095,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36113,7 +36113,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36131,7 +36131,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36149,7 +36149,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36167,7 +36167,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36185,7 +36185,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36203,7 +36203,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36221,7 +36221,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36239,7 +36239,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36257,13 +36257,13 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true } ],
 "enums": [  ],
 "lifecycle": [ 
-  { "transition": "prototyped",
+  { "transition": "published",
     "release": "ely",
     "description": "" } ],
 "tag": "" }, { "name": "PVS_server",
@@ -36275,7 +36275,7 @@
     "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ] }, 
   { "name": "addresses",
@@ -36284,7 +36284,7 @@
     "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "default": "{}" }, 
@@ -36294,7 +36294,7 @@
     "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "default": "0" }, 
@@ -36304,7 +36304,7 @@
     "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "default": "0" }, 
@@ -36314,7 +36314,7 @@
     "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "default": "OpaqueRef:NULL" } ],
@@ -36330,7 +36330,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36345,7 +36345,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36363,7 +36363,7 @@
     "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": false }, 
@@ -36390,7 +36390,7 @@
     "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": false }, 
@@ -36408,7 +36408,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36426,7 +36426,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36444,7 +36444,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36462,7 +36462,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36480,7 +36480,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36498,7 +36498,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36516,13 +36516,13 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true } ],
 "enums": [  ],
 "lifecycle": [ 
-  { "transition": "prototyped",
+  { "transition": "published",
     "release": "ely",
     "description": "" } ],
 "tag": "" }, { "name": "PVS_proxy",
@@ -36534,7 +36534,7 @@
     "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ] }, 
   { "name": "site",
@@ -36543,7 +36543,7 @@
     "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "default": "OpaqueRef:NULL" }, 
@@ -36553,7 +36553,7 @@
     "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "default": "OpaqueRef:NULL" }, 
@@ -36563,7 +36563,7 @@
     "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "default": "false" }, 
@@ -36573,7 +36573,7 @@
     "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "default": "stopped" } ],
@@ -36589,7 +36589,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36604,7 +36604,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36622,7 +36622,7 @@
     "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": false }, 
@@ -36643,7 +36643,7 @@
     "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": false }, 
@@ -36661,7 +36661,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36679,7 +36679,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36697,7 +36697,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36715,7 +36715,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36733,7 +36733,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36751,7 +36751,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36769,7 +36769,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true } ],
@@ -36787,7 +36787,7 @@
       { "name": "incompatible_protocol_version",
         "doc": "The PVS protocol in use is not compatible with the PVS proxy" } ] } ],
 "lifecycle": [ 
-  { "transition": "prototyped",
+  { "transition": "published",
     "release": "ely",
     "description": "" } ],
 "tag": "" }, { "name": "PVS_cache_storage",
@@ -36799,7 +36799,7 @@
     "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ] }, 
   { "name": "host",
@@ -36808,7 +36808,7 @@
     "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "default": "OpaqueRef:NULL" }, 
@@ -36818,7 +36818,7 @@
     "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "default": "OpaqueRef:NULL" }, 
@@ -36828,7 +36828,7 @@
     "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "default": "OpaqueRef:NULL" }, 
@@ -36838,7 +36838,7 @@
     "qualifier": "RO/constructor",
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "default": "21474836480" }, 
@@ -36848,7 +36848,7 @@
     "qualifier": "RO/runtime",
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "default": "OpaqueRef:NULL" } ],
@@ -36864,7 +36864,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36879,7 +36879,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36897,7 +36897,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36915,7 +36915,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36933,7 +36933,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36951,7 +36951,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36969,7 +36969,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -36987,7 +36987,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -37005,7 +37005,7 @@
     "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -37023,7 +37023,7 @@
     "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -37041,7 +37041,7 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true }, 
@@ -37059,13 +37059,13 @@
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
-      { "transition": "prototyped",
+      { "transition": "published",
         "release": "ely",
         "description": "" } ],
     "implicit": true } ],
 "enums": [  ],
 "lifecycle": [ 
-  { "transition": "prototyped",
+  { "transition": "published",
     "release": "ely",
     "description": "" } ],
 "tag": "" }, { "name": "Feature",
