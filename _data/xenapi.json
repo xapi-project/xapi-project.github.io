@@ -5415,7 +5415,7 @@
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
-        "release": "ely",
+        "release": "honolulu",
         "description": "Flag - if true, all hosts in a pool must apply this update" } ],
     "default": "false" } ],
 "messages": [ 
@@ -5578,7 +5578,7 @@
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
-        "release": "ely",
+        "release": "honolulu",
         "description": "Flag - if true, all hosts in a pool must apply this update" } ],
     "implicit": true }, 
   { "name": "get_hosts",

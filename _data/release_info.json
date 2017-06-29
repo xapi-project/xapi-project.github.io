@@ -3466,9 +3466,6 @@
     "name": "pool_update.after_apply_guidance",
     "log": "What the client should do after this update has been applied." }, 
   { "transition": "published field",
-    "name": "pool_update.enforce_homogeneity",
-    "log": "Flag - if true, all hosts in a pool must apply this update" }, 
-  { "transition": "published field",
     "name": "pool_update.hosts",
     "log": "The hosts that have applied this update." }, 
   { "transition": "published field",
@@ -3570,6 +3567,10 @@
   { "transition": "deprecated message",
     "name": "pool_patch.precheck",
     "log": "" } ],
+"honolulu": [ 
+  { "transition": "published field",
+    "name": "pool_update.enforce_homogeneity",
+    "log": "Flag - if true, all hosts in a pool must apply this update" } ],
 "falcon": [ 
   { "transition": "published class",
     "name": "Feature",
