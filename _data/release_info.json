@@ -3567,10 +3567,6 @@
   { "transition": "deprecated message",
     "name": "pool_patch.precheck",
     "log": "" } ],
-"honolulu": [ 
-  { "transition": "published field",
-    "name": "pool_update.enforce_homogeneity",
-    "log": "Flag - if true, all hosts in a pool must apply this update" } ],
 "falcon": [ 
   { "transition": "published class",
     "name": "Feature",
