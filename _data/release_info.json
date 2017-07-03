@@ -2592,7 +2592,7 @@
     "log": "Link to underlying PCI device" }, 
   { "transition": "published field",
     "name": "PGPU.host",
-    "log": "Host that own the GPU" }, 
+    "log": "Host that owns the GPU" }, 
   { "transition": "published field",
     "name": "PGPU.other_config",
     "log": "Additional configuration" }, 
