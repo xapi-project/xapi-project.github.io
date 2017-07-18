@@ -29043,8 +29043,6 @@
 "enums": [ 
   { "name": "vdi_operations",
     "values": [ 
-      { "name": "scan",
-        "doc": "Scanning backends for new or deleted VDIs" }, 
       { "name": "clone",
         "doc": "Cloning the VDI" }, 
       { "name": "copy",
