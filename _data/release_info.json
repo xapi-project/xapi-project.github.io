@@ -3791,7 +3791,7 @@
     "log": "The TCP port" }, 
   { "transition": "published field",
     "name": "vdi_nbd_server_info.subject",
-    "log": "For convenience, this redundant field holds a subject of the certificate." }, 
+    "log": "For convenience, this redundant field holds a DNS (hostname) subject of the certificate. This can be a wildcard, but only for a certificate that has a wildcard subject and no concrete hostname subjects." }, 
   { "transition": "published message",
     "name": "PUSB.scan",
     "log": "" }, 

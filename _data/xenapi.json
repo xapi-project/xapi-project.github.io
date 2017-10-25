@@ -38091,7 +38091,7 @@
         "release": "inverness",
         "description": "" } ] }, 
   { "name": "subject",
-    "description": "For convenience, this redundant field holds a subject of the certificate.",
+    "description": "For convenience, this redundant field holds a DNS (hostname) subject of the certificate. This can be a wildcard, but only for a certificate that has a wildcard subject and no concrete hostname subjects.",
     "type": "string",
     "qualifier": "RO/runtime",
     "tag": "",
