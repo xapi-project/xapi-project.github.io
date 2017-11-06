@@ -3240,6 +3240,9 @@
     "name": "VDI.is_tools_iso",
     "log": "Whether this VDI is a Tools ISO" }, 
   { "transition": "published field",
+    "name": "VGPU.scheduled_to_be_resident_on",
+    "log": "The PGPU on which this VGPU is scheduled to run" }, 
+  { "transition": "published field",
     "name": "VGPU_type.experimental",
     "log": "Indicates whether VGPUs of this type should be considered experimental" }, 
   { "transition": "published field",
@@ -3688,6 +3691,9 @@
     "name": "vdi_nbd_server_info",
     "log": "Details for connecting to a VDI using the Network Block Device protocol" }, 
   { "transition": "published field",
+    "name": "PGPU.compatibility_metadata",
+    "log": "PGPU metadata to determine whether a VGPU can migrate between two PGPUs" }, 
+  { "transition": "published field",
     "name": "PIF.igmp_snooping_status",
     "log": "The IGMP snooping status of the corresponding network bridge" }, 
   { "transition": "published field",
@@ -3848,4 +3854,7 @@
     "log": "Now available to all RBAC roles." }, 
   { "transition": "deprecated class",
     "name": "crashdump",
-    "log": "" } ] }
+    "log": "" }, 
+  { "transition": "deprecated message",
+    "name": "VM.get_boot_record",
+    "log": "Use the current VM record/fields instead" } ] }
