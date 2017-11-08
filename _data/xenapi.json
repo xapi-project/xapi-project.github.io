@@ -28512,7 +28512,10 @@
     "lifecycle": [ 
       { "transition": "published",
         "release": "rio",
-        "description": "Resize the VDI which may or may not be attached to running guests." } ],
+        "description": "" }, 
+      { "transition": "removed",
+        "release": "inverness",
+        "description": "Online VDI resize is not supported by any of the storage backends." } ],
     "implicit": false }, 
   { "name": "resize",
     "description": "Resize the VDI.",
