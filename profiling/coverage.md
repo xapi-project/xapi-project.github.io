@@ -3,7 +3,7 @@ layout: default
 title: Code Coverage Profiling
 design_doc: true
 status: proposed
-revision: 1
+revision: 2
 ---
 
 We would like to add optional coverage profiling to existing [OCaml]
@@ -20,8 +20,7 @@ isolation.
 
 To build binaries with coverage profiling, do:
 
-    ./configure
-    make coverage
+    ./configure --enable-coverage
     make 
 
 Binaries will log coverage data to `/tmp/bisect*.out` from which a
@@ -103,6 +102,35 @@ installed:
       exit 0
 
     Sys.set_signal Sys.sigterm (Sys.Signal_handle stop)
+
+## Dumping coverage information at runtime
+
+By default coverage data can only be dumped at exist, which is inconvenient if you have a test-suite
+that needs to reuse a long running daemon, and starting/stopping it each time is not feasible.
+
+In such cases we need an API to dump coverage at runtime, which *is* provided by `bisect_ppx >= 1.3.0`.
+However each daemon will need to set up a way to listen to an event that triggers this coverage dump,
+furthermore it is desirable to make runtime coverage dumping compiled in conditionally to be absolutely sure
+that production builds do *not* use coverage preprocessed code.
+
+Hence instead of duplicating all this build logic in each daemon (`xapi`, `xenopsd`, etc.) provide this
+functionality in a common library `xapi-idl` that:
+ * logs a message on startup so we know it is active
+ * sets BISECT_FILE environment variable to dump coverage in the appropriate place
+ * listen on `org.xen.xapi.coverage.<name>` message queue for runtime coverage dump commands
+
+Daemons that use `Xcp_service.configure2` (e.g. `xenopsd`) will benefit from this runtime trigger automatically,
+provided they are themselves preprocessed with `bisect_ppx`.
+
+Since we are interested in collecting coverage data for system-wide test-suite runs we need a way to trigger
+dumping of coverage data centrally, and a good candidate for that is `xapi` as the top-level daemon.
+
+It will call `Xcp_coverage.dispatcher_init ()`, which listens on `org.xen.xapi.coverage` and
+dispatches the coverage dump command to all message queues under `org.xen.xapi.coverage.*`.
+
+On production, and regular builds all of this is a no-op, ensured by using separate `lib/coverage/disabled.ml` and `lib/coverage/enabled.ml`
+files which implement the same interface, and choosing which one to use at build time.
+
 
 ## Where Data is Written
 
