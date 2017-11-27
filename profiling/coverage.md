@@ -115,9 +115,13 @@ that production builds do *not* use coverage preprocessed code.
 
 Hence instead of duplicating all this build logic in each daemon (`xapi`, `xenopsd`, etc.) provide this
 functionality in a common library `xapi-idl` that:
+
  * logs a message on startup so we know it is active
  * sets BISECT_FILE environment variable to dump coverage in the appropriate place
- * listens on `org.xen.xapi.coverage.<name>` message queue for runtime coverage dump commands
+ * listens on `org.xen.xapi.coverage.<name>` message queue for runtime coverage dump commands:
+    * sending `dump <Number>` will cause runtime coverage to be dumped to a file
+   named `bisect-<name>-<random>.<Number>.out`
+    * sending `reset` will cause the runtime coverage counters to be reset
 
 Daemons that use `Xcp_service.configure2` (e.g. `xenopsd`) will benefit from this runtime trigger automatically,
 provided they are themselves preprocessed with `bisect_ppx`.
@@ -125,8 +129,8 @@ provided they are themselves preprocessed with `bisect_ppx`.
 Since we are interested in collecting coverage data for system-wide test-suite runs we need a way to trigger
 dumping of coverage data centrally, and a good candidate for that is `xapi` as the top-level daemon.
 
-It will call `Xcp_coverage.dispatcher_init ()`, which listens on `org.xen.xapi.coverage` and
-dispatches the coverage dump command to all message queues under `org.xen.xapi.coverage.*`.
+It will call `Xcp_coverage.dispatcher_init ()`, which listens on `org.xen.xapi.coverage.dispatch` and
+dispatches the coverage dump command to all message queues under `org.xen.xapi.coverage.*` except itself.
 
 On production, and regular builds all of this is a no-op, ensured by using separate `lib/coverage/disabled.ml` and `lib/coverage/enabled.ml`
 files which implement the same interface, and choosing which one to use at build time.
