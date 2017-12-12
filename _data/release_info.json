@@ -3860,4 +3860,5 @@
     "log": "Use the current VM record/fields instead" }, 
   { "transition": "removed message",
     "name": "VDI.resize_online",
-    "log": "Online VDI resize is not supported by any of the storage backends." } ] }
+    "log": "Online VDI resize is not supported by any of the storage backends." } ],
+"kolkata": [  ] }

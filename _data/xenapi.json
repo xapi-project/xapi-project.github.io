@@ -23084,7 +23084,15 @@
       { "type": "PIF ref",
         "name": "self",
         "doc": "the PIF object to unplug" } ],
-    "errors": [  ],
+    "errors": [ 
+      { "name": "HA_OPERATION_WOULD_BREAK_FAILOVER_PLAN",
+        "doc": "This operation cannot be performed because it would invalidate VM failover planning such that the system would be unable to guarantee to restart protected VMs after a Host failure." }, 
+      { "name": "VIF_IN_USE",
+        "doc": "Network has active VIFs" }, 
+      { "name": "PIF_DOES_NOT_ALLOW_UNPLUG",
+        "doc": "The operation you requested cannot be performed because the specified PIF does not allow unplug." }, 
+      { "name": "PIF_HAS_FCOE_SR_IN_USE",
+        "doc": "The operation you requested cannot be performed because the specified PIF has fcoe sr in use." } ],
     "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
