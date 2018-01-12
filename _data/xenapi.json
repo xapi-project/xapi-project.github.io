@@ -6049,7 +6049,7 @@
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
-        "release": "ely",
+        "release": "falcon",
         "description": "Identifies XenServer default templates" } ],
     "default": "false" }, 
   { "name": "suspend_VDI",
@@ -10902,7 +10902,7 @@
     "tag": "",
     "lifecycle": [ 
       { "transition": "published",
-        "release": "ely",
+        "release": "falcon",
         "description": "Identifies XenServer default templates" } ],
     "implicit": true }, 
   { "name": "get_is_a_template",
