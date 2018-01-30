@@ -75,7 +75,7 @@ The RPCs are received by the Xenops_server module and decomposed into
 - build a Xen domain: this is where the kernel or hvmloader is copied in
 - launch a device model: this is where a qemu instance is started (if one is
   required)
-- hoplug a device: this involves writing the frontend and backend trees to
+- hotplug a device: this involves writing the frontend and backend trees to
   Xenstore
 - unpause a domain (recall a Xen domain is created in the paused state)
 

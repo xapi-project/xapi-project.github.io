@@ -4,7 +4,7 @@ layout: default
 ---
 
 Squeezed is the [xapi-project](http://github.com/xapi-project) host
-memory manager (aka balloon driver driver). Squeezed uses ballooning
+memory manager (aka balloon driver). Squeezed uses ballooning
 to move memory between running VMs, to avoid wasting host memory.
 
 Principles
