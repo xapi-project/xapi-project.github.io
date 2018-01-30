@@ -7,7 +7,7 @@ layout: default
 
 <ul>
   {% for r in site.data.releases %}
-    {% assign release = r | first }} %}
+    {% assign release = r | first %}
     {% capture url %}{{ site.baseurl }}{{ releases | where:"release",release | map:"url" }}{% endcapture %}
     <li><a href="{{ url }}">{{ r | last }}</a></li>
   {% endfor %}

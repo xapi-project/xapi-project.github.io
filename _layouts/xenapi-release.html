@@ -24,7 +24,7 @@ Code name: "{{ page.release }}".
 <table class="table table-bordered table-striped">
   <tr><th>Change</th><th>Element</th><th>Description</th></tr>
   {% for x in changes %}
-    {% assign class = x.name | split:"." | first }} %}
+    {% assign class = x.name | split: "." | first %}
     {% capture url %}{{ site.baseurl }}{{ classes | where:"class",class | map:"url" }}{% endcapture %}
     <tr>
       <td style="white-space: nowrap">{{x.transition | capitalize}}</td>
@@ -39,7 +39,7 @@ Code name: "{{ page.release }}".
 <div class="col-md-3" id="sidebar">
   <h2 class="title">Releases</h2>
   {% for r in site.data.releases %}
-    {% assign release = r | first }} %}
+    {% assign release = r | first %}
     {% capture url %}{{ site.baseurl }}{{ releases | where:"release",release | map:"url" }}{% endcapture %}
     <a href="{{ url }}">{{ r | last }}</a><br/>
   {% endfor %}
