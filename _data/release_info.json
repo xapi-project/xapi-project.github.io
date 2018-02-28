@@ -1284,6 +1284,9 @@
     "name": "VM.send_trigger",
     "log": "Send the named trigger to this VM.  This can only be called when the specified VM is in the Running state." }, 
   { "transition": "published message",
+    "name": "VM.set_HVM_boot_policy",
+    "log": "Set the VM.HVM_boot_policy field of the given VM, which will take effect when it is next started" }, 
+  { "transition": "published message",
     "name": "VM.set_VCPUs_number_live",
     "log": "Set the number of VCPUs for a running VM" }, 
   { "transition": "published message",
@@ -3870,5 +3873,20 @@
   { "transition": "removed message",
     "name": "VDI.resize_online",
     "log": "Online VDI resize is not supported by any of the storage backends." } ],
-"jura": [  ],
-"kolkata": [  ] }
+"jura": [ 
+  { "transition": "published field",
+    "name": "VM.domain_type",
+    "log": "The type of domain that will be created when the VM is started" }, 
+  { "transition": "published field",
+    "name": "VM_metrics.current_domain_type",
+    "log": "The current domain type of the VM (for running,suspended, or paused VMs). The last-known domain type for halted VMs." } ],
+"kolkata": [ 
+  { "transition": "published message",
+    "name": "VM.set_domain_type",
+    "log": "Set the VM.domain_type field of the given VM, which will take effect when it is next started" }, 
+  { "transition": "deprecated field",
+    "name": "VM.HVM_boot_policy",
+    "log": "Replaced by VM.domain_type" }, 
+  { "transition": "deprecated message",
+    "name": "VM.set_HVM_boot_policy",
+    "log": "Replaced by VM.set_domain_type" } ] }
