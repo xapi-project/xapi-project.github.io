@@ -3886,13 +3886,19 @@
     "name": "VDI.resize_online",
     "log": "Online VDI resize is not supported by any of the storage backends." } ],
 "jura": [ 
+  { "transition": "prototyped field",
+    "name": "VM.domain_type",
+    "log": "Internal-only field; not yet in the public API" }, 
+  { "transition": "prototyped field",
+    "name": "VM_metrics.current_domain_type",
+    "log": "Not yet implemented (for future use)" } ],
+"kolkata": [ 
   { "transition": "published field",
     "name": "VM.domain_type",
-    "log": "The type of domain that will be created when the VM is started" }, 
+    "log": "The field is now valid" }, 
   { "transition": "published field",
     "name": "VM_metrics.current_domain_type",
-    "log": "The current domain type of the VM (for running,suspended, or paused VMs). The last-known domain type for halted VMs." } ],
-"kolkata": [ 
+    "log": "This field now contains valid data" }, 
   { "transition": "published field",
     "name": "host.iscsi_iqn",
     "log": "The initiator IQN for the host" }, 
