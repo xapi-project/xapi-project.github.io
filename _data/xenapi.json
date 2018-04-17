@@ -23091,7 +23091,7 @@
         "description": "" } ],
     "default": "IPv4" }, 
   { "name": "managed",
-    "description": "Indicates whether the interface is managed by xapi. If it is not, then xapi will not configure the interface, the commands PIF.plug/unplug/reconfigure_ip(v6) can not be used, nor can the interface be bonded or have VLANs based on top through xapi.",
+    "description": "Indicates whether the interface is managed by xapi. If it is not, then xapi will not configure the interface, the commands PIF.plug/unplug/reconfigure_ip(v6) cannot be used, nor can the interface be bonded or have VLANs based on top through xapi.",
     "type": "bool",
     "qualifier": "RO/constructor",
     "tag": "",

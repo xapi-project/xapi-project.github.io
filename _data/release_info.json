@@ -3184,7 +3184,7 @@
     "log": "A map relating each VGPU type supported on this GPU to the maximum number of VGPUs of that type which can run simultaneously on this GPU" }, 
   { "transition": "published field",
     "name": "PIF.managed",
-    "log": "Indicates whether the interface is managed by xapi. If it is not, then xapi will not configure the interface, the commands PIF.plug/unplug/reconfigure_ip(v6) can not be used, nor can the interface be bonded or have VLANs based on top through xapi." }, 
+    "log": "Indicates whether the interface is managed by xapi. If it is not, then xapi will not configure the interface, the commands PIF.plug/unplug/reconfigure_ip(v6) cannot be used, nor can the interface be bonded or have VLANs based on top through xapi." }, 
   { "transition": "published field",
     "name": "VGPU_type.enabled_on_GPU_groups",
     "log": "List of GPU groups in which at least one have this VGPU type enabled" }, 
