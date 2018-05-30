@@ -3,11 +3,13 @@
 Documentation for the architecture of the Xapi toolstack.
 
 ## Viewing the documentation
+
 This documentation is written in markdown and built with Jekyll. If you wish to
 browse the documentation, you can do so via the Github interface. Or, if you
 prefer, you can view the rendered output which is hosted using Github Pages.
 
 ## Contributing documentation
+
 This repository is treated differently by Github. Due to its name, the `master`
 branch of this repository is compiled with Jekyll and hosted at
 [https://xapi-project.github.io/](https://xapi-project.github.io/).
@@ -36,6 +38,7 @@ make the following addition to `_data/navbar.yml`:
 ```
 
 ## Contributing design proposals
+
 Design proposals for new features and amendments to existing features can also
 be added to this repository. These will normally be more verbose in nature and
 contain more justification of decisions than a normal API doc. They may also
@@ -56,19 +59,24 @@ revision: [iteration of document]
 ## Previewing documentation before pushing
 
 If you wish to preview the site that will be generated before pushing, you can
-do so from your own machine.
+do so from your own machine. First install ruby:
 
-Install the `github-pages` gem (this includes `jekyll`):
-
-```
-$ gem install github-pages
-```
-
-Then you can host the site locally with the following command from the root
-directory of this repository:
+```bash
+$ apt-get install ruby ruby-dev
+$ gem install bundler [--user-install]
 
 ```
-$ jekyll serve -w --baseurl '/xapi-project'
+
+Then navigate to the root directory of this repository and run
+
+```bash
+$ bundle install [--path <installation path>]
+```
+
+and then you can host the site locally as follows:
+
+```bash
+$ bundle exec jekyll serve -w --baseurl '/xapi-project'
 ```
 
 You will then be able to view the page at `localhost:4000/xapi-project`.
