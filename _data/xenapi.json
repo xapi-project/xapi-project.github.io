@@ -40239,7 +40239,13 @@
       { "type": "Cluster ref",
         "name": "self",
         "doc": "The cluster to destroy." } ],
-    "errors": [  ],
+    "errors": [ 
+      { "name": "CLUSTER_STACK_IN_USE",
+        "doc": "The cluster stack is already in use." }, 
+      { "name": "CLUSTERING_DISABLED",
+        "doc": "An operation was attempted while clustering was disabled on the cluster_host." }, 
+      { "name": "CLUSTER_HOST_IS_LAST",
+        "doc": "The last cluster host cannot be destroyed. Destroy the cluster instead" } ],
     "roles": [ "pool-admin" ],
     "tag": "",
     "lifecycle": [ 
@@ -40257,7 +40263,9 @@
       { "type": "Cluster ref",
         "name": "self",
         "doc": "The cluster to force destroy." } ],
-    "errors": [  ],
+    "errors": [ 
+      { "name": "CLUSTER_FORCE_DESTROY_FAILED",
+        "doc": "Force destroy failed on a Cluster_host while force destroying the cluster." } ],
     "roles": [ "pool-admin" ],
     "tag": "",
     "lifecycle": [ 
@@ -40320,7 +40328,11 @@
       { "type": "Cluster ref",
         "name": "self",
         "doc": "the Cluster to destroy" } ],
-    "errors": [  ],
+    "errors": [ 
+      { "name": "CLUSTER_DOES_NOT_HAVE_ONE_NODE",
+        "doc": "An operation failed as it expected the cluster to have only one node but found multiple cluster_hosts." }, 
+      { "name": "CLUSTER_STACK_IN_USE",
+        "doc": "The cluster stack is already in use." } ],
     "roles": [ "pool-admin" ],
     "tag": "",
     "lifecycle": [ 
@@ -40350,7 +40362,15 @@
       { "type": "float",
         "name": "token_timeout_coefficient",
         "doc": "Corosync token timeout coefficient in seconds" } ],
-    "errors": [  ],
+    "errors": [ 
+      { "name": "INVALID_CLUSTER_STACK",
+        "doc": "The cluster stack provided is not supported." }, 
+      { "name": "INVALID_VALUE",
+        "doc": "The value given is invalid" }, 
+      { "name": "PIF_ALLOWS_UNPLUG",
+        "doc": "The operation you requested cannot be performed because the specified PIF allows unplug." }, 
+      { "name": "REQUIRED_PIF_IS_UNPLUGGED",
+        "doc": "The operation you requested cannot be performed because the specified PIF is currently unplugged." } ],
     "roles": [ "pool-admin" ],
     "tag": "",
     "lifecycle": [ 
@@ -40832,7 +40852,9 @@
       { "type": "Cluster_host ref",
         "name": "self",
         "doc": "the cluster_host to disable" } ],
-    "errors": [  ],
+    "errors": [ 
+      { "name": "CLUSTER_STACK_IN_USE",
+        "doc": "The cluster stack is already in use." } ],
     "roles": [ "pool-admin" ],
     "tag": "",
     "lifecycle": [ 
@@ -40850,7 +40872,9 @@
       { "type": "Cluster_host ref",
         "name": "self",
         "doc": "the cluster_host to remove from the cluster" } ],
-    "errors": [  ],
+    "errors": [ 
+      { "name": "CLUSTER_STACK_IN_USE",
+        "doc": "The cluster stack is already in use." } ],
     "roles": [ "pool-admin" ],
     "tag": "",
     "lifecycle": [ 
@@ -40868,7 +40892,11 @@
       { "type": "Cluster_host ref",
         "name": "self",
         "doc": "the cluster_host to enable" } ],
-    "errors": [  ],
+    "errors": [ 
+      { "name": "PIF_ALLOWS_UNPLUG",
+        "doc": "The operation you requested cannot be performed because the specified PIF allows unplug." }, 
+      { "name": "REQUIRED_PIF_IS_UNPLUGGED",
+        "doc": "The operation you requested cannot be performed because the specified PIF is currently unplugged." } ],
     "roles": [ "pool-admin" ],
     "tag": "",
     "lifecycle": [ 
@@ -40886,7 +40914,13 @@
       { "type": "Cluster_host ref",
         "name": "self",
         "doc": "the cluster_host to remove from the cluster" } ],
-    "errors": [  ],
+    "errors": [ 
+      { "name": "CLUSTER_STACK_IN_USE",
+        "doc": "The cluster stack is already in use." }, 
+      { "name": "CLUSTERING_DISABLED",
+        "doc": "An operation was attempted while clustering was disabled on the cluster_host." }, 
+      { "name": "CLUSTER_HOST_IS_LAST",
+        "doc": "The last cluster host cannot be destroyed. Destroy the cluster instead" } ],
     "roles": [ "pool-admin" ],
     "tag": "",
     "lifecycle": [ 
@@ -40910,7 +40944,11 @@
       { "type": "PIF ref",
         "name": "pif",
         "doc": "Network interface to use for communication" } ],
-    "errors": [  ],
+    "errors": [ 
+      { "name": "PIF_NOT_ATTACHED_TO_HOST",
+        "doc": "Cluster_host creation failed as the PIF provided is not attached to the host." }, 
+      { "name": "NO_CLUSTER_HOSTS_REACHABLE",
+        "doc": "No other cluster host was reachable when joining" } ],
     "roles": [ "pool-admin" ],
     "tag": "",
     "lifecycle": [ 
