@@ -40311,7 +40311,7 @@
         "name": "self",
         "doc": "the Cluster with the network" } ],
     "errors": [  ],
-    "roles": [ "pool-admin" ],
+    "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
     "tag": "",
     "lifecycle": [ 
       { "transition": "prototyped",
