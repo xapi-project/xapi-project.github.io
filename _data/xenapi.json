@@ -40222,7 +40222,7 @@
         "name": "self",
         "doc": "The cluster to resync" } ],
     "errors": [  ],
-    "roles": [ "pool-admin" ],
+    "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
       { "transition": "prototyped",
@@ -40246,7 +40246,7 @@
         "doc": "An operation was attempted while clustering was disabled on the cluster_host." }, 
       { "name": "CLUSTER_HOST_IS_LAST",
         "doc": "The last cluster host cannot be destroyed. Destroy the cluster instead" } ],
-    "roles": [ "pool-admin" ],
+    "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
       { "transition": "prototyped",
@@ -40266,7 +40266,7 @@
     "errors": [ 
       { "name": "CLUSTER_FORCE_DESTROY_FAILED",
         "doc": "Force destroy failed on a Cluster_host while force destroying the cluster." } ],
-    "roles": [ "pool-admin" ],
+    "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
       { "transition": "prototyped",
@@ -40293,7 +40293,7 @@
         "name": "token_timeout_coefficient",
         "doc": "Corosync token timeout coefficient in seconds" } ],
     "errors": [  ],
-    "roles": [ "pool-admin" ],
+    "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
       { "transition": "prototyped",
@@ -40333,7 +40333,7 @@
         "doc": "An operation failed as it expected the cluster to have only one node but found multiple cluster_hosts." }, 
       { "name": "CLUSTER_STACK_IN_USE",
         "doc": "The cluster stack is already in use." } ],
-    "roles": [ "pool-admin" ],
+    "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
       { "transition": "prototyped",
@@ -40371,7 +40371,7 @@
         "doc": "The operation you requested cannot be performed because the specified PIF allows unplug." }, 
       { "name": "REQUIRED_PIF_IS_UNPLUGGED",
         "doc": "The operation you requested cannot be performed because the specified PIF is currently unplugged." } ],
-    "roles": [ "pool-admin" ],
+    "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
       { "transition": "prototyped",
@@ -40392,7 +40392,7 @@
         "name": "key",
         "doc": "Key to remove" } ],
     "errors": [  ],
-    "roles": [ "pool-admin" ],
+    "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
       { "transition": "prototyped",
@@ -40416,7 +40416,7 @@
         "name": "value",
         "doc": "Value to add" } ],
     "errors": [  ],
-    "roles": [ "pool-admin" ],
+    "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
       { "transition": "prototyped",
@@ -40437,7 +40437,7 @@
         "name": "value",
         "doc": "New value to set" } ],
     "errors": [  ],
-    "roles": [ "pool-admin" ],
+    "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
       { "transition": "prototyped",
@@ -40855,7 +40855,7 @@
     "errors": [ 
       { "name": "CLUSTER_STACK_IN_USE",
         "doc": "The cluster stack is already in use." } ],
-    "roles": [ "pool-admin" ],
+    "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
       { "transition": "prototyped",
@@ -40875,7 +40875,7 @@
     "errors": [ 
       { "name": "CLUSTER_STACK_IN_USE",
         "doc": "The cluster stack is already in use." } ],
-    "roles": [ "pool-admin" ],
+    "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
       { "transition": "prototyped",
@@ -40897,7 +40897,7 @@
         "doc": "The operation you requested cannot be performed because the specified PIF allows unplug." }, 
       { "name": "REQUIRED_PIF_IS_UNPLUGGED",
         "doc": "The operation you requested cannot be performed because the specified PIF is currently unplugged." } ],
-    "roles": [ "pool-admin" ],
+    "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
       { "transition": "prototyped",
@@ -40921,7 +40921,7 @@
         "doc": "An operation was attempted while clustering was disabled on the cluster_host." }, 
       { "name": "CLUSTER_HOST_IS_LAST",
         "doc": "The last cluster host cannot be destroyed. Destroy the cluster instead" } ],
-    "roles": [ "pool-admin" ],
+    "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
       { "transition": "prototyped",
@@ -40949,7 +40949,7 @@
         "doc": "Cluster_host creation failed as the PIF provided is not attached to the host." }, 
       { "name": "NO_CLUSTER_HOSTS_REACHABLE",
         "doc": "No other cluster host was reachable when joining" } ],
-    "roles": [ "pool-admin" ],
+    "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
       { "transition": "prototyped",
