@@ -23,7 +23,7 @@ Principles
 Usage
 -----
 
-Networkd is a daemon that is typically started at host-boot time. In the same way as the other daemons in the xapi toolstack, it is controlled by RPC requests. It typically receives requests from the xapi daemon, on behalf of which it configures host networking. There is also an experimental [CLI](https://github.com/xapi-project/xcp-networkd/tree/master/cli).
+Networkd is a daemon that is typically started at host-boot time. In the same way as the other daemons in the xapi toolstack, it is controlled by RPC requests. It typically receives requests from the xapi daemon, on behalf of which it configures host networking. There is also an experimental [CLI](https://github.com/xapi-project/xcp-idl/blob/master/network/network_cli.ml).
 
 Networkd's RCP API is fully described by the [network_interface.ml](https://github.com/xapi-project/xcp-idl/blob/master/network/network_interface.ml) file in [xcp-idl](https://github.com/xapi-project/xcp-idl). The API has two main namespaces: `Interface` and `Bridge`, which are implemented in two modules in [network_server.ml](https://github.com/xapi-project/xcp-networkd/blob/master/networkd/network_server.ml).
 
