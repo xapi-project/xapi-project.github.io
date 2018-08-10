@@ -1,7 +1,10 @@
 TEST_BASEURL="baseurl_travis_test"
 
-echo "Running jekyll's sanity test..."
-bundle exec jekyll doctor
+cp _config.yml test_config.yml
+echo "url: http://example.com/${TEST_BASEURL}" >> test_config.yml
+
+echo "Running jekyll's sanity test...(with modified url)"
+bundle exec jekyll doctor --config test_config.yml
 
 echo "Building site (with modified baseurl)..."
 cp _config.yml test_config.yml
