@@ -6076,7 +6076,7 @@
     "lifecycle": [ 
       { "transition": "published",
         "release": "falcon",
-        "description": "Identifies XenServer default templates" } ],
+        "description": "Identifies default templates" } ],
     "default": "false" }, 
   { "name": "suspend_VDI",
     "description": "The VDI that a suspend image is stored on. (Only has meaning if VM is currently suspended)",
@@ -6954,7 +6954,7 @@
         "description": "Controls whether, when the VM starts in HVM mode, its virtual hardware will include the emulated PCI device for which drivers may be available through Windows Update. Usually this should never be changed on a VM on which Windows has been installed: changing it on such a VM is likely to lead to a crash on next start." } ],
     "implicit": false }, 
   { "name": "call_plugin",
-    "description": "Call a XenAPI plugin on this vm",
+    "description": "Call an API plugin on this vm",
     "result": [ "string", "Result from the plugin" ],
     "params": [ 
       { "type": "session ref",
@@ -6978,7 +6978,7 @@
     "lifecycle": [ 
       { "transition": "published",
         "release": "cream",
-        "description": "Call a XenAPI plugin on this vm" } ],
+        "description": "Call an API plugin on this vm" } ],
     "implicit": false }, 
   { "name": "query_services",
     "description": "Query the system services advertised by this VM and register them. This can only be applied to a system domain.",
@@ -10993,7 +10993,7 @@
     "lifecycle": [ 
       { "transition": "published",
         "release": "falcon",
-        "description": "Identifies XenServer default templates" } ],
+        "description": "Identifies default templates" } ],
     "implicit": true }, 
   { "name": "get_is_a_template",
     "description": "Get the is_a_template field of the given VM.",
@@ -15778,7 +15778,7 @@
         "release": "inverness",
         "description": "" } ] }, 
   { "name": "ssl_legacy",
-    "description": "Allow SSLv3 protocol and ciphersuites as used by older XenServers. This controls both incoming and outgoing connections. When this is set to a different value, the host immediately restarts its SSL/TLS listening service; typically this takes less than a second but existing connections to it will be broken. XenAPI login sessions will remain valid.",
+    "description": "Allow SSLv3 protocol and ciphersuites as used by older server versions. This controls both incoming and outgoing connections. When this is set to a different value, the host immediately restarts its SSL/TLS listening service; typically this takes less than a second but existing connections to it will be broken. API login sessions will remain valid.",
     "type": "bool",
     "qualifier": "RO/constructor",
     "tag": "",
@@ -15939,7 +15939,7 @@
         "description": "" } ],
     "implicit": false }, 
   { "name": "set_ssl_legacy",
-    "description": "Enable/disable SSLv3 for interoperability with older versions of XenServer. When this is set to a different value, the host immediately restarts its SSL/TLS listening service; typically this takes less than a second but existing connections to it will be broken. XenAPI login sessions will remain valid.",
+    "description": "Enable/disable SSLv3 for interoperability with older server versions. When this is set to a different value, the host immediately restarts its SSL/TLS listening service; typically this takes less than a second but existing connections to it will be broken. API login sessions will remain valid.",
     "result": [ "void" ],
     "params": [ 
       { "type": "session ref",
@@ -16314,7 +16314,7 @@
         "description": "This call queries the host's clock for the current time" } ],
     "implicit": false }, 
   { "name": "call_extension",
-    "description": "Call a XenAPI extension on this host",
+    "description": "Call an API extension on this host",
     "result": [ "string", "Result from the extension" ],
     "params": [ 
       { "type": "session ref",
@@ -16332,7 +16332,7 @@
     "lifecycle": [ 
       { "transition": "published",
         "release": "ely",
-        "description": "Call a XenAPI extension on this host" } ],
+        "description": "Call an API extension on this host" } ],
     "implicit": false }, 
   { "name": "has_extension",
     "description": "Return true if the extension is available on the host",
@@ -16356,7 +16356,7 @@
         "description": "Return true if the extension is available on the host" } ],
     "implicit": false }, 
   { "name": "call_plugin",
-    "description": "Call a XenAPI plugin on this host",
+    "description": "Call an API plugin on this host",
     "result": [ "string", "Result from the plugin" ],
     "params": [ 
       { "type": "session ref",
@@ -16380,7 +16380,7 @@
     "lifecycle": [ 
       { "transition": "published",
         "release": "orlando",
-        "description": "Call a XenAPI plugin on this host" } ],
+        "description": "Call an API plugin on this host" } ],
     "implicit": false }, 
   { "name": "create_new_blob",
     "description": "Create a placeholder for a named binary blob of data that is associated with this host",
@@ -28394,7 +28394,7 @@
         "description": "Check the VDI cache for the pool UUID of the database on this VDI." } ],
     "implicit": false }, 
   { "name": "open_database",
-    "description": "Load the metadata found on the supplied VDI and return a session reference which can be used in XenAPI calls to query its contents.",
+    "description": "Load the metadata found on the supplied VDI and return a session reference which can be used in API calls to query its contents.",
     "result": [ "session ref", "A session which can be used to query the database" ],
     "params": [ 
       { "type": "session ref",
@@ -28409,7 +28409,7 @@
     "lifecycle": [ 
       { "transition": "published",
         "release": "boston",
-        "description": "Load the metadata found on the supplied VDI and return a session reference which can be used in XenAPI calls to query its contents." } ],
+        "description": "Load the metadata found on the supplied VDI and return a session reference which can be used in API calls to query its contents." } ],
     "implicit": false }, 
   { "name": "set_allow_caching",
     "description": "Set the value of the allow_caching parameter. This value can only be changed when the VDI is not attached to a running VM. The caching behaviour is only affected by this flag for VHD-based VDIs that have one parent and no child VHDs. Moreover, caching only takes place when the host running the VM containing this VDI has a nominated SR for local caching.",
