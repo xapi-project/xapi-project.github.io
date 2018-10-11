@@ -4085,4 +4085,17 @@
     "log": "the unit is now seconds" }, 
   { "transition": "prototyped field",
     "name": "Cluster.pending_forget",
+    "log": "" } ],
+"naples": [ 
+  { "transition": "prototyped field",
+    "name": "VM.NVRAM",
+    "log": "" }, 
+  { "transition": "prototyped message",
+    "name": "VM.add_to_NVRAM",
+    "log": "" }, 
+  { "transition": "prototyped message",
+    "name": "VM.remove_from_NVRAM",
+    "log": "" }, 
+  { "transition": "prototyped message",
+    "name": "VM.set_NVRAM",
     "log": "" } ] }
