@@ -9,7 +9,15 @@ layout: default
   {% for r in site.data.releases %}
     {% assign release = r | first %}
     {% capture url %}{{ site.baseurl }}{{ releases | where:"release",release | map:"url" }}{% endcapture %}
-    <li><a href="{{ url }}">{{ r | last }}</a></li>
+    <li><a href="{{ url }}">{{ r | last }}
+      {% case release %}
+        {% when 'midnight-ride' %} (XCP 0.5)
+        {% when 'cowley' %} (XCP 1.0)
+        {% when 'boston' %} (XCP 1.5)
+        {% when 'tampa' %} (XCP 1.6)
+        {% else %} {% continue %}
+      {% endcase %}
+    </li>
   {% endfor %}
+  </a>
 </ul>
-
