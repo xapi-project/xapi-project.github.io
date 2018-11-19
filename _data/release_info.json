@@ -1457,7 +1457,7 @@
     "log": "additional configuration" }, 
   { "transition": "published field",
     "name": "PIF.DNS",
-    "log": "IP address of DNS servers to use" }, 
+    "log": "Comma separated list of the IP addresses of the DNS servers to use" }, 
   { "transition": "published field",
     "name": "PIF.IP",
     "log": "IP address" }, 
