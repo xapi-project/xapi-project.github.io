@@ -1,10 +1,12 @@
 language: ruby
 cache: bundler
 rvm:
-  - 2.1.0
+  - 2.5.0
 addons:
   apt:
     packages:
     - libcurl4-openssl-dev
 script: bash -ex .travis-ci.sh
 sudo: false
+before_install:
+- gem install bundler -v 1.17.1
