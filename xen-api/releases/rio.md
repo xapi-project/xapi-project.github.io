@@ -5,4 +5,3 @@ release_index: true
 ---
 
 Released in August 2007.
-

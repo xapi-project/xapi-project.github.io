@@ -5,4 +5,3 @@ release_index: true
 ---
 
 Released in October 2014.
-
