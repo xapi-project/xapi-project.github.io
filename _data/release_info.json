@@ -4100,4 +4100,13 @@
     "name": "VM.set_NVRAM",
     "log": "" } ],
 "oslo": [  ],
-"plymouth": [  ] }
+"plymouth": [ 
+  { "transition": "published field",
+    "name": "host.uefi_certificates",
+    "log": "The UEFI certificates allowing Secure Boot" }, 
+  { "transition": "published field",
+    "name": "pool.uefi_certificates",
+    "log": "The UEFI certificates allowing Secure Boot" }, 
+  { "transition": "published message",
+    "name": "host.set_uefi_certificates",
+    "log": "Sets the UEFI certificates on a host" } ] }
