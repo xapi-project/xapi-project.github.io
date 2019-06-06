@@ -2628,7 +2628,7 @@
     "log": "Reflects whether the virtual device is currently connected to a physical device" }, 
   { "transition": "published field",
     "name": "VGPU.device",
-    "log": "Order in which the devices are plugged into the VM" }, 
+    "log": "Only 1 vGPU with device id 0 is supported" }, 
   { "transition": "published field",
     "name": "VGPU.other_config",
     "log": "Additional configuration" }, 
@@ -4115,4 +4115,7 @@
     "log": "The UEFI certificates allowing Secure Boot" }, 
   { "transition": "published message",
     "name": "host.set_uefi_certificates",
-    "log": "Sets the UEFI certificates on a host" } ] }
+    "log": "Sets the UEFI certificates on a host" }, 
+  { "transition": "changed field",
+    "name": "VGPU.device",
+    "log": "Multiple vGPUs are supported, device refers to guest PCI slot" } ] }
