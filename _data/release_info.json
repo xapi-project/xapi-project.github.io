@@ -4102,6 +4102,12 @@
 "oslo": [  ],
 "plymouth": [ 
   { "transition": "published field",
+    "name": "VGPU.extra_args",
+    "log": "Extra arguments for vGPU and passed to demu" }, 
+  { "transition": "published field",
+    "name": "VGPU_type.compatible_types_in_vm",
+    "log": "List of VGPU types which are compatible in one VM" }, 
+  { "transition": "published field",
     "name": "host.uefi_certificates",
     "log": "The UEFI certificates allowing Secure Boot" }, 
   { "transition": "published field",
