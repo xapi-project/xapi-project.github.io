@@ -2142,7 +2142,7 @@
         "doc": "Return after this many seconds if no events match" } ],
     "errors": [ 
       { "name": "SESSION_NOT_REGISTERED",
-        "doc": "This session is not registered to receive events.  You must call event.register before event.next.  The session handle you are using is echoed." }, 
+        "doc": "This session is not registered to receive events. You must call event.register before event.next. The session handle you are using is echoed." }, 
       { "name": "EVENTS_LOST",
         "doc": "Some events have been lost from the queue and cannot be retrieved." } ],
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
@@ -2161,7 +2161,7 @@
         "doc": "Reference to a valid session" } ],
     "errors": [ 
       { "name": "SESSION_NOT_REGISTERED",
-        "doc": "This session is not registered to receive events.  You must call event.register before event.next.  The session handle you are using is echoed." }, 
+        "doc": "This session is not registered to receive events. You must call event.register before event.next. The session handle you are using is echoed." }, 
       { "name": "EVENTS_LOST",
         "doc": "Some events have been lost from the queue and cannot be retrieved." } ],
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator", "read-only" ],
@@ -3431,7 +3431,7 @@
         "doc": "VLAN tag for the new interface" } ],
     "errors": [ 
       { "name": "VLAN_TAG_INVALID",
-        "doc": "You tried to create a VLAN, but the tag you gave was invalid -- it must be between 0 and 4094.  The parameter echoes the VLAN tag you gave." } ],
+        "doc": "You tried to create a VLAN, but the tag you gave was invalid -- it must be between 0 and 4094. The parameter echoes the VLAN tag you gave." } ],
     "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
@@ -3487,7 +3487,7 @@
         "doc": "VLAN tag for the new interface" } ],
     "errors": [ 
       { "name": "VLAN_TAG_INVALID",
-        "doc": "You tried to create a VLAN, but the tag you gave was invalid -- it must be between 0 and 4094.  The parameter echoes the VLAN tag you gave." } ],
+        "doc": "You tried to create a VLAN, but the tag you gave was invalid -- it must be between 0 and 4094. The parameter echoes the VLAN tag you gave." } ],
     "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
@@ -3603,7 +3603,7 @@
         "doc": "The password for the master (for initial authentication)" } ],
     "errors": [ 
       { "name": "JOINING_HOST_CANNOT_CONTAIN_SHARED_SRS",
-        "doc": "The host joining the pool cannot contain any shared storage." } ],
+        "doc": "The server joining the pool cannot contain any shared storage." } ],
     "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
@@ -7428,7 +7428,7 @@
         "doc": "The host" } ],
     "errors": [ 
       { "name": "HOST_NOT_ENOUGH_FREE_MEMORY",
-        "doc": "Not enough host memory is available to perform this operation" }, 
+        "doc": "Not enough server memory is available to perform this operation." }, 
       { "name": "VM_REQUIRES_SR",
         "doc": "You attempted to run a VM on a host which doesn't have access to an SR needed by the VM. The VM has at least one VBD attached to a VDI in the SR." }, 
       { "name": "VM_HOST_INCOMPATIBLE_VERSION",
@@ -7667,7 +7667,7 @@
         "doc": "Map of source vGPU to destination GPU group" } ],
     "errors": [ 
       { "name": "LICENCE_RESTRICTION",
-        "doc": "This operation is not allowed because your license lacks a needed feature.  Please contact your support representative." } ],
+        "doc": "This operation is not allowed because your license lacks a needed feature. Please contact your support representative." } ],
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin" ],
     "tag": "",
     "lifecycle": [ 
@@ -7705,9 +7705,9 @@
         "doc": "Map of source vGPU to destination GPU group" } ],
     "errors": [ 
       { "name": "VM_BAD_POWER_STATE",
-        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running.  The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
+        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running. The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
       { "name": "LICENCE_RESTRICTION",
-        "doc": "This operation is not allowed because your license lacks a needed feature.  Please contact your support representative." } ],
+        "doc": "This operation is not allowed because your license lacks a needed feature. Please contact your support representative." } ],
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin" ],
     "tag": "",
     "lifecycle": [ 
@@ -7754,7 +7754,7 @@
         "doc": "The trigger to send" } ],
     "errors": [ 
       { "name": "VM_BAD_POWER_STATE",
-        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running.  The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." } ],
+        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running. The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." } ],
     "roles": [ "pool-admin" ],
     "tag": "",
     "lifecycle": [ 
@@ -7777,7 +7777,7 @@
         "doc": "The key to send" } ],
     "errors": [ 
       { "name": "VM_BAD_POWER_STATE",
-        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running.  The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." } ],
+        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running. The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." } ],
     "roles": [ "pool-admin" ],
     "tag": "",
     "lifecycle": [ 
@@ -8290,7 +8290,7 @@
       { "name": "OPERATION_NOT_ALLOWED",
         "doc": "You attempted an operation that was not allowed." }, 
       { "name": "LICENCE_RESTRICTION",
-        "doc": "This operation is not allowed because your license lacks a needed feature.  Please contact your support representative." } ],
+        "doc": "This operation is not allowed because your license lacks a needed feature. Please contact your support representative." } ],
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin" ],
     "tag": "",
     "lifecycle": [ 
@@ -8319,7 +8319,7 @@
         "doc": "Extra configuration operations" } ],
     "errors": [ 
       { "name": "VM_BAD_POWER_STATE",
-        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running.  The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
+        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running. The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
       { "name": "OTHER_OPERATION_IN_PROGRESS",
         "doc": "Another operation involving the object is currently in progress" }, 
       { "name": "VM_IS_TEMPLATE",
@@ -8356,7 +8356,7 @@
         "doc": "Attempt to force the VM to resume. If this flag is false then the VM may fail pre-resume safety checks (e.g. if the CPU the VM was running on looks substantially different to the current one)" } ],
     "errors": [ 
       { "name": "VM_BAD_POWER_STATE",
-        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running.  The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
+        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running. The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
       { "name": "OPERATION_NOT_ALLOWED",
         "doc": "You attempted an operation that was not allowed." }, 
       { "name": "VM_IS_TEMPLATE",
@@ -8386,7 +8386,7 @@
         "doc": "Attempt to force the VM to resume. If this flag is false then the VM may fail pre-resume safety checks (e.g. if the CPU the VM was running on looks substantially different to the current one)" } ],
     "errors": [ 
       { "name": "VM_BAD_POWER_STATE",
-        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running.  The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
+        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running. The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
       { "name": "OPERATION_NOT_ALLOWED",
         "doc": "You attempted an operation that was not allowed." }, 
       { "name": "VM_IS_TEMPLATE",
@@ -8410,7 +8410,7 @@
         "doc": "The VM to suspend" } ],
     "errors": [ 
       { "name": "VM_BAD_POWER_STATE",
-        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running.  The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
+        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running. The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
       { "name": "OTHER_OPERATION_IN_PROGRESS",
         "doc": "Another operation involving the object is currently in progress" }, 
       { "name": "OPERATION_NOT_ALLOWED",
@@ -8436,7 +8436,7 @@
         "doc": "The VM to reboot" } ],
     "errors": [ 
       { "name": "VM_BAD_POWER_STATE",
-        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running.  The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
+        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running. The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
       { "name": "OTHER_OPERATION_IN_PROGRESS",
         "doc": "Another operation involving the object is currently in progress" }, 
       { "name": "OPERATION_NOT_ALLOWED",
@@ -8480,7 +8480,7 @@
         "doc": "The VM to destroy" } ],
     "errors": [ 
       { "name": "VM_BAD_POWER_STATE",
-        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running.  The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
+        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running. The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
       { "name": "OTHER_OPERATION_IN_PROGRESS",
         "doc": "Another operation involving the object is currently in progress" }, 
       { "name": "OPERATION_NOT_ALLOWED",
@@ -8506,7 +8506,7 @@
         "doc": "The VM to shutdown" } ],
     "errors": [ 
       { "name": "VM_BAD_POWER_STATE",
-        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running.  The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
+        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running. The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
       { "name": "OTHER_OPERATION_IN_PROGRESS",
         "doc": "Another operation involving the object is currently in progress" }, 
       { "name": "OPERATION_NOT_ALLOWED",
@@ -8532,7 +8532,7 @@
         "doc": "The VM to shutdown" } ],
     "errors": [ 
       { "name": "VM_BAD_POWER_STATE",
-        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running.  The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
+        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running. The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
       { "name": "OTHER_OPERATION_IN_PROGRESS",
         "doc": "Another operation involving the object is currently in progress" }, 
       { "name": "OPERATION_NOT_ALLOWED",
@@ -8558,7 +8558,7 @@
         "doc": "The VM to shutdown" } ],
     "errors": [ 
       { "name": "VM_BAD_POWER_STATE",
-        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running.  The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
+        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running. The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
       { "name": "OTHER_OPERATION_IN_PROGRESS",
         "doc": "Another operation involving the object is currently in progress" }, 
       { "name": "OPERATION_NOT_ALLOWED",
@@ -8584,7 +8584,7 @@
         "doc": "The VM to unpause" } ],
     "errors": [ 
       { "name": "VM_BAD_POWER_STATE",
-        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running.  The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
+        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running. The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
       { "name": "OPERATION_NOT_ALLOWED",
         "doc": "You attempted an operation that was not allowed." }, 
       { "name": "VM_IS_TEMPLATE",
@@ -8608,7 +8608,7 @@
         "doc": "The VM to pause" } ],
     "errors": [ 
       { "name": "VM_BAD_POWER_STATE",
-        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running.  The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
+        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running. The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
       { "name": "OTHER_OPERATION_IN_PROGRESS",
         "doc": "Another operation involving the object is currently in progress" }, 
       { "name": "OPERATION_NOT_ALLOWED",
@@ -8643,7 +8643,7 @@
         "doc": "Attempt to force the VM to start. If this flag is false then the VM may fail pre-boot safety checks (e.g. if the CPU the VM last booted on looks substantially different to the current one)" } ],
     "errors": [ 
       { "name": "VM_BAD_POWER_STATE",
-        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running.  The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
+        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running. The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
       { "name": "VM_IS_TEMPLATE",
         "doc": "The operation attempted is not valid for a template VM" }, 
       { "name": "OTHER_OPERATION_IN_PROGRESS",
@@ -8679,7 +8679,7 @@
         "doc": "Attempt to force the VM to start. If this flag is false then the VM may fail pre-boot safety checks (e.g. if the CPU the VM last booted on looks substantially different to the current one)" } ],
     "errors": [ 
       { "name": "VM_BAD_POWER_STATE",
-        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running.  The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
+        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running. The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
       { "name": "VM_HVM_REQUIRED",
         "doc": "HVM is required for this operation" }, 
       { "name": "VM_IS_TEMPLATE",
@@ -8693,9 +8693,9 @@
       { "name": "UNKNOWN_BOOTLOADER",
         "doc": "The requested bootloader is unknown" }, 
       { "name": "NO_HOSTS_AVAILABLE",
-        "doc": "There were no hosts available to complete the specified operation." }, 
+        "doc": "There were no servers available to complete the specified operation." }, 
       { "name": "LICENCE_RESTRICTION",
-        "doc": "This operation is not allowed because your license lacks a needed feature.  Please contact your support representative." } ],
+        "doc": "This operation is not allowed because your license lacks a needed feature. Please contact your support representative." } ],
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin", "vm-operator" ],
     "tag": "",
     "lifecycle": [ 
@@ -8715,13 +8715,13 @@
         "doc": "The VM to be provisioned" } ],
     "errors": [ 
       { "name": "VM_BAD_POWER_STATE",
-        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running.  The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
+        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running. The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
       { "name": "SR_FULL",
         "doc": "The SR is full. Requested new size exceeds the maximum size" }, 
       { "name": "OPERATION_NOT_ALLOWED",
         "doc": "You attempted an operation that was not allowed." }, 
       { "name": "LICENCE_RESTRICTION",
-        "doc": "This operation is not allowed because your license lacks a needed feature.  Please contact your support representative." } ],
+        "doc": "This operation is not allowed because your license lacks a needed feature. Please contact your support representative." } ],
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin" ],
     "tag": "",
     "lifecycle": [ 
@@ -8744,7 +8744,7 @@
         "doc": "The name of the checkpointed VM" } ],
     "errors": [ 
       { "name": "VM_BAD_POWER_STATE",
-        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running.  The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
+        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running. The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
       { "name": "SR_FULL",
         "doc": "The SR is full. Requested new size exceeds the maximum size" }, 
       { "name": "OPERATION_NOT_ALLOWED",
@@ -8772,7 +8772,7 @@
         "doc": "The snapshotted state that we revert to" } ],
     "errors": [ 
       { "name": "VM_BAD_POWER_STATE",
-        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running.  The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
+        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running. The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
       { "name": "OPERATION_NOT_ALLOWED",
         "doc": "You attempted an operation that was not allowed." }, 
       { "name": "SR_FULL",
@@ -8804,13 +8804,13 @@
         "doc": "An SR to copy all the VM's disks into (if an invalid reference then it uses the existing SRs)" } ],
     "errors": [ 
       { "name": "VM_BAD_POWER_STATE",
-        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running.  The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
+        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running. The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
       { "name": "SR_FULL",
         "doc": "The SR is full. Requested new size exceeds the maximum size" }, 
       { "name": "OPERATION_NOT_ALLOWED",
         "doc": "You attempted an operation that was not allowed." }, 
       { "name": "LICENCE_RESTRICTION",
-        "doc": "This operation is not allowed because your license lacks a needed feature.  Please contact your support representative." } ],
+        "doc": "This operation is not allowed because your license lacks a needed feature. Please contact your support representative." } ],
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin" ],
     "tag": "",
     "lifecycle": [ 
@@ -8836,13 +8836,13 @@
         "doc": "The name of the cloned VM" } ],
     "errors": [ 
       { "name": "VM_BAD_POWER_STATE",
-        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running.  The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
+        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running. The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
       { "name": "SR_FULL",
         "doc": "The SR is full. Requested new size exceeds the maximum size" }, 
       { "name": "OPERATION_NOT_ALLOWED",
         "doc": "You attempted an operation that was not allowed." }, 
       { "name": "LICENCE_RESTRICTION",
-        "doc": "This operation is not allowed because your license lacks a needed feature.  Please contact your support representative." } ],
+        "doc": "This operation is not allowed because your license lacks a needed feature. Please contact your support representative." } ],
     "roles": [ "pool-admin", "pool-operator", "vm-power-admin", "vm-admin" ],
     "tag": "",
     "lifecycle": [ 
@@ -8865,7 +8865,7 @@
         "doc": "The name of the snapshotted VM" } ],
     "errors": [ 
       { "name": "VM_BAD_POWER_STATE",
-        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running.  The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
+        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running. The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
       { "name": "SR_FULL",
         "doc": "The SR is full. Requested new size exceeds the maximum size" }, 
       { "name": "OPERATION_NOT_ALLOWED",
@@ -8900,7 +8900,7 @@
         "doc": "The name of the snapshotted VM" } ],
     "errors": [ 
       { "name": "VM_BAD_POWER_STATE",
-        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running.  The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
+        "doc": "You attempted an operation on a VM that was not in an appropriate power state at the time; for example, you attempted to start a VM that was already running. The parameters returned are the VM's handle, and the expected and actual VM state at the time of the call." }, 
       { "name": "SR_FULL",
         "doc": "The SR is full. Requested new size exceeds the maximum size" }, 
       { "name": "OPERATION_NOT_ALLOWED",
@@ -16675,7 +16675,7 @@
         "doc": "The new host name" } ],
     "errors": [ 
       { "name": "HOST_NAME_INVALID",
-        "doc": "The host name is invalid." } ],
+        "doc": "The server name is invalid." } ],
     "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
@@ -17064,7 +17064,7 @@
         "doc": "The contents of the license file, base64 encoded" } ],
     "errors": [ 
       { "name": "LICENSE_PROCESSING_ERROR",
-        "doc": "There was an error processing your license.  Please contact your support representative." } ],
+        "doc": "There was an error processing your license. Please contact your support representative." } ],
     "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
@@ -17087,7 +17087,7 @@
         "doc": "The contents of the license file, base64 encoded" } ],
     "errors": [ 
       { "name": "LICENSE_PROCESSING_ERROR",
-        "doc": "There was an error processing your license.  Please contact your support representative." } ],
+        "doc": "There was an error processing your license. Please contact your support representative." } ],
     "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
@@ -23756,7 +23756,7 @@
         "doc": "the PIF object to destroy" } ],
     "errors": [ 
       { "name": "PIF_IS_PHYSICAL",
-        "doc": "You tried to destroy a PIF, but it represents an aspect of the physical host configuration, and so cannot be destroyed.  The parameter echoes the PIF handle you gave." } ],
+        "doc": "You tried to destroy a PIF, but it represents an aspect of the physical host configuration, and so cannot be destroyed. The parameter echoes the PIF handle you gave." } ],
     "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
@@ -23788,7 +23788,7 @@
         "doc": "VLAN tag for the new interface" } ],
     "errors": [ 
       { "name": "VLAN_TAG_INVALID",
-        "doc": "You tried to create a VLAN, but the tag you gave was invalid -- it must be between 0 and 4094.  The parameter echoes the VLAN tag you gave." } ],
+        "doc": "You tried to create a VLAN, but the tag you gave was invalid -- it must be between 0 and 4094. The parameter echoes the VLAN tag you gave." } ],
     "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
