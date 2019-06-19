@@ -33970,7 +33970,7 @@
       { "name": "TRANSPORT_PIF_NOT_CONFIGURED",
         "doc": "The tunnel transport PIF has no IP configuration set." }, 
       { "name": "IS_TUNNEL_ACCESS_PIF",
-        "doc": "You tried to create a VLAN or tunnel on top of a tunnel access PIF - use the underlying transport PIF instead." } ],
+        "doc": "Cannot create a VLAN or tunnel on top of a tunnel access PIF - use the underlying transport PIF instead." } ],
     "roles": [ "pool-admin", "pool-operator" ],
     "tag": "",
     "lifecycle": [ 
