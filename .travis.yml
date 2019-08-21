@@ -9,4 +9,4 @@ addons:
 script: bash -ex .travis-ci.sh
 sudo: false
 before_install:
-- gem install bundler -v 1.17.1
+- gem install bundler -v 1.17.2
