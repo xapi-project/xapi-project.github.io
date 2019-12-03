@@ -3,7 +3,7 @@ title: SMAPIv3
 layout: default
 design_doc: true
 revision: 1
-status: proposed
+status: released (7.6)
 ---
 
 Xapi accesses storage through "plugins" which currently use a protocol
