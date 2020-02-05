@@ -2628,7 +2628,7 @@
     "log": "Reflects whether the virtual device is currently connected to a physical device" }, 
   { "transition": "published field",
     "name": "VGPU.device",
-    "log": "Only 1 vGPU with device id 0 is supported" }, 
+    "log": "Order in which the devices are plugged into the VM" }, 
   { "transition": "published field",
     "name": "VGPU.other_config",
     "log": "Additional configuration" }, 
@@ -4100,7 +4100,13 @@
     "name": "VM.set_NVRAM",
     "log": "" } ],
 "oslo": [  ],
-"plymouth": [ 
+"quebec": [ 
+  { "transition": "published field",
+    "name": "Bond.auto_update_mac",
+    "log": "true if the MAC was taken from the primary slave when the bond was created, and false if the client specified the MAC" }, 
+  { "transition": "published field",
+    "name": "VGPU.PCI",
+    "log": "Device passed trough to VM, either as full device or SR-IOV virtual function" }, 
   { "transition": "published field",
     "name": "VGPU.extra_args",
     "log": "Extra arguments for vGPU and passed to demu" }, 
@@ -4116,6 +4122,13 @@
   { "transition": "published message",
     "name": "host.set_uefi_certificates",
     "log": "Sets the UEFI certificates on a host" }, 
-  { "transition": "changed field",
-    "name": "VGPU.device",
-    "log": "Multiple vGPUs are supported, device refers to guest PCI slot" } ] }
+  { "transition": "changed message",
+    "name": "VM.assert_can_boot_here",
+    "log": "Does additional compatibility checks when VM powerstate is not halted (e.g. CPUID). Use this before calling VM.resume or VM.pool_migrate." }, 
+  { "transition": "removed message",
+    "name": "VM.snapshot_with_quiesce",
+    "log": "VSS support has been removed" } ],
+"stockholm": [ 
+  { "transition": "published field",
+    "name": "PUSB.speed",
+    "log": "USB device speed" } ] }
