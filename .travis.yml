@@ -1,4 +1,6 @@
 language: ruby
+os: linux
+dist: xenial
 cache: bundler
 rvm:
   - 2.7.0
@@ -7,6 +9,5 @@ addons:
     packages:
     - libcurl4-openssl-dev
 script: bash -ex .travis-ci.sh
-sudo: false
 before_install:
 - gem install bundler -v 2.0.2
