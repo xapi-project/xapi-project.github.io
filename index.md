@@ -27,8 +27,9 @@ a sub-project of the Linux Foundation Xen Project.
 
 ## Getting the Xapi toolstack
 
-The easiest way is to install
-[open-source XenServer](http://www.xenserver.org/).
+The easiest way to use it is to install
+[Citrix Hypervisor Express Edition](https://www.citrix.com/en-gb/downloads/citrix-hypervisor/)
+or [XCP-ng](https://xcp-ng.org/#easy-to-install).
 
 Otherwise, you can
 
