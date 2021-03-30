@@ -40,7 +40,5 @@ Otherwise, you can
 
 You're welcome to
 
-- join the [xen-api](http://lists.xenproject.org/mailman/listinfo/xen-api)
-  mailing list
 - join the #xen-api channel on freenode
 - checkout the [code on github](https://github.com/xapi-project/)
