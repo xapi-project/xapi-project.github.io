@@ -27,3 +27,5 @@ lima: XenServer 7.6
 naples: Citrix Hypervisor 8.0
 quebec: Citrix Hypervisor 8.1
 stockholm: Citrix Hypervisor 8.2
+stockholm_psr: Citrix Hypervisor 8.2 Hotfix 2
+next: Unreleased
