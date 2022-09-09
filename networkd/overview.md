@@ -13,7 +13,7 @@ Principles
 
 1. **Distro-agnostic**.  Networkd is meant to work on at least CentOS/RHEL as well a Debian/Ubuntu based distros. It therefore should not use any network configuration features specific to those distros.
 
-2. **Stateless**.  By default, networkd should not maintain any state. If you ask networkd anything about a network interface or bridge, or any other network sub-system property, it will always query the underlying system (e.g. an IP address), rather than returning any cached state. However, if you want networkd to configure networking at host boot time, the you can ask it to remember your configuration you have set for any interface or bridge you choose.
+2. **Stateless**.  By default, networkd should not maintain any state. If you ask networkd anything about a network interface or bridge, or any other network sub-system property, it will always query the underlying system (e.g. an IP address), rather than returning any cached state. However, if you want networkd to configure networking at host boot time, then you can ask it to remember the configuration you have set for any interface or bridge you choose.
 
 3. **Idempotent**.  It should be possible to call any networkd function multiple times without breaking things. For example, calling a function to set an IP address on an interface twice in a row should have the same outcome as calling it just once.
 
