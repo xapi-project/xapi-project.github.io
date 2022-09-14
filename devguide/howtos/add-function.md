@@ -24,8 +24,8 @@ The function to describe the new message will look something like the following:
         ~name:"price_of"
         ~in_oss_since:None
         ~in_product_since:rel_orlando
-        ~params:[Ref _host, "host", "The host containing the price information";
-                 String, "item", "The item whose price is queried"]
+        ~params:[(Ref _host, "host", "The host containing the price information");
+                 (String, "item", "The item whose price is queried")]
         ~result:(Float, "The price of the item")
         ~doc:"Returns the price of a named item."
         ~allowed_roles:_R_POOL_OP
@@ -49,13 +49,13 @@ The parameters passed to call are all optional (except ~name and ~in_product_sin
   presence of an existing session.
 
 - The value of the ~in_product_since parameter is a string taken from
-  `idl/datamodel_types.ml` indicating the XenServer release in which this
+  `idl/datamodel_types.ml` indicates the XenServer release in which this
   message was first introduced.
 
 - The ~params parameter describes a list of the formal parameters of the message.
   Each parameter is described by a triple. The first component of the triple is
   the type (from type ty in `idl/datamodel_types.ml`); the second is the name
-  of the parameter; the third is a human-readable description of the parameter.
+  of the parameter, and the third is a human-readable description of the parameter.
   The first triple in the list is conventionally the instance of the class on
   which the message will operate. In the example, this is a reference to the host.
 
@@ -63,7 +63,18 @@ The parameters passed to call are all optional (except ~name and ~in_product_sin
   permitted to merely be a single value rather than a list of values. If no
   ~result is specified, the default is unit.
 
+- The ~doc parameter describes what the message is doing.
+
+- The bool ~hide_from_docs parameter prevents the message from being included in the documentation when generated.
+
+- The bool ~pool_internal parameter is used to indicate if the message should be callable by external systems or only internal hosts. 
+
+- The ~errs parameter is a list of possible exceptions that the message can raise.
+
+- The parameter ~lifecycle takes in an array of (Status, version, doc) to indicate the lifecycle of the message type. This takes over from ~in_oss_since which indicated the release that the message type was introduced. NOTE: Leave this parameter empty, it will be populated on build.
+
 - The ~allowed_roles parameter is used for access control (see below).
+
 
 Compiling `xen-api.(hg|git)` will cause the code corresponding to this message
 to be generated and output in `ocaml/xapi/server.ml`. In the example above, a 
@@ -190,7 +201,7 @@ the Host module:
         info "Host.price_of for item %s" item;
         let local_fn = Local.Host.price_of ~host ~item in
         do_op_on ~local_fn ~__context ~host
-          (fun session_id rpc -> Client.Host.price_of rpc session_id host item)
+          (fun session_id rpc -> Client.Host.price_of ~rpc ~session_id ~host ~item)
 
 After the ~__context parameter, the parameters of this new function should
 match the parameters we specified for the message. In this case, that is the
@@ -220,7 +231,7 @@ Congratulations, you've added a function to the API!
 Add the operation to the CLI
 ----------------------------
 
-Edit `xapi/cli_frontend.ml`. Add a block to the definition of cmdtable_data as
+Edit `xapi-cli-server/cli_frontend.ml`. Add a block to the definition of cmdtable_data as
 in the following example:
 
     "host-price-of",
@@ -249,14 +260,14 @@ Include here the following:
     - *Deprecated of string list:*
 
 Now we must implement `Cli_operations.host_price_of`. This is done in
-`xapi/cli_operations.ml`. This function typically extracts the parameters and
+`xapi-cli-server/cli_operations.ml`. This function typically extracts the parameters and
 forwards them to the internal implementation of the function. Other arbitrary
 code is permitted. For example:
 
     let host_price_of printer rpc session_id params =
       let host = Client.Host.get_by_uuid rpc session_id (List.assoc "host-uuid" params) in
       let item = List.assoc "item" params in
-      let price = string_of_float (Client.Host.price_of rpc session_id host item) in
+      let price = string_of_float (Client.Host.price_of ~rpc ~session_id ~host ~item) in
       printer (Cli_printer.PList [price])
 
 Tab Completion in the CLI
