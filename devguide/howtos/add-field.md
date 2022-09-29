@@ -2,19 +2,19 @@
 title: Adding a field to the API
 layout: default
 ---
-This page describes how to add a field to XenAPI.
+This page describes how to add a field to XenAPI. A field is a parameter of a class that can be used in functions and read from the API. 
 
 Bumping the database schema version
 -----------------------------------
 Whenever a field is added to or removed from the API, its schema version needs
 to be increased. XAPI needs this fundamental procedure in order to be able to
-detect that an automatic database upgrade is necessary, or to find out that the
+detect that an automatic database upgrade is necessary or to find out that the
 new schema is incompatible with the existing database. If the schema version is
 not bumped, XAPI will start failing in unpredictable ways. Note that bumping
 the version is not necessary when adding functions, only when adding fields.
 
 The current version number is kept at the top of the file
-`ocaml/idl/datamodel.ml` in the variables `schema_major_vsn` and
+`ocaml/idl/datamodel_common.ml` in the variables `schema_major_vsn` and
 `schema_minor_vsn`, of which only the latter should be incremented (the major
 version only exists for historical reasons). When moving to a new XenServer
 release, also update the variable `last_release_schema_minor_vsn` to the schema
@@ -53,11 +53,15 @@ new API fields used for ActiveDirectory integration were added:
      -let last_release_schema_minor_vsn = 35
      +let last_release_schema_minor_vsn = 55
 
+### Setting the schema hash
+
+In the `ocaml/idl/schematest.ml` there is the `last_known_schema_hash` This needs to be updated to be the next hash after the schema version was bumped. Get the new hash by running `make test` and you will receive the correct hash in the error message.
+
 Adding the new field to some existing class
 -------------------------------------------
 
-## ocaml/idl/datamodel.ml
-Add a new "field" line to the class in the file `ocaml/idl/datamodel.ml`. The new field might require
+### ocaml/idl/datamodel.ml
+Add a new "field" line to the class in the file `ocaml/idl/datamodel.ml` or `ocaml/idl/datamodel_[class].ml`. The new field might require
 a suitable default value. This default value is used in case the user does not
 provide a value for the field.
 
@@ -86,33 +90,20 @@ Example of a field in the pool class:
 
 See datamodel_types.ml for information about other parameters.
 
+## Changing Constructors
+
 Adding a field would change the constructors for the class – functions
 Db.*.create – and therefore, any references to these in the code need to be
 updated. In the example, the argument ~ha_enabled:false should be added to any
-call to Db.Pool.create.
+call to Db.Pool.create. 
 
-### ocaml/xapi/records.ml
+Examples of where these calls can be found is in `ocaml/tests/common/test_common.ml` and `ocaml/xapi/xapi_[class].ml`.
+
+### CLI Records
 If you want this field to show up in the CLI (which you probably do), you will
 also need to modify the Records module, in the file
-`ocaml/xapi/records.ml`. Find the record function for the class which
-you have modified, add a new entry to the fields list using make_field, which
-has the type:
-
-    Type: ?add_to_set:(string -> unit) ->
-          ?remove_from_set:(string -> unit) ->
-          ?add_to_map:(string -> string -> unit) ->
-          ?remove_from_map:(string -> unit) ->
-          ?set_in_map:(string -> string -> unit) ->
-          ?set:(string -> unit) ->
-          ?get_set:(unit -> string list) ->
-          ?get_map:(unit -> (string * string) list) ->
-          ?expensive:bool ->
-          ?hidden:bool ->
-          ?deprecated:bool ->
-          ?case_insensitive:bool ->
-          name:string ->
-          get:(unit -> string) ->
-          unit -> field
+`ocaml/xapi-cli-server/records.ml`. Find the record function for the class which
+you have modified, add a new entry to the fields list using make_field. This type can be found in the same file.
 
 The only required parameters are name and get (and unit, of course ).
 If your field is a map or set, then you will need to pass in get_{map,set}, and
@@ -146,7 +137,7 @@ automatically. It requires some extra work, however, to enable such operations
 in the CLI.
 
 The CLI has commands such as host-param-list and host-param-get. To make a new
-field accessible by these commands, the file `xapi/records.ml` needs to
+field accessible by these commands, the file `xapi-cli-server/records.ml` needs to
 be edited. For the pool.ha-enabled field, the pool_record function in this file
 contains the following (note the convention to replace underscores by hyphens
 in the CLI):
@@ -159,4 +150,6 @@ in the CLI):
       ...
     ]}
 
-See records.ml for examples of handling field types other than Bool.
+NB: the ~get parameter must return a string so include a relevant function to convert the type of the field into a string i.e. `string_of_bool`
+
+See `xapi-cli-server/records.ml` for examples of handling field types other than Bool.
