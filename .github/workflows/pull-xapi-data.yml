@@ -57,12 +57,13 @@ jobs:
       - name: Commit and push changes
         working-directory: web
         run: |
-          if git diff --quiet ; then
+          if git diff --quiet && git ls-files --other --directory --exclude-standard | sed q1 ; then
             echo "No changes, skipping commit and push step"
           else
             hash=$(git --git-dir=../xapi/.git rev-parse HEAD)
             git config --global user.name 'Github action'
             git config --global user.email 'github-actions-xapi-project-xapi-github-io[bot]@users.noreply.github.com'
-            git commit -am "deploy: https://github.com/xapi-project/xen-api/commit/$hash"
+            git add . # add untracked files as well
+            git commit -m "deploy: https://github.com/xapi-project/xen-api/commit/$hash"
             git push
           fi
