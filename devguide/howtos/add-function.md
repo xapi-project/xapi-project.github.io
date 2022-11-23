@@ -15,8 +15,8 @@ identifier host is defined using create_obj to encapsulate the operations which
 can be performed on a host.
 
 In order to add a function to the API, we need to add a message to an existing
-class. This entails adding a function in `idl/datamodel.ml` to describe the new
-message and adding it to the class's list of messages.
+class. This entails adding a function in `idl/datamodel.ml` or one of the other datamodel files to describe the new
+message and adding it to the class's list of messages. In this example, we are adding to `idl/datamodel_host.ml`.
 
 The function to describe the new message will look something like the following:
 
@@ -225,6 +225,11 @@ We add the following function to `xapi/xapi_host.ml`:
 
     let price_of ~__context ~host ~item =
         if item = "fish" then 3.14 else 0.00
+        
+We also need to add the function to the interface `xapi/xapi_host.mli`:
+
+    val price_of :
+        __context:Context.t -> host:API.ref_host -> item:string -> float
 
 Congratulations, you've added a function to the API!
 
