@@ -19,13 +19,16 @@ jobs:
           path: xapi
           fetch-depth: 256 # hopefully this is enough to pull a tag
 
+      - name: Update ubuntu repos
+        run: apt update
+
       - name: Pull configuration from xs-opam
         run: |
           curl --fail --silent https://raw.githubusercontent.com/xapi-project/xs-opam/master/tools/xs-opam-ci.env | cut -f2 -d " " > .env
 
       - name: Load environment file
         id: dotenv
-        uses: falti/dotenv-action@v0.2.8
+        uses: falti/dotenv-action@v1.0.1
 
       - name: Use ocaml
         uses: ocaml/setup-ocaml@v2
