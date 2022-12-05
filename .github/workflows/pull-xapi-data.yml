@@ -20,7 +20,7 @@ jobs:
           fetch-depth: 256 # hopefully this is enough to pull a tag
 
       - name: Update ubuntu repos
-        run: apt update
+        run: sudo apt update
 
       - name: Pull configuration from xs-opam
         run: |
