@@ -32,13 +32,12 @@ title: XenAPI Reference
 <div class="col-md-9" id="content">
 
 <div class="lifecycle">
-  {% assign cur = obj.lifecycle | last %}
-  {% case cur.transition %}
-  {% when "prototyped" %}
+  {% case obj.lifecycle.state %}
+  {% when "Prototyped_s" %}
     Prototype
-  {% when "deprecated" %}
+  {% when "Deprecated_s" %}
     Deprecated
-  {% when "removed" %}
+  {% when "Removed_s" %}
     Removed
   {% endcase %}
 </div>
@@ -58,7 +57,7 @@ title: XenAPI Reference
 
 <div id="class_{{page.class}}_details" style="display: none">
   <table class="field-table">
-    {% for t in obj.lifecycle %}
+    {% for t in obj.lifecycle.transitions %}
     <tr>
       <td style="white-space: nowrap"><span class="field-head">{{ t.transition | capitalize }}  in:</span></td>
       <td style="white-space: nowrap">{{ site.data.releases[t.release] }} ({{ t.release }})</td>
@@ -96,13 +95,12 @@ title: XenAPI Reference
 {% for x in fields %}
 <div class="{% cycle 'field', 'field2' %}" onclick="showhide(document.getElementById('{{x.name}}_details'))">
   <div class="lifecycle">
-    {% assign cur = x.lifecycle | last %}
-    {% case cur.transition %}
-    {% when "prototyped" %}
+    {% case x.lifecycle.state %}
+    {% when "Prototyped_s" %}
       Prototype
-    {% when "deprecated" %}
+    {% when "Deprecated_s" %}
       Deprecated
-    {% when "removed" %}
+    {% when "Removed_s" %}
       Removed
     {% endcase %}
   </div>
@@ -132,7 +130,7 @@ title: XenAPI Reference
         <td colspan="2">{{x.default}}</td>
       </tr>
       {% endif %}
-      {% for t in x.lifecycle %}
+      {% for t in x.lifecycle.transitions %}
       <tr>
         <td style="white-space: nowrap"><span class="field-head">{{ t.transition | capitalize }}  in:</span></td>
         <td style="white-space: nowrap">{{ site.data.releases[t.release] }} ({{ t.release }})</td>
@@ -154,13 +152,12 @@ title: XenAPI Reference
 <div class="{% cycle 'field', 'field2' %} {% if x.implicit %}implicit{% endif %}"
   onclick="showhide(document.getElementById('{{x.name}}_details'))">
   <div class="lifecycle">
-    {% assign cur = x.lifecycle | last %}
-    {% case cur.transition %}
-    {% when "prototyped" %}
+    {% case x.lifecycle.state %}
+    {% when "Prototyped_s" %}
       Prototype
-    {% when "deprecated" %}
+    {% when "Deprecated_s" %}
       Deprecated
-    {% when "removed" %}
+    {% when "Removed_s" %}
       Removed
     {% endcase %}
   </div>
@@ -208,7 +205,7 @@ title: XenAPI Reference
         <td>{{ e.doc }}</td>
       </tr>
       {% endfor %}
-      {% for t in x.lifecycle %}
+      {% for t in x.lifecycle.transitions %}
       <tr>
         <td style="white-space: nowrap"><span class="field-head">{{ t.transition | capitalize }}  in:</span></td>
         <td style="white-space: nowrap">{{ site.data.releases[t.release] }} ({{ t.release }})</td>
