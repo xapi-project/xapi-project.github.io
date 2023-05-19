@@ -91,7 +91,7 @@ Protocol V2
 
 |value|bits|format|notes|
 |-----|----|------|-----|
-|header string        |(string length)*8|string|"Datasources" as in the V1 protocol                                                     |
+|header string        |(string length)*8|string|"DATASOURCES" as in the V1 protocol                                                     |
 |data checksum        |32               |int32 |binary-encoded crc32 of the concatenation of the encoded timestamp and datasource values|
 |metadata checksum    |32               |int32 |binary-encoded crc32 of the metadata string (see below)                                 |
 |number of datasources|32               |int32 |only needed if the metadata has changed - otherwise RRDD can use a cached value         |
@@ -141,13 +141,13 @@ if header != expected_header:
     raise InvalidHeader()
 if data_checksum == last_data_checksum:
     raise NoUpdate()
-if data_checksum != md5sum(encoded_timestamp_and_values):
+if data_checksum != crc32(encoded_timestamp_and_values):
     raise InvalidChecksum()
 if metadata_checksum == last_metadata_checksum:
     for datasource, value in cached_datasources, values:
         update(datasource, value)
 else:
-    if metadata_checksum != md5sum(metadata):
+    if metadata_checksum != crc32(metadata):
         raise InvalidChecksum()
     cached_datasources = create_datasources(metadata)
     for datasource, value in cached_datasources, values:
