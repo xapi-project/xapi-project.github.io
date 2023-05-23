@@ -59,6 +59,7 @@ This should always be present.
 * The JSON data itself, encoding the values and metadata associated with the
 reported datasources.
 
+### Example
 ```
 {
   "timestamp": 1339685573,
@@ -102,8 +103,21 @@ Protocol V2
 
 All integers/double are bigendian. The metadata will have the same JSON-based format as
 in the V1 protocol, minus the timestamp and `value` key-value pair for each
-datasource, for example:
+datasource.
 
+| field | values | notes | required |
+|-------|--------|-------|----------|
+|description|string|Description of the datasource|no|
+|owner|host \| vm \| sr|The object to which the data relates|no, default host|
+|value_type|int64 \| float|The type of the datasource|yes|
+|type|absolute \| derive \| gauge|The type of measurement being sent. Absolute for counters which are reset on reading, derive stores the derivative of the recorded values (useful for metrics which continually increase like amount of data written since start), gauge for things like temperature|no, default absolute|
+|default|true \| false|Whether the source is default enabled or not|no, default false|
+|units|<TBD>|The units the data should be displayed in|no|
+|min||The minimum value for the datasource|no, default -infinity|
+|max||The maximum value for the datasource|no, default +infinity|
+
+
+### Example
 ```
 {
   "datasources": {
