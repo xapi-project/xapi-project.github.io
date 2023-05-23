@@ -96,11 +96,11 @@ Protocol V2
 |metadata checksum    |32               |int32 |binary-encoded crc32 of the metadata string (see below)                                 |
 |number of datasources|32               |int32 |only needed if the metadata has changed - otherwise RRDD can use a cached value         |
 |timestamp            |64               |int64 |Unix epoch                                                                              |
-|datasource values    |n * 64           |int64 |n is the number of datasources exported by the plugin                                   |
+|datasource values    |n * 64           |int64 \| double |n is the number of datasources exported by the plugin, type dependent on the setting in the metadata for value_type [int64\|float]  |
 |metadata length      |32               |int32 |                                                                                        |
 |metadata             |(string length)*8|string|                                                                                        |
 
-All integers are bigendian. The metadata will have the same JSON-based format as
+All integers/double are bigendian. The metadata will have the same JSON-based format as
 in the V1 protocol, minus the timestamp and `value` key-value pair for each
 datasource, for example:
 
@@ -124,6 +124,27 @@ datasource, for example:
       "type":"absolute",
       "default":"true",
       "units":"B",
+      "min":"-inf",
+      "max":"inf"
+    },
+    {
+    "cpu-temp-cpu0": {
+      "description": "Temperature of CPU 0",
+      "owner":"host",
+      "value_type": "float",
+      "type": "absolute",
+      "default":"true",
+      "units": "degC",
+      "min":"-inf",
+      "max":"inf"
+    },
+    "cpu-temp-cpu1": {
+      "description": "Temperature of CPU 1",
+      "owner":"host",
+      "value_type": "float",
+      "type": "absolute",
+      "default":"true",
+      "units": "degC",
       "min":"-inf",
       "max":"inf"
     }
