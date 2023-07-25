@@ -75,6 +75,7 @@
       - devguide/howtos/add-function.md
       - devguide/howtos/add-api-extension.md
       - devguide/howtos/add-class.md
+      - devguide/howtos/use-forwarded.socket.md
 -
     - title: Design Docs
       docs:
