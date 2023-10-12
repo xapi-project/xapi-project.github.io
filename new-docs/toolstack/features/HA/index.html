@@ -1,0 +1,459 @@
+<!doctype html><html lang=en dir=ltr><head><meta charset=utf-8><meta name=viewport content="height=device-height,width=device-width,initial-scale=1,minimum-scale=1"><meta name=generator content="Hugo 0.119.0"><meta name=generator content="Relearn 5.20.0+tip"><meta name=description content><title>High-Availability :: XAPI Toolstack Developer Documentation</title><link href=/new-docs/images/favicon.png?1697120222 rel=icon type=image/png><link href=/new-docs/css/fontawesome-all.min.css?1697120222 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/fontawesome-all.min.css?1697120222 rel=stylesheet></noscript><link href=/new-docs/css/nucleus.css?1697120222 rel=stylesheet><link href=/new-docs/css/auto-complete.css?1697120222 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/auto-complete.css?1697120222 rel=stylesheet></noscript><link href=/new-docs/css/perfect-scrollbar.min.css?1697120222 rel=stylesheet><link href=/new-docs/css/fonts.css?1697120222 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/fonts.css?1697120222 rel=stylesheet></noscript><link href=/new-docs/css/theme.css?1697120222 rel=stylesheet><link href=/new-docs/css/theme-red.css?1697120222 rel=stylesheet id=variant-style><link href=/new-docs/css/variant.css?1697120222 rel=stylesheet><link href=/new-docs/css/print.css?1697120222 rel=stylesheet media=print><link href=/new-docs/css/ie.css?1697120222 rel=stylesheet><script src=/new-docs/js/url.js?1697120222></script>
+<script src=/new-docs/js/variant.js?1697120222></script>
+<script>window.index_js_url="/new-docs/index.search.js";var root_url="/",baseUriFull,baseUri=root_url.replace(/\/$/,"");window.T_Copy_to_clipboard="Copy to clipboard",window.T_Copied_to_clipboard="Copied to clipboard!",window.T_Copy_link_to_clipboard="Copy link to clipboard",window.T_Link_copied_to_clipboard="Copied link to clipboard!",window.T_No_results_found="No results found for \"{0}\"",window.T_N_results_found="{1} results found for \"{0}\"",baseUriFull="https://xapi-project.github.io/new-docs/",window.variants&&variants.init(["red"])</script></head><body class="mobile-support html" data-url=/new-docs/toolstack/features/HA/index.html><div id=body class=default-animation><div id=sidebar-overlay></div><div id=toc-overlay></div><nav id=topbar class=highlightable><div><div class=navigation><a class="nav nav-next topbar-link" href=/new-docs/toolstack/features/snapshots/index.html title="Snapshots (&#129106;)"><i class="fas fa-chevron-right fa-fw"></i></a></div><div class=navigation><a class="nav nav-prev topbar-link" href=/new-docs/toolstack/features/DR/index.html title="Disaster Recovery (&#129104;)"><i class="fas fa-chevron-left fa-fw"></i></a></div><div id=breadcrumbs><span id=sidebar-toggle-span><a href=# id=sidebar-toggle class=topbar-link title='Menu (CTRL+ALT+n)'><i class="fas fa-bars fa-fw"></i></a></span>
+<span id=toc-menu title='Table of Contents (CTRL+ALT+t)'><i class="fas fa-list-alt fa-fw"></i></span><ol class=links itemscope itemtype=http://schema.org/BreadcrumbList><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/index.html><span itemprop=name>XAPI Toolstack Developer Guide</span></a><meta itemprop=position content="1">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/toolstack/index.html><span itemprop=name>The XAPI Toolstack</span></a><meta itemprop=position content="2">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/toolstack/features/index.html><span itemprop=name>Features</span></a><meta itemprop=position content="3">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><span itemprop=name>High-Availability</span><meta itemprop=position content="4"></li></ol></div><div class="default-animation progress"><div class=toc-wrapper><nav id=TableOfContents><ul><li><a href=#terminology>Terminology</a></li><li><a href=#assumptions>Assumptions</a></li><li><a href=#components>Components</a></li></ul><ul><li><a href=#fencing>Fencing</a></li></ul><ul><li><a href=#disks-on-shared-storage>Disks on shared storage</a></li><li><a href=#the-role-of-hostenabled>The role of Host.enabled</a></li><li><a href=#the-steady-state>The steady-state</a></li><li><a href=#planning-and-overcommit>Planning and overcommit</a></li><li><a href=#overcommit-protection>Overcommit protection</a></li></ul><ul><li><a href=#enabling-ha>Enabling HA</a></li><li><a href=#joining-a-liveset>Joining a liveset</a></li><li><a href=#shutting-down-a-host>Shutting down a host</a></li><li><a href=#restarting-a-host>Restarting a host</a></li><li><a href=#disabling-ha>Disabling HA</a></li><li><a href=#disabling-ha-cleanly>Disabling HA cleanly</a></li><li><a href=#disabling-ha-uncleanly>Disabling HA uncleanly</a></li><li><a href=#add-a-host-to-the-pool>Add a host to the pool</a></li></ul></nav></div></div></div></nav><main id=body-inner class="highlightable default" tabindex=-1><div class=flex-block-wrapper><article class=default><header class=headline></header><h1 id=high-availability>High-Availability</h1><p>High-Availability (HA) tries to keep VMs running, even when there are hardware
+failures in the resource pool, when the admin is not present. Without HA
+the following may happen:</p><ul><li>during the night someone spills a cup of coffee over an FC switch; then</li><li>VMs running on the affected hosts will lose access to their storage; then</li><li>business-critical services will go down; then</li><li>monitoring software will send a text message to an off-duty admin; then</li><li>the admin will travel to the office and fix the problem by restarting
+the VMs elsewhere.</li></ul><p>With HA the following will happen:</p><ul><li>during the night someone spills a cup of coffee over an FC switch; then</li><li>VMs running on the affected hosts will lose access to their storage; then</li><li>business-critical services will go down; then</li><li>the HA software will determine which hosts are affected and shut them down; then</li><li>the HA software will restart the VMs on unaffected hosts; then</li><li>services are restored; then <em>on the next working day</em></li><li>the admin can arrange for the faulty switch to be replaced.</li></ul><p>HA is designed to handle an emergency and allow the admin time to fix
+failures properly.</p><h1 id=example>Example</h1><p>The following diagram shows an HA-enabled pool, before and after a network
+link between two hosts fails.</p><p><a href=#image-bd990b0970c6b2b0cd737bb6fd163501 class=lightbox-link><img src=/new-docs/toolstack/features/HA/ha.png alt="High-Availability in action" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-bd990b0970c6b2b0cd737bb6fd163501><img src=/new-docs/toolstack/features/HA/ha.png alt="High-Availability in action" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>When HA is enabled, all hosts in the pool</p><ul><li>exchange periodic heartbeat messages over the network</li><li>send heartbeats to a shared storage device.</li><li>attempt to acquire a &ldquo;master lock&rdquo; on the shared storage.</li></ul><p>HA is designed to recover as much as possible of the pool after a single failure
+i.e. it removes single points of failure. When some subset of the pool suffers
+a failure then the remaining pool members</p><ul><li>figure out whether they are in the largest fully-connected set (the
+&ldquo;liveset&rdquo;);<ul><li>if they are not in the largest set then they &ldquo;fence&rdquo; themselves (i.e.
+force reboot via the hypervisor watchdog)</li></ul></li><li>elect a master using the &ldquo;master lock&rdquo;</li><li>restart all lost VMs.</li></ul><p>After HA has recovered a pool, it is important that the original failure is
+addressed because the remaining pool members may not be able to cope with
+any more failures.</p><h1 id=design>Design</h1><p>HA must never violate the following safety rules:</p><ol><li>there must be at most one master at all times. This is because the master
+holds the VM and disk locks.</li><li>there must be at most one instance of a particular VM at all times. This
+is because starting the same VM twice will result in severe filesystem
+corruption.</li></ol><p>However to be useful HA must:</p><ul><li>detect failures quickly;</li><li>minimise the number of false-positives in the failure detector; and</li><li>make the failure handling logic as robust as possible.</li></ul><p>The implementation difficulty arises when trying to be both useful and safe
+at the same time.</p><h2 id=terminology>Terminology</h2><p>We use the following terminology:</p><ul><li><em>fencing</em>: also known as I/O fencing, refers to the act of isolating a
+host from network and storage. Once a host has been fenced, any VMs running
+there cannot generate side-effects observable to a third party. This means
+it is safe to restart the running VMs on another node without violating the
+safety-rule and running the same VM simultaneously in two locations.</li><li><em>heartbeating</em>: exchanging status updates with other hosts at regular
+pre-arranged intervals. Heartbeat messages reveal that hosts are alive
+and that I/O paths are working.</li><li><em>statefile</em>: a shared disk (also known as a &ldquo;quorum disk&rdquo;) on the &ldquo;Heartbeat&rdquo;
+SR which is mapped as a block device into every host&rsquo;s domain 0. The shared
+disk acts both as a channel for heartbeat messages and also as a building
+block of a Pool master lock, to prevent multiple hosts becoming masters in
+violation of the safety-rule (a dangerous situation also known as
+&ldquo;split-brain&rdquo;).</li><li><em>management network</em>: the network over which the XenAPI XML/RPC requests
+flow and also used to send heartbeat messages.</li><li><em>liveset</em>: a per-Host view containing a subset of the Hosts in the Pool
+which are considered by that Host to be alive i.e. responding to XenAPI
+commands and running the VMs marked as <code>resident_on</code> there. When a Host <code>b</code>
+leaves the liveset as seen by Host <code>a</code> it is safe for Host <code>a</code> to assume
+that Host <code>b</code> has been fenced and to take recovery actions (e.g. restarting
+VMs), without violating either of the safety-rules.</li><li><em>properly shared SR</em>: an SR which has field <code>shared=true</code>; and which has a
+<code>PBD</code> connecting it to every <code>enabled</code> Host in the Pool; and where each of
+these <code>PBD</code>s has field <code>currently_attached</code> set to true. A VM whose disks
+are in a properly shared SR could be restarted on any <code>enabled</code> Host,
+memory and network permitting.</li><li><em>properly shared Network</em>: a Network which has a <code>PIF</code> connecting it to
+every <code>enabled</code> Host in the Pool; and where each of these <code>PIF</code>s has
+field <code>currently_attached</code> set to true. A VM whose VIFs connect to
+properly shared Networks could be restarted on any <code>enabled</code> Host,
+memory and storage permitting.</li><li><em>agile</em>: a VM is said to be agile if all disks are in properly shared SRs
+and all network interfaces connect to properly shared Networks.</li><li><em>unprotected</em>: an unprotected VM has field <code>ha_always_run</code> set to false
+and will never be restarted automatically on failure
+or have reconfiguration actions blocked by the HA overcommit protection.</li><li><em>best-effort</em>: a best-effort VM has fields <code>ha_always_run</code> set to true and
+<code>ha_restart_priority</code> set to best-effort.
+A best-effort VM will only be restarted if (i) the failure is directly
+observed; and (ii) capacity exists for an immediate restart.
+No more than one restart attempt will ever be made.</li><li><em>protected</em>: a VM is said to be protected if it will be restarted by HA
+i.e. has field <code>ha_always_run</code> set to true and
+field <code>ha_restart_priority</code> not set to `best-effort.</li><li><em>survival rule 1</em>: describes the situation where hosts survive
+because they are in the largest network partition with statefile access.
+This is the normal state of the <code>xhad</code> daemon.</li><li><em>survival rule 2</em>: describes the situation where <em>all</em> hosts have lost
+access to the statefile but remain alive
+while they can all see each-other on the network. In this state any further
+failure will cause all nodes to self-fence.
+This state is intended to cope with the system-wide temporary loss of the
+storage service underlying the statefile.</li></ul><h2 id=assumptions>Assumptions</h2><p>We assume:</p><ul><li>All I/O used for monitoring the health of hosts (i.e. both storage and
+network-based heartbeating) is along redundant paths, so that it survives
+a single hardware failure (e.g. a broken switch or an accidentally-unplugged
+cable). It is up to the admin to ensure their environment is setup correctly.</li><li>The hypervisor watchdog mechanism will be able to guarantee the isolation
+of nodes, once communication has been lost, within a pre-arranged time
+period. Therefore no active power fencing equipment is required.</li><li>VMs may only be marked as <em>protected</em> if they are fully <em>agile</em> i.e. able
+to run on any host, memory permitting. No additional constraints of any kind
+may be specified e.g. it is not possible to make &ldquo;CPU reservations&rdquo;.</li><li>Pools are assumed to be homogenous with respect to CPU type and presence of
+VT/SVM support (also known as &ldquo;HVM&rdquo;). If a Pool is created with
+non-homogenous hosts using the <code>--force</code> flag then the additional
+constraints will not be noticed by the VM failover planner resulting in
+runtime failures while trying to execute the failover plans.</li><li>No attempt will ever be made to shutdown or suspend &ldquo;lower&rdquo; priority VMs
+to guarantee the survival of &ldquo;higher&rdquo; priority VMs.</li><li>Once HA is enabled it is not possible to reconfigure the management network
+or the SR used for storage heartbeating.</li><li>VMs marked as <em>protected</em> are considered to have failed if they are offline
+i.e. the VM failure handling code is level-sensitive rather than
+edge-sensitive.</li><li>VMs marked as <em>best-effort</em> are considered to have failed only when the host
+where they are resident is declared offline
+i.e. the best-effort VM failure handling code is edge-sensitive rather than
+level-sensitive.
+A single restart attempt is attempted and if this fails no further start is
+attempted.</li><li>HA can only be enabled if all Pool hosts are online and actively responding
+to requests.</li><li>when HA is enabled the database is configured to write all updates to
+the &ldquo;Heartbeat&rdquo; SR, guaranteeing that VM configuration changes are not lost
+when a host fails.</li></ul><h2 id=components>Components</h2><p>The implementation is split across the following components:</p><ul><li><a href=https://github.com/xenserver/xha target=_blank>xhad</a>: the cluster membership daemon
+maintains a quorum of hosts through network and storage heartbeats</li><li><a href=https://github.com/xapi-project/xen-api target=_blank>xapi</a>: used to configure the
+HA policy i.e. which network and storage to use for heartbeating and which
+VMs to restart after a failure.</li><li><a href=http://xenproject.org/ target=_blank>xen</a>: the Xen watchdog is used to reliably
+fence the host when the host has been (partially or totally) isolated
+from the cluster</li></ul><p>To avoid a &ldquo;split-brain&rdquo;, the cluster membership daemon must &ldquo;fence&rdquo; (i.e.
+isolate) nodes when they are not part of the cluster. In general there are
+2 approaches:</p><ul><li>cut the power of remote hosts which you can&rsquo;t talk to on the network
+any more. This is the approach taken by most open-source clustering
+software since it is simpler. However it has the downside of requiring
+the customer buy more hardware and set it up correctly.</li><li>rely on the remote hosts using a watchdog to cut their own power (i.e.
+halt or reboot) after a timeout. This relies on the watchdog being
+reliable. Most other people <a href=https://www.suse.com/documentation/sle_ha/singlehtml/book_sleha/book_sleha.html target=_blank>don&rsquo;t trust the Linux watchdog</a>;
+after all the Linux kernel is highly threaded, performs a lot of (useful)
+functions and kernel bugs which result in deadlocks do happen.
+We use the Xen watchdog because we believe that the Xen hypervisor is
+simple enough to reliably fence the host (via triggering a reboot of
+domain 0 which then triggers a host reboot).</li></ul><h1 id=xhad>xhad</h1><p><a href=https://github.com/xenserver/xha target=_blank>xhad</a> is the cluster membership daemon:
+it exchanges heartbeats with the other nodes to determine which nodes are
+still in the cluster (the &ldquo;live set&rdquo;) and which nodes have <em>definitely</em>
+failed (through watchdog fencing). When a host has definitely failed, xapi
+will unlock all the disks and restart the VMs according to the HA policy.</p><p>Since Xapi is a critical part of the system, the xhad also acts as a
+Xapi watchdog. It polls Xapi every few seconds and checks if Xapi can
+respond. If Xapi seems to have failed then xhad will restart it. If restarts
+continue to fail then xhad will consider the host to have failed and
+self-fence.</p><p>xhad is configured via a simple config file written on each host in
+<code>/etc/xensource/xhad.conf</code>. The file must be identical on each host
+in the cluster. To make changes to the file, HA must be disabled and then
+re-enabled afterwards. Note it may not be possible to re-enable HA depending
+on the configuration change (e.g. if a host has been added but that host has
+a broken network configuration then this will block HA enable).</p><p>The xhad.conf file is written in XML and contains</p><ul><li>pool-wide configuration: this includes a list of all hosts which should
+be in the liveset and global timeout information</li><li>local host configuration: this identifies the local host and described
+which local network interface and block device to use for heartbeating.</li></ul><p>The following is an example xhad.conf file:</p><div class="wrap-code highlight"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-xml data-lang=xml><span style=display:flex><span><span style=color:#75715e>&lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34;?&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;xhad-config</span> <span style=color:#a6e22e>version=</span><span style=color:#e6db74>&#34;1.0&#34;</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>&lt;!--pool-wide configuration--&gt;</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&lt;common-config&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;GenerationUUID&gt;</span>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx<span style=color:#f92672>&lt;/GenerationUUID&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;UDPport&gt;</span>694<span style=color:#f92672>&lt;/UDPport&gt;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>&lt;!--for each host, specify host UUID, and IP address--&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;host&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;HostID&gt;</span>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx<span style=color:#f92672>&lt;/HostID&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;IPaddress&gt;</span>xxx.xxx.xxx.xx1<span style=color:#f92672>&lt;/IPaddress&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;/host&gt;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;host&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;HostID&gt;</span>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx<span style=color:#f92672>&lt;/HostID&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;IPaddress&gt;</span>xxx.xxx.xxx.xx2<span style=color:#f92672>&lt;/IPaddress&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;/host&gt;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;host&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;HostID&gt;</span>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx<span style=color:#f92672>&lt;/HostID&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;IPaddress&gt;</span>xxx.xxx.xxx.xx3<span style=color:#f92672>&lt;/IPaddress&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;/host&gt;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>&lt;!--optional parameters [sec] --&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;parameters&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;HeartbeatInterval&gt;</span>4<span style=color:#f92672>&lt;/HeartbeatInterval&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;HeartbeatTimeout&gt;</span>30<span style=color:#f92672>&lt;/HeartbeatTimeout&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;StateFileInterval&gt;</span>4<span style=color:#f92672>&lt;/StateFileInterval&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;StateFileTimeout&gt;</span>30<span style=color:#f92672>&lt;/StateFileTimeout&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;HeartbeatWatchdogTimeout&gt;</span>30<span style=color:#f92672>&lt;/HeartbeatWatchdogTimeout&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;StateFileWatchdogTimeout&gt;</span>45<span style=color:#f92672>&lt;/StateFileWatchdogTimeout&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;BootJoinTimeout&gt;</span>90<span style=color:#f92672>&lt;/BootJoinTimeout&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;EnableJoinTimeout&gt;</span>90<span style=color:#f92672>&lt;/EnableJoinTimeout&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;XapiHealthCheckInterval&gt;</span>60<span style=color:#f92672>&lt;/XapiHealthCheckInterval&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;XapiHealthCheckTimeout&gt;</span>10<span style=color:#f92672>&lt;/XapiHealthCheckTimeout&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;XapiRestartAttempts&gt;</span>1<span style=color:#f92672>&lt;/XapiRestartAttempts&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;XapiRestartTimeout&gt;</span>30<span style=color:#f92672>&lt;/XapiRestartTimeout&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;XapiLicenseCheckTimeout&gt;</span>30<span style=color:#f92672>&lt;/XapiLicenseCheckTimeout&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;/parameters&gt;</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&lt;/common-config&gt;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>&lt;!--local host configuration--&gt;</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&lt;local-config&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;localhost&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;HostID&gt;</span>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx2<span style=color:#f92672>&lt;/HostID&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;HeartbeatInterface&gt;</span> xapi1<span style=color:#f92672>&lt;/HeartbeatInterface&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;HeartbeatPhysicalInterface&gt;</span>bond0<span style=color:#f92672>&lt;/HeartbeatPhysicalInterface&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;StateFile&gt;</span>/dev/statefiledevicename<span style=color:#f92672>&lt;/StateFile&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;/localhost&gt;</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&lt;/local-config&gt;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;/xhad-config&gt;</span></span></span></code></pre></div><p>The fields have the following meaning:</p><ul><li>GenerationUUID: a UUID generated each time HA is reconfigured. This allows
+xhad to tell an old host which failed; had been removed from the
+configuration; repaired and then restarted that the world has changed
+while it was away.</li><li>UDPport: the port number to use for network heartbeats. It&rsquo;s important
+to allow this traffic through the firewall and to make sure the same
+port number is free on all hosts (beware of portmap services occasionally
+binding to it).</li><li>HostID: a UUID identifying a host in the pool. We would normally use
+xapi&rsquo;s notion of a host uuid.</li><li>IPaddress: any IP address on the remote host. We would normally use
+xapi&rsquo;s notion of a management network.</li><li>HeartbeatTimeout: if a heartbeat packet is not received for this many
+seconds, then xhad considers the heartbeat to have failed. This is
+the user-supplied &ldquo;HA timeout&rdquo; value, represented below as <code>T</code>.
+<code>T</code> must be bigger than 10; we would normally use 60s.</li><li>StateFileTimeout: if a storage update is not seen for a host for this
+many seconds, then xhad considers the storage heartbeat to have failed.
+We would normally use the same value as the HeartbeatTimeout <code>T</code>.</li><li>HeartbeatInterval: interval between heartbeat packets sent. We would
+normally use a value <code>2 &lt;= t &lt;= 6</code>, derived from the user-supplied
+HA timeout via <code>t = (T + 10) / 10</code></li><li>StateFileInterval: interval betwen storage updates (also known as
+&ldquo;statefile updates&rdquo;). This would normally be set to the same value as
+HeartbeatInterval.</li><li>HeartbeatWatchdogTimeout: If the host does not send a heartbeat for this
+amount of time then the host self-fences via the Xen watchdog. We normally
+set this to <code>T</code>.</li><li>StateFileWatchdogTimeout: If the host does not update the statefile for
+this amount of time then the host self-fences via the Xen watchdog. We
+normally set this to <code>T+15</code>.</li><li>BootJoinTimeout: When the host is booting and joining the liveset (i.e.
+the cluster), consider the join a failure if it takes longer than this
+amount of time. We would normally set this to <code>T+60</code>.</li><li>EnableJoinTimeout: When the host is enabling HA for the first time,
+consider the enable a failure if it takes longer than this amount of time.
+We would normally set this to <code>T+60</code>.</li><li>XapiHealthCheckInterval: Interval between &ldquo;health checks&rdquo; where we run
+a script to check whether Xapi is responding or not.</li><li>XapiHealthCheckTimeout: Number of seconds to wait before assuming that
+Xapi has deadlocked during a &ldquo;health check&rdquo;.</li><li>XapiRestartAttempts: Number of Xapi restarts to attempt before concluding
+Xapi has permanently failed.</li><li>XapiRestartTimeout: Number of seconds to wait for a Xapi restart to
+complete before concluding it has failed.</li><li>XapiLicenseCheckTimeout: Number of seconds to wait for a Xapi license
+check to complete before concluding that xhad should terminate.</li></ul><p>In addition to the config file, Xhad exposes a simple control API which
+is exposed as scripts:</p><ul><li><code>ha_set_pool_state (Init | Invalid)</code>: sets the global pool state to &ldquo;Init&rdquo; (before starting
+HA) or &ldquo;Invalid&rdquo; (causing all other daemons who can see the statefile to
+shutdown)</li><li><code>ha_start_daemon</code>: if the pool state is &ldquo;Init&rdquo; then the daemon will
+attempt to contact other daemons and enable HA. If the pool state is
+&ldquo;Active&rdquo; then the host will attempt to join the existing liveset.</li><li><code>ha_query_liveset</code>: returns the current state of the cluster.</li><li><code>ha_propose_master</code>: returns whether the current node has been
+elected pool master.</li><li><code>ha_stop_daemon</code>: shuts down the xhad on the local host. Note this
+will not disarm the Xen watchdog by itself.</li><li><code>ha_disarm_fencing</code>: disables fencing on the local host.</li><li><code>ha_set_excluded</code>: when a host is being shutdown cleanly, record the
+fact that the VMs have all been shutdown so that this host can be ignored
+in future cluster membership calculations.</li></ul><h2 id=fencing>Fencing</h2><p>Xhad continuously monitors whether the host should remain alive, or if
+it should self-fence. There are two &ldquo;survival rules&rdquo; which will keep a host
+alive; if neither rule applies (or if xhad crashes or deadlocks) then the
+host will fence. The rules are:</p><ol><li>Xapi is running; the storage heartbeats are visible; this host is a
+member of the &ldquo;best&rdquo; partition (as seen through the storage heartbeats)</li><li>Xapi is running; the storage is inaccessible; all hosts which should
+be running (i.e. not those &ldquo;excluded&rdquo; by being cleanly shutdown) are
+online and have also lost storage access (as seen through the network
+heartbeats).</li></ol><p>where the &ldquo;best&rdquo; partition is the largest one if that is unique, or if there
+are multiple partitions of the same size then the one containing the lowest
+host uuid is considered best.</p><p>The first survival rule is the &ldquo;normal&rdquo; case. The second rule exists only
+to prevent the storage from becoming a single point of failure: all hosts
+can remain alive until the storage is repaired. Note that if a host has
+failed and has not yet been repaired, then the storage becomes a single
+point of failure for the degraded pool. HA removes single point of failures,
+but multiple failures can still cause problems. It is important to fix
+failures properly after HA has worked around them.</p><h1 id=xapi>xapi</h1><p><a href=https://github.com/xapi-project/xen-api target=_blank>Xapi</a> is responsible for</p><ul><li>exposing an interface for setting HA policy</li><li>creating VDIs (disks) on shared storage for heartbeating and storing
+the pool database</li><li>arranging for these disks to be attached on host boot, before the &ldquo;SRmaster&rdquo;
+is online</li><li>configuring and managing the <code>xhad</code> heartbeating daemon</li></ul><p>The HA policy APIs include</p><ul><li>methods to determine whether a VM is <em>agile</em> i.e. can be restarted in
+principle on any host after a failure</li><li>planning for a user-specified number of host failures and enforcing
+access control</li><li>restarting failed <em>protected</em> VMs in policy order</li></ul><p>The HA policy settings are stored in the Pool database which is written
+(synchronously)
+to a VDI in the same SR that&rsquo;s being used for heartbeating. This ensures
+that the database can be recovered after a host fails and the VMs are
+recovered.</p><p>Xapi stores 2 settings in its local database:</p><ul><li><em>ha_disable_failover_actions</em>: this is set to false when we want nodes
+to be able to recover VMs &ndash; this is the normal case. It is set to true
+during the HA disable process to prevent a split-brain forming while
+HA is only partially enabled.</li><li><em>ha_armed</em>: this is set to true to tell Xapi to start <code>Xhad</code> during
+host startup and wait to join the liveset.</li></ul><h2 id=disks-on-shared-storage>Disks on shared storage</h2><p>The regular disk APIs for creating, destroying, attaching, detaching (etc)
+disks need the <code>SRmaster</code> (usually but not always the Pool master) to be
+online to allow the disks to be locked. The <code>SRmaster</code> cannot be brought
+online until the host has joined the liveset. Therefore we have a
+cyclic dependency: joining the liveset needs the statefile disk to be attached
+but attaching a disk requires being a member of the liveset already.</p><p>The dependency is broken by adding an explicit &ldquo;unlocked&rdquo; attach storage
+API called <code>VDI_ATTACH_FROM_CONFIG</code>. Xapi uses the <code>VDI_GENERATE_CONFIG</code> API
+during the HA enable operation and stores away the result. When the system
+boots the <code>VDI_ATTACH_FROM_CONFIG</code> is able to attach the disk without the
+SRmaster.</p><h2 id=the-role-of-hostenabled>The role of Host.enabled</h2><p>The <code>Host.enabled</code> flag is used to mean, &ldquo;this host is ready to start VMs and
+should be included in failure planning&rdquo;.
+The VM restart planner assumes for simplicity that all <em>protected</em> VMs can
+be started anywhere; therefore all involved networks and storage must be
+<em>properly shared</em>.
+If a host with an unplugged <code>PBD</code> were to become enabled then the corresponding
+<code>SR</code> would cease to be <em>properly shared</em>, all the VMs would cease to be
+<em>agile</em> and the VM restart logic would fail.</p><p>To ensure the VM restart logic always works, great care is taken to make
+sure that Hosts may only become enabled when their networks and storage are
+properly configured. This is achieved by:</p><ul><li>when the master boots and initialises its database it sets all Hosts to
+dead and disabled and then signals the HA background thread
+(<a href=https://github.com/xapi-project/xen-api/blob/0bbd4f5ac5fe46f9e982e5d5587ac56ed8427295/ocaml/xapi/xapi_ha.ml#L627 target=_blank>signal_database_state_valid</a>)
+to wake up from sleep and
+start processing liveset information (and potentially setting hosts to live)</li><li>when a slave calls
+<a href=https://github.com/xapi-project/xen-api/blob/0bbd4f5ac5fe46f9e982e5d5587ac56ed8427295/ocaml/xapi/xapi_pool.ml#L1019 target=_blank>Pool.hello</a>
+(i.e. after the slave has rebooted),
+the master sets it to disabled, allowing it a grace period to plug in its
+storage;</li><li>when a host (master or slave) successfully plugs in its networking and
+storage it calls
+<a href=https://github.com/xapi-project/xen-api/blob/0bbd4f5ac5fe46f9e982e5d5587ac56ed8427295/ocaml/xapi/xapi_host_helpers.ml#L193 target=_blank>consider_enabling_host</a>
+which checks that the
+preconditions are met and then sets the host to enabled; and</li><li>when a slave notices its database connection to the master restart
+(i.e. after the master <code>xapi</code> has just restarted) it calls
+<code>consider_enabling_host}</code></li></ul><h2 id=the-steady-state>The steady-state</h2><p>When HA is enabled and all hosts are running normally then each calls
+<code>ha_query_liveset</code> every 10s.</p><p>Slaves check to see if the host they believe is the master is alive and has
+the master lock. If another node has become master then the slave will
+rewrite its <code>pool.conf</code> and restart. If no node is the master then the
+slave will call
+<a href=https://github.com/xapi-project/xen-api/blob/0bbd4f5ac5fe46f9e982e5d5587ac56ed8427295/ocaml/xapi/xapi_ha.ml#L129 target=_blank>on_master_failure</a>,
+proposing itself and, if it is rejected,
+checking the liveset to see which node acquired the lock.</p><p>The master monitors the liveset and updates the <code>Host_metrics.live</code> flag
+of every host to reflect the liveset value. For every host which is not in
+the liveset (i.e. has fenced) it enumerates all resident VMs and marks them
+as <code>Halted</code>. For each protected VM which is not running, the master computes
+a VM restart plan and attempts to execute it. If the plan fails then a
+best-effort <code>VM.start</code> call is attempted. Finally an alert is generated if
+the VM could not be restarted.</p><p>Note that XenAPI heartbeats are still sent when HA is enabled, even though
+they are not used to drive the values of the <code>Host_metrics.live</code> field.
+Note further that, when a host is being shutdown, the host is immediately
+marked as dead and its host reference is added to a list used to prevent the
+<code>Host_metrics.live</code> being accidentally reset back to live again by the
+asynchronous liveset query. The Host reference is removed from the list when
+the host restarts and calls <code>Pool.hello</code>.</p><h2 id=planning-and-overcommit>Planning and overcommit</h2><p>The VM failover planning code is sub-divided into two pieces, stored in
+separate files:</p><ul><li><a href=https://github.com/xapi-project/xen-api/blob/0bbd4f5ac5fe46f9e982e5d5587ac56ed8427295/ocaml/xapi/binpack.ml target=_blank>binpack.ml</a>: contains two algorithms for packing items of different sizes
+(i.e. VMs) into bins of different sizes (i.e. Hosts); and</li><li><a href=https://github.com/xapi-project/xen-api/blob/0bbd4f5ac5fe46f9e982e5d5587ac56ed8427295/ocaml/xapi/xapi_ha_vm_failover.ml target=_blank>xapi_ha_vm_failover.ml</a>: interfaces between the Pool database and the
+binpacker; also performs counterfactual reasoning for overcommit protection.</li></ul><p>The input to the binpacking algorithms are configuration values which
+represent an abstract view of the Pool:</p><div class="wrap-code highlight"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ocaml data-lang=ocaml><span style=display:flex><span><span style=color:#66d9ef>type</span> <span style=color:#f92672>(</span><span style=color:#66d9ef>&#39;</span>a<span style=color:#f92672>,</span> <span style=color:#66d9ef>&#39;</span>b<span style=color:#f92672>)</span> configuration <span style=color:#f92672>=</span> <span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>  hosts<span style=color:#f92672>:</span>        <span style=color:#f92672>(</span><span style=color:#66d9ef>&#39;</span>a <span style=color:#f92672>*</span> int64<span style=color:#f92672>)</span> <span style=color:#66d9ef>list</span><span style=color:#f92672>;</span> <span style=color:#75715e>(** a list of live hosts and free memory *)</span>
+</span></span><span style=display:flex><span>  vms<span style=color:#f92672>:</span>          <span style=color:#f92672>(</span><span style=color:#66d9ef>&#39;</span>b <span style=color:#f92672>*</span> int64<span style=color:#f92672>)</span> <span style=color:#66d9ef>list</span><span style=color:#f92672>;</span> <span style=color:#75715e>(** a list of VMs and their memory requirements *)</span>
+</span></span><span style=display:flex><span>  placement<span style=color:#f92672>:</span>    <span style=color:#f92672>(</span><span style=color:#66d9ef>&#39;</span>b <span style=color:#f92672>*</span> <span style=color:#66d9ef>&#39;</span>a<span style=color:#f92672>)</span> <span style=color:#66d9ef>list</span><span style=color:#f92672>;</span>    <span style=color:#75715e>(** current VM locations *)</span>
+</span></span><span style=display:flex><span>  total_hosts<span style=color:#f92672>:</span>  <span style=color:#66d9ef>int</span><span style=color:#f92672>;</span>               <span style=color:#75715e>(** total number of hosts in the pool &#39;n&#39; *)</span>
+</span></span><span style=display:flex><span>  num_failures<span style=color:#f92672>:</span> <span style=color:#66d9ef>int</span><span style=color:#f92672>;</span>               <span style=color:#75715e>(** number of failures to tolerate &#39;r&#39; *)</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span></span></span></code></pre></div><p>Note that:</p><ul><li>the memory required by the VMs listed in <code>placement</code> has already been
+substracted from the total memory of the hosts; it doesn&rsquo;t need to be
+subtracted again.</li><li>the free memory of each host has already had per-host miscellaneous
+overheads subtracted from it, including that used by unprotected VMs,
+which do not appear in the VM list.</li><li>the total number of hosts in the pool (<code>total_hosts</code>) is a constant for
+any particular invocation of HA.</li><li>the number of failures to tolerate (<code>num_failures</code>) is the user-settable
+value from the XenAPI <code>Pool.ha_host_failures_to_tolerate</code>.</li></ul><p>There are two algorithms which satisfy the interface:</p><div class="wrap-code highlight"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ocaml data-lang=ocaml><span style=display:flex><span><span style=color:#66d9ef>sig</span>
+</span></span><span style=display:flex><span>  plan_always_possible<span style=color:#f92672>:</span> <span style=color:#f92672>(</span><span style=color:#66d9ef>&#39;</span>a<span style=color:#f92672>,</span> <span style=color:#66d9ef>&#39;</span>b<span style=color:#f92672>)</span> configuration <span style=color:#f92672>-&gt;</span> <span style=color:#66d9ef>bool</span><span style=color:#f92672>;</span>
+</span></span><span style=display:flex><span>  get_specific_plan<span style=color:#f92672>:</span> <span style=color:#f92672>(</span><span style=color:#66d9ef>&#39;</span>a<span style=color:#f92672>,</span> <span style=color:#66d9ef>&#39;</span>b<span style=color:#f92672>)</span> configuration <span style=color:#f92672>-&gt;</span> <span style=color:#66d9ef>&#39;</span>b <span style=color:#66d9ef>list</span> <span style=color:#f92672>-&gt;</span> <span style=color:#f92672>(</span><span style=color:#66d9ef>&#39;</span>b <span style=color:#f92672>*</span> <span style=color:#66d9ef>&#39;</span>a<span style=color:#f92672>)</span> <span style=color:#66d9ef>list</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>end</span></span></span></code></pre></div><p>The function <code>get_specific_plan</code> takes a configuration and a list of Hosts
+which have failed. It returns a VM restart plan represented as a VM to Host
+association list. This is the function called by the
+background HA VM restart thread on the master.</p><p>The function <code>plan_always_possible</code> returns true if every sequence of Host
+failures of length
+<code>num_failures</code> (irrespective of whether all hosts failed at once, or in
+multiple separate episodes)
+would result in calls to <code>get_specific_plan</code> which would allow all protected
+VMs to be restarted.
+This function is heavily used by the overcommit protection logic as well as code in XenCenter which aims to
+maximise failover capacity using the counterfactual reasoning APIs:</p><div class="wrap-code highlight"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ocaml data-lang=ocaml><span style=display:flex><span>Pool.ha_compute_max_host_failures_to_tolerate
+</span></span><span style=display:flex><span>Pool.ha_compute_hypothetical_max_host_failures_to_tolerate</span></span></code></pre></div><p>There are two binpacking algorithms: the more detailed but expensive
+algorithmm is used for smaller/less
+complicated pool configurations while the less detailed, cheaper algorithm
+is used for the rest. The
+choice between algorithms is based only on <code>total_hosts</code> (<code>n</code>) and
+<code>num_failures</code> (<code>r</code>).
+Note that the choice of algorithm will only change if the number of Pool
+hosts is varied (requiring HA to be disabled and then enabled) or if the
+user requests a new <code>num_failures</code> target to plan for.</p><p>The expensive algorithm uses an exchaustive search with a
+&ldquo;biggest-fit-decreasing&rdquo; strategy that
+takes the biggest VMs first and allocates them to the biggest remaining Host.
+The implementation keeps the VMs and Hosts as sorted lists throughout.
+There are a number of transformations to the input configuration which are
+guaranteed to preserve the existence of a VM to host allocation (even if
+the actual allocation is different). These transformations which are safe
+are:</p><ul><li>VMs may be removed from the list</li><li>VMs may have their memory requirements reduced</li><li>Hosts may be added</li><li>Hosts may have additional memory added.</li></ul><p>The cheaper algorithm is used for larger Pools where the state space to
+search is too large. It uses the same &ldquo;biggest-fit-decreasing&rdquo; strategy
+with the following simplifying approximations:</p><ul><li>every VM that fails is as big as the biggest</li><li>the number of VMs which fail due to a single Host failure is always the
+maximum possible (even if these are all very small VMs)</li><li>the largest and most capable Hosts fail</li></ul><p>An informal argument that these approximations are safe is as follows:
+if the maximum <em>number</em> of VMs fail, each of which is size of the largest
+and we can find a restart plan using only the smaller hosts then any real
+failure:</p><ul><li>can never result in the failure of more VMs;</li><li>can never result in the failure of bigger VMs; and</li><li>can never result in less host capacity remaining.</li></ul><p>Therefore we can take this <em>almost-certainly-worse-than-worst-case</em> failure
+plan and:</p><ul><li>replace the remaining hosts in the worst case plan with the real remaining
+hosts, which will be the same size or larger; and</li><li>replace the failed VMs in the worst case plan with the real failed VMs,
+which will be fewer or the same in number and smaller or the same in size.</li></ul><p>Note that this strategy will perform best when each host has the same number
+of VMs on it and when all VMs are approximately the same size. If one very big
+VM exists and a lot of smaller VMs then it will probably fail to find a plan.
+It is more tolerant of differing amounts of free host memory.</p><h2 id=overcommit-protection>Overcommit protection</h2><p>Overcommit protection blocks operations which would prevent the Pool being
+able to restart <em>protected</em> VMs after host failure.
+The Pool may become unable to restart protected VMs in two general ways:
+(i) by running out of resource i.e. host memory; and (ii) by altering host
+configuration in such a way that VMs cannot be started (or the planner
+thinks that VMs cannot be started).</p><p>API calls which would change the amount of host memory currently in use
+(<code>VM.start</code>, <code>VM.resume</code>, <code>VM.migrate</code> etc)
+have been modified to call the planning functions supplying special
+&ldquo;configuration change&rdquo; parameters.
+Configuration change values represent the proposed operation and have type</p><div class="wrap-code highlight"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ocaml data-lang=ocaml><span style=display:flex><span><span style=color:#66d9ef>type</span> configuration_change <span style=color:#f92672>=</span> <span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>(** existing VMs which are leaving *)</span>
+</span></span><span style=display:flex><span>  old_vms_leaving<span style=color:#f92672>:</span> <span style=color:#f92672>(</span>API.ref_host <span style=color:#f92672>*</span> <span style=color:#f92672>(</span>API.ref_VM <span style=color:#f92672>*</span> API.vM_t<span style=color:#f92672>))</span> <span style=color:#66d9ef>list</span><span style=color:#f92672>;</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>(** existing VMs which are arriving *)</span>
+</span></span><span style=display:flex><span>  old_vms_arriving<span style=color:#f92672>:</span> <span style=color:#f92672>(</span>API.ref_host <span style=color:#f92672>*</span> <span style=color:#f92672>(</span>API.ref_VM <span style=color:#f92672>*</span> API.vM_t<span style=color:#f92672>))</span> <span style=color:#66d9ef>list</span><span style=color:#f92672>;</span>  
+</span></span><span style=display:flex><span>  <span style=color:#75715e>(** hosts to pretend to disable *)</span>
+</span></span><span style=display:flex><span>  hosts_to_disable<span style=color:#f92672>:</span> API.ref_host <span style=color:#66d9ef>list</span><span style=color:#f92672>;</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>(** new number of failures to consider *)</span>
+</span></span><span style=display:flex><span>  num_failures<span style=color:#f92672>:</span> <span style=color:#66d9ef>int</span> option<span style=color:#f92672>;</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>(** new VMs to restart *)</span>  
+</span></span><span style=display:flex><span>  new_vms_to_protect<span style=color:#f92672>:</span> API.ref_VM <span style=color:#66d9ef>list</span><span style=color:#f92672>;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span></span></span></code></pre></div><p>A VM migration will be represented by saying the VM is &ldquo;leaving&rdquo; one host and
+&ldquo;arriving&rdquo; at another. A VM start or resume will be represented by saying the
+VM is &ldquo;arriving&rdquo; on a host.</p><p>Note that no attempt is made to integrate the overcommit protection with the
+general <code>VM.start</code> host chooser as this would be quite expensive.</p><p>Note that the overcommit protection calls are written as <code>asserts</code> called
+within the message forwarder in the master, holding the main forwarding lock.</p><p>API calls which would change the system configuration in such a way as to
+prevent the HA restart planner being able to guarantee to restart protected
+VMs are also blocked. These calls include:</p><ul><li><code>VBD.create</code>: where the disk is not in a <em>properly shared</em> SR</li><li><code>VBD.insert</code>: where the CDROM is local to a host</li><li><code>VIF.create</code>: where the network is not <em>properly shared</em></li><li><code>PIF.unplug</code>: when the network would cease to be <em>properly shared</em></li><li><code>PBD.unplug</code>: when the storage would cease to be <em>properly shared</em></li><li><code>Host.enable</code>: when some network or storage would cease to be
+<em>properly shared</em> (e.g. if this host had a broken storage configuration)</li></ul><h1 id=xen>xen</h1><p>The Xen hypervisor has per-domain watchdog counters which, when enabled,
+decrement as time passes and can be reset from a hypercall from the domain.
+If the domain fails to make the hypercall and the timer reaches zero then
+the domain is immediately shutdown with reason reboot. We configure Xen
+to reboot the host when domain 0 enters this state.</p><h1 id=high-level-operations>High-level operations</h1><h2 id=enabling-ha>Enabling HA</h2><p>Before HA can be enabled the admin must take care to configure the
+environment properly. In particular:</p><ul><li>NIC bonds should be available for network heartbeats;</li><li>multipath should be configured for the storage heartbeats;</li><li>all hosts should be online and fully-booted.</li></ul><p>The XenAPI client can request a specific shared SR to be used for
+storage heartbeats, otherwise Xapi will use the Pool&rsquo;s default SR.
+Xapi will use <code>VDI_GENERATE_CONFIG</code> to ensure the disk will be attached
+automatically on system boot before the liveset has been joined.</p><p>Note that extra effort is made to re-use any existing heartbeat VDIS
+so that</p><ul><li>if HA is disabled with some hosts offline, when they are rebooted they
+stand a higher chance of seeing a well-formed statefile with an explicit
+<em>invalid</em> state. If the VDIs were destroyed on HA disable then hosts which
+boot up later would fail to attach the disk and it would be harder to
+distinguish between a temporary storage failure and a permanent HA disable.</li><li>the heartbeat SR can be created on expensive low-latency high-reliability
+storage and made as small as possible (to minimise infrastructure cost),
+safe in the knowledge that if HA enables successfully once, it won&rsquo;t run
+out of space and fail to enable in the future.</li></ul><p>The Xapi-to-Xapi communication looks as follows:</p><p><a href=#image-6cfa23b9e50c22b11b9d8fb97bc9f322 class=lightbox-link><img src=/new-docs/toolstack/features/HA/HA.configure.svg alt="Configuring HA around the Pool" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-6cfa23b9e50c22b11b9d8fb97bc9f322><img src=/new-docs/toolstack/features/HA/HA.configure.svg alt="Configuring HA around the Pool" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>The Xapi Pool master calls <code>Host.ha_join_liveset</code> on all hosts in the
+pool simultaneously. Each host
+runs the <code>ha_start_daemon</code> script
+which starts Xhad. Each Xhad starts exchanging heartbeats over the network
+and storage defined in the <code>xhad.conf</code>.</p><h2 id=joining-a-liveset>Joining a liveset</h2><p><a href=#image-788a979edcd4bcd88fb22a67fd074170 class=lightbox-link><img src=/new-docs/toolstack/features/HA/HA.start.svg alt="Starting up a host" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-788a979edcd4bcd88fb22a67fd074170><img src=/new-docs/toolstack/features/HA/HA.start.svg alt="Starting up a host" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>The Xhad instances exchange heartbeats and decide which hosts are in
+the &ldquo;liveset&rdquo; and which have been fenced.</p><p>After joining the liveset, each host clears
+the &ldquo;excluded&rdquo; flag which would have
+been set if the host had been shutdown cleanly before &ndash; this is only
+needed when a host is shutdown cleanly and then restarted.</p><p>Xapi periodically queries the state of xhad via the <code>ha_query_liveset</code>
+command. The state will be <code>Starting</code> until the liveset is fully
+formed at which point the state will be <code>Online</code>.</p><p>When the <code>ha_start_daemon</code> script returns then Xapi will decide
+whether to stand for master election or not. Initially when HA is being
+enabled and there is a master already, this node will be expected to
+stand unopposed. Later when HA notices that the master host has been
+fenced, all remaining hosts will stand for election and one of them will
+be chosen.</p><h2 id=shutting-down-a-host>Shutting down a host</h2><p><a href=#image-caa38792d0ee4f54887f05ec42f99647 class=lightbox-link><img src=/new-docs/toolstack/features/HA/HA.shutdown.svg alt="Shutting down a host" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-caa38792d0ee4f54887f05ec42f99647><img src=/new-docs/toolstack/features/HA/HA.shutdown.svg alt="Shutting down a host" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>When a host is to be shutdown cleanly, it can be safely &ldquo;excluded&rdquo;
+from the pool such that a future failure of the storage heartbeat will
+not cause all pool hosts to self-fence (see survival rule 2 above).
+When a host is &ldquo;excluded&rdquo; all other hosts know that the host does not
+consider itself a master and has no resources locked i.e. no VMs are
+running on it. An excluded host will never allow itself to form part
+of a &ldquo;split brain&rdquo;.</p><p>Once a host has given up its master role and shutdown any VMs, it is safe
+to disable fencing with <code>ha_disarm_fencing</code> and stop xhad with
+<code>ha_stop_daemon</code>. Once the daemon has been stopped the &ldquo;excluded&rdquo;
+bit can be set in the statefile via <code>ha_set_excluded</code> and the
+host safely rebooted.</p><h2 id=restarting-a-host>Restarting a host</h2><p>When a host restarts after a failure Xapi notices that <em>ha_armed</em> is
+set in the local database. Xapi</p><ul><li>runs the <code>attach-static-vdis</code> script to attach the statefile and
+database VDIs. This can fail if the storage is inaccessible; Xapi will
+retry until it succeeds.</li><li>runs the ha_start_daemon to join the liveset, or determine that HA
+has been cleanly disabled (via setting the state to <em>Invalid</em>).</li></ul><p>In the special case where Xhad fails to access the statefile and the
+host used to be a slave then Xapi will try to contact the previous master
+and find out</p><ul><li>who the new master is;</li><li>whether HA is enabled on the Pool or not.</li></ul><p>If Xapi can confirm that HA was disabled then it will disarm itself and
+join the new master. Otherwise it will keep waiting for the statefile
+to recover.</p><p>In the special case where the statefile has been destroyed and cannot
+be recovered, there is an emergency HA disable API the admin can use to
+assert that HA really has been disabled, and it&rsquo;s not simply a connectivity
+problem. Obviously this API should only be used if the admin is totally
+sure that HA has been disabled.</p><h2 id=disabling-ha>Disabling HA</h2><p>There are 2 methods of disabling HA: one for the &ldquo;normal&rdquo; case when the
+statefile is available; and the other for the &ldquo;emergency&rdquo; case when the
+statefile has failed and can&rsquo;t be recovered.</p><h2 id=disabling-ha-cleanly>Disabling HA cleanly</h2><p><a href=#image-03066e215736c342c76cb32c77612842 class=lightbox-link><img src=/new-docs/toolstack/features/HA/HA.disable.clean.svg alt="Disabling HA cleanly" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-03066e215736c342c76cb32c77612842><img src=/new-docs/toolstack/features/HA/HA.disable.clean.svg alt="Disabling HA cleanly" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>HA can be shutdown cleanly when the statefile is working i.e. when hosts
+are alive because of survival rule 1. First the master Xapi tells the local
+Xhad to mark the pool state as &ldquo;invalid&rdquo; using <code>ha_set_pool_state</code>.
+Every xhad instance will notice this state change the next time it performs
+a storage heartbeat. The Xhad instances will shutdown and Xapi will notice
+that HA has been disabled the next time it attempts to query the liveset.</p><p>If a host loses access to the statefile (or if none of the hosts have
+access to the statefile) then HA can be disabled uncleanly.</p><h2 id=disabling-ha-uncleanly>Disabling HA uncleanly</h2><p>The Xapi master first calls <code>Host.ha_disable_failover_actions</code> on each host
+which sets <code>ha_disable_failover_decisions</code> in the lcoal database. This
+prevents the node rebooting, gaining statefile access, acquiring the
+master lock and restarting VMs when other hosts have disabled their
+fencing (i.e. a &ldquo;split brain&rdquo;).</p><p><a href=#image-32e00dc0b1d109d8f6fb20368f3a864f class=lightbox-link><img src=/new-docs/toolstack/features/HA/HA.disable.unclean.svg alt="Disabling HA uncleanly" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-32e00dc0b1d109d8f6fb20368f3a864f><img src=/new-docs/toolstack/features/HA/HA.disable.unclean.svg alt="Disabling HA uncleanly" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>Once the master is sure that no host will suddenly start recovering VMs
+it is safe to call <code>Host.ha_disarm_fencing</code> which runs the script
+<code>ha_disarm_fencing</code> and then shuts down the Xhad with <code>ha_stop_daemon</code>.</p><h2 id=add-a-host-to-the-pool>Add a host to the pool</h2><p>We assume that adding a host to the pool is an operation the admin will
+perform manually, so it is acceptable to disable HA for the duration
+and to re-enable it afterwards. If a failure happens during this operation
+then the admin will take care of it by hand.</p><footer class=footline></footer></article></div></main></div><aside id=sidebar class=default-animation><div id=header-topbar class=default-animation></div><div id=header-wrapper class=default-animation><div id=header class=default-animation><img src=https://xapi-project.github.io/new-docs//images/xapi-project.png></div><div class="searchbox default-animation"><i class="fas fa-search" title="Search (CTRL+ALT+f)"></i>
+<label class=a11y-only for=search-by>Search</label>
+<input data-search-input id=search-by name=search-by class=search-by type=search placeholder=Search...>
+<button class=search-clear type=button data-search-clear title="Clear search"><i class="fas fa-times" title="Clear search"></i></button></div><script>var contentLangs=["en"]</script><script src=/new-docs/js/auto-complete.js?1697120222 defer></script>
+<script src=/new-docs/js/lunr/lunr.min.js?1697120222 defer></script>
+<script src=/new-docs/js/lunr/lunr.stemmer.support.min.js?1697120222 defer></script>
+<script src=/new-docs/js/lunr/lunr.multi.min.js?1697120222 defer></script>
+<script src=/new-docs/js/lunr/lunr.en.min.js?1697120222 defer></script>
+<script src=/new-docs/js/search.js?1697120222 defer></script></div><div id=homelinks class="default-animation homelinks"><ul><li><a class=padding href=/new-docs/index.html><i class="fas fa-home"></i> Home</a></li></ul><hr class=padding></div><div id=content-wrapper class=highlightable><div id=topics><ul class="enlarge morespace collapsible-menu"><li data-nav-id=/new-docs/toolstack/index.html class=parent><input type=checkbox id=section-733bfb8b221c6a3949d666444cf4445d aria-controls=subsections-733bfb8b221c6a3949d666444cf4445d checked><label for=section-733bfb8b221c6a3949d666444cf4445d><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-right"></i><span class=a11y-only>Submenu The Toolstack</span></label><a class=padding href=/new-docs/toolstack/index.html>The Toolstack</a><ul id=subsections-733bfb8b221c6a3949d666444cf4445d class="morespace collapsible-menu"><li data-nav-id=/new-docs/toolstack/responsibilities/index.html><a class=padding href=/new-docs/toolstack/responsibilities/index.html>Responsibilities</a></li><li data-nav-id=/new-docs/toolstack/high-level/index.html><input type=checkbox id=section-93d1c0b933c799c336ad0fd09a6dc0ae aria-controls=subsections-93d1c0b933c799c336ad0fd09a6dc0ae><label for=section-93d1c0b933c799c336ad0fd09a6dc0ae><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-right"></i><span class=a11y-only>Submenu High-level architecture</span></label><a class=padding href=/new-docs/toolstack/high-level/index.html>High-level architecture</a><ul id=subsections-93d1c0b933c799c336ad0fd09a6dc0ae class="morespace collapsible-menu"><li data-nav-id=/new-docs/toolstack/high-level/environment/index.html><a class=padding href=/new-docs/toolstack/high-level/environment/index.html>Environment</a></li><li data-nav-id=/new-docs/toolstack/high-level/daemons/index.html><a class=padding href=/new-docs/toolstack/high-level/daemons/index.html>Daemons</a></li><li data-nav-id=/new-docs/toolstack/high-level/interfaces/index.html><a class=padding href=/new-docs/toolstack/high-level/interfaces/index.html>Interfaces</a></li></ul></li><li data-nav-id=/new-docs/toolstack/features/index.html class=parent><input type=checkbox id=section-a202420b9d8f13c2d690377c4357de50 aria-controls=subsections-a202420b9d8f13c2d690377c4357de50 checked><label for=section-a202420b9d8f13c2d690377c4357de50><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-right"></i><span class=a11y-only>Submenu Features</span></label><a class=padding href=/new-docs/toolstack/features/index.html>Features</a><ul id=subsections-a202420b9d8f13c2d690377c4357de50 class="morespace collapsible-menu"><li data-nav-id=/new-docs/toolstack/features/DR/index.html><a class=padding href=/new-docs/toolstack/features/DR/index.html>Disaster Recovery</a></li><li data-nav-id=/new-docs/toolstack/features/HA/index.html class=active><a class=padding href=/new-docs/toolstack/features/HA/index.html>High-Availability</a></li><li data-nav-id=/new-docs/toolstack/features/snapshots/index.html><a class=padding href=/new-docs/toolstack/features/snapshots/index.html>Snapshots</a></li><li data-nav-id=/new-docs/toolstack/features/VGPU/index.html><a class=padding href=/new-docs/toolstack/features/VGPU/index.html>vGPU</a></li><li data-nav-id=/new-docs/toolstack/features/XSM/index.html><a class=padding href=/new-docs/toolstack/features/XSM/index.html>Xapi Storage Migration</a></li></ul></li></ul></li><li data-nav-id=/new-docs/xapi/index.html><input type=checkbox id=section-38d9a208f329bfd7f57b7a3d82b1b09a aria-controls=subsections-38d9a208f329bfd7f57b7a3d82b1b09a><label for=section-38d9a208f329bfd7f57b7a3d82b1b09a><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-right"></i><span class=a11y-only>Submenu Xapi</span></label><a class=padding href=/new-docs/xapi/index.html>Xapi</a><ul id=subsections-38d9a208f329bfd7f57b7a3d82b1b09a class="morespace collapsible-menu"><li data-nav-id=/new-docs/xapi/guides/index.html><input type=checkbox id=section-1e852a9c61356e39c38ffde6aaccdadf aria-controls=subsections-1e852a9c61356e39c38ffde6aaccdadf><label for=section-1e852a9c61356e39c38ffde6aaccdadf><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-right"></i><span class=a11y-only>Submenu Guides</span></label><a class=padding href=/new-docs/xapi/guides/index.html>Guides</a><ul id=subsections-1e852a9c61356e39c38ffde6aaccdadf class="morespace collapsible-menu"><li data-nav-id=/new-docs/xapi/guides/howtos/index.html><input type=checkbox id=section-259bbbeab1560e4f0d61ad99041ab23f aria-controls=subsections-259bbbeab1560e4f0d61ad99041ab23f><label for=section-259bbbeab1560e4f0d61ad99041ab23f><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-right"></i><span class=a11y-only>Submenu How to add....</span></label><a class=padding href=/new-docs/xapi/guides/howtos/index.html>How to add....</a><ul id=subsections-259bbbeab1560e4f0d61ad99041ab23f class="morespace collapsible-menu"><li data-nav-id=/new-docs/xapi/guides/howtos/add-class/index.html><a class=padding href=/new-docs/xapi/guides/howtos/add-class/index.html>Adding a Class to the API</a></li><li data-nav-id=/new-docs/xapi/guides/howtos/add-field/index.html><a class=padding href=/new-docs/xapi/guides/howtos/add-field/index.html>Adding a field to the API</a></li><li data-nav-id=/new-docs/xapi/guides/howtos/add-function/index.html><a class=padding href=/new-docs/xapi/guides/howtos/add-function/index.html>Adding a function to the API</a></li><li data-nav-id=/new-docs/xapi/guides/howtos/add-api-extension/index.html><a class=padding href=/new-docs/xapi/guides/howtos/add-api-extension/index.html>Adding a XenAPI extension</a></li></ul></li></ul></li><li data-nav-id=/new-docs/xapi/memory/index.html><a class=padding href=/new-docs/xapi/memory/index.html>Memory</a></li></ul></li><li data-nav-id=/new-docs/xcp-networkd/index.html><a class=padding href=/new-docs/xcp-networkd/index.html>Networkd</a></li></ul></div><div class="padding footermargin footerLangSwitch footerVariantSwitch footerVisitedLinks footerFooter"></div><div id=menu-footer><hr class="padding default-animation footerLangSwitch footerVariantSwitch footerVisitedLinks footerFooter"><div id=prefooter class="footerLangSwitch footerVariantSwitch footerVisitedLinks"><ul><li id=select-language-container class=footerLangSwitch><div class="padding menu-control"><i class="fas fa-language fa-fw"></i>
+<span>&nbsp;</span><div class=control-style><label class=a11y-only for=select-language>Language</label>
+<select id=select-language onchange="location=baseUri+this.value"></select></div><div class=clear></div></div></li><li id=select-variant-container class=footerVariantSwitch><div class="padding menu-control"><i class="fas fa-paint-brush fa-fw"></i>
+<span>&nbsp;</span><div class=control-style><label class=a11y-only for=select-variant>Theme</label>
+<select id=select-variant onchange=window.variants&&variants.changeVariant(this.value)><option id=red value=red selected>Red</option></select></div><div class=clear></div></div><script>window.variants&&variants.markSelectedVariant()</script></li><li class=footerVisitedLinks><div class="padding menu-control"><i class="fas fa-history fa-fw"></i>
+<span>&nbsp;</span><div class=control-style><button onclick=clearHistory()>Clear History</button></div><div class=clear></div></div></li></ul></div><div id=footer class=footerFooter></div></div></div></aside><script src=/new-docs/js/clipboard.min.js?1697120222 defer></script>
+<script src=/new-docs/js/perfect-scrollbar.min.js?1697120222 defer></script>
+<script src=/new-docs/js/theme.js?1697120222 defer></script></body></html>

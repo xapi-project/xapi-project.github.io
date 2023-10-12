@@ -1,0 +1,357 @@
+<!doctype html><html lang=en dir=ltr><head><meta charset=utf-8><meta name=viewport content="height=device-height,width=device-width,initial-scale=1,minimum-scale=1"><meta name=generator content="Hugo 0.119.0"><meta name=generator content="Relearn 5.20.0+tip"><meta name=description content><title>Adding a Class to the API :: XAPI Toolstack Developer Documentation</title><link href=/new-docs/images/favicon.png?1697120222 rel=icon type=image/png><link href=/new-docs/css/fontawesome-all.min.css?1697120222 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/fontawesome-all.min.css?1697120222 rel=stylesheet></noscript><link href=/new-docs/css/nucleus.css?1697120222 rel=stylesheet><link href=/new-docs/css/auto-complete.css?1697120222 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/auto-complete.css?1697120222 rel=stylesheet></noscript><link href=/new-docs/css/perfect-scrollbar.min.css?1697120222 rel=stylesheet><link href=/new-docs/css/fonts.css?1697120222 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/fonts.css?1697120222 rel=stylesheet></noscript><link href=/new-docs/css/theme.css?1697120222 rel=stylesheet><link href=/new-docs/css/theme-red.css?1697120222 rel=stylesheet id=variant-style><link href=/new-docs/css/variant.css?1697120222 rel=stylesheet><link href=/new-docs/css/print.css?1697120222 rel=stylesheet media=print><link href=/new-docs/css/ie.css?1697120222 rel=stylesheet><script src=/new-docs/js/url.js?1697120222></script>
+<script src=/new-docs/js/variant.js?1697120222></script>
+<script>window.index_js_url="/new-docs/index.search.js";var root_url="/",baseUriFull,baseUri=root_url.replace(/\/$/,"");window.T_Copy_to_clipboard="Copy to clipboard",window.T_Copied_to_clipboard="Copied to clipboard!",window.T_Copy_link_to_clipboard="Copy link to clipboard",window.T_Link_copied_to_clipboard="Copied link to clipboard!",window.T_No_results_found="No results found for \"{0}\"",window.T_N_results_found="{1} results found for \"{0}\"",baseUriFull="https://xapi-project.github.io/new-docs/",window.variants&&variants.init(["red"])</script></head><body class="mobile-support html" data-url=/new-docs/xapi/guides/howtos/add-class/index.html><div id=body class=default-animation><div id=sidebar-overlay></div><div id=toc-overlay></div><nav id=topbar class=highlightable><div><div class=navigation><a class="nav nav-next topbar-link" href=/new-docs/xapi/guides/howtos/add-field/index.html title="Adding a field to the API (&#129106;)"><i class="fas fa-chevron-right fa-fw"></i></a></div><div class=navigation><a class="nav nav-prev topbar-link" href=/new-docs/xapi/guides/howtos/index.html title="How to add.... (&#129104;)"><i class="fas fa-chevron-left fa-fw"></i></a></div><div id=breadcrumbs><span id=sidebar-toggle-span><a href=# id=sidebar-toggle class=topbar-link title='Menu (CTRL+ALT+n)'><i class="fas fa-bars fa-fw"></i></a></span>
+<span id=toc-menu title='Table of Contents (CTRL+ALT+t)'><i class="fas fa-list-alt fa-fw"></i></span><ol class=links itemscope itemtype=http://schema.org/BreadcrumbList><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/index.html><span itemprop=name>XAPI Toolstack Developer Guide</span></a><meta itemprop=position content="1">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/xapi/index.html><span itemprop=name>Xapi</span></a><meta itemprop=position content="2">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/xapi/guides/index.html><span itemprop=name>Guides</span></a><meta itemprop=position content="3">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/xapi/guides/howtos/index.html><span itemprop=name>How to add....</span></a><meta itemprop=position content="4">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><span itemprop=name>Adding a Class to the API</span><meta itemprop=position content="5"></li></ol></div><div class="default-animation progress"><div class=toc-wrapper><nav id=TableOfContents><ul><li><a href=#example-pvs_server>Example: PVS_server</a><ul><li><a href=#fields>Fields</a></li><li><a href=#methods-or-functions>Methods (or Functions)</a></li><li><a href=#implementation-overview>Implementation Overview</a></li><li><a href=#data-model>Data Model</a></li></ul></li><li><a href=#cli-conventions>CLI Conventions</a></li><li><a href=#cli-getters-and-setters>CLI Getters and Setters</a></li><li><a href=#cli-interface-to-methods>CLI Interface to Methods</a></li><li><a href=#cli-implementation-of-methods>CLI Implementation of Methods</a></li><li><a href=#error-messages>Error messages</a></li><li><a href=#method-implementation>Method Implementation</a></li></ul></nav></div></div></div></nav><main id=body-inner class="highlightable default" tabindex=-1><div class=flex-block-wrapper><article class=default><header class=headline></header><h1 id=adding-a-class-to-the-api>Adding a Class to the API</h1><p>This document describes how to add a new class to the data model that
+defines the Xen Server API. It complements two other documents that
+describe how to extend an existing class:</p><ul><li><a href=https://xapi-project.github.io/new-docs/xapi/guides/howtos/add-field/>Adding a Field</a></li><li><a href=https://xapi-project.github.io/new-docs/xapi/guides/howtos/add-function/>Adding a Function</a></li></ul><p>As a running example, we will use the addition of a class that is part
+of the design for the PVS Direct feature. PVS Direct introduces
+proxies that serve VMs with disk images. This class was added via commit
+<a href=https://github.com/xenserver/xen-api/commit/78fe558dad19458a89519fe196069317d57eac58 target=_blank>CP-16939</a> to Xen API.</p><h2 id=example-pvs_server>Example: PVS_server</h2><p>In the world of Xen Server, each important concept like a virtual
+machine, interface, or users is represented by a class in the data model.
+A class defines methods and instance variables. At runtime, all class
+instances are held in an in-memory database. For example, part of [PVS
+Direct] is a class <code>PVS_server</code>, representing a resource that provides
+block-level data for virtual machines. The design document defines it to
+have the following important properties:</p><h3 id=fields>Fields</h3><ul><li><p><code>(string set) addresses</code> (RO/constructor) IPv4 addresses of the
+server.</p></li><li><p><code>(int) first_port</code> (RO/constructor) First UDP port accepted by the
+server.</p></li><li><p><code>(int) last_port</code> (RO/constructor) Last UDP port accepted by the
+server.</p></li><li><p><code>(PVS_farm ref) farm</code> (RO/constructor) Link to the farm that this
+server is included in. A PVS_server object must always have a valid
+farm reference; the PVS_server will be automatically GC’ed by xapi
+if the associated PVS_farm object is removed.</p></li><li><p><code>(string) uuid (R0/runtime)</code> Unique identifier/object reference.
+Allocated by the server.</p></li></ul><h3 id=methods-or-functions>Methods (or Functions)</h3><ul><li><p><code>(PVS_server ref) introduce (string set addresses, int first_port, int last_port, PVS_farm ref farm)</code> Introduce a new PVS server into
+the farm. Allowed at any time, even when proxies are in use. The
+proxies will be updated automatically.</p></li><li><p><code>(void) forget (PVS_server ref self)</code> Remove a PVS server from the
+farm. Allowed at any time, even when proxies are in use. The
+proxies will be updated automatically.</p></li></ul><h3 id=implementation-overview>Implementation Overview</h3><p>The implementation of a class is distributed over several files:</p><ul><li><code>ocaml/idl/datamodel.ml</code> &ndash; central class definition</li><li><code>ocaml/idl/datamodel_types.ml</code> &ndash; definition of releases</li><li><code>ocaml/xapi/cli_frontend.ml</code> &ndash; declaration of CLI operations</li><li><code>ocaml/xapi/cli_operations.ml</code> &ndash; implementation of CLI operations</li><li><code>ocaml/xapi/records.ml</code> &ndash; getters and setters</li><li><code>ocaml/xapi/OMakefile</code> &ndash; refers to <code>xapi_pvs_farm.ml</code></li><li><code>ocaml/xapi/api_server.ml</code> &ndash; refers to <code>xapi_pvs_farm.ml</code></li><li><code>ocaml/xapi/message_forwarding.ml</code></li><li><code>ocaml/xapi/xapi_pvs_farm.ml</code> &ndash; implementation of methods, new file</li></ul><h3 id=data-model>Data Model</h3><p>The data model <code>ocaml/idl/datamodel.ml</code> defines the class. To keep the
+name space tidy, most helper functions are grouped into an internal
+module:</p><pre><code>(* datamodel.ml *)
+
+let schema_minor_vsn = 103 (* line 21 -- increment this *)
+let _pvs_farm = &quot;PVS_farm&quot; (* line 153 *)
+
+module PVS_farm = struct (* line 8658 *)
+  let lifecycle = [Prototyped, rel_dundee_plus, &quot;&quot;]
+
+  let introduce = call
+    ~name:&quot;introduce&quot;
+    ~doc:&quot;Introduce new PVS farm&quot;
+    ~result:(Ref _pvs_farm, &quot;the new PVS farm&quot;)
+    ~params:
+    [ String,&quot;name&quot;,&quot;name of the PVS farm&quot;
+    ]
+    ~lifecycle
+    ~allowed_roles:_R_POOL_OP
+    ()
+
+  let forget = call
+    ~name:&quot;forget&quot;
+    ~doc:&quot;Remove a farm's meta data&quot;
+    ~params:
+    [ Ref _pvs_farm, &quot;self&quot;, &quot;this PVS farm&quot;
+    ]
+    ~errs:[
+      Api_errors.pvs_farm_contains_running_proxies;
+      Api_errors.pvs_farm_contains_servers;
+    ]
+    ~lifecycle
+    ~allowed_roles:_R_POOL_OP
+    ()
+
+
+  let set_name = call
+    ~name:&quot;set_name&quot;
+    ~doc:&quot;Update the name of the PVS farm&quot;
+    ~params:
+    [ Ref _pvs_farm, &quot;self&quot;, &quot;this PVS farm&quot;
+    ; String, &quot;value&quot;, &quot;name to be used&quot;
+    ]
+    ~lifecycle
+    ~allowed_roles:_R_POOL_OP
+    ()
+
+  let add_cache_storage = call
+    ~name:&quot;add_cache_storage&quot;
+    ~doc:&quot;Add a cache SR for the proxies on the farm&quot;
+    ~params:
+    [ Ref _pvs_farm, &quot;self&quot;, &quot;this PVS farm&quot;
+    ; Ref _sr, &quot;value&quot;, &quot;SR to be used&quot;
+    ]
+    ~lifecycle
+    ~allowed_roles:_R_POOL_OP
+    ()
+
+  let remove_cache_storage = call
+    ~name:&quot;remove_cache_storage&quot;
+    ~doc:&quot;Remove a cache SR for the proxies on the farm&quot;
+    ~params:
+    [ Ref _pvs_farm, &quot;self&quot;, &quot;this PVS farm&quot;
+    ; Ref _sr, &quot;value&quot;, &quot;SR to be removed&quot;
+    ]
+    ~lifecycle
+    ~allowed_roles:_R_POOL_OP
+    ()
+
+  let obj =
+    let null_str = Some (VString &quot;&quot;) in
+    let null_set = Some (VSet []) in
+    create_obj (* &lt;---- creates class *)
+    ~name: _pvs_farm
+    ~descr:&quot;machines serving blocks of data for provisioning VMs&quot;
+    ~doccomments:[]
+    ~gen_constructor_destructor:false
+    ~gen_events:true
+    ~in_db:true
+    ~lifecycle
+    ~persist:PersistEverything
+    ~in_oss_since:None
+    ~messages_default_allowed_roles:_R_POOL_OP
+    ~contents:
+    [ uid     _pvs_farm ~lifecycle
+
+    ; field   ~qualifier:StaticRO ~lifecycle
+              ~ty:String &quot;name&quot; ~default_value:null_str
+              &quot;Name of the PVS farm. Must match name configured in PVS&quot;
+
+    ; field   ~qualifier:DynamicRO ~lifecycle
+              ~ty:(Set (Ref _sr)) &quot;cache_storage&quot; ~default_value:null_set
+              ~ignore_foreign_key:true
+              &quot;The SR used by PVS proxy for the cache&quot;
+
+    ; field   ~qualifier:DynamicRO ~lifecycle
+              ~ty:(Set (Ref _pvs_server)) &quot;servers&quot;
+              &quot;The set of PVS servers in the farm&quot;
+
+
+    ; field   ~qualifier:DynamicRO ~lifecycle
+              ~ty:(Set (Ref _pvs_proxy)) &quot;proxies&quot;
+              &quot;The set of proxies associated with the farm&quot;
+    ]
+    ~messages:
+    [ introduce
+    ; forget
+    ; set_name
+    ; add_cache_storage
+    ; remove_cache_storage
+    ]
+    ()
+end
+let pvs_farm = PVS_farm.obj
+</code></pre><p>The class is defined by a call to <code>create_obj</code> and it defines the
+fields and messages (methods) belonging to the class. Each field has a
+name, a type, and some meta information. Likewise, each message
+(or method) is created by <code>call</code> that describes its parameters.</p><p>The <code>PVS_farm</code> has additional getter and setter methods for accessing
+its fields. These are not declared here as part of the messages
+but are automatically generated.</p><p>To make sure the new class is actually used, it is important to enter it
+into two lists:</p><pre><code>(* datamodel.ml *)
+let all_system = (* line 8917 *)
+  [
+    ...
+    vgpu_type;
+    pvs_farm;
+    ...
+  ]
+
+let expose_get_all_messages_for = [ (* line 9097 *)
+  ...
+  _pvs_farm;
+  _pvs_server;
+  _pvs_proxy;
+</code></pre><p>When a field refers to another object that itself refers back to it,
+these two need to be entered into the <code>all_relations</code> list. For example,
+<code>_pvs_server</code> refers to a <code>_pvs_farm</code> value via <code>"farm"</code>, which, in
+turn, refers to the <code>_pvs_server</code> value via its <code>"servers"</code> field.</p><pre><code>let all_relations =
+  [
+    (* ... *)
+    (_sr, &quot;introduced_by&quot;), (_dr_task, &quot;introduced_SRs&quot;);
+    (_pvs_server, &quot;farm&quot;), (_pvs_farm, &quot;servers&quot;);
+    (_pvs_proxy,  &quot;farm&quot;), (_pvs_farm, &quot;proxies&quot;);
+  ]
+</code></pre><h2 id=cli-conventions>CLI Conventions</h2><p>The CLI provides access to objects from the command line. The following
+conventions exist for naming fields:</p><ul><li><p>A field in the data model uses an underscore (<code>_</code>) but a hyphen (<code>-</code>)
+in the CLI: what is <code>cache_storage</code> in the data model becomes
+<code>cache-storage</code> in the CLI.</p></li><li><p>When a field contains a reference or multiple, like <code>proxies</code>, it
+becomes <code>proxy-uuids</code> in the CLI because references are always
+referred to by their UUID.</p></li></ul><h2 id=cli-getters-and-setters>CLI Getters and Setters</h2><p>All fields can be read from the CLI and some fields can also be set via
+the CLI. These getters and setters are mostly generated automatically
+and need to be connected to the CLI through a function in
+<code>ocaml/xapi/records.ml</code>. Note that field names here use the
+naming convention for the CLI:</p><pre><code>(* ocaml/xapi/records.ml *)
+let pvs_farm_record rpc session_id pvs_farm =
+  let _ref = ref pvs_farm in
+  let empty_record =
+    ToGet (fun () -&gt; Client.PVS_farm.get_record rpc session_id !_ref) in
+  let record = ref empty_record in
+  let x () = lzy_get record in
+    { setref    = (fun r -&gt; _ref := r ; record := empty_record)
+    ; setrefrec = (fun (a,b) -&gt; _ref := a; record := Got b)
+    ; record    = x
+    ; getref    = (fun () -&gt; !_ref)
+    ; fields=
+      [ make_field ~name:&quot;uuid&quot;
+        ~get:(fun () -&gt; (x ()).API.pVS_farm_uuid) ()
+      ; make_field ~name:&quot;name&quot;
+        ~get:(fun () -&gt; (x ()).API.pVS_farm_name)
+        ~set:(fun name -&gt;
+          Client.PVS_farm.set_name rpc session_id !_ref name) ()
+      ; make_field ~name:&quot;cache-storage&quot;
+        ~get:(fun () -&gt; (x ()).API.pVS_farm_cache_storage
+          |&gt; List.map get_uuid_from_ref |&gt; String.concat &quot;; &quot;)
+        ~add_to_set:(fun sr_uuid -&gt;
+          let sr = Client.SR.get_by_uuid rpc session_id sr_uuid in
+          Client.PVS_farm.add_cache_storage rpc session_id !_ref sr)
+        ~remove_from_set:(fun sr_uuid -&gt;
+          let sr = Client.SR.get_by_uuid rpc session_id sr_uuid in
+          Client.PVS_farm.remove_cache_storage rpc session_id !_ref sr)
+        ()
+      ; make_field ~name:&quot;server-uuids&quot;
+        ~get:(fun () -&gt; (x ()).API.pVS_farm_servers
+          |&gt; List.map get_uuid_from_ref |&gt; String.concat &quot;; &quot;)
+        ~get_set:(fun () -&gt; (x ()).API.pVS_farm_servers
+          |&gt; List.map get_uuid_from_ref)
+        ()
+      ; make_field ~name:&quot;proxy-uuids&quot;
+        ~get:(fun () -&gt; (x ()).API.pVS_farm_proxies
+          |&gt; List.map get_uuid_from_ref |&gt; String.concat &quot;; &quot;)
+        ~get_set:(fun () -&gt; (x ()).API.pVS_farm_proxies
+          |&gt; List.map get_uuid_from_ref)
+        ()
+      ]
+    }
+</code></pre><h2 id=cli-interface-to-methods>CLI Interface to Methods</h2><p>Methods accessible from the CLI are declared in
+<code>ocaml/xapi/cli_frontend.ml</code>. Each declaration refers to the real
+implementation of the method, like <code>Cli_operations.PVS_far.introduce</code>:</p><pre><code>(* cli_frontend.ml *)
+let rec cmdtable_data : (string*cmd_spec) list =
+  (* ... *)
+  &quot;pvs-farm-introduce&quot;,
+  {
+    reqd=[&quot;name&quot;];
+    optn=[];
+    help=&quot;Introduce new PVS farm&quot;;
+    implementation=No_fd Cli_operations.PVS_farm.introduce;
+    flags=[];
+  };
+  &quot;pvs-farm-forget&quot;,
+  {
+    reqd=[&quot;uuid&quot;];
+    optn=[];
+    help=&quot;Forget a PVS farm&quot;;
+    implementation=No_fd Cli_operations.PVS_farm.forget;
+    flags=[];
+  };
+</code></pre><h2 id=cli-implementation-of-methods>CLI Implementation of Methods</h2><p>Each CLI operation that is not a getter or setter has an implementation
+in <code>cli_operations.ml</code> which is implemented in terms of the real
+implementation:</p><pre><code>(* cli_operations.ml *)
+module PVS_farm = struct
+  let introduce printer rpc session_id params =
+    let name  = List.assoc &quot;name&quot; params in
+    let ref   = Client.PVS_farm.introduce ~rpc ~session_id ~name in
+    let uuid  = Client.PVS_farm.get_uuid rpc session_id ref in
+    printer (Cli_printer.PList [uuid])
+
+  let forget printer rpc session_id params =
+    let uuid  = List.assoc &quot;uuid&quot; params in
+    let ref   = Client.PVS_farm.get_by_uuid ~rpc ~session_id ~uuid in
+    Client.PVS_farm.forget rpc session_id ref
+end
+</code></pre><p>Fields that should show up in the CLI interface by default are declared
+in the <code>gen_cmds</code> value:</p><pre><code>(* cli_operations.ml *)
+let gen_cmds rpc session_id =
+  let mk = make_param_funs in
+  List.concat
+  [ (*...*)
+  ; Client.Pool.(mk get_all get_all_records_where
+    get_by_uuid pool_record &quot;pool&quot; []
+    [&quot;uuid&quot;;&quot;name-label&quot;;&quot;name-description&quot;;&quot;master&quot;
+    ;&quot;default-SR&quot;] rpc session_id)
+  ; Client.PVS_farm.(mk get_all get_all_records_where
+    get_by_uuid pvs_farm_record &quot;pvs-farm&quot; []
+    [&quot;uuid&quot;;&quot;name&quot;;&quot;cache-storage&quot;;&quot;server-uuids&quot;] rpc session_id)
+</code></pre><h2 id=error-messages>Error messages</h2><p>Error messages used by an implementation are introduced in two files:</p><pre><code>(* ocaml/xapi-consts/api_errors.ml *)
+let pvs_farm_contains_running_proxies = &quot;PVS_FARM_CONTAINS_RUNNING_PROXIES&quot;
+let pvs_farm_contains_servers = &quot;PVS_FARM_CONTAINS_SERVERS&quot;
+let pvs_farm_sr_already_added = &quot;PVS_FARM_SR_ALREADY_ADDED&quot;
+let pvs_farm_sr_is_in_use = &quot;PVS_FARM_SR_IS_IN_USE&quot;
+let sr_not_in_pvs_farm = &quot;SR_NOT_IN_PVS_FARM&quot;
+let pvs_farm_cant_set_name = &quot;PVS_FARM_CANT_SET_NAME&quot;
+
+(* ocaml/idl/datamodel.ml *)
+  (* PVS errors *)
+  error Api_errors.pvs_farm_contains_running_proxies [&quot;proxies&quot;]
+    ~doc:&quot;The PVS farm contains running proxies and cannot be forgotten.&quot; ();
+
+  error Api_errors.pvs_farm_contains_servers [&quot;servers&quot;]
+    ~doc:&quot;The PVS farm contains servers and cannot be forgotten.&quot;
+    ();
+
+  error Api_errors.pvs_farm_sr_already_added [&quot;farm&quot;; &quot;SR&quot;]
+    ~doc:&quot;Trying to add a cache SR that is already associated with the farm&quot;
+    ();
+
+  error Api_errors.sr_not_in_pvs_farm [&quot;farm&quot;; &quot;SR&quot;]
+    ~doc:&quot;The SR is not associated with the farm.&quot;
+    ();
+
+  error Api_errors.pvs_farm_sr_is_in_use [&quot;farm&quot;; &quot;SR&quot;]
+    ~doc:&quot;The SR is in use by the farm and cannot be removed.&quot;
+    ();
+
+  error Api_errors.pvs_farm_cant_set_name [&quot;farm&quot;]
+    ~doc:&quot;The name of the farm can't be set while proxies are active.&quot;
+    ()
+</code></pre><h2 id=method-implementation>Method Implementation</h2><p>The implementation of methods lives in a module in <code>ocaml/xapi</code>:</p><pre><code>(* ocaml/xapi/api_server.ml *)
+  module PVS_farm = Xapi_pvs_farm
+</code></pre><p>The file below is typically a new file and needs to be added to
+<code>ocaml/xapi/OMakefile</code>.</p><pre><code>(* ocaml/xapi/xapi_pvs_farm.ml *)
+module D = Debug.Make(struct let name = &quot;xapi_pvs_farm&quot; end)
+module E = Api_errors
+
+let api_error msg xs = raise (E.Server_error (msg, xs))
+
+let introduce ~__context ~name =
+  let pvs_farm = Ref.make () in
+  let uuid = Uuid.to_string (Uuid.make_uuid ()) in
+  Db.PVS_farm.create ~__context
+    ~ref:pvs_farm ~uuid ~name ~cache_storage:[];
+  pvs_farm
+
+(* ... *)
+</code></pre><p>Messages received on a slave host may or may not be executed there. In
+the simple case, each methods executes locally:</p><pre><code>(* ocaml/xapi/message_forwarding.ml *)
+module PVS_farm = struct
+  let introduce ~__context ~name =
+    info &quot;PVS_farm.introduce %s&quot; name;
+    Local.PVS_farm.introduce ~__context ~name
+
+  let forget ~__context ~self =
+    info &quot;PVS_farm.forget&quot;;
+    Local.PVS_farm.forget ~__context ~self
+
+  let set_name ~__context ~self ~value =
+    info &quot;PVS_farm.set_name %s&quot; value;
+    Local.PVS_farm.set_name ~__context ~self ~value
+
+  let add_cache_storage ~__context ~self ~value =
+    info &quot;PVS_farm.add_cache_storage&quot;;
+    Local.PVS_farm.add_cache_storage ~__context ~self ~value
+
+  let remove_cache_storage ~__context ~self ~value =
+    info &quot;PVS_farm.remove_cache_storage&quot;;
+    Local.PVS_farm.remove_cache_storage ~__context ~self ~value
+end
+</code></pre><footer class=footline></footer></article></div></main></div><aside id=sidebar class=default-animation><div id=header-topbar class=default-animation></div><div id=header-wrapper class=default-animation><div id=header class=default-animation><img src=https://xapi-project.github.io/new-docs//images/xapi-project.png></div><div class="searchbox default-animation"><i class="fas fa-search" title="Search (CTRL+ALT+f)"></i>
+<label class=a11y-only for=search-by>Search</label>
+<input data-search-input id=search-by name=search-by class=search-by type=search placeholder=Search...>
+<button class=search-clear type=button data-search-clear title="Clear search"><i class="fas fa-times" title="Clear search"></i></button></div><script>var contentLangs=["en"]</script><script src=/new-docs/js/auto-complete.js?1697120222 defer></script>
+<script src=/new-docs/js/lunr/lunr.min.js?1697120222 defer></script>
+<script src=/new-docs/js/lunr/lunr.stemmer.support.min.js?1697120222 defer></script>
+<script src=/new-docs/js/lunr/lunr.multi.min.js?1697120222 defer></script>
+<script src=/new-docs/js/lunr/lunr.en.min.js?1697120222 defer></script>
+<script src=/new-docs/js/search.js?1697120222 defer></script></div><div id=homelinks class="default-animation homelinks"><ul><li><a class=padding href=/new-docs/index.html><i class="fas fa-home"></i> Home</a></li></ul><hr class=padding></div><div id=content-wrapper class=highlightable><div id=topics><ul class="enlarge morespace collapsible-menu"><li data-nav-id=/new-docs/toolstack/index.html><input type=checkbox id=section-733bfb8b221c6a3949d666444cf4445d aria-controls=subsections-733bfb8b221c6a3949d666444cf4445d><label for=section-733bfb8b221c6a3949d666444cf4445d><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-right"></i><span class=a11y-only>Submenu The Toolstack</span></label><a class=padding href=/new-docs/toolstack/index.html>The Toolstack</a><ul id=subsections-733bfb8b221c6a3949d666444cf4445d class="morespace collapsible-menu"><li data-nav-id=/new-docs/toolstack/responsibilities/index.html><a class=padding href=/new-docs/toolstack/responsibilities/index.html>Responsibilities</a></li><li data-nav-id=/new-docs/toolstack/high-level/index.html><input type=checkbox id=section-93d1c0b933c799c336ad0fd09a6dc0ae aria-controls=subsections-93d1c0b933c799c336ad0fd09a6dc0ae><label for=section-93d1c0b933c799c336ad0fd09a6dc0ae><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-right"></i><span class=a11y-only>Submenu High-level architecture</span></label><a class=padding href=/new-docs/toolstack/high-level/index.html>High-level architecture</a><ul id=subsections-93d1c0b933c799c336ad0fd09a6dc0ae class="morespace collapsible-menu"><li data-nav-id=/new-docs/toolstack/high-level/environment/index.html><a class=padding href=/new-docs/toolstack/high-level/environment/index.html>Environment</a></li><li data-nav-id=/new-docs/toolstack/high-level/daemons/index.html><a class=padding href=/new-docs/toolstack/high-level/daemons/index.html>Daemons</a></li><li data-nav-id=/new-docs/toolstack/high-level/interfaces/index.html><a class=padding href=/new-docs/toolstack/high-level/interfaces/index.html>Interfaces</a></li></ul></li><li data-nav-id=/new-docs/toolstack/features/index.html><input type=checkbox id=section-a202420b9d8f13c2d690377c4357de50 aria-controls=subsections-a202420b9d8f13c2d690377c4357de50><label for=section-a202420b9d8f13c2d690377c4357de50><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-right"></i><span class=a11y-only>Submenu Features</span></label><a class=padding href=/new-docs/toolstack/features/index.html>Features</a><ul id=subsections-a202420b9d8f13c2d690377c4357de50 class="morespace collapsible-menu"><li data-nav-id=/new-docs/toolstack/features/DR/index.html><a class=padding href=/new-docs/toolstack/features/DR/index.html>Disaster Recovery</a></li><li data-nav-id=/new-docs/toolstack/features/HA/index.html><a class=padding href=/new-docs/toolstack/features/HA/index.html>High-Availability</a></li><li data-nav-id=/new-docs/toolstack/features/snapshots/index.html><a class=padding href=/new-docs/toolstack/features/snapshots/index.html>Snapshots</a></li><li data-nav-id=/new-docs/toolstack/features/VGPU/index.html><a class=padding href=/new-docs/toolstack/features/VGPU/index.html>vGPU</a></li><li data-nav-id=/new-docs/toolstack/features/XSM/index.html><a class=padding href=/new-docs/toolstack/features/XSM/index.html>Xapi Storage Migration</a></li></ul></li></ul></li><li data-nav-id=/new-docs/xapi/index.html class=parent><input type=checkbox id=section-38d9a208f329bfd7f57b7a3d82b1b09a aria-controls=subsections-38d9a208f329bfd7f57b7a3d82b1b09a checked><label for=section-38d9a208f329bfd7f57b7a3d82b1b09a><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-right"></i><span class=a11y-only>Submenu Xapi</span></label><a class=padding href=/new-docs/xapi/index.html>Xapi</a><ul id=subsections-38d9a208f329bfd7f57b7a3d82b1b09a class="morespace collapsible-menu"><li data-nav-id=/new-docs/xapi/guides/index.html class=parent><input type=checkbox id=section-1e852a9c61356e39c38ffde6aaccdadf aria-controls=subsections-1e852a9c61356e39c38ffde6aaccdadf checked><label for=section-1e852a9c61356e39c38ffde6aaccdadf><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-right"></i><span class=a11y-only>Submenu Guides</span></label><a class=padding href=/new-docs/xapi/guides/index.html>Guides</a><ul id=subsections-1e852a9c61356e39c38ffde6aaccdadf class="morespace collapsible-menu"><li data-nav-id=/new-docs/xapi/guides/howtos/index.html class=parent><input type=checkbox id=section-259bbbeab1560e4f0d61ad99041ab23f aria-controls=subsections-259bbbeab1560e4f0d61ad99041ab23f checked><label for=section-259bbbeab1560e4f0d61ad99041ab23f><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-right"></i><span class=a11y-only>Submenu How to add....</span></label><a class=padding href=/new-docs/xapi/guides/howtos/index.html>How to add....</a><ul id=subsections-259bbbeab1560e4f0d61ad99041ab23f class="morespace collapsible-menu"><li data-nav-id=/new-docs/xapi/guides/howtos/add-class/index.html class=active><a class=padding href=/new-docs/xapi/guides/howtos/add-class/index.html>Adding a Class to the API</a></li><li data-nav-id=/new-docs/xapi/guides/howtos/add-field/index.html><a class=padding href=/new-docs/xapi/guides/howtos/add-field/index.html>Adding a field to the API</a></li><li data-nav-id=/new-docs/xapi/guides/howtos/add-function/index.html><a class=padding href=/new-docs/xapi/guides/howtos/add-function/index.html>Adding a function to the API</a></li><li data-nav-id=/new-docs/xapi/guides/howtos/add-api-extension/index.html><a class=padding href=/new-docs/xapi/guides/howtos/add-api-extension/index.html>Adding a XenAPI extension</a></li></ul></li></ul></li><li data-nav-id=/new-docs/xapi/memory/index.html><a class=padding href=/new-docs/xapi/memory/index.html>Memory</a></li></ul></li><li data-nav-id=/new-docs/xcp-networkd/index.html><a class=padding href=/new-docs/xcp-networkd/index.html>Networkd</a></li></ul></div><div class="padding footermargin footerLangSwitch footerVariantSwitch footerVisitedLinks footerFooter"></div><div id=menu-footer><hr class="padding default-animation footerLangSwitch footerVariantSwitch footerVisitedLinks footerFooter"><div id=prefooter class="footerLangSwitch footerVariantSwitch footerVisitedLinks"><ul><li id=select-language-container class=footerLangSwitch><div class="padding menu-control"><i class="fas fa-language fa-fw"></i>
+<span>&nbsp;</span><div class=control-style><label class=a11y-only for=select-language>Language</label>
+<select id=select-language onchange="location=baseUri+this.value"></select></div><div class=clear></div></div></li><li id=select-variant-container class=footerVariantSwitch><div class="padding menu-control"><i class="fas fa-paint-brush fa-fw"></i>
+<span>&nbsp;</span><div class=control-style><label class=a11y-only for=select-variant>Theme</label>
+<select id=select-variant onchange=window.variants&&variants.changeVariant(this.value)><option id=red value=red selected>Red</option></select></div><div class=clear></div></div><script>window.variants&&variants.markSelectedVariant()</script></li><li class=footerVisitedLinks><div class="padding menu-control"><i class="fas fa-history fa-fw"></i>
+<span>&nbsp;</span><div class=control-style><button onclick=clearHistory()>Clear History</button></div><div class=clear></div></div></li></ul></div><div id=footer class=footerFooter></div></div></div></aside><script src=/new-docs/js/clipboard.min.js?1697120222 defer></script>
+<script src=/new-docs/js/perfect-scrollbar.min.js?1697120222 defer></script>
+<script src=/new-docs/js/theme.js?1697120222 defer></script></body></html>
