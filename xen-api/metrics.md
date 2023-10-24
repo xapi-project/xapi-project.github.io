@@ -87,7 +87,10 @@ A URL parameter is used to decide which format to return: XML is returned by
 default, adding the parameter `json` makes the server return JSON.
 Starting from xapi version 23.17.0, the server uses the HTTP header `Accept`
 to decide which format to return.
-When both formats are accepted, (using "*/*"), JSON is returned.
+When both formats are accepted, for example, using `*/*`; JSON is returned.
+Of interest are the clients wget and curl which use this accept header value,
+meaning that when using them the default behaviour will change and the accept
+header needs to be overridden to make the server return XML.
 The content type is provided in the reponse's headers in these newer versions.
 
 The XML RRD data is in the format used by rrdtool and looks like this:
