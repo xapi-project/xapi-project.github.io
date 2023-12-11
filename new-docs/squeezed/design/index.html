@@ -1,0 +1,384 @@
+<!doctype html><html lang=en dir=ltr><head><meta charset=utf-8><meta name=viewport content="height=device-height,width=device-width,initial-scale=1,minimum-scale=1"><meta name=generator content="Hugo 0.119.0"><meta name=generator content="Relearn 5.20.0+tip"><meta name=description content><title>Design :: XAPI Toolstack Developer Documentation</title><link href=/new-docs/images/favicon.png?1702292255 rel=icon type=image/png><link href=/new-docs/css/fontawesome-all.min.css?1702292255 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/fontawesome-all.min.css?1702292255 rel=stylesheet></noscript><link href=/new-docs/css/nucleus.css?1702292255 rel=stylesheet><link href=/new-docs/css/auto-complete.css?1702292255 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/auto-complete.css?1702292255 rel=stylesheet></noscript><link href=/new-docs/css/perfect-scrollbar.min.css?1702292255 rel=stylesheet><link href=/new-docs/css/fonts.css?1702292255 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/fonts.css?1702292255 rel=stylesheet></noscript><link href=/new-docs/css/theme.css?1702292255 rel=stylesheet><link href=/new-docs/css/theme-red.css?1702292255 rel=stylesheet id=variant-style><link href=/new-docs/css/variant.css?1702292255 rel=stylesheet><link href=/new-docs/css/print.css?1702292255 rel=stylesheet media=print><link href=/new-docs/css/ie.css?1702292255 rel=stylesheet><script src=/new-docs/js/url.js?1702292255></script>
+<script src=/new-docs/js/variant.js?1702292255></script>
+<script>window.index_js_url="/new-docs/index.search.js";var root_url="/",baseUriFull,baseUri=root_url.replace(/\/$/,"");window.T_Copy_to_clipboard="Copy to clipboard",window.T_Copied_to_clipboard="Copied to clipboard!",window.T_Copy_link_to_clipboard="Copy link to clipboard",window.T_Link_copied_to_clipboard="Copied link to clipboard!",window.T_No_results_found="No results found for \"{0}\"",window.T_N_results_found="{1} results found for \"{0}\"",baseUriFull="https://xapi-project.github.io/new-docs/",window.variants&&variants.init(["red"])</script></head><body class="mobile-support html" data-url=/new-docs/squeezed/design/index.html><div id=body class=default-animation><div id=sidebar-overlay></div><div id=toc-overlay></div><nav id=topbar class=highlightable><div><div class=navigation><a class="nav nav-next topbar-link" href=/new-docs/xcp-rrdd/index.html title="RRDD (&#129106;)"><i class="fas fa-chevron-right fa-fw"></i></a></div><div class=navigation><a class="nav nav-prev topbar-link" href=/new-docs/squeezed/architecture/index.html title="Architecture (&#129104;)"><i class="fas fa-chevron-left fa-fw"></i></a></div><div id=breadcrumbs><span id=sidebar-toggle-span><a href=# id=sidebar-toggle class=topbar-link title='Menu (CTRL+ALT+n)'><i class="fas fa-bars fa-fw"></i></a></span>
+<span id=toc-menu title='Table of Contents (CTRL+ALT+t)'><i class="fas fa-list-alt fa-fw"></i></span><ol class=links itemscope itemtype=http://schema.org/BreadcrumbList><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/index.html><span itemprop=name>XAPI Toolstack Developer Guide</span></a><meta itemprop=position content="1">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/squeezed/index.html><span itemprop=name>Squeezed</span></a><meta itemprop=position content="2">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><span itemprop=name>Design</span><meta itemprop=position content="3"></li></ol></div><div class="default-animation progress"><div class=toc-wrapper><nav id=TableOfContents><ul><li><a href=#two-phase-target-setting>Two phase target setting</a></li><li><a href=#use-of-maxmem>Use of maxmem</a></li></ul><ul><li><a href=#document-history>Document history</a></li></ul></nav></div></div></div></nav><main id=body-inner class="highlightable default" tabindex=-1><div class=flex-block-wrapper><article class=default><header class=headline></header><h1 id=design>Design</h1><p>Squeezed is a single host memory ballooning daemon. It helps by:</p><ol><li>Allowing VM memory to be adjusted dynamically without having to reboot;
+and</li><li>Avoiding wasting memory by keeping everything fully utilised, while retaining
+the ability to take memory back to start new VMs.</li></ol><p>Squeezed currently includes a simple <a href=#ballooning-policy>Ballooning policy</a>
+which serves as a useful default. The policy is written with respect to an
+abstract <a href=#the-memory-model>Xen memory model</a>, which is based on a number of
+<a href=#environmental-assumptions>assumptions about the environment</a>, for example
+that most domains have co-operative balloon drivers. In theory the policy could
+be replaced later with something more sophisticated (for example see
+[xenballoond](<a href=https://github.com/avsm/xen-unstable/blob/master/tools/xenballoon/ target=_blank>https://github.com/avsm/xen-unstable/blob/master/tools/xenballoon/</a>
+xenballoond.README)).</p><p>The <a href=#toolstack-interface>Toolstack interface</a> is used by Xenopsd to free
+memory for starting new VMs. Although the only known client is Xenopsd, the
+interface can in theory be used by other clients. Multiple clients can safely
+use the interface at the same time.</p><p>The <a href=#the-structure-of-the-daemon>internal structure</a> consists of a
+single-thread event loop. To see how it works end-to-end, consult the
+<a href=#example-operation>example</a>.</p><p>No software is ever perfect; to understand the flaws in Squeezed, please
+consult the <a href=#issues>list of issues</a>.</p><h1 id=environmental-assumptions>Environmental assumptions</h1><ol><li><p>The Squeezed daemon runs within a Xen domain 0 and
+communicates to xenstored via a Unix domain socket. Therefore
+Squeezed
+is granted full access to xenstore, enabling it to modify every
+domain’s <code>memory/target</code>.</p></li><li><p>The Squeezed daemon calls <code>setmaxmem</code> in order to cap the amount of memory
+a domain can use. This relies on a patch to xen which allows <code>maxmem</code> to
+be set lower than <code>totpages</code> See Section <a href=#use-of-maxmem>maxmem</a> for more
+information.</p></li><li><p>The Squeezed daemon
+assumes that only domains which write <code>control/feature-balloon</code> into
+xenstore can respond to ballooning requests. It will not ask any
+other domains to balloon.</p></li><li><p>The Squeezed daemon
+assumes that the memory used by a domain is: (i) that listed in
+<code>domain_getinfo</code> as <code>totpages</code>; (ii) shadow as given by
+<code>shadow_allocation_get</code>; and (iii) a small (few KiB) of
+miscellaneous Xen structures
+(e.g. for domains, vcpus) which are invisible.</p></li><li><p>The Squeezed daemon
+assumes that a domain which is created with a particular
+<code>memory/target</code> (and <code>startmem</code>, to within rounding error) will
+reach a stable value of <code>totpages</code> before writing
+<code>control/feature-balloon</code>. The daemon writes this value to
+<code>memory/memory-offset</code> for future reference.</p><ul><li>The Squeezed daemon
+does not know or care exactly what causes the difference between
+<code>totpages</code> and <code>memory/target</code> and it does <em>not</em>
+expect it to remain constant across Xen releases. It
+only expects the value to remain constant over the lifetime of a
+domain.</li></ul></li><li><p>The Squeezed daemon
+assumes that the balloon driver has hit its target when difference
+between <code>memory/target</code> and <code>totpages</code> equals the <code>memory-offset</code>
+value.</p><ul><li>Corrollary: to make a domain with a responsive balloon driver
+currenty using <code>totpages</code> allocate or free
+<em>x</em>
+it suffices to
+set <code>memory/target</code> to
+<em>x+<code>totpages</code>-<code>memoryoffset</code></em>
+and wait for the
+balloon driver to finish. See Section <a href=#the-memory-model>memory model</a> for more
+detail.</li></ul></li><li><p>The Squeezed daemon must
+maintain a “slush fund” of memory (currently 9MiB) which it must
+prevent any domain from allocating. Since (i) some Xen operations (such
+as domain creation) require memory within a physical address range
+(e.g. less than 4GiB) and (ii) since Xen preferentially
+allocates memory outside these ranges, it follows that by preventing
+guests from allocating <em>all</em> host memory (even
+transiently) we guarantee that memory from within these special
+ranges is always available. Squeezed operates in
+<a href=#two-phase-target-setting>two phases</a>: first causing memory to be freed; and
+second causing memory to be allocated.</p></li><li><p>The Squeezed daemon
+assumes that it may set <code>memory/target</code> to any value within range:
+<code>memory/dynamic-max</code> to <code>memory/dynamic-min</code></p></li><li><p>The Squeezed daemon
+assumes that the probability of a domain booting successfully may be
+increased by setting <code>memory/target</code> closer to <code>memory/static-max</code>.</p></li><li><p>The Squeezed daemon
+assumes that, if a balloon driver has not made any visible progress
+after 5 seconds, it is effectively <em>inactive</em>. Active
+domains will be expected to pick up the slack.</p></li></ol><h1 id=toolstack-interface>Toolstack interface</h1><p>The toolstack interface introduces the concept of a <em>reservation</em>.
+A <em>reservation</em> is: an amount of host free memory tagged
+with an associated <em>reservation id</em>. Note this is an
+internal Squeezed concept and Xen is
+completely unaware of it. When the daemon is moving memory between
+domains, it always aims to keep</p><p><a href=#image-4ee4d77d6a3219af2cf977bca1c85c0f class=lightbox-link><img src=/new-docs/squeezed/design/hostfreemem.svg alt="host free memory &amp;gt;= s + sum_i(reservation_i)" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-4ee4d77d6a3219af2cf977bca1c85c0f><img src=/new-docs/squeezed/design/hostfreemem.svg alt="host free memory &amp;gt;= s + sum_i(reservation_i)" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>where <em>s</em> is the size of the “slush fund” (currently 9MiB) and
+<a href=#image-30ea10050c910b10c551dede01459813 class=lightbox-link><img src=/new-docs/squeezed/design/reservation.svg alt=reservation_t class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-30ea10050c910b10c551dede01459813><img src=/new-docs/squeezed/design/reservation.svg alt=reservation_t class="lightbox-image noborder lightbox noshadow" loading=lazy></a>
+is the amount corresponding to the <em>i</em>th
+reservation.</p><p>As an aside: Earlier versions of Squeezed always
+associated memory with a Xen domain. Unfortunately
+this required domains to be created before memory was freed which was
+problematic because domain creation requires small amounts of contiguous
+frames. Rather than implement some form of memory defragmentation,
+Squeezed and Xenopsd were
+modified to free memory before creating a domain. This necessitated
+making memory <em>reservations</em> first-class stand-alone
+entities.</p><p>Once a <em>reservation</em> is made (and the corresponding memory
+is freed), it can be <em>transferred</em> to a domain created by a
+toolstack. This associates the <em>reservation</em> with that
+domain so that, if the domain is destroyed, the
+<em>reservation</em> is also freed. Note that Squeezed is careful not
+to count both a domain’s <em>reservation</em> and its <code>totpages</code>
+during e.g. domain building: instead it considers the domain’s
+allocation to be the maximum of <em>reservation</em> and
+<code>totpages</code>.</p><p>The size of a <em>reservation</em> may either be specified exactly
+by the caller or the caller may provide a memory range. If a range is
+provided the daemon will allocate at least as much as the minimum value
+provided and as much as possible up to the maximum. By allocating as
+much memory as possible to the domain, the probability of a successful
+boot is increased.</p><p>Clients of the Squeezed provide a string
+name when they log in. All untransferred reservations made by a client
+are automatically deleted when a client logs in. This prevents memory
+leaks where a client crashes and loses track of its own reservation ids.</p><p>The interface looks like this:</p><pre><code>string session_id login(
+  string client_name
+)
+
+string reservation_id reserve_memory(
+  string client_name,
+  int kib
+)
+
+int amount, string reservation_id reserve_memory_range(
+  string client_name,
+  int min,
+  int max
+)
+
+void delete_reservation(
+  string client_name,
+  string reservation_id
+)
+
+void transfer_reservation_to_domain(
+  string client_name,
+  string reservation_id,
+  int domid
+)
+</code></pre><p><a href=https://github.com/xapi-project/xenopsd/blob/bf4f8d13ded299b56e55a4b36221ada3dfa0b2b1/xc/xenops_server_xen.ml#L353 target=_blank>The Xenopsd code</a> in pseudocode works as follows:</p><pre><code> r_id = reserve_memory_range(&quot;xenopsd&quot;, min, max);
+ try:
+    d = domain_create()
+    transfer_reservation_to_domain(&quot;xenopsd&quot;, r_id, d)
+ with:
+    delete_reservation(&quot;xenopsd&quot;, r_id)
+</code></pre><p>The interface is currently implemented using a trivial RPC protocol
+over a Unix domain socket in domain 0.</p><h1 id=ballooning-policy>Ballooning policy</h1><p>This section describes the very simple default policy currently
+built-into Squeezed.</p><p>Every domain has a pair of values written into xenstore:
+<code>memory/dynamic-min</code> and <code>memory/dynamic-max</code> with the following
+meanings:</p><ul><li><code>memory/dynamic-min</code> the lowest value that Squeezed is allowed
+to set <code>memory/target</code>. The administrator should make this as low as
+possible but high enough to ensure that the applications inside the
+domain actually work.</li><li><code>memory/dynamic-max</code>
+the highest value that Squeezed is allowed
+to set <code>memory/target</code>. This can be used to dynamically cap the
+amount of memory a domain can use.</li></ul><p>If all balloon drivers are responsive then Squeezed daemon allocates
+memory proportionally, so that each domain has the same value of:
+<a href=#image-50d1390d86dfe3e4911cad5a1d954d5b class=lightbox-link><img src=/new-docs/squeezed/design/fraction.svg alt=target-min/(max-min) class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-50d1390d86dfe3e4911cad5a1d954d5b><img src=/new-docs/squeezed/design/fraction.svg alt=target-min/(max-min) class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>So:</p><ul><li><p>if memory is plentiful then all domains will have
+<code>memory/target</code>=<code>memory/dynamic-max</code></p></li><li><p>if memory is scarce then all domains will have
+<code>memory/target</code>=<code>memory/dynamic-min</code></p></li></ul><p>Note that the values of <code>memory/target</code> suggested by the policy are
+ideal values. In many real-life situations (e.g. when a balloon driver
+fails to make progress and is declared <em>inactive</em>) the
+<code>memory/target</code> values will be different.</p><p>Note that, by default, domain 0 has
+<code>memory/dynamic-min</code>=<code>memory/dynamic-max</code>, effectively disabling
+ballooning. Clearly a more sophisticated policy would be required here
+since ballooning down domain 0 as extra domains are started would be
+counterproductive while backends and control interfaces remain in
+domain 0.</p><h1 id=the-memory-model>The memory model</h1><p>Squeezed
+considers a ballooning-aware domain (i.e. one which has written
+the <code>feature-balloon</code> flag into xenstore) to be completely described by
+the parameters:</p><ul><li><p><code>dynamic-min</code>: policy value written to <code>memory/dynamic-min</code> in xenstore by a
+toolstack (see Section <a href=#ballooning-policy>Ballooning policy</a>)</p></li><li><p><code>dynamic-max</code>: policy value written to <code>memory/dynamic-max</code> in xenstore by a
+toolstack (see Section <a href=#ballooning-policy>Ballooning policy</a>)</p></li><li><p><code>target</code>: balloon driver target written to <code>memory/target</code> in xenstore by
+Squeezed.</p></li><li><p><code>totpages</code>: instantaneous number of pages used by the domain as returned by
+the hypercall <code>domain_getinfo</code></p></li><li><p><code>memory-offset</code>: constant difference between <code>target</code> and <code>totpages</code> when the
+balloon driver believes no ballooning is necessary: where
+<code>memory-offset</code> = <code>totpages</code> - <code>target</code> when the balloon driver believes it
+has reached its target.</p></li><li><p><code>maxmem</code>: upper limit on <code>totpages</code>: where <code>totpages</code> &lt;= <code>maxmem</code></p></li></ul><p>For convenience we define a <code>adjusted-target</code> to be the <em>target</em> value necessary
+to cause a domain currently using <code>totpages</code> to maintain this value
+indefinitely so <code>adjusted-target</code> = <code>totpages</code> - <code>memory-offset</code>.</p><p>The Squeezed
+daemon believes that:</p><ul><li><p>a domain should be ballooning iff
+<code>adjusted-target</code> &lt;> <code>target</code> (unless it has become <em>inactive</em>)</p></li><li><p>a domain has hit its target iff
+<code>adjusted-target</code> = <code>target</code> (to within 1 page);</p></li><li><p>if a domain has
+<code>target</code> = <code>x</code> then, when ballooning
+is complete, it will have
+<code>totpages</code> = <code>memory-offset</code> + <code>x</code>; and therefore</p></li><li><p>to cause a domain to free <code>y</code> it sufficies to set
+<code>target</code> := <code>totpages</code> - <code>memory-offset</code> - <code>y</code>.</p></li></ul><p>The Squeezed
+daemon considers non-ballooning aware domains (i.e. those which have not
+written <code>feature-balloon</code>) to be represented by pairs of:</p><ul><li><p><code>totpages</code>: instantaneous number of pages used by the domain as returned by
+<code>domain_getinfo</code></p></li><li><p><code>reservation</code>: memory initially freed for this domain by Squeezed after a
+<code>transfer_reservation_to_domid</code> call</p></li></ul><p>Note that non-ballooning aware domains will always have
+<code>startmem</code> = <code>target</code>
+since the domain will not be
+instructed to balloon. Since a domain which is being built will have
+0 &lt;= <code>totpages</code> &lt;= <code>reservation</code>, Squeezed computes
+<a href=#image-27aaf6e1aa526c02d160b05cc161a817 class=lightbox-link><img src=/new-docs/squeezed/design/unused.svg alt="unused(i)=reservation(i)-totpages" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-27aaf6e1aa526c02d160b05cc161a817><img src=/new-docs/squeezed/design/unused.svg alt="unused(i)=reservation(i)-totpages" class="lightbox-image noborder lightbox noshadow" loading=lazy></a>
+and subtracts this from its model of the host’s free memory, ensuring
+that it doesn’t accidentally reallocate this memory for some other
+purpose.</p><p>The Squeezed
+daemon believes that:</p><ul><li><p>all guest domains start out as non-ballooning aware domains where
+<code>target</code>=<code>reservation</code>=<code>startmem</code>$;</p></li><li><p>some guest domains become ballooning-aware during their boot
+sequence i.e. when they write <code>feature-balloon</code></p></li></ul><p>The Squeezed
+daemon considers a host to be represented by:</p><ul><li><p>ballooning domains: a set of domains which Squeezed will instruct
+to balloon;</p></li><li><p>other domains: a set of booting domains and domains which have no
+balloon drivers (or whose balloon drivers have failed)</p></li><li><p>a &ldquo;slush fund&rdquo; of low memory required for Xen</p></li><li><p><code>physinfo.free_pages</code> total amount of memory instantanously free
+(including both <code>free_pages</code> and <code>scrub_pages</code>)</p></li><li><p>reservations: batches of free memory which are not (yet) associated
+with any domain</p></li></ul><p>The Squeezed
+daemon considers memory to be unused (i.e. not allocated for any useful
+purpose) if it is neither in use by a domain nor reserved.</p><h1 id=the-main-loop>The main loop</h1><p>The main loop is triggered by either:</p><ol><li><p>the arrival of an allocation request on the toolstack interface; or</p></li><li><p>the policy engine – polled every 10s – deciding that a target
+<a href=https://github.com/xapi-project/squeezed/blob/7a5601d1543bd27e1e390a0a4f0a50aa531760e6/src/memory_server.ml#L60 target=_blank>adjustment is needed</a>.</p></li></ol><p>Each iteration of the main loop generates the following actions:</p><ol><li><p>Domains which were active but have failed to make progress towards
+their target in 5s are declared <em>inactive</em>. These
+domains then have:
+<code>maxmem</code> set to the minimum of <code>target</code> and <code>totpages</code>.</p></li><li><p>Domains which were inactive but have started to make progress
+towards their target are declared <em>active</em>. These
+domains then have: <code>maxmem</code> set to <code>target</code>.</p></li><li><p>Domains which are currently active have new targets computed
+according to the policy (see Section <a href=#ballooning-policy>Ballooning policy</a>). Note that
+inactive domains are ignored and not expected to balloon.</p></li></ol><p>Note that domains remain classified as <em>inactive</em> only
+during one run of the main loop. Once the loop has terminated all
+domains are optimistically assumed to be <em>active</em> again.
+Therefore should a domain be classified as <em>inactive</em> once,
+it will get many later chances to respond.</p><p>The targets are set in <a href=#two-phase-target-setting>two phases</a>.
+The <a href=#use-of-maxmem>maxmem</a> is used to prevent domains suddenly allocating
+more memory than we want them to.</p><p>The main loop has a notion of a host free memory “target”, similar to
+the existing domain memory <code>target</code>. When we are trying to free memory
+(e.g. for starting a new VM), the host free memory “target” is
+increased. When we are trying to distribute memory among guests
+(e.g. after a domain has shutdown and freed lots of memory), the host
+free memory “target” is low. Note the host free memory “target” is
+always at least several MiB to ensure that some host free memory with
+physical address less than 4GiB is free (see <a href=#two-phase-target-setting>Two phase target setting</a> for
+related information).</p><p>The main loop terminates when all <em>active</em> domains have
+reached their targets (this could be because all domains responded or
+because they all wedged and became inactive); and the policy function
+hasn’t suggested any new target changes. There are three possible
+results:</p><ol><li><p>Success if the host free memory is near enough its “target”;</p></li><li><p>Failure if the operation is simply impossible within the policy
+limits (i.e. <code>dynamic_min</code> values are too high;</p></li><li><p>Failure if the operation failed because one or more domains became
+<em>inactive</em> and this prevented us from reaching our host
+free memory “target”.</p></li></ol><p>Note that, since only <em>active</em> domains have their targets
+set, the system effectively rewards domains which refuse to free memory
+(<em>inactive</em>) and punishes those which do free memory
+(<em>active</em>). This effect is countered by signalling to the
+admin which domains/VMs aren’t responding so they can take corrective
+action. To achieve this, the daemon monitors the list of
+<em>inactive</em> domains and if a domain is
+<em>inactive</em> for more than 20s it writes a flag into xenstore
+<code>memory/uncooperative</code>. This key can be monitored and used to generate
+an alert, if desired.</p><h2 id=two-phase-target-setting>Two phase target setting</h2><p>The following diagram shows how a system with two domains can evolve if domain
+<code>memory/target</code> values are increased for some domains and decreased for
+others, at the same time. Each graph shows two domains (domain 1 and
+domain 2) and a host. For a domain, the square box shows its
+<code>adjusted-totpages</code> and the arrow indicates the direction of the
+<code>memory/target</code>. For the host the square box indicates total free
+memory. Note the highlighted state where the host’s free memory is
+temporarily exhausted</p><p><a href=#image-112b37db3fe73ed0e9e62e2d8eb67c7f class=lightbox-link><img src=/new-docs/squeezed/design/twophase.svg alt="Two phase target setting" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-112b37db3fe73ed0e9e62e2d8eb67c7f><img src=/new-docs/squeezed/design/twophase.svg alt="Two phase target setting" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>In the
+initial state (at the top of the diagram), there are two domains, one
+which has been requested to use more memory and the other requested to
+use less memory. In effect the memory is to be transferred from one
+domain to the other. In the final state (at the bottom of the diagram),
+both domains have reached their respective targets, the memory has been
+transferred and the host free memory is at the same value it was
+initially. However the system will not move atomically from the initial
+state to the final: there are a number of possible transient in-between
+states, two of which have been drawn in the middle of the diagram. In
+the left-most transient state the domain which was asked to
+<em>free</em> memory has freed all the memory requested: this is
+reflected in the large amount of host memory free. In the right-most
+transient state the domain which was asked to <em>allocate</em>
+memory has allocated all the memory requested: now the host’s free
+memory has hit zero.</p><p>If the host’s free memory hits zero then Xen has been forced to
+give all memory to guests, including memory less than 4GiB which is critical
+for allocating certain structures. Even if we ask a domain to free
+memory via the balloon driver there is no guarantee that it will free
+the <em>useful</em> memory. This leads to an annoying failure mode
+where operations such as creating a domain free due to <code>ENOMEM</code> despite
+the fact that there is apparently lots of memory free.</p><p>The solution to this problem is to adopt a two-phase <code>memory/target</code>
+setting policy. The Squeezed daemon forces
+domains to free memory first before allowing domains to allocate,
+in-effect forcing the system to move through the left-most state in the
+diagram above.</p><h2 id=use-of-maxmem>Use of maxmem</h2><p>The Xen
+domain <code>maxmem</code> value is used to limit memory allocations by the domain.
+The rules are:</p><ol><li><p>if the domain has never been run and is paused then
+<code>maxmem</code> is set to <code>reservation</code> (reservations were described
+in the <a href=#toolstack-interface>Toolstack interface</a> section above);</p><ul><li><p>these domains are probably still being built and we must let
+them allocate their <code>startmem</code></p></li><li><p><strong>FIXME</strong>: this &ldquo;never been run&rdquo; concept pre-dates the
+<code>feature-balloon</code> flag: perhaps we should use the
+<code>feature-balloon</code> flag instead.</p></li></ul></li><li><p>if the domain is running and the balloon driver is thought to be
+working then <code>maxmem</code> is set to <code>target</code>; and</p><ul><li>there may be a delay between lowering a target and the domain
+noticing so we prevent the domain from allocating memory when it
+should in fact be deallocating.</li></ul></li><li><p>if the domain is running and the balloon driver is thought to be
+inactive then
+<code>maxmem</code> is set to the minimum of <code>target</code> and <code>actual</code>.</p><ul><li><p>if the domain is using more memory than it should then we allow
+it to make progress down towards its target; however</p></li><li><p>if the domain is using less memory than it should then we must
+prevent it from suddenly waking up and allocating more since we
+have probably just given it to someone else</p></li><li><p><strong>FIXME</strong>: should we reduce the target to leave the domain in a
+neutral state instead of asking it to allocate and fail forever?</p></li></ul></li></ol><h1 id=example-operation>Example operation</h1><p>The diagram shows an initial system state comprising 3 domains on a
+single host. The state is not ideal; the domains each have the same
+policy settings (<code>dynamic-min</code> and <code>dynamic-max</code>) and yet are using
+differing values of <code>adjusted-totpages</code>. In addition the host has more
+memory free than desired. The second diagram shows the result of
+computing ideal target values and the third diagram shows the result
+after targets have been set and the balloon drivers have
+responded.</p><p><a href=#image-e71dcf1a7588c110113cd34557007550 class=lightbox-link><img src=/new-docs/squeezed/design/calculation.svg alt=calculation class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-e71dcf1a7588c110113cd34557007550><img src=/new-docs/squeezed/design/calculation.svg alt=calculation class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>The scenario above includes 3 domains (domain 1,
+domain 2, domain 3) on a host. Each of the domains has a non-ideal
+<code>adjusted-totpages</code> value.</p><p>Recall we also have the policy constraint that:
+<code>dynamic-min</code> &lt;= <code>target</code> &lt;= <code>dynamic-max</code>
+Hypothetically if we reduce <code>target</code> by
+<code>target</code>-<code>dynamic-min</code> (i.e. by setting
+<code>target</code> to <code>dynamic-min</code>) then we should reduce
+<code>totpages</code> by the same amount, freeing this much memory on the host. In
+the upper-most graph in the diagram above, the total amount of memory
+which would be freed if we set each of the 3 domain’s
+<code>target</code> to <code>dynamic-min</code> is:
+<code>d1</code> + <code>d2</code> + <code>d3</code>. In this hypothetical
+situation we would now have
+<code>x</code> + <code>s</code> + <code>d1</code> + <code>d2</code> + <code>d3</code> free on the host where
+<code>s</code> is the host slush fund and <code>x</code> is completely unallocated. Since we
+always want to keep the host free memory above <code>s</code>, we are free to
+return <code>x</code> + <code>d1</code> + <code>d2</code> + <code>d3</code> to guests. If we
+use the default built-in proportional policy then, since all domains
+have the same <code>dynamic-min</code> and <code>dynamic-max</code>, each gets the same
+fraction of this free memory which we call <code>g</code>:
+<a href=#image-9209a2ea435cb22ed05c4072d0dcbc2d class=lightbox-link><img src=/new-docs/squeezed/design/g.svg alt="definition of g" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-9209a2ea435cb22ed05c4072d0dcbc2d><img src=/new-docs/squeezed/design/g.svg alt="definition of g" class="lightbox-image noborder lightbox noshadow" loading=lazy></a>
+For each domain, the ideal balloon target is now
+<code>target</code> = <code>dynamic-min</code> + <code>g</code>.
+Squeezed does not set all the targets at once: this would allow the
+allocating domains to race with the deallocating domains, potentially allowing
+all low memory to be allocated. Therefore Squeezed sets the
+targets in <a href=#two-phase-target-setting>two phases</a>.</p><h1 id=the-structure-of-the-daemon>The structure of the daemon</h1><p>Squeezed is a single-threaded daemon which is started by an <code>init.d</code>
+script. It sits waiting for incoming requests on its toolstack interface
+and checks every 10s whether all domain targets are set to the ideal
+values
+(recall the <a href=#ballooning-policy>Ballooning policy</a>). If an allocation request
+arrives or if the domain targets require adjusting then it calls into
+the module
+<a href=https://github.com/xapi-project/squeezed/blob/master/src/squeeze_xen.ml target=_blank>squeeze_xen.ml</a>.</p><p>The module
+<a href=https://github.com/xapi-project/squeezed/blob/master/src/squeeze_xen.ml target=_blank>src/squeeze_xen.ml</a>
+contains code which inspects the state of the host (through hypercalls
+and reading xenstore) and creates a set of records describing the
+current state of the host and all the domains. Note this snapshot of
+state is not atomic – it is pieced together from multiple hypercalls and
+xenstore reads – we assume that the errors generated are small and we
+ignore them. These records are passed into the
+<a href=https://github.com/xapi-project/squeezed/blob/master/lib/squeeze.ml target=_blank>squeeze.ml</a>
+module where they
+are processed and converted into a list of <em>actions</em> i.e.
+(i) updates to <code>memory/target</code> and; (ii) declarations that particular
+domains have become <em>inactive</em> or <em>active</em>.
+The rationale for separating the Xen interface from the
+main ballooning logic was to make testing easier: the module
+<a href=https://github.com/xapi-project/squeezed/blob/master/test/squeeze_test.ml target=_blank>test/squeeze_test.ml</a>
+contains a simple simulator which allows various edge-cases to be
+checked.</p><h1 id=issues>Issues</h1><ul><li><p>If a linux domU kernel has the netback, blkback or blktap modules
+then they away pages via <code>alloc_empty_pages_and_pagevec()</code> during
+boot. This interacts with the balloon driver to break the assumption
+that, reducing the target by <code>x</code> from a neutral value should free
+<code>x</code> amount of memory.</p></li><li><p>Polling the state of the host (particular the xenstore contents) is
+a bit inefficient. Perhaps we should move the policy values
+<code>dynamic_min</code> and <code>dynamic_max</code> to a separate place in the xenstore
+tree and use watches instead.</p></li><li><p>The memory values given to the domain builder are in units of MiB.
+We may wish to similarly quantise the <code>target</code> value or check that
+the <code>memory-offset</code> calculation still works.</p></li><li><p>The Xen
+patch queue reintroduces the lowmem emergency pool. This was an
+attempt to prevent guests from allocating lowmem before we switched
+to a two-phase target setting procedure. This patch can probably be
+removed.</p></li><li><p>It seems unnecessarily evil to modify an <em>inactive</em>
+domain’s <code>maxmem</code> leaving <code>maxmem</code> less than <code>target</code>, causing
+the guest to attempt allocations forwever. It’s probably neater to
+move the <code>target</code> at the same time.</p></li><li><p>Declaring a domain <em>active</em> just because it makes small
+amounts of progress shouldn’t be enough. Otherwise a domain could
+free 1 byte (or maybe 1 page) every 5s.</p></li><li><p>Likewise, declaring a domain “uncooperative” only if it has been
+<em>inactive</em> for 20s means that a domain could alternate
+between <em>inactive</em> for 19s and <em>active</em>
+for 1s and not be declared “uncooperative”.</p></li></ul><h2 id=document-history>Document history</h2><table><thead><tr><th>Version</th><th>Date</th><th>Change</th></tr></thead><tbody><tr><td>0.2</td><td>10th Nov 2014</td><td>Update to markdown</td></tr><tr><td>0.1</td><td>9th Nov 2009</td><td>Initial version</td></tr></tbody></table><footer class=footline></footer></article></div></main></div><aside id=sidebar class=default-animation><div id=header-topbar class=default-animation></div><div id=header-wrapper class=default-animation><div id=header class=default-animation><img src=https://xapi-project.github.io/new-docs//images/xapi-project.png></div><div class="searchbox default-animation"><i class="fas fa-search" title="Search (CTRL+ALT+f)"></i>
+<label class=a11y-only for=search-by>Search</label>
+<input data-search-input id=search-by name=search-by class=search-by type=search placeholder=Search...>
+<button class=search-clear type=button data-search-clear title="Clear search"><i class="fas fa-times" title="Clear search"></i></button></div><script>var contentLangs=["en"]</script><script src=/new-docs/js/auto-complete.js?1702292255 defer></script>
+<script src=/new-docs/js/lunr/lunr.min.js?1702292255 defer></script>
+<script src=/new-docs/js/lunr/lunr.stemmer.support.min.js?1702292255 defer></script>
+<script src=/new-docs/js/lunr/lunr.multi.min.js?1702292255 defer></script>
+<script src=/new-docs/js/lunr/lunr.en.min.js?1702292255 defer></script>
+<script src=/new-docs/js/search.js?1702292255 defer></script></div><div id=homelinks class="default-animation homelinks"><ul><li><a class=padding href=/new-docs/index.html><i class="fas fa-home"></i> Home</a></li></ul><hr class=padding></div><div id=content-wrapper class=highlightable><div id=topics><ul class="enlarge morespace collapsible-menu"><li data-nav-id=/new-docs/toolstack/index.html><input type=checkbox id=section-733bfb8b221c6a3949d666444cf4445d aria-controls=subsections-733bfb8b221c6a3949d666444cf4445d><label for=section-733bfb8b221c6a3949d666444cf4445d><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-right"></i><span class=a11y-only>Submenu The Toolstack</span></label><a class=padding href=/new-docs/toolstack/index.html>The Toolstack</a><ul id=subsections-733bfb8b221c6a3949d666444cf4445d class="morespace collapsible-menu"><li data-nav-id=/new-docs/toolstack/responsibilities/index.html><a class=padding href=/new-docs/toolstack/responsibilities/index.html>Responsibilities</a></li><li data-nav-id=/new-docs/toolstack/high-level/index.html><input type=checkbox id=section-93d1c0b933c799c336ad0fd09a6dc0ae aria-controls=subsections-93d1c0b933c799c336ad0fd09a6dc0ae><label for=section-93d1c0b933c799c336ad0fd09a6dc0ae><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-right"></i><span class=a11y-only>Submenu High-level architecture</span></label><a class=padding href=/new-docs/toolstack/high-level/index.html>High-level architecture</a><ul id=subsections-93d1c0b933c799c336ad0fd09a6dc0ae class="morespace collapsible-menu"><li data-nav-id=/new-docs/toolstack/high-level/environment/index.html><a class=padding href=/new-docs/toolstack/high-level/environment/index.html>Environment</a></li><li data-nav-id=/new-docs/toolstack/high-level/daemons/index.html><a class=padding href=/new-docs/toolstack/high-level/daemons/index.html>Daemons</a></li><li data-nav-id=/new-docs/toolstack/high-level/interfaces/index.html><a class=padding href=/new-docs/toolstack/high-level/interfaces/index.html>Interfaces</a></li></ul></li><li data-nav-id=/new-docs/toolstack/features/index.html><input type=checkbox id=section-a202420b9d8f13c2d690377c4357de50 aria-controls=subsections-a202420b9d8f13c2d690377c4357de50><label for=section-a202420b9d8f13c2d690377c4357de50><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-right"></i><span class=a11y-only>Submenu Features</span></label><a class=padding href=/new-docs/toolstack/features/index.html>Features</a><ul id=subsections-a202420b9d8f13c2d690377c4357de50 class="morespace collapsible-menu"><li data-nav-id=/new-docs/toolstack/features/DR/index.html><a class=padding href=/new-docs/toolstack/features/DR/index.html>Disaster Recovery</a></li><li data-nav-id=/new-docs/toolstack/features/events/index.html><a class=padding href=/new-docs/toolstack/features/events/index.html>Event handling</a></li><li data-nav-id=/new-docs/toolstack/features/HA/index.html><a class=padding href=/new-docs/toolstack/features/HA/index.html>High-Availability</a></li><li data-nav-id=/new-docs/toolstack/features/snapshots/index.html><a class=padding href=/new-docs/toolstack/features/snapshots/index.html>Snapshots</a></li><li data-nav-id=/new-docs/toolstack/features/VGPU/index.html><a class=padding href=/new-docs/toolstack/features/VGPU/index.html>vGPU</a></li><li data-nav-id=/new-docs/toolstack/features/XSM/index.html><a class=padding href=/new-docs/toolstack/features/XSM/index.html>Xapi Storage Migration</a></li></ul></li></ul></li><li data-nav-id=/new-docs/xapi/index.html><input type=checkbox id=section-38d9a208f329bfd7f57b7a3d82b1b09a aria-controls=subsections-38d9a208f329bfd7f57b7a3d82b1b09a><label for=section-38d9a208f329bfd7f57b7a3d82b1b09a><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-right"></i><span class=a11y-only>Submenu Xapi</span></label><a class=padding href=/new-docs/xapi/index.html>Xapi</a><ul id=subsections-38d9a208f329bfd7f57b7a3d82b1b09a class="morespace collapsible-menu"><li data-nav-id=/new-docs/xapi/guides/index.html><input type=checkbox id=section-1e852a9c61356e39c38ffde6aaccdadf aria-controls=subsections-1e852a9c61356e39c38ffde6aaccdadf><label for=section-1e852a9c61356e39c38ffde6aaccdadf><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-right"></i><span class=a11y-only>Submenu Guides</span></label><a class=padding href=/new-docs/xapi/guides/index.html>Guides</a><ul id=subsections-1e852a9c61356e39c38ffde6aaccdadf class="morespace collapsible-menu"><li data-nav-id=/new-docs/xapi/guides/howtos/index.html><input type=checkbox id=section-259bbbeab1560e4f0d61ad99041ab23f aria-controls=subsections-259bbbeab1560e4f0d61ad99041ab23f><label for=section-259bbbeab1560e4f0d61ad99041ab23f><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-right"></i><span class=a11y-only>Submenu How to add....</span></label><a class=padding href=/new-docs/xapi/guides/howtos/index.html>How to add....</a><ul id=subsections-259bbbeab1560e4f0d61ad99041ab23f class="morespace collapsible-menu"><li data-nav-id=/new-docs/xapi/guides/howtos/add-class/index.html><a class=padding href=/new-docs/xapi/guides/howtos/add-class/index.html>Adding a Class to the API</a></li><li data-nav-id=/new-docs/xapi/guides/howtos/add-field/index.html><a class=padding href=/new-docs/xapi/guides/howtos/add-field/index.html>Adding a field to the API</a></li><li data-nav-id=/new-docs/xapi/guides/howtos/add-function/index.html><a class=padding href=/new-docs/xapi/guides/howtos/add-function/index.html>Adding a function to the API</a></li><li data-nav-id=/new-docs/xapi/guides/howtos/add-api-extension/index.html><a class=padding href=/new-docs/xapi/guides/howtos/add-api-extension/index.html>Adding a XenAPI extension</a></li></ul></li></ul></li><li data-nav-id=/new-docs/xapi/database/index.html><input type=checkbox id=section-378fe6bda61dabebb37cf2433db26b2f aria-controls=subsections-378fe6bda61dabebb37cf2433db26b2f><label for=section-378fe6bda61dabebb37cf2433db26b2f><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-right"></i><span class=a11y-only>Submenu Database</span></label><a class=padding href=/new-docs/xapi/database/index.html>Database</a><ul id=subsections-378fe6bda61dabebb37cf2433db26b2f class="morespace collapsible-menu"><li data-nav-id=/new-docs/xapi/database/redo-log/index.html><a class=padding href=/new-docs/xapi/database/redo-log/index.html>Metadata-on-LUN</a></li></ul></li><li data-nav-id=/new-docs/xapi/memory/index.html><a class=padding href=/new-docs/xapi/memory/index.html>Memory</a></li><li data-nav-id=/new-docs/xapi/storage/index.html><input type=checkbox id=section-6bab529a669346ed9d1815ed30e48c91 aria-controls=subsections-6bab529a669346ed9d1815ed30e48c91><label for=section-6bab529a669346ed9d1815ed30e48c91><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-right"></i><span class=a11y-only>Submenu Storage</span></label><a class=padding href=/new-docs/xapi/storage/index.html>Storage</a><ul id=subsections-6bab529a669346ed9d1815ed30e48c91 class="morespace collapsible-menu"><li data-nav-id=/new-docs/xapi/storage/sxm/index.html><a class=padding href=/new-docs/xapi/storage/sxm/index.html>Storage migration</a></li></ul></li><li data-nav-id=/new-docs/xapi/cli/index.html><a class=padding href=/new-docs/xapi/cli/index.html>CLI</a></li></ul></li><li data-nav-id=/new-docs/xenopsd/index.html><input type=checkbox id=section-c72fd23679970685706f8c9f1bb2fa52 aria-controls=subsections-c72fd23679970685706f8c9f1bb2fa52><label for=section-c72fd23679970685706f8c9f1bb2fa52><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-right"></i><span class=a11y-only>Submenu Xenopsd</span></label><a class=padding href=/new-docs/xenopsd/index.html>Xenopsd</a><ul id=subsections-c72fd23679970685706f8c9f1bb2fa52 class="morespace collapsible-menu"><li data-nav-id=/new-docs/xenopsd/architecture/index.html><a class=padding href=/new-docs/xenopsd/architecture/index.html>Architecture</a></li><li data-nav-id=/new-docs/xenopsd/design/index.html><input type=checkbox id=section-9b92b6e8232f75e147c3792adf755e68 aria-controls=subsections-9b92b6e8232f75e147c3792adf755e68><label for=section-9b92b6e8232f75e147c3792adf755e68><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-right"></i><span class=a11y-only>Submenu Design</span></label><a class=padding href=/new-docs/xenopsd/design/index.html>Design</a><ul id=subsections-9b92b6e8232f75e147c3792adf755e68 class="morespace collapsible-menu"><li data-nav-id=/new-docs/xenopsd/design/Events/index.html><a class=padding href=/new-docs/xenopsd/design/Events/index.html>Events</a></li><li data-nav-id=/new-docs/xenopsd/design/hooks/index.html><a class=padding href=/new-docs/xenopsd/design/hooks/index.html>Hooks</a></li><li data-nav-id=/new-docs/xenopsd/design/suspend-image-considerations/index.html><a class=padding href=/new-docs/xenopsd/design/suspend-image-considerations/index.html>Requirements for suspend image framing</a></li><li data-nav-id=/new-docs/xenopsd/design/suspend-image-framing-format/index.html><a class=padding href=/new-docs/xenopsd/design/suspend-image-framing-format/index.html>Suspend image framing format</a></li><li data-nav-id=/new-docs/xenopsd/design/Tasks/index.html><a class=padding href=/new-docs/xenopsd/design/Tasks/index.html>Tasks</a></li></ul></li><li data-nav-id=/new-docs/xenopsd/features/index.html><a class=padding href=/new-docs/xenopsd/features/index.html>Features</a></li><li data-nav-id=/new-docs/xenopsd/walkthroughs/index.html><input type=checkbox id=section-523c4f88c9de72bf362da89f937681e6 aria-controls=subsections-523c4f88c9de72bf362da89f937681e6><label for=section-523c4f88c9de72bf362da89f937681e6><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-right"></i><span class=a11y-only>Submenu Walk-throughs</span></label><a class=padding href=/new-docs/xenopsd/walkthroughs/index.html>Walk-throughs</a><ul id=subsections-523c4f88c9de72bf362da89f937681e6 class="morespace collapsible-menu"><li data-nav-id=/new-docs/xenopsd/walkthroughs/live-migration/index.html><a class=padding href=/new-docs/xenopsd/walkthroughs/live-migration/index.html>Live Migration</a></li><li data-nav-id=/new-docs/xenopsd/walkthroughs/VM.migrate/index.html><a class=padding href=/new-docs/xenopsd/walkthroughs/VM.migrate/index.html>Walkthrough: Migrating a VM</a></li><li data-nav-id=/new-docs/xenopsd/walkthroughs/VM.start/index.html><a class=padding href=/new-docs/xenopsd/walkthroughs/VM.start/index.html>Walkthrough: Starting a VM</a></li></ul></li></ul></li><li data-nav-id=/new-docs/xcp-networkd/index.html><a class=padding href=/new-docs/xcp-networkd/index.html>Networkd</a></li><li data-nav-id=/new-docs/squeezed/index.html class=parent><input type=checkbox id=section-1eeda4d753cc1773dfada70c3819a0a1 aria-controls=subsections-1eeda4d753cc1773dfada70c3819a0a1 checked><label for=section-1eeda4d753cc1773dfada70c3819a0a1><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-right"></i><span class=a11y-only>Submenu Squeezed</span></label><a class=padding href=/new-docs/squeezed/index.html>Squeezed</a><ul id=subsections-1eeda4d753cc1773dfada70c3819a0a1 class="morespace collapsible-menu"><li data-nav-id=/new-docs/squeezed/architecture/index.html><a class=padding href=/new-docs/squeezed/architecture/index.html>Architecture</a></li><li data-nav-id=/new-docs/squeezed/design/index.html class=active><a class=padding href=/new-docs/squeezed/design/index.html>Design</a></li></ul></li><li data-nav-id=/new-docs/xcp-rrdd/index.html><input type=checkbox id=section-54ab6488aa1c00b15a58b0c7ace94c5e aria-controls=subsections-54ab6488aa1c00b15a58b0c7ace94c5e><label for=section-54ab6488aa1c00b15a58b0c7ace94c5e><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-right"></i><span class=a11y-only>Submenu RRDD</span></label><a class=padding href=/new-docs/xcp-rrdd/index.html>RRDD</a><ul id=subsections-54ab6488aa1c00b15a58b0c7ace94c5e class="morespace collapsible-menu"><li data-nav-id=/new-docs/xcp-rrdd/futures/archival-redesign/index.html><a class=padding href=/new-docs/xcp-rrdd/futures/archival-redesign/index.html>RRDD archival redesign</a></li><li data-nav-id=/new-docs/xcp-rrdd/design/plugin-protocol-v2/index.html><a class=padding href=/new-docs/xcp-rrdd/design/plugin-protocol-v2/index.html>RRDD plugin protocol v2</a></li><li data-nav-id=/new-docs/xcp-rrdd/futures/sr-level-rrds/index.html><a class=padding href=/new-docs/xcp-rrdd/futures/sr-level-rrds/index.html>SR-Level RRDs</a></li></ul></li></ul></div><div class="padding footermargin footerLangSwitch footerVariantSwitch footerVisitedLinks footerFooter"></div><div id=menu-footer><hr class="padding default-animation footerLangSwitch footerVariantSwitch footerVisitedLinks footerFooter"><div id=prefooter class="footerLangSwitch footerVariantSwitch footerVisitedLinks"><ul><li id=select-language-container class=footerLangSwitch><div class="padding menu-control"><i class="fas fa-language fa-fw"></i>
+<span>&nbsp;</span><div class=control-style><label class=a11y-only for=select-language>Language</label>
+<select id=select-language onchange="location=baseUri+this.value"></select></div><div class=clear></div></div></li><li id=select-variant-container class=footerVariantSwitch><div class="padding menu-control"><i class="fas fa-paint-brush fa-fw"></i>
+<span>&nbsp;</span><div class=control-style><label class=a11y-only for=select-variant>Theme</label>
+<select id=select-variant onchange=window.variants&&variants.changeVariant(this.value)><option id=red value=red selected>Red</option></select></div><div class=clear></div></div><script>window.variants&&variants.markSelectedVariant()</script></li><li class=footerVisitedLinks><div class="padding menu-control"><i class="fas fa-history fa-fw"></i>
+<span>&nbsp;</span><div class=control-style><button onclick=clearHistory()>Clear History</button></div><div class=clear></div></div></li></ul></div><div id=footer class=footerFooter></div></div></div></aside><script src=/new-docs/js/clipboard.min.js?1702292255 defer></script>
+<script src=/new-docs/js/perfect-scrollbar.min.js?1702292255 defer></script>
+<script src=/new-docs/js/theme.js?1702292255 defer></script></body></html>
