@@ -1,4 +1,4 @@
-23.32.0: XAPI 23.32.0
+24.0.0: XAPI 24.0.0
 23.30.0: XAPI 23.30.0
 23.27.0: XAPI 23.27.0
 23.25.0: XAPI 23.25.0
@@ -32,7 +32,6 @@
 1.271.0: XAPI 1.271.0
 1.257.0: XAPI 1.257.0
 1.250.0: XAPI 1.250.0
-next: Unreleased
 stockholm_psr: Citrix Hypervisor 8.2 Hotfix 2
 stockholm: Citrix Hypervisor 8.2
 quebec: Citrix Hypervisor 8.1
