@@ -35,5 +35,4 @@ or [XCP-ng](https://xcp-ng.org/#easy-to-install).
 
 You're welcome to
 
-- join the #xen-api channel on freenode
 - checkout the [code on github](https://github.com/xapi-project/)
