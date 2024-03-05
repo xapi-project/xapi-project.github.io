@@ -32,7 +32,7 @@ server_helpers -- call management (ie xapi_vm_migrate.ml)--> message_forwarding[
 message_forwarding -- execute locally --> vm_management["`VM Mgmt
 like **xapi_vm_migrate.ml**`"]
 vm_management -- Call --> xapi_xenops["`Transform xenops
-see (**xapi_xenpos.ml**)`"]
+see (**xapi_xenops.ml**)`"]
 xapi_xenops &lt;-- Post following IDL model (see xenops_interface.ml) --> msg_switch
 subgraph "Message Switch Daemon"
 msg_switch[["Queues"]]
