@@ -31,11 +31,6 @@ The easiest way to use it is to install
 [XenServer](https://www.xenserver.com/downloads)
 or [XCP-ng](https://xcp-ng.org/#easy-to-install).
 
-Otherwise, you can
-
-- follow the [build instructions](https://github.com/xenserver/buildroot)
-- try experimental [ARM packages](http://wiki.xenproject.org/wiki/Running_XCP/xapi_on_ARM)
-
 ## Get in touch
 
 You're welcome to
