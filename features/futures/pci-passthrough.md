@@ -1,12 +1,3 @@
-
-12:14
-
-
-
-
-
-
-
 ---
 title: PCI passthrough support
 layout: default
@@ -36,10 +27,10 @@ New methods for PCI object:
   - enabled_on_reboot
 
   How do determine the expected dom0 access state:
-  If a device id is present in both `pciback.hide` of `/proc/cmdline` and `xen-cmdline`: `enabled`
-  If a device id is present not in both `pciback.hide` of `/proc/cmdline` and `xen-cmdline`: `disabled`
-  If a device id is present in the `pciback.hide` of `/proc/cmdline` but not in the one of `xen-cmdline`: `disabled_on_reboot`
-  If a device id is not present in the `pciback.hide` of `/proc/cmdline` but is in the one of `xen-cmdline`: `enabled_on_reboot`
+  If the device id is present in both `pciback.hide` of `/proc/cmdline` and `xen-cmdline`: `enabled`
+  If the device id is present not in both `pciback.hide` of `/proc/cmdline` and `xen-cmdline`: `disabled`
+  If the device id is present in the `pciback.hide` of `/proc/cmdline` but not in the one of `xen-cmdline`: `disabled_on_reboot`
+  If the device id is not present in the `pciback.hide` of `/proc/cmdline` but is in the one of `xen-cmdline`: `enabled_on_reboot`
 
   A function rather than a field makes the data always accurate and even accounts for
   changes made by users outside XAPI, directly through `/opt/xensource/libexec/xen-cmdline`
