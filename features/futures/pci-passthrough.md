@@ -35,21 +35,12 @@ New methods for PCI object:
   A function rather than a field makes the data always accurate and even accounts for
   changes made by users outside XAPI, directly through `/opt/xensource/libexec/xen-cmdline`
 
-If wanted:
-The first two methods would only be callable if the `enable-pci-passthrough` setting is set
-to a yes/true value in XAPI's configuration files. Default: no.
-
-With these generic methods available, comes the question of the existing methods and fields
-on the PGPU object:
+With these generic methods available, the following field and methods will be *deprecated*:
 - `PGPU.enable_dom0_access`
 - `PGPU.disable_dom0_access`
 - `PGPU.dom0_access` (DB field)
 
-They can all be deprecated, or retained. If retained, the contents of `PGPU.dom0_access`
-needs to be refreshed whenever `PCI.enable_dom0_access` or `PCI.disable_dom0_access` is
-called on the related PCI object. Another option is deprecating just `PGPU.dom0_access`
-and replacing it with a `PGPU.get_dom0_access_status` method based on the implementation
-of `PCI.get_dom0_access_status`.
+They would still be usable and up to date with the same info as for the PCI methods.
 
 Test cases
 ----------
