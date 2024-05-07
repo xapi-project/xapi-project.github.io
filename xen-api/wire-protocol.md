@@ -227,11 +227,11 @@ First, initialise python and import the library `xmlrpclib`:
 
     $ python
     ...
-    >>> import xmlrpclib
+    >>> import xmlrpc.client
 
 Create a python object referencing the remote server:
 
-    >>> xen = xmlrpclib.Server("https://localhost:443")
+    >>> xen = xmlrpc.client.Server("https://localhost:443")
 
 Acquire a session reference by logging in with a username and password
 (error-handling ommitted for brevity; the session reference is returned
