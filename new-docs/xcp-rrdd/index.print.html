@@ -1,0 +1,157 @@
+<!doctype html><html lang=en dir=ltr><head><meta charset=utf-8><meta name=viewport content="height=device-height,width=device-width,initial-scale=1,minimum-scale=1"><meta name=generator content="Hugo 0.127.0"><meta name=generator content="Relearn 5.20.0+tip"><meta name=description content><title>RRDD :: XAPI Toolstack Developer Documentation</title>
+<link href=https://xapi-project.github.io/new-docs/xcp-rrdd/index.html rel=canonical type=text/html title="RRDD :: XAPI Toolstack Developer Documentation"><link href=/new-docs/xcp-rrdd/index.xml rel=alternate type=application/rss+xml title="RRDD :: XAPI Toolstack Developer Documentation"><link href=/new-docs/images/favicon.png?1718728542 rel=icon type=image/png><link href=/new-docs/css/fontawesome-all.min.css?1718728545 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/fontawesome-all.min.css?1718728545 rel=stylesheet></noscript><link href=/new-docs/css/nucleus.css?1718728545 rel=stylesheet><link href=/new-docs/css/auto-complete.css?1718728545 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/auto-complete.css?1718728545 rel=stylesheet></noscript><link href=/new-docs/css/perfect-scrollbar.min.css?1718728545 rel=stylesheet><link href=/new-docs/css/fonts.css?1718728545 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/fonts.css?1718728545 rel=stylesheet></noscript><link href=/new-docs/css/theme.css?1718728545 rel=stylesheet><link href=/new-docs/css/theme-auto.css?1718728545 rel=stylesheet id=variant-style><link href=/new-docs/css/variant.css?1718728545 rel=stylesheet><link href=/new-docs/css/print.css?1718728545 rel=stylesheet media=print><link href=/new-docs/css/format-print.css?1718728545 rel=stylesheet><link href=/new-docs/css/ie.css?1718728545 rel=stylesheet><script src=/new-docs/js/url.js?1718728545></script><script src=/new-docs/js/variant.js?1718728545></script><script>window.index_js_url="/new-docs/index.search.js";var baseUriFull,root_url="/",baseUri=root_url.replace(/\/$/,"");window.T_Copy_to_clipboard="Copy to clipboard",window.T_Copied_to_clipboard="Copied to clipboard!",window.T_Copy_link_to_clipboard="Copy link to clipboard",window.T_Link_copied_to_clipboard="Copied link to clipboard!",window.T_No_results_found='No results found for "{0}"',window.T_N_results_found='{1} results found for "{0}"',baseUriFull="https://xapi-project.github.io/new-docs/",window.variants&&variants.init(["auto","zen-light","zen-dark","red","blue","green","learn","neon","relearn-light","relearn-bright","relearn-dark"])</script><link rel=stylesheet href=https://xapi-project.github.io/new-docs/css/misc.css></head><body class="mobile-support print" data-url=/new-docs/xcp-rrdd/index.html><div id=body class=default-animation><div id=sidebar-overlay></div><div id=toc-overlay></div><nav id=topbar class=highlightable><div><div id=breadcrumbs><span id=sidebar-toggle-span><a href=# id=sidebar-toggle class=topbar-link title='Menu (CTRL+ALT+n)'><i class="fas fa-bars fa-fw"></i></a></span><ol class=links itemscope itemtype=http://schema.org/BreadcrumbList><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/index.html><span itemprop=name>XAPI Toolstack Developer Guide</span></a><meta itemprop=position content="1">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><span itemprop=name>RRDD</span><meta itemprop=position content="2"></li></ol></div></div></nav><main id=body-inner class="highlightable default" tabindex=-1><div class=flex-block-wrapper><article class=default><header class=headline></header><h1 id=rrdd>RRDD</h1><p>The <code>xcp-rrdd</code> daemon (hereafter simply called “rrdd”) is a component in the
+xapi toolstack that is responsible for collecting metrics, storing them as
+&ldquo;Round-Robin Databases&rdquo; (RRDs) and exposing these to clients.</p><p>The code is in ocaml/xcp-rrdd.</p><footer class=footline></footer></article><section><h1 class=a11y-only>Subsections of RRDD</h1><article class=default><header class=headline><table class=revision-table><tr><th colspan=2>Design document</th></tr><tr style=background-color:#fff><td>Revision</td><td><span class="label label-default">v1</span></td></tr><tr style=background-color:#fff><td>Status</td><td><span class="label
+label-success">released (7,0)</span></td></tr></table></header><h1 id=rrdd-archival-redesign>RRDD archival redesign</h1><h2 id=introduction>Introduction</h2><p>Current problems with rrdd:</p><ul><li>rrdd stores knowledge about whether it is running on a master or a slave</li></ul><p>This determines the host to which rrdd will archive a VM&rsquo;s rrd when the VM&rsquo;s
+domain disappears - rrdd will always try to archive to the master. However,
+when a host joins a pool as a slave rrdd is not restarted so this knowledge is
+out of date. When a VM shuts down on the slave rrdd will archive the rrd
+locally. When starting this VM again the master xapi will attempt to push any
+locally-existing rrd to the host on which the VM is being started, but since
+no rrd archive exists on the master the slave rrdd will end up creating a new
+rrd and the previous rrd will be lost.</p><ul><li>rrdd handles rebooting VMs unpredictably</li></ul><p>When rebooting a VM, there is a chance rrdd will attempt to update that VM&rsquo;s rrd
+during the brief period when there is no domain for that VM. If this happens,
+rrdd will archive the VM&rsquo;s rrd to the master, and then create a new rrd for the
+VM when it sees the new domain. If rrdd doesn&rsquo;t attempt to update that VM&rsquo;s rrd
+during this period, rrdd will continue to add data for the new domain to the old
+rrd.</p><h2 id=proposal>Proposal</h2><p>To solve these problems, we will remove some of the intelligence from rrdd and
+make it into more of a slave process of xapi. This will entail removing all
+knowledge from rrdd of whether it is running on a master or a slave, and also
+modifying rrdd to only start monitoring a VM when it is told to, and only
+archiving an rrd (to a specified address) when it is told to. This matches the
+way xenopsd only manages domains which it has been told to manage.</p><h2 id=design>Design</h2><p>For most VM lifecycle operations, xapi and rrdd processes (sometimes across more
+than one host) cooperate to start or stop recording a VM&rsquo;s metrics and/or to
+restore or backup the VM&rsquo;s archived metrics. Below we will describe, for each
+relevant VM operation, how the VM&rsquo;s rrd is currently handled, and how we propose
+it will be handled after the redesign.</p><h4 id=vmdestroy>VM.destroy</h4><p>The master xapi makes a remove_rrd call to the local rrdd, which causes rrdd to
+to delete the VM&rsquo;s archived rrd from disk. This behaviour will remain unchanged.</p><h4 id=vmstart_on-and-vmresume_on>VM.start(_on) and VM.resume(_on)</h4><p>The master xapi makes a push_rrd call to the local rrdd, which causes rrdd to
+send any locally-archived rrd for the VM in question to the rrdd of the host on
+which the VM is starting. This behaviour will remain unchanged.</p><h4 id=vmshutdown-and-vmsuspend>VM.shutdown and VM.suspend</h4><p>Every update cycle rrdd compares its list of registered VMs to the list of
+domains actually running on the host. Any registered VMs which do not have a
+corresponding domain have their rrds archived to the rrdd running on the host
+believed to be the master. We will change this behaviour by stopping rrdd from
+doing the archiving itself; instead we will expose a new function in rrdd&rsquo;s
+interface:</p><div class="wrap-code highlight"><pre tabindex=0><code>val archive_rrd : vm_uuid:string -&gt; remote_address:string -&gt; unit</code></pre></div><p>This will cause rrdd to remove the specified rrd from its table of registered
+VMs, and archive the rrd to the specified host. When a VM has finished shutting
+down or suspending, the xapi process on the host on which the VM was running
+will call archive_rrd to ask the local rrdd to archive back to the master rrdd.</p><h4 id=vmreboot>VM.reboot</h4><p>Removing rrdd&rsquo;s ability to automatically archive the rrds for disappeared
+domains will have the bonus effect of fixing how the rrds of rebooting VMs are
+handled, as we don&rsquo;t want the rrds of rebooting VMs to be archived at all.</p><h4 id=vmcheckpoint>VM.checkpoint</h4><p>This will be handled automatically, as internally VM.checkpoint carries out a
+VM.suspend followed by a VM.resume.</p><h4 id=vmpool_migrate-and-vmmigrate_send>VM.pool_migrate and VM.migrate_send</h4><p>The source host&rsquo;s xapi makes a migrate_rrd call to the local rrd, with a
+destination address and an optional session ID. The session ID is only required
+for cross-pool migration. The local rrdd sends the rrd for that VM to the
+destination host&rsquo;s rrdd as an HTTP PUT. This behaviour will remain unchanged.</p><footer class=footline></footer></article><article class=default><header class=headline><table class=revision-table><tr><th colspan=2>Design document</th></tr><tr style=background-color:#fff><td>Revision</td><td><span class="label label-default">v1</span></td></tr><tr style=background-color:#fff><td>Status</td><td><span class="label
+label-success">released (7.0)</span></td></tr><tr><th colspan=2>Revision history</th></tr><tr><td><span class="label label-default">v1</span></td><td>Initial version</td></tr></table></header><h1 id=rrdd-plugin-protocol-v2>RRDD plugin protocol v2</h1><h2 id=motivation>Motivation</h2><p>rrdd plugins currently report datasources via a shared-memory file, using the
+following format:</p><div class="wrap-code highlight"><pre tabindex=0><code>DATASOURCES
+000001e4
+dba4bf7a84b6d11d565d19ef91f7906e
+{
+  &#34;timestamp&#34;: 1339685573,
+  &#34;data_sources&#34;: {
+    &#34;cpu-temp-cpu0&#34;: {
+      &#34;description&#34;: &#34;Temperature of CPU 0&#34;,
+      &#34;type&#34;: &#34;absolute&#34;,
+      &#34;units&#34;: &#34;degC&#34;,
+      &#34;value&#34;: &#34;64.33&#34;
+      &#34;value_type&#34;: &#34;float&#34;,
+    },
+    &#34;cpu-temp-cpu1&#34;: {
+      &#34;description&#34;: &#34;Temperature of CPU 1&#34;,
+      &#34;type&#34;: &#34;absolute&#34;,
+      &#34;units&#34;: &#34;degC&#34;,
+      &#34;value&#34;: &#34;62.14&#34;
+      &#34;value_type&#34;: &#34;float&#34;,
+    }
+  }
+}</code></pre></div><p>This format contains four main components:</p><ul><li>A constant header string</li></ul><p><code>DATASOURCES</code></p><p>This should always be present.</p><ul><li>The JSON data length, encoded as hexadecimal</li></ul><p><code>000001e4</code></p><ul><li>The md5sum of the JSON data</li></ul><p><code>dba4bf7a84b6d11d565d19ef91f7906e</code></p><ul><li>The JSON data itself, encoding the values and metadata associated with the
+reported datasources.</li></ul><div class="wrap-code highlight"><pre tabindex=0><code>{
+  &#34;timestamp&#34;: 1339685573,
+  &#34;data_sources&#34;: {
+    &#34;cpu-temp-cpu0&#34;: {
+      &#34;description&#34;: &#34;Temperature of CPU 0&#34;,
+      &#34;type&#34;: &#34;absolute&#34;,
+      &#34;units&#34;: &#34;degC&#34;,
+      &#34;value&#34;: &#34;64.33&#34;
+      &#34;value_type&#34;: &#34;float&#34;,
+    },
+    &#34;cpu-temp-cpu1&#34;: {
+      &#34;description&#34;: &#34;Temperature of CPU 1&#34;,
+      &#34;type&#34;: &#34;absolute&#34;,
+      &#34;units&#34;: &#34;degC&#34;,
+      &#34;value&#34;: &#34;62.14&#34;
+      &#34;value_type&#34;: &#34;float&#34;,
+    }
+  }
+}</code></pre></div><p>The disadvantage of this protocol is that rrdd has to parse the entire JSON
+structure each tick, even though most of the time only the values will change.</p><p>For this reason a new protocol is proposed.</p><h2 id=protocol-v2>Protocol V2</h2><table><thead><tr><th>value</th><th>bits</th><th>format</th><th>notes</th></tr></thead><tbody><tr><td>header string</td><td>(string length)*8</td><td>string</td><td>&ldquo;Datasources&rdquo; as in the V1 protocol</td></tr><tr><td>data checksum</td><td>32</td><td>int32</td><td>binary-encoded crc32 of the concatenation of the encoded timestamp and datasource values</td></tr><tr><td>metadata checksum</td><td>32</td><td>int32</td><td>binary-encoded crc32 of the metadata string (see below)</td></tr><tr><td>number of datasources</td><td>32</td><td>int32</td><td>only needed if the metadata has changed - otherwise RRDD can use a cached value</td></tr><tr><td>timestamp</td><td>64</td><td>int64</td><td>Unix epoch</td></tr><tr><td>datasource values</td><td>n * 64</td><td>int64</td><td>n is the number of datasources exported by the plugin</td></tr><tr><td>metadata length</td><td>32</td><td>int32</td><td></td></tr><tr><td>metadata</td><td>(string length)*8</td><td>string</td><td></td></tr></tbody></table><p>All integers are bigendian. The metadata will have the same JSON-based format as
+in the V1 protocol, minus the timestamp and <code>value</code> key-value pair for each
+datasource, for example:</p><div class="wrap-code highlight"><pre tabindex=0><code>{
+  &#34;datasources&#34;: {
+    &#34;memory_reclaimed&#34;: {
+      &#34;description&#34;:&#34;Host memory reclaimed by squeezed&#34;,
+      &#34;owner&#34;:&#34;host&#34;,
+      &#34;value_type&#34;:&#34;int64&#34;,
+      &#34;type&#34;:&#34;absolute&#34;,
+      &#34;default&#34;:&#34;true&#34;,
+      &#34;units&#34;:&#34;B&#34;,
+      &#34;min&#34;:&#34;-inf&#34;,
+      &#34;max&#34;:&#34;inf&#34;
+    },
+    &#34;memory_reclaimed_max&#34;: {
+      &#34;description&#34;:&#34;Host memory that could be reclaimed by squeezed&#34;,
+      &#34;owner&#34;:&#34;host&#34;,
+      &#34;value_type&#34;:&#34;int64&#34;,
+      &#34;type&#34;:&#34;absolute&#34;,
+      &#34;default&#34;:&#34;true&#34;,
+      &#34;units&#34;:&#34;B&#34;,
+      &#34;min&#34;:&#34;-inf&#34;,
+      &#34;max&#34;:&#34;inf&#34;
+    }
+  }
+}</code></pre></div><p>The above formatting is not required, but added here for readability.</p><h2 id=reading-algorithm>Reading algorithm</h2><div class="wrap-code highlight"><pre tabindex=0><code>if header != expected_header:
+    raise InvalidHeader()
+if data_checksum == last_data_checksum:
+    raise NoUpdate()
+if data_checksum != md5sum(encoded_timestamp_and_values):
+    raise InvalidChecksum()
+if metadata_checksum == last_metadata_checksum:
+    for datasource, value in cached_datasources, values:
+        update(datasource, value)
+else:
+    if metadata_checksum != md5sum(metadata):
+        raise InvalidChecksum()
+    cached_datasources = create_datasources(metadata)
+    for datasource, value in cached_datasources, values:
+        update(datasource, value)</code></pre></div><p>This means that for a normal update, RRDD will only have to read the header plus
+the first (16 + 16 + 4 + 8 + 8*n) bytes of data, where n is the number of
+datasources exported by the plugin. If the metadata changes RRDD will have to
+read all the data (and parse the metadata).</p><p>n.b. the timestamp reported by plugins is not currently used by RRDD - it uses
+its own global timestamp.</p><footer class=footline></footer></article><article class=default><header class=headline><table class=revision-table><tr><th colspan=2>Design document</th></tr><tr style=background-color:#fff><td>Revision</td><td><span class="label label-default">v11</span></td></tr><tr style=background-color:#fff><td>Status</td><td><span class="label
+label-warning">confirmed</span></td></tr><tr><td>Review</td><td><a href=http://github.com/xapi-project/xapi-project.github.io/issues/139>#139</a></td></tr><tr><th colspan=2>Revision history</th></tr><tr><td><span class="label label-default">v1</span></td><td>Initial version</td></tr><tr><td><span class="label label-default">v2</span></td><td>Added details about the VDI's binary format and size, and the SR capability name.</td></tr><tr><td><span class="label label-default">v3</span></td><td>Tar was not needed after all!</td></tr><tr><td><span class="label label-default">v4</span></td><td>Add details about discovering the VDI using a new vdi_type.</td></tr><tr><td><span class="label label-default">v5</span></td><td>Add details about the http handlers and interaction with xapi's database</td></tr><tr><td><span class="label label-default">v6</span></td><td>Add details about the framing of the data within the VDI</td></tr><tr><td><span class="label label-default">v7</span></td><td>Redesign semantics of the rrd_updates handler</td></tr><tr><td><span class="label label-default">v8</span></td><td>Redesign semantics of the rrd_updates handler (again)</td></tr><tr><td><span class="label label-default">v9</span></td><td>Magic number change in framing format of vdi</td></tr><tr><td><span class="label label-default">v10</span></td><td>Add details of new APIs added to xapi and xcp-rrdd</td></tr><tr><td><span class="label label-default">v11</span></td><td>Remove unneeded API calls</td></tr></table></header><h1 id=sr-level-rrds>SR-Level RRDs</h1><h2 id=introduction>Introduction</h2><p>Xapi has RRDs to track VM- and host-level metrics. There is a desire to have SR-level RRDs as a new category, because SR stats are not specific to a certain VM or host. Examples are size and free space on the SR. While recording SR metrics is relatively straightforward within the current RRD system, the main question is where to archive them, which is what this design aims to address.</p><h2 id=stats-collection>Stats Collection</h2><p>All SR types, including the existing ones, should be able to have RRDs defined for them. Some RRDs, such as a &ldquo;free space&rdquo; one, may make sense for multiple (if not all) SR types. However, the way to measure something like free space will be SR specific. Furthermore, it should be possible for each type of SR to have its own specialised RRDs.</p><p>It follows that each SR will need its own <code>xcp-rrdd</code> plugin, which runs on the SR master and defines and collects the stats. For the new thin-lvhd SR this could be <code>xenvmd</code> itself. The plugin registers itself with <code>xcp-rrdd</code>, so that the latter records the live stats from the plugin into RRDs.</p><h2 id=archiving>Archiving</h2><p>SR-level RRDs will be archived in the SR itself, in a VDI, rather than in the local filesystem of the SR master. This way, we don&rsquo;t need to worry about master failover.</p><p>The VDI will be 4MB in size. This is a little more space than we would need for the RRDs we have in mind at the moment, but will give us enough headroom for the foreseeable future. It will not have a filesystem on it for simplicity and performance. There will only be one RRD archive file for each SR (possibly containing data for multiple metrics), which is gzipped by <code>xcp-rrdd</code>, and can be copied onto the VDI.</p><p>There will be a simple framing format for the data on the VDI. This will be as follows:</p><table><thead><tr><th>Offset</th><th>Type</th><th>Name</th><th>Comment</th></tr></thead><tbody><tr><td>0</td><td>32 bit network-order int</td><td>magic</td><td>Magic number = 0x7ada7ada</td></tr><tr><td>4</td><td>32 bit network-order int</td><td>version</td><td>1</td></tr><tr><td>8</td><td>32 bit network-order int</td><td>length</td><td>length of payload</td></tr><tr><td>12</td><td>gzipped data</td><td>data</td><td></td></tr></tbody></table><p>Xapi will be in charge of the lifecycle of this VDI, not the plugin or <code>xcp-rrdd</code>, which will make it a little easier to manage them. Only xapi will attach/detach and read from/write to this VDI. We will keep <code>xcp-rrdd</code> as simple as possible, and have it archive to its standard path in the local file system. Xapi will then copy the RRDs in and out of the VDI.</p><p>A new value <code>"rrd"</code> in the <code>vdi_type</code> enum of the datamodel will be defined, and the <code>VDI.type</code> of the VDI will be set to that value. The storage backend will write the VDI type to the LVM metadata of the VDI, so that xapi can discover the VDI containing the SR-level RRDs when attaching an SR to a new pool. This means that SR-level RRDs are currently restricted to LVM SRs.</p><p>Because we will not write plugins for all SRs at once, and therefore do not need xapi to set up the VDI for all SRs, we will add an SR &ldquo;capability&rdquo; for the backends to be able to tell xapi whether it has the ability to record stats and will need storage for them. The capability name will be: <code>SR_STATS</code>.</p><h2 id=management-of-the-sr-stats-vdi>Management of the SR-stats VDI</h2><p>The SR-stats VDI will be attached/detached on <code>PBD.plug</code>/<code>unplug</code> on the SR master.</p><ul><li><p>On <code>PBD.plug</code> on the SR master, if the SR has the stats capability, xapi:</p><ul><li>Creates a stats VDI if not already there (search for an existing one based on the VDI type).</li><li>Attaches the stats VDI if it did already exist, and copies the RRDs to the local file system (standard location in the filesystem; asks <code>xcp-rrdd</code> where to put them).</li><li>Informs <code>xcp-rrdd</code> about the RRDs so that it will load the RRDs and add newly recorded data to them (needs a function like <code>push_rrd_local</code> for VM-level RRDs).</li><li>Detaches stats VDI.</li></ul></li><li><p>On <code>PBD.unplug</code> on the SR master, if the SR has the stats capability xapi:</p><ul><li>Tells <code>xcp-rrdd</code> to archive the RRDs for the SR, which it will do to the local filesystem.</li><li>Attaches the stats VDI, copies the RRDs into it, detaches VDI.</li></ul></li></ul><h2 id=periodic-archiving>Periodic Archiving</h2><p>Xapi&rsquo;s periodic scheduler regularly triggers <code>xcp-rrdd</code> to archive the host and VM RRDs. It will need to do this for the SR ones as well. Furthermore, xapi will need to attach the stats VDI and copy the RRD archives into it (as on <code>PBD.unplug</code>).</p><h2 id=exporting>Exporting</h2><p>There will be a new handler for downloading an SR RRD:</p><pre><code>http://&lt;server&gt;/sr_rrd?session_id=&lt;SESSION HANDLE&gt;&amp;uuid=&lt;SR UUID&gt;
+</code></pre><p>RRD updates are handled via a single handler for the host, VM and SR UUIDs
+RRD updates for the host, VMs and SRs are handled by a a single handler at
+<code>/rrd_updates</code>. Exactly what is returned will be determined by the parameters
+passed to this handler.</p><p>Whether the host RRD updates are returned is governed by the presence of
+<code>host=true</code> in the parameters. <code>host=&lt;anything else></code> or the absence of the
+<code>host</code> key will mean the host RRD is not returned.</p><p>Whether the VM RRD updates are returned is governed by the <code>vm_uuid</code> key in the
+URL parameters. <code>vm_uuid=all</code> will return RRD updates for all VM RRDs.
+<code>vm_uuid=xxx</code> will return the RRD updates for the VM with uuid <code>xxx</code> only.
+If <code>vm_uuid</code> is <code>none</code> (or any other string which is not a valid VM UUID) then
+the handler will return no VM RRD updates. If the <code>vm_uuid</code> key is absent, RRD
+updates for all VMs will be returned.</p><p>Whether the SR RRD updates are returned is governed by the <code>sr_uuid</code> key in the
+URL parameters. <code>sr_uuid=all</code> will return RRD updates for all SR RRDs.
+<code>sr_uuid=xxx</code> will return the RRD updates for the SR with uuid <code>xxx</code> only.
+If <code>sr_uuid</code> is <code>none</code> (or any other string which is not a valid SR UUID) then
+the handler will return no SR RRD updates. If the <code>sr_uuid</code> key is absent, no
+SR RRD updates will be returned.</p><p>It will be possible to mix and match these parameters; for example to return
+RRD updates for the host and all VMs, the URL to use would be:</p><pre><code>http://&lt;server&gt;/rrd_updates?session_id=&lt;SESSION HANDLE&gt;&amp;start=10258122541&amp;host=true&amp;vm_uuid=all&amp;sr_uuid=none
+</code></pre><p>Or, to return RRD updates for all SRs but nothing else, the URL to use would be:</p><pre><code>http://&lt;server&gt;/rrd_updates?session_id=&lt;SESSION HANDLE&gt;&amp;start=10258122541&amp;host=false&amp;vm_uuid=none&amp;sr_uuid=all
+</code></pre><p>While behaviour is defined if any of the keys <code>host</code>, <code>vm_uuid</code> and <code>sr_uuid</code> is
+missing, this is for backwards compatibility and it is recommended that clients
+specify each parameter explicitly.</p><h2 id=database-updating>Database updating.</h2><p>If the SR is presenting a data source called &lsquo;physical_utilisation&rsquo;,
+xapi will record this periodically in its database. In order to do
+this, xapi will fork a thread that, every n minutes (2 suggested, but
+open to suggestions here), will query the attached SRs, then query
+RRDD for the latest data source for these, and update the database.</p><p>The utilisation of VDIs will <em>not</em> be updated in this way until
+scalability worries for RRDs are addressed.</p><p>Xapi will cache whether it is SR master for every attached SR and only
+attempt to update if it is the SR master.</p><h2 id=new-apis>New APIs.</h2><h4 id=xcp-rrdd>xcp-rrdd:</h4><ul><li><p>Get the filesystem location where sr rrds are archived: <code>val sr_rrds_path : uid:string -> string</code></p></li><li><p>Archive the sr rrds to the filesystem: <code>val archive_sr_rrd : sr_uuid:string -> unit</code></p></li><li><p>Load the sr rrds from the filesystem: <code>val push_sr_rrd : sr_uuid:string -> unit</code></p></li></ul><footer class=footline></footer></article></section></div></main></div><script src=/new-docs/js/clipboard.min.js?1718728545 defer></script><script src=/new-docs/js/perfect-scrollbar.min.js?1718728545 defer></script><script src=/new-docs/js/theme.js?1718728545 defer></script></body></html>

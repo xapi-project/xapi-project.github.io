@@ -1,0 +1,813 @@
+<!doctype html><html lang=en dir=ltr><head><meta charset=utf-8><meta name=viewport content="height=device-height,width=device-width,initial-scale=1,minimum-scale=1"><meta name=generator content="Hugo 0.127.0"><meta name=generator content="Relearn 5.20.0+tip"><meta name=description content><title>Features :: XAPI Toolstack Developer Documentation</title>
+<link href=https://xapi-project.github.io/new-docs/toolstack/features/index.html rel=canonical type=text/html title="Features :: XAPI Toolstack Developer Documentation"><link href=/new-docs/toolstack/features/index.xml rel=alternate type=application/rss+xml title="Features :: XAPI Toolstack Developer Documentation"><link href=/new-docs/images/favicon.png?1718728542 rel=icon type=image/png><link href=/new-docs/css/fontawesome-all.min.css?1718728545 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/fontawesome-all.min.css?1718728545 rel=stylesheet></noscript><link href=/new-docs/css/nucleus.css?1718728545 rel=stylesheet><link href=/new-docs/css/auto-complete.css?1718728545 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/auto-complete.css?1718728545 rel=stylesheet></noscript><link href=/new-docs/css/perfect-scrollbar.min.css?1718728545 rel=stylesheet><link href=/new-docs/css/fonts.css?1718728545 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/fonts.css?1718728545 rel=stylesheet></noscript><link href=/new-docs/css/theme.css?1718728545 rel=stylesheet><link href=/new-docs/css/theme-auto.css?1718728545 rel=stylesheet id=variant-style><link href=/new-docs/css/variant.css?1718728545 rel=stylesheet><link href=/new-docs/css/print.css?1718728545 rel=stylesheet media=print><link href=/new-docs/css/format-print.css?1718728545 rel=stylesheet><link href=/new-docs/css/ie.css?1718728545 rel=stylesheet><script src=/new-docs/js/url.js?1718728545></script><script src=/new-docs/js/variant.js?1718728545></script><script>window.index_js_url="/new-docs/index.search.js";var baseUriFull,root_url="/",baseUri=root_url.replace(/\/$/,"");window.T_Copy_to_clipboard="Copy to clipboard",window.T_Copied_to_clipboard="Copied to clipboard!",window.T_Copy_link_to_clipboard="Copy link to clipboard",window.T_Link_copied_to_clipboard="Copied link to clipboard!",window.T_No_results_found='No results found for "{0}"',window.T_N_results_found='{1} results found for "{0}"',baseUriFull="https://xapi-project.github.io/new-docs/",window.variants&&variants.init(["auto","zen-light","zen-dark","red","blue","green","learn","neon","relearn-light","relearn-bright","relearn-dark"])</script><link rel=stylesheet href=https://xapi-project.github.io/new-docs/css/misc.css></head><body class="mobile-support print" data-url=/new-docs/toolstack/features/index.html><div id=body class=default-animation><div id=sidebar-overlay></div><div id=toc-overlay></div><nav id=topbar class=highlightable><div><div id=breadcrumbs><span id=sidebar-toggle-span><a href=# id=sidebar-toggle class=topbar-link title='Menu (CTRL+ALT+n)'><i class="fas fa-bars fa-fw"></i></a></span><ol class=links itemscope itemtype=http://schema.org/BreadcrumbList><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/index.html><span itemprop=name>XAPI Toolstack Developer Guide</span></a><meta itemprop=position content="1">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/toolstack/index.html><span itemprop=name>The XAPI Toolstack</span></a><meta itemprop=position content="2">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><span itemprop=name>Features</span><meta itemprop=position content="3"></li></ol></div></div></nav><main id=body-inner class="highlightable default" tabindex=-1><div class=flex-block-wrapper><article class=default><header class=headline></header><h1 id=features>Features</h1><ul class="children children-li children-sort-"><li><a href=/new-docs/toolstack/features/DR/index.html>Disaster Recovery</a></li><li><a href=/new-docs/toolstack/features/events/index.html>Event handling in the Control Plane - Xapi, Xenopsd and Xenstore</a></li><li><a href=/new-docs/toolstack/features/HA/index.html>High-Availability</a></li><li><a href=/new-docs/toolstack/features/NUMA/index.html>NUMA</a></li><li><a href=/new-docs/toolstack/features/snapshots/index.html>Snapshots</a></li><li><a href=/new-docs/toolstack/features/VGPU/index.html>vGPU</a></li><li><a href=/new-docs/toolstack/features/XSM/index.html>Xapi Storage Migration</a></li></ul><footer class=footline></footer></article><section><h1 class=a11y-only>Subsections of Features</h1><article class=default><header class=headline></header><h1 id=disaster-recovery>Disaster Recovery</h1><p>The <a href=/new-docs/toolstack/features/DR/../HA/HA.html>HA</a> feature will restart VMs after hosts have failed, but what
+happens if a whole site (e.g. datacenter) is lost? A disaster recovery
+configuration is shown in the following diagram:</p><p><a href=#image-f67a621a32e033e2aef06f6439697bd6 class=lightbox-link><img src=/new-docs/toolstack/features/DR/dr.png alt="Disaster recovery maintaining a secondary site" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-f67a621a32e033e2aef06f6439697bd6><img src=/new-docs/toolstack/features/DR/dr.png alt="Disaster recovery maintaining a secondary site" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>We rely on the storage array&rsquo;s built-in mirroring to replicate (synchronously
+or asynchronously: the admin&rsquo;s choice) between the primary and the secondary
+site. When DR is enabled the VM disk data and VM metadata are written to the
+storage server and mirrored. The secondary site contains the other side
+of the data mirror and a set of hosts, which may be powered off.</p><p>In normal operation, the DR feature allows a &ldquo;dry-run&rdquo; recovery where a host
+on the secondary site checks that it can indeed see all the VM disk data
+and metadata. This should be done regularly, so that admins are familiar with
+the process.</p><p>After a disaster, the admin breaks the mirror on the secondary site and triggers
+a remote power-on of the offline hosts (either using an out-of-band tool or
+the built-in host power-on feature of xapi). The pool master on the secondary
+site can connect to the storage and extract all the VM metadata. Finally the
+VMs can all be restarted.</p><p>When the primary site is fully recovered, the mirror can be re-synchronised
+and the VMs can be moved back.</p><footer class=footline></footer></article><article class=default><header class=headline></header><h1 id=event-handling-in-the-control-plane---xapi-xenopsd-and-xenstore>Event handling in the Control Plane - Xapi, Xenopsd and Xenstore</h1><h2 id=introduction>Introduction</h2><p>Xapi, xenopsd and xenstore use a number of different events to obtain
+indications that some state changed in dom0 or in the guests. The events
+are used as an efficient alternative to polling all these states
+periodically.</p><ul><li><strong>xenstore</strong> provides a very configurable approach in which each and
+any key can be watched individually by a xenstore client. Once the
+value of a watched key changes, xenstore will indicate to the client
+that the value for that key has changed. An ocaml xenstore client
+library provides a way for ocaml programs such as xenopsd,
+message-cli and rrdd to provide high-level ocaml callback functions
+to watch specific key. It&rsquo;s very common, for instance, for xenopsd
+to watch specific keys in the xenstore keyspace of a guest and then
+after receiving events for some or all of them, read other keys or
+subkeys in xenstored to update its internal state mirroring the
+state of guests and its devices (for instance, if the guest has pv
+drivers and specific frontend devices have established connections
+with the backend devices in dom0).</li><li><strong>xapi</strong> also provides a very configurable event mechanism in which
+the xenapi can be used to provide events whenever a xapi object (for
+instance, a VM, a VBD etc) changes state. This event mechanism is
+very reliable and is extensively used by XenCenter to provide
+real-time update on the XenCenter GUI.</li><li><strong>xenopsd</strong> provides a somewhat less configurable event mechanism,
+where it always provides signals for all objects (VBDs, VMs
+etc) whose state changed (so it&rsquo;s not possible to select a subset of
+objects to watch for as in xenstore or in xapi). It&rsquo;s up to the
+xenopsd client (eg. xapi) to receive these events and then filter
+out or act on each received signal by calling back xenopsd and
+asking it information for the specific signalled object.  The main
+use in xapi for the xenopsd signals is to update xapi&rsquo;s database of
+the current state of each object controlled by xenopsd (VBDs,
+VMs etc).</li></ul><p>Given a choice between polling states and receiving events when the
+state change, we should in general opt for receiving events in the code
+in order to avoid adding bottlenecks in dom0 that will prevent the
+scalability of XenServer to many VMs and virtual devices.</p><p><a href=#image-d886d97385699501db4c85eebbc19087 class=lightbox-link><img src=/new-docs/toolstack/features/events/xapi-xenopsd-events.png alt="Connection of events between XAPI, xenopsd and xenstore, with main functions and data structures responsible for receiving and sending them" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-d886d97385699501db4c85eebbc19087><img src=/new-docs/toolstack/features/events/xapi-xenopsd-events.png alt="Connection of events between XAPI, xenopsd and xenstore, with main functions and data structures responsible for receiving and sending them" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><h2 id=xapi>Xapi</h2><h3 id=sending-events-from-the-xenapi>Sending events from the xenapi</h3><p>A xenapi user client, such as XenCenter, the xe-cli or a python script,
+can register to receive events from XAPI for specific objects in the
+XAPI DB. XAPI will generate events for those registered clients whenever
+the corresponding XAPI DB object changes.</p><p><a href=#image-1fa4970de53cc6b3e7207b15041340d8 class=lightbox-link><img src=/new-docs/toolstack/features/events/sending-events-from-xapi.png alt="Sending events from the xenapi" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-1fa4970de53cc6b3e7207b15041340d8><img src=/new-docs/toolstack/features/events/sending-events-from-xapi.png alt="Sending events from the xenapi" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>This small python scripts shows how to register a simple event watch
+loop for XAPI:</p><div class="wrap-code highlight"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>import</span> XenAPI
+</span></span><span style=display:flex><span>session <span style=color:#f92672>=</span> XenAPI<span style=color:#f92672>.</span>Session(<span style=color:#e6db74>&#34;http://xshost&#34;</span>)
+</span></span><span style=display:flex><span>session<span style=color:#f92672>.</span>login_with_password(<span style=color:#e6db74>&#34;username&#34;</span>,<span style=color:#e6db74>&#34;password&#34;</span>)
+</span></span><span style=display:flex><span>session<span style=color:#f92672>.</span>xenapi<span style=color:#f92672>.</span>event<span style=color:#f92672>.</span>register([<span style=color:#e6db74>&#34;VM&#34;</span>,<span style=color:#e6db74>&#34;pool&#34;</span>]) <span style=color:#75715e># register for events in the pool and VM objects                                                </span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>while</span> <span style=color:#66d9ef>True</span>:
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>try</span>:
+</span></span><span style=display:flex><span>    events <span style=color:#f92672>=</span> session<span style=color:#f92672>.</span>xenapi<span style=color:#f92672>.</span>event<span style=color:#f92672>.</span>next() <span style=color:#75715e># block until a xapi event on a xapi DB object is available</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> event <span style=color:#f92672>in</span> events:
+</span></span><span style=display:flex><span>      print <span style=color:#e6db74>&#34;received event op=</span><span style=color:#e6db74>%s</span><span style=color:#e6db74> class=</span><span style=color:#e6db74>%s</span><span style=color:#e6db74> ref=</span><span style=color:#e6db74>%s</span><span style=color:#e6db74>&#34;</span> <span style=color:#f92672>%</span> (event[<span style=color:#e6db74>&#39;operation&#39;</span>], event[<span style=color:#e6db74>&#39;class&#39;</span>], event[<span style=color:#e6db74>&#39;ref&#39;</span>])                                      
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>if</span> event[<span style=color:#e6db74>&#39;class&#39;</span>] <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;vm&#39;</span> <span style=color:#f92672>and</span> event[<span style=color:#e6db74>&#39;operatoin&#39;</span>] <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;mod&#39;</span>:
+</span></span><span style=display:flex><span>        vm <span style=color:#f92672>=</span> event[<span style=color:#e6db74>&#39;snapshot&#39;</span>]
+</span></span><span style=display:flex><span>        print <span style=color:#e6db74>&#34;xapi-event on vm: vm_uuid=</span><span style=color:#e6db74>%s</span><span style=color:#e6db74>, power_state=</span><span style=color:#e6db74>%s</span><span style=color:#e6db74>, current_operation=</span><span style=color:#e6db74>%s</span><span style=color:#e6db74>&#34;</span> <span style=color:#f92672>%</span> (vm[<span style=color:#e6db74>&#39;uuid&#39;</span>],vm[<span style=color:#e6db74>&#39;name_label&#39;</span>],vm[<span style=color:#e6db74>&#39;power_state&#39;</span>],vm[<span style=color:#e6db74>&#39;current_operations&#39;</span>]<span style=color:#f92672>.</span>values())
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>except</span> XenAPI<span style=color:#f92672>.</span>Failure, e:
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> len(e<span style=color:#f92672>.</span>details) <span style=color:#f92672>&gt;</span> <span style=color:#ae81ff>0</span> <span style=color:#f92672>and</span> e<span style=color:#f92672>.</span>details[<span style=color:#ae81ff>0</span>] <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;EVENTS_LOST&#39;</span>:
+</span></span><span style=display:flex><span>      session<span style=color:#f92672>.</span>xenapi<span style=color:#f92672>.</span>event<span style=color:#f92672>.</span>unregister([<span style=color:#e6db74>&#34;VM&#34;</span>,<span style=color:#e6db74>&#34;pool&#34;</span>])
+</span></span><span style=display:flex><span>      session<span style=color:#f92672>.</span>xenapi<span style=color:#f92672>.</span>event<span style=color:#f92672>.</span>register([<span style=color:#e6db74>&#34;VM&#34;</span>,<span style=color:#e6db74>&#34;pool&#34;</span>])</span></span></code></pre></div><p> </p><h3 id=receiving-events-from-xenopsd>Receiving events from xenopsd</h3><p>Xapi receives all events from xenopsd via the function
+xapi_xenops.events_watch() in its own independent thread. This is a
+single-threaded function that is responsible for handling all of the
+signals sent by xenopsd. In some situations with lots of VMs and virtual
+devices such as VBDs, this loop may saturate a single dom0 vcpu, which
+will slow down handling all of the xenopsd events and may cause the
+xenopsd signals to accumulate unboundedly in the worst case in the
+updates queue in xenopsd (see Figure 1).</p><p>The function xapi_xenops.events_watch() calls
+xenops_client.UPDATES.get() to obtain a list of (barrier, 
+barrier_events), and then it process each one of the barrier_event,
+which can be one of the following events:</p><ul><li><strong>Vm id:</strong> something changed in this VM,
+run xapi_xenops.update_vm() to query xenopsd about its state. The
+function update_vm() will update power_state, allowed_operations,
+console and guest_agent state in the xapi DB.</li><li><strong>Vbd id:</strong> something changed in this VM,
+run xapi_xenops.update_vbd() to query xenopsd about its state. The
+function update_vbd() will update currently_attached and connected
+in the xapi DB.</li><li><strong>Vif id:</strong> something changed in this VM,
+run xapi_xenops.update_vif() to query xenopsd about its state. The
+function update_vif() will update activate and plugged state of in
+the xapi DB.</li><li><strong>Pci id:</strong> something changed in this VM,
+run xapi_xenops.update_pci() to query xenopsd about its state.</li><li><strong>Vgpu id:</strong> something changed in this VM,
+run xapi_xenops.update_vgpu() to query xenopsd about its state.</li><li><strong>Task id:</strong> something changed in this VM,
+run xapi_xenops.update_task() to query xenopsd about its state.
+The function update_task() will update the progress of the task in
+the xapi DB using the information of the task in xenopsd.</li></ul><p><a href=#image-60e2388d567356dde7fc57e0f5de44b6 class=lightbox-link><img src=/new-docs/toolstack/features/events/receiving-events-from-xenopsd.png alt="Receiving events from xenopsd" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-60e2388d567356dde7fc57e0f5de44b6><img src=/new-docs/toolstack/features/events/receiving-events-from-xenopsd.png alt="Receiving events from xenopsd" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>All the xapi_xenops.update_X() functions above will call
+Xenopsd_client.X.stat() functions to obtain the current state of X from
+xenopsd:</p><p><a href=#image-cdf0a5f5ec8f814d00390eff1e42cdef class=lightbox-link><img src=/new-docs/toolstack/features/events/obtaining-current-state.png alt="Obtaining current state" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-cdf0a5f5ec8f814d00390eff1e42cdef><img src=/new-docs/toolstack/features/events/obtaining-current-state.png alt="Obtaining current state" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>There are a couple of optimisations while processing the events in
+xapi_xenops.events_watch():</p><ul><li>if an event X=(vm_id,dev_id) (eg. Vbd dev_id) has already been
+processed in a barrier_events, it&rsquo;s not processed again. A typical
+value for X is eg. &ldquo;&lt;vm_uuid>.xvda&rdquo; for a VBD.</li><li>if Events_from_xenopsd.are_supressed X, then this event
+is ignored. Events are supressed if VM X.vm_id is migrating away
+from the host</li></ul><h4 id=barriers>Barriers</h4><p>When xapi needs to execute (and to wait for events indicating completion
+of) a xapi operation (such as VM.start and VM.shutdown) containing many
+xenopsd sub-operations (such as VM.start – to force xenopsd to change
+the VM power_state, and VM.stat, VBD.stat, VIF.stat etc – to force the
+xapi DB to catch up with the xenopsd new state for these objects), xapi
+sends to the xenopsd input queue a barrier, indicating that xapi will
+then block and only continue execution of the barred operation when
+xenopsd returns the barrier. The barrier should only be returned when
+xenopsd has finished the execution of all the operations requested by
+xapi (such as VBD.stat and VM.stat in order to update the state of the
+VM in the xapi database after a VM.start has been issued to xenopsd). </p><p>A recent problem has been detected in the xapi_xenops.events_watch() 
+function: when it needs to process many VM_check_state events, this
+may push for later the processing of barriers associated with a
+VM.start, delaying xapi in reporting (via a xapi event) that the VM
+state in the xapi DB has reached the running power_state. This needs
+further debugging, and is probably one of the reasons in CA-87377 why in
+some conditions a xapi event reporting that the VM power_state is
+running (causing it to go from yellow to green state in XenCenter) is
+taking so long to be returned, way after the VM is already running.</p><h2 id=xenopsd>Xenopsd</h2><p>Xenopsd has a few queues that are used by xapi to store commands to be
+executed (eg. VBD.stat) and update events to be picked up by xapi. The
+main ones, easily seen at runtime by running the following command in
+dom0, are:</p><div class="wrap-code highlight"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># xenops-cli diagnostics --queue=org.xen.xapi.xenops.classic</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>   queues: <span style=color:#f92672>[</span>  <span style=color:#75715e># XENOPSD INPUT QUEUE</span>
+</span></span><span style=display:flex><span>            ... stuff that still needs to be processed by xenopsd
+</span></span><span style=display:flex><span>            VM.stat
+</span></span><span style=display:flex><span>            VBD.stat
+</span></span><span style=display:flex><span>            VM.start
+</span></span><span style=display:flex><span>            VM.shutdown
+</span></span><span style=display:flex><span>            VIF.plug
+</span></span><span style=display:flex><span>            etc
+</span></span><span style=display:flex><span>           <span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>   workers: <span style=color:#f92672>[</span> <span style=color:#75715e># XENOPSD WORKER THREADS</span>
+</span></span><span style=display:flex><span>            ... which stuff each worker thread is processing
+</span></span><span style=display:flex><span>   <span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>   updates: <span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>     updates: <span style=color:#f92672>[</span> <span style=color:#75715e># XENOPSD OUTPUT QUEUE</span>
+</span></span><span style=display:flex><span>            ... signals from xenopsd that need to be picked up by xapi
+</span></span><span style=display:flex><span>               VM_check_state
+</span></span><span style=display:flex><span>               VBD_check_state
+</span></span><span style=display:flex><span>               etc
+</span></span><span style=display:flex><span>        <span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>}</span> tasks: <span style=color:#f92672>[</span> <span style=color:#75715e># XENOPSD TASKS</span>
+</span></span><span style=display:flex><span>               ... state of each known task, before they are manually deleted after completion of the task
+</span></span><span style=display:flex><span>               <span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span></span></span></code></pre></div><h3 id=sending-events-to-xapi>Sending events to xapi</h3><p>Whenever xenopsd changes the state of a XenServer object such as a VBD
+or VM, or when it receives an event from xenstore indicating that the
+states of these objects have changed (perhaps because either a guest or
+the dom0 backend changed the state of a virtual device), it creates a
+signal for the corresponding object (VM_check_state, VBD_check_state
+etc) and send it up to xapi. Xapi will then process this event in its
+xapi_xenops.events_watch() function.</p><p><a href=#image-0105004acd67816a4aa7c150b146d133 class=lightbox-link><img src=/new-docs/toolstack/features/events/sending-events-to-xapi.png alt="Sending events to xapi" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-0105004acd67816a4aa7c150b146d133><img src=/new-docs/toolstack/features/events/sending-events-to-xapi.png alt="Sending events to xapi" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>These signals may need to wait a long time to be processed if the
+single-threaded xapi_xenops.events_watch() function is having
+difficulties (ie taking a long time) to process previous signals in the
+UPDATES queue from xenopsd.  </p><h3 id=receiving-events-from-xenstore>Receiving events from xenstore</h3><p>Xenopsd watches a number of keys in xenstore, both in dom0 and in each
+guest. Xenstore is responsible to send watch events to xenopsd whenever
+the watched keys change state. Xenopsd uses a xenstore client library to
+make it easier to create a callback function that is called whenever
+xenstore sends these events.</p><p><a href=#image-b174e046d3208f36667751fc7b972ae6 class=lightbox-link><img src=/new-docs/toolstack/features/events/receiving-events-from-xenstore.png alt="Receiving events from xenstore" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-b174e046d3208f36667751fc7b972ae6><img src=/new-docs/toolstack/features/events/receiving-events-from-xenstore.png alt="Receiving events from xenstore" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>Xenopsd also needs to complement sometimes these watch events with
+polling of some values. An example is the @introduceDomain event in
+xenstore (handled in xenopsd/xc/xenstore_watch.ml), which indicates
+that a new VM has been created. This event unfortunately does not
+indicate the domid of the VM, and xenopsd needs to query Xen (via libxc)
+which domains are now available in the host and compare with the
+previous list of known domains, in order to figure out the domid of the
+newly introduced domain.</p><p> It is not good practice to poll xenstore for changes of values. This
+will add a large overhead to both xenstore and xenopsd, and decrease the
+scalability of XenServer in terms of number of VMs/host and virtual
+devices per VM. A much better approach is to rely on the watch events of
+xenstore to indicate when a specific value has changed in xenstore.</p><h2 id=xenstore>Xenstore</h2><h3 id=sending-events-to-xenstore-clients>Sending events to xenstore clients</h3><p>If a xenstore client has created watch events for a key, then xenstore
+will send events to this client whenever this key changes state.</p><h3 id=receiving-events-from-xenstore-clients>Receiving events from xenstore clients</h3><p>Xenstore clients indicate to xenstore that something state changed by
+writing to some xenstore key. This may or may not cause xenstore to
+create watch events for the corresponding key, depending on if other
+xenstore clients have watches on this key.</p><footer class=footline></footer></article><article class=default><header class=headline></header><h1 id=high-availability>High-Availability</h1><p>High-Availability (HA) tries to keep VMs running, even when there are hardware
+failures in the resource pool, when the admin is not present. Without HA
+the following may happen:</p><ul><li>during the night someone spills a cup of coffee over an FC switch; then</li><li>VMs running on the affected hosts will lose access to their storage; then</li><li>business-critical services will go down; then</li><li>monitoring software will send a text message to an off-duty admin; then</li><li>the admin will travel to the office and fix the problem by restarting
+the VMs elsewhere.</li></ul><p>With HA the following will happen:</p><ul><li>during the night someone spills a cup of coffee over an FC switch; then</li><li>VMs running on the affected hosts will lose access to their storage; then</li><li>business-critical services will go down; then</li><li>the HA software will determine which hosts are affected and shut them down; then</li><li>the HA software will restart the VMs on unaffected hosts; then</li><li>services are restored; then <em>on the next working day</em></li><li>the admin can arrange for the faulty switch to be replaced.</li></ul><p>HA is designed to handle an emergency and allow the admin time to fix
+failures properly.</p><h1 id=example>Example</h1><p>The following diagram shows an HA-enabled pool, before and after a network
+link between two hosts fails.</p><p><a href=#image-25687a1f51418bed0a054d82117b4f61 class=lightbox-link><img src=/new-docs/toolstack/features/HA/ha.png alt="High-Availability in action" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-25687a1f51418bed0a054d82117b4f61><img src=/new-docs/toolstack/features/HA/ha.png alt="High-Availability in action" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>When HA is enabled, all hosts in the pool</p><ul><li>exchange periodic heartbeat messages over the network</li><li>send heartbeats to a shared storage device.</li><li>attempt to acquire a &ldquo;master lock&rdquo; on the shared storage.</li></ul><p>HA is designed to recover as much as possible of the pool after a single failure
+i.e. it removes single points of failure. When some subset of the pool suffers
+a failure then the remaining pool members</p><ul><li>figure out whether they are in the largest fully-connected set (the
+&ldquo;liveset&rdquo;);<ul><li>if they are not in the largest set then they &ldquo;fence&rdquo; themselves (i.e.
+force reboot via the hypervisor watchdog)</li></ul></li><li>elect a master using the &ldquo;master lock&rdquo;</li><li>restart all lost VMs.</li></ul><p>After HA has recovered a pool, it is important that the original failure is
+addressed because the remaining pool members may not be able to cope with
+any more failures.</p><h1 id=design>Design</h1><p>HA must never violate the following safety rules:</p><ol><li>there must be at most one master at all times. This is because the master
+holds the VM and disk locks.</li><li>there must be at most one instance of a particular VM at all times. This
+is because starting the same VM twice will result in severe filesystem
+corruption.</li></ol><p>However to be useful HA must:</p><ul><li>detect failures quickly;</li><li>minimise the number of false-positives in the failure detector; and</li><li>make the failure handling logic as robust as possible.</li></ul><p>The implementation difficulty arises when trying to be both useful and safe
+at the same time.</p><h2 id=terminology>Terminology</h2><p>We use the following terminology:</p><ul><li><em>fencing</em>: also known as I/O fencing, refers to the act of isolating a
+host from network and storage. Once a host has been fenced, any VMs running
+there cannot generate side-effects observable to a third party. This means
+it is safe to restart the running VMs on another node without violating the
+safety-rule and running the same VM simultaneously in two locations.</li><li><em>heartbeating</em>: exchanging status updates with other hosts at regular
+pre-arranged intervals. Heartbeat messages reveal that hosts are alive
+and that I/O paths are working.</li><li><em>statefile</em>: a shared disk (also known as a &ldquo;quorum disk&rdquo;) on the &ldquo;Heartbeat&rdquo;
+SR which is mapped as a block device into every host&rsquo;s domain 0. The shared
+disk acts both as a channel for heartbeat messages and also as a building
+block of a Pool master lock, to prevent multiple hosts becoming masters in
+violation of the safety-rule (a dangerous situation also known as
+&ldquo;split-brain&rdquo;).</li><li><em>management network</em>: the network over which the XenAPI XML/RPC requests
+flow and also used to send heartbeat messages.</li><li><em>liveset</em>: a per-Host view containing a subset of the Hosts in the Pool
+which are considered by that Host to be alive i.e. responding to XenAPI
+commands and running the VMs marked as <code>resident_on</code> there. When a Host <code>b</code>
+leaves the liveset as seen by Host <code>a</code> it is safe for Host <code>a</code> to assume
+that Host <code>b</code> has been fenced and to take recovery actions (e.g. restarting
+VMs), without violating either of the safety-rules.</li><li><em>properly shared SR</em>: an SR which has field <code>shared=true</code>; and which has a
+<code>PBD</code> connecting it to every <code>enabled</code> Host in the Pool; and where each of
+these <code>PBD</code>s has field <code>currently_attached</code> set to true. A VM whose disks
+are in a properly shared SR could be restarted on any <code>enabled</code> Host,
+memory and network permitting.</li><li><em>properly shared Network</em>: a Network which has a <code>PIF</code> connecting it to
+every <code>enabled</code> Host in the Pool; and where each of these <code>PIF</code>s has
+field <code>currently_attached</code> set to true. A VM whose VIFs connect to
+properly shared Networks could be restarted on any <code>enabled</code> Host,
+memory and storage permitting.</li><li><em>agile</em>: a VM is said to be agile if all disks are in properly shared SRs
+and all network interfaces connect to properly shared Networks.</li><li><em>unprotected</em>: an unprotected VM has field <code>ha_always_run</code> set to false
+and will never be restarted automatically on failure
+or have reconfiguration actions blocked by the HA overcommit protection.</li><li><em>best-effort</em>: a best-effort VM has fields <code>ha_always_run</code> set to true and
+<code>ha_restart_priority</code> set to best-effort.
+A best-effort VM will only be restarted if (i) the failure is directly
+observed; and (ii) capacity exists for an immediate restart.
+No more than one restart attempt will ever be made.</li><li><em>protected</em>: a VM is said to be protected if it will be restarted by HA
+i.e. has field <code>ha_always_run</code> set to true and
+field <code>ha_restart_priority</code> not set to `best-effort.</li><li><em>survival rule 1</em>: describes the situation where hosts survive
+because they are in the largest network partition with statefile access.
+This is the normal state of the <code>xhad</code> daemon.</li><li><em>survival rule 2</em>: describes the situation where <em>all</em> hosts have lost
+access to the statefile but remain alive
+while they can all see each-other on the network. In this state any further
+failure will cause all nodes to self-fence.
+This state is intended to cope with the system-wide temporary loss of the
+storage service underlying the statefile.</li></ul><h2 id=assumptions>Assumptions</h2><p>We assume:</p><ul><li>All I/O used for monitoring the health of hosts (i.e. both storage and
+network-based heartbeating) is along redundant paths, so that it survives
+a single hardware failure (e.g. a broken switch or an accidentally-unplugged
+cable). It is up to the admin to ensure their environment is setup correctly.</li><li>The hypervisor watchdog mechanism will be able to guarantee the isolation
+of nodes, once communication has been lost, within a pre-arranged time
+period. Therefore no active power fencing equipment is required.</li><li>VMs may only be marked as <em>protected</em> if they are fully <em>agile</em> i.e. able
+to run on any host, memory permitting. No additional constraints of any kind
+may be specified e.g. it is not possible to make &ldquo;CPU reservations&rdquo;.</li><li>Pools are assumed to be homogenous with respect to CPU type and presence of
+VT/SVM support (also known as &ldquo;HVM&rdquo;). If a Pool is created with
+non-homogenous hosts using the <code>--force</code> flag then the additional
+constraints will not be noticed by the VM failover planner resulting in
+runtime failures while trying to execute the failover plans.</li><li>No attempt will ever be made to shutdown or suspend &ldquo;lower&rdquo; priority VMs
+to guarantee the survival of &ldquo;higher&rdquo; priority VMs.</li><li>Once HA is enabled it is not possible to reconfigure the management network
+or the SR used for storage heartbeating.</li><li>VMs marked as <em>protected</em> are considered to have failed if they are offline
+i.e. the VM failure handling code is level-sensitive rather than
+edge-sensitive.</li><li>VMs marked as <em>best-effort</em> are considered to have failed only when the host
+where they are resident is declared offline
+i.e. the best-effort VM failure handling code is edge-sensitive rather than
+level-sensitive.
+A single restart attempt is attempted and if this fails no further start is
+attempted.</li><li>HA can only be enabled if all Pool hosts are online and actively responding
+to requests.</li><li>when HA is enabled the database is configured to write all updates to
+the &ldquo;Heartbeat&rdquo; SR, guaranteeing that VM configuration changes are not lost
+when a host fails.</li></ul><h2 id=components>Components</h2><p>The implementation is split across the following components:</p><ul><li><a href=https://github.com/xenserver/xha target=_blank>xhad</a>: the cluster membership daemon
+maintains a quorum of hosts through network and storage heartbeats</li><li><a href=https://github.com/xapi-project/xen-api target=_blank>xapi</a>: used to configure the
+HA policy i.e. which network and storage to use for heartbeating and which
+VMs to restart after a failure.</li><li><a href=http://xenproject.org/ target=_blank>xen</a>: the Xen watchdog is used to reliably
+fence the host when the host has been (partially or totally) isolated
+from the cluster</li></ul><p>To avoid a &ldquo;split-brain&rdquo;, the cluster membership daemon must &ldquo;fence&rdquo; (i.e.
+isolate) nodes when they are not part of the cluster. In general there are
+2 approaches:</p><ul><li>cut the power of remote hosts which you can&rsquo;t talk to on the network
+any more. This is the approach taken by most open-source clustering
+software since it is simpler. However it has the downside of requiring
+the customer buy more hardware and set it up correctly.</li><li>rely on the remote hosts using a watchdog to cut their own power (i.e.
+halt or reboot) after a timeout. This relies on the watchdog being
+reliable. Most other people <a href=https://www.suse.com/documentation/sle_ha/singlehtml/book_sleha/book_sleha.html target=_blank>don&rsquo;t trust the Linux watchdog</a>;
+after all the Linux kernel is highly threaded, performs a lot of (useful)
+functions and kernel bugs which result in deadlocks do happen.
+We use the Xen watchdog because we believe that the Xen hypervisor is
+simple enough to reliably fence the host (via triggering a reboot of
+domain 0 which then triggers a host reboot).</li></ul><h1 id=xhad>xhad</h1><p><a href=https://github.com/xenserver/xha target=_blank>xhad</a> is the cluster membership daemon:
+it exchanges heartbeats with the other nodes to determine which nodes are
+still in the cluster (the &ldquo;live set&rdquo;) and which nodes have <em>definitely</em>
+failed (through watchdog fencing). When a host has definitely failed, xapi
+will unlock all the disks and restart the VMs according to the HA policy.</p><p>Since Xapi is a critical part of the system, the xhad also acts as a
+Xapi watchdog. It polls Xapi every few seconds and checks if Xapi can
+respond. If Xapi seems to have failed then xhad will restart it. If restarts
+continue to fail then xhad will consider the host to have failed and
+self-fence.</p><p>xhad is configured via a simple config file written on each host in
+<code>/etc/xensource/xhad.conf</code>. The file must be identical on each host
+in the cluster. To make changes to the file, HA must be disabled and then
+re-enabled afterwards. Note it may not be possible to re-enable HA depending
+on the configuration change (e.g. if a host has been added but that host has
+a broken network configuration then this will block HA enable).</p><p>The xhad.conf file is written in XML and contains</p><ul><li>pool-wide configuration: this includes a list of all hosts which should
+be in the liveset and global timeout information</li><li>local host configuration: this identifies the local host and described
+which local network interface and block device to use for heartbeating.</li></ul><p>The following is an example xhad.conf file:</p><div class="wrap-code highlight"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-xml data-lang=xml><span style=display:flex><span><span style=color:#75715e>&lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34;?&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;xhad-config</span> <span style=color:#a6e22e>version=</span><span style=color:#e6db74>&#34;1.0&#34;</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>&lt;!--pool-wide configuration--&gt;</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&lt;common-config&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;GenerationUUID&gt;</span>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx<span style=color:#f92672>&lt;/GenerationUUID&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;UDPport&gt;</span>694<span style=color:#f92672>&lt;/UDPport&gt;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>&lt;!--for each host, specify host UUID, and IP address--&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;host&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;HostID&gt;</span>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx<span style=color:#f92672>&lt;/HostID&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;IPaddress&gt;</span>xxx.xxx.xxx.xx1<span style=color:#f92672>&lt;/IPaddress&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;/host&gt;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;host&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;HostID&gt;</span>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx<span style=color:#f92672>&lt;/HostID&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;IPaddress&gt;</span>xxx.xxx.xxx.xx2<span style=color:#f92672>&lt;/IPaddress&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;/host&gt;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;host&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;HostID&gt;</span>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx<span style=color:#f92672>&lt;/HostID&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;IPaddress&gt;</span>xxx.xxx.xxx.xx3<span style=color:#f92672>&lt;/IPaddress&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;/host&gt;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>&lt;!--optional parameters [sec] --&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;parameters&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;HeartbeatInterval&gt;</span>4<span style=color:#f92672>&lt;/HeartbeatInterval&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;HeartbeatTimeout&gt;</span>30<span style=color:#f92672>&lt;/HeartbeatTimeout&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;StateFileInterval&gt;</span>4<span style=color:#f92672>&lt;/StateFileInterval&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;StateFileTimeout&gt;</span>30<span style=color:#f92672>&lt;/StateFileTimeout&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;HeartbeatWatchdogTimeout&gt;</span>30<span style=color:#f92672>&lt;/HeartbeatWatchdogTimeout&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;StateFileWatchdogTimeout&gt;</span>45<span style=color:#f92672>&lt;/StateFileWatchdogTimeout&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;BootJoinTimeout&gt;</span>90<span style=color:#f92672>&lt;/BootJoinTimeout&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;EnableJoinTimeout&gt;</span>90<span style=color:#f92672>&lt;/EnableJoinTimeout&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;XapiHealthCheckInterval&gt;</span>60<span style=color:#f92672>&lt;/XapiHealthCheckInterval&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;XapiHealthCheckTimeout&gt;</span>10<span style=color:#f92672>&lt;/XapiHealthCheckTimeout&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;XapiRestartAttempts&gt;</span>1<span style=color:#f92672>&lt;/XapiRestartAttempts&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;XapiRestartTimeout&gt;</span>30<span style=color:#f92672>&lt;/XapiRestartTimeout&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;XapiLicenseCheckTimeout&gt;</span>30<span style=color:#f92672>&lt;/XapiLicenseCheckTimeout&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;/parameters&gt;</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&lt;/common-config&gt;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>&lt;!--local host configuration--&gt;</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&lt;local-config&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;localhost&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;HostID&gt;</span>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx2<span style=color:#f92672>&lt;/HostID&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;HeartbeatInterface&gt;</span> xapi1<span style=color:#f92672>&lt;/HeartbeatInterface&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;HeartbeatPhysicalInterface&gt;</span>bond0<span style=color:#f92672>&lt;/HeartbeatPhysicalInterface&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&lt;StateFile&gt;</span>/dev/statefiledevicename<span style=color:#f92672>&lt;/StateFile&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;/localhost&gt;</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&lt;/local-config&gt;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;/xhad-config&gt;</span></span></span></code></pre></div><p>The fields have the following meaning:</p><ul><li>GenerationUUID: a UUID generated each time HA is reconfigured. This allows
+xhad to tell an old host which failed; had been removed from the
+configuration; repaired and then restarted that the world has changed
+while it was away.</li><li>UDPport: the port number to use for network heartbeats. It&rsquo;s important
+to allow this traffic through the firewall and to make sure the same
+port number is free on all hosts (beware of portmap services occasionally
+binding to it).</li><li>HostID: a UUID identifying a host in the pool. We would normally use
+xapi&rsquo;s notion of a host uuid.</li><li>IPaddress: any IP address on the remote host. We would normally use
+xapi&rsquo;s notion of a management network.</li><li>HeartbeatTimeout: if a heartbeat packet is not received for this many
+seconds, then xhad considers the heartbeat to have failed. This is
+the user-supplied &ldquo;HA timeout&rdquo; value, represented below as <code>T</code>.
+<code>T</code> must be bigger than 10; we would normally use 60s.</li><li>StateFileTimeout: if a storage update is not seen for a host for this
+many seconds, then xhad considers the storage heartbeat to have failed.
+We would normally use the same value as the HeartbeatTimeout <code>T</code>.</li><li>HeartbeatInterval: interval between heartbeat packets sent. We would
+normally use a value <code>2 &lt;= t &lt;= 6</code>, derived from the user-supplied
+HA timeout via <code>t = (T + 10) / 10</code></li><li>StateFileInterval: interval betwen storage updates (also known as
+&ldquo;statefile updates&rdquo;). This would normally be set to the same value as
+HeartbeatInterval.</li><li>HeartbeatWatchdogTimeout: If the host does not send a heartbeat for this
+amount of time then the host self-fences via the Xen watchdog. We normally
+set this to <code>T</code>.</li><li>StateFileWatchdogTimeout: If the host does not update the statefile for
+this amount of time then the host self-fences via the Xen watchdog. We
+normally set this to <code>T+15</code>.</li><li>BootJoinTimeout: When the host is booting and joining the liveset (i.e.
+the cluster), consider the join a failure if it takes longer than this
+amount of time. We would normally set this to <code>T+60</code>.</li><li>EnableJoinTimeout: When the host is enabling HA for the first time,
+consider the enable a failure if it takes longer than this amount of time.
+We would normally set this to <code>T+60</code>.</li><li>XapiHealthCheckInterval: Interval between &ldquo;health checks&rdquo; where we run
+a script to check whether Xapi is responding or not.</li><li>XapiHealthCheckTimeout: Number of seconds to wait before assuming that
+Xapi has deadlocked during a &ldquo;health check&rdquo;.</li><li>XapiRestartAttempts: Number of Xapi restarts to attempt before concluding
+Xapi has permanently failed.</li><li>XapiRestartTimeout: Number of seconds to wait for a Xapi restart to
+complete before concluding it has failed.</li><li>XapiLicenseCheckTimeout: Number of seconds to wait for a Xapi license
+check to complete before concluding that xhad should terminate.</li></ul><p>In addition to the config file, Xhad exposes a simple control API which
+is exposed as scripts:</p><ul><li><code>ha_set_pool_state (Init | Invalid)</code>: sets the global pool state to &ldquo;Init&rdquo; (before starting
+HA) or &ldquo;Invalid&rdquo; (causing all other daemons who can see the statefile to
+shutdown)</li><li><code>ha_start_daemon</code>: if the pool state is &ldquo;Init&rdquo; then the daemon will
+attempt to contact other daemons and enable HA. If the pool state is
+&ldquo;Active&rdquo; then the host will attempt to join the existing liveset.</li><li><code>ha_query_liveset</code>: returns the current state of the cluster.</li><li><code>ha_propose_master</code>: returns whether the current node has been
+elected pool master.</li><li><code>ha_stop_daemon</code>: shuts down the xhad on the local host. Note this
+will not disarm the Xen watchdog by itself.</li><li><code>ha_disarm_fencing</code>: disables fencing on the local host.</li><li><code>ha_set_excluded</code>: when a host is being shutdown cleanly, record the
+fact that the VMs have all been shutdown so that this host can be ignored
+in future cluster membership calculations.</li></ul><h2 id=fencing>Fencing</h2><p>Xhad continuously monitors whether the host should remain alive, or if
+it should self-fence. There are two &ldquo;survival rules&rdquo; which will keep a host
+alive; if neither rule applies (or if xhad crashes or deadlocks) then the
+host will fence. The rules are:</p><ol><li>Xapi is running; the storage heartbeats are visible; this host is a
+member of the &ldquo;best&rdquo; partition (as seen through the storage heartbeats)</li><li>Xapi is running; the storage is inaccessible; all hosts which should
+be running (i.e. not those &ldquo;excluded&rdquo; by being cleanly shutdown) are
+online and have also lost storage access (as seen through the network
+heartbeats).</li></ol><p>where the &ldquo;best&rdquo; partition is the largest one if that is unique, or if there
+are multiple partitions of the same size then the one containing the lowest
+host uuid is considered best.</p><p>The first survival rule is the &ldquo;normal&rdquo; case. The second rule exists only
+to prevent the storage from becoming a single point of failure: all hosts
+can remain alive until the storage is repaired. Note that if a host has
+failed and has not yet been repaired, then the storage becomes a single
+point of failure for the degraded pool. HA removes single point of failures,
+but multiple failures can still cause problems. It is important to fix
+failures properly after HA has worked around them.</p><h1 id=xapi>xapi</h1><p><a href=https://github.com/xapi-project/xen-api target=_blank>Xapi</a> is responsible for</p><ul><li>exposing an interface for setting HA policy</li><li>creating VDIs (disks) on shared storage for heartbeating and storing
+the pool database</li><li>arranging for these disks to be attached on host boot, before the &ldquo;SRmaster&rdquo;
+is online</li><li>configuring and managing the <code>xhad</code> heartbeating daemon</li></ul><p>The HA policy APIs include</p><ul><li>methods to determine whether a VM is <em>agile</em> i.e. can be restarted in
+principle on any host after a failure</li><li>planning for a user-specified number of host failures and enforcing
+access control</li><li>restarting failed <em>protected</em> VMs in policy order</li></ul><p>The HA policy settings are stored in the Pool database which is written
+(synchronously)
+to a VDI in the same SR that&rsquo;s being used for heartbeating. This ensures
+that the database can be recovered after a host fails and the VMs are
+recovered.</p><p>Xapi stores 2 settings in its local database:</p><ul><li><em>ha_disable_failover_actions</em>: this is set to false when we want nodes
+to be able to recover VMs &ndash; this is the normal case. It is set to true
+during the HA disable process to prevent a split-brain forming while
+HA is only partially enabled.</li><li><em>ha_armed</em>: this is set to true to tell Xapi to start <code>Xhad</code> during
+host startup and wait to join the liveset.</li></ul><h2 id=disks-on-shared-storage>Disks on shared storage</h2><p>The regular disk APIs for creating, destroying, attaching, detaching (etc)
+disks need the <code>SRmaster</code> (usually but not always the Pool master) to be
+online to allow the disks to be locked. The <code>SRmaster</code> cannot be brought
+online until the host has joined the liveset. Therefore we have a
+cyclic dependency: joining the liveset needs the statefile disk to be attached
+but attaching a disk requires being a member of the liveset already.</p><p>The dependency is broken by adding an explicit &ldquo;unlocked&rdquo; attach storage
+API called <code>VDI_ATTACH_FROM_CONFIG</code>. Xapi uses the <code>VDI_GENERATE_CONFIG</code> API
+during the HA enable operation and stores away the result. When the system
+boots the <code>VDI_ATTACH_FROM_CONFIG</code> is able to attach the disk without the
+SRmaster.</p><h2 id=the-role-of-hostenabled>The role of Host.enabled</h2><p>The <code>Host.enabled</code> flag is used to mean, &ldquo;this host is ready to start VMs and
+should be included in failure planning&rdquo;.
+The VM restart planner assumes for simplicity that all <em>protected</em> VMs can
+be started anywhere; therefore all involved networks and storage must be
+<em>properly shared</em>.
+If a host with an unplugged <code>PBD</code> were to become enabled then the corresponding
+<code>SR</code> would cease to be <em>properly shared</em>, all the VMs would cease to be
+<em>agile</em> and the VM restart logic would fail.</p><p>To ensure the VM restart logic always works, great care is taken to make
+sure that Hosts may only become enabled when their networks and storage are
+properly configured. This is achieved by:</p><ul><li>when the master boots and initialises its database it sets all Hosts to
+dead and disabled and then signals the HA background thread
+(<a href=https://github.com/xapi-project/xen-api/blob/0bbd4f5ac5fe46f9e982e5d5587ac56ed8427295/ocaml/xapi/xapi_ha.ml#L627 target=_blank>signal_database_state_valid</a>)
+to wake up from sleep and
+start processing liveset information (and potentially setting hosts to live)</li><li>when a slave calls
+<a href=https://github.com/xapi-project/xen-api/blob/0bbd4f5ac5fe46f9e982e5d5587ac56ed8427295/ocaml/xapi/xapi_pool.ml#L1019 target=_blank>Pool.hello</a>
+(i.e. after the slave has rebooted),
+the master sets it to disabled, allowing it a grace period to plug in its
+storage;</li><li>when a host (master or slave) successfully plugs in its networking and
+storage it calls
+<a href=https://github.com/xapi-project/xen-api/blob/0bbd4f5ac5fe46f9e982e5d5587ac56ed8427295/ocaml/xapi/xapi_host_helpers.ml#L193 target=_blank>consider_enabling_host</a>
+which checks that the
+preconditions are met and then sets the host to enabled; and</li><li>when a slave notices its database connection to the master restart
+(i.e. after the master <code>xapi</code> has just restarted) it calls
+<code>consider_enabling_host}</code></li></ul><h2 id=the-steady-state>The steady-state</h2><p>When HA is enabled and all hosts are running normally then each calls
+<code>ha_query_liveset</code> every 10s.</p><p>Slaves check to see if the host they believe is the master is alive and has
+the master lock. If another node has become master then the slave will
+rewrite its <code>pool.conf</code> and restart. If no node is the master then the
+slave will call
+<a href=https://github.com/xapi-project/xen-api/blob/0bbd4f5ac5fe46f9e982e5d5587ac56ed8427295/ocaml/xapi/xapi_ha.ml#L129 target=_blank>on_master_failure</a>,
+proposing itself and, if it is rejected,
+checking the liveset to see which node acquired the lock.</p><p>The master monitors the liveset and updates the <code>Host_metrics.live</code> flag
+of every host to reflect the liveset value. For every host which is not in
+the liveset (i.e. has fenced) it enumerates all resident VMs and marks them
+as <code>Halted</code>. For each protected VM which is not running, the master computes
+a VM restart plan and attempts to execute it. If the plan fails then a
+best-effort <code>VM.start</code> call is attempted. Finally an alert is generated if
+the VM could not be restarted.</p><p>Note that XenAPI heartbeats are still sent when HA is enabled, even though
+they are not used to drive the values of the <code>Host_metrics.live</code> field.
+Note further that, when a host is being shutdown, the host is immediately
+marked as dead and its host reference is added to a list used to prevent the
+<code>Host_metrics.live</code> being accidentally reset back to live again by the
+asynchronous liveset query. The Host reference is removed from the list when
+the host restarts and calls <code>Pool.hello</code>.</p><h2 id=planning-and-overcommit>Planning and overcommit</h2><p>The VM failover planning code is sub-divided into two pieces, stored in
+separate files:</p><ul><li><a href=https://github.com/xapi-project/xen-api/blob/0bbd4f5ac5fe46f9e982e5d5587ac56ed8427295/ocaml/xapi/binpack.ml target=_blank>binpack.ml</a>: contains two algorithms for packing items of different sizes
+(i.e. VMs) into bins of different sizes (i.e. Hosts); and</li><li><a href=https://github.com/xapi-project/xen-api/blob/0bbd4f5ac5fe46f9e982e5d5587ac56ed8427295/ocaml/xapi/xapi_ha_vm_failover.ml target=_blank>xapi_ha_vm_failover.ml</a>: interfaces between the Pool database and the
+binpacker; also performs counterfactual reasoning for overcommit protection.</li></ul><p>The input to the binpacking algorithms are configuration values which
+represent an abstract view of the Pool:</p><div class="wrap-code highlight"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ocaml data-lang=ocaml><span style=display:flex><span><span style=color:#66d9ef>type</span> <span style=color:#f92672>(</span><span style=color:#66d9ef>&#39;</span>a<span style=color:#f92672>,</span> <span style=color:#66d9ef>&#39;</span>b<span style=color:#f92672>)</span> configuration <span style=color:#f92672>=</span> <span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>  hosts<span style=color:#f92672>:</span>        <span style=color:#f92672>(</span><span style=color:#66d9ef>&#39;</span>a <span style=color:#f92672>*</span> int64<span style=color:#f92672>)</span> <span style=color:#66d9ef>list</span><span style=color:#f92672>;</span> <span style=color:#75715e>(** a list of live hosts and free memory *)</span>
+</span></span><span style=display:flex><span>  vms<span style=color:#f92672>:</span>          <span style=color:#f92672>(</span><span style=color:#66d9ef>&#39;</span>b <span style=color:#f92672>*</span> int64<span style=color:#f92672>)</span> <span style=color:#66d9ef>list</span><span style=color:#f92672>;</span> <span style=color:#75715e>(** a list of VMs and their memory requirements *)</span>
+</span></span><span style=display:flex><span>  placement<span style=color:#f92672>:</span>    <span style=color:#f92672>(</span><span style=color:#66d9ef>&#39;</span>b <span style=color:#f92672>*</span> <span style=color:#66d9ef>&#39;</span>a<span style=color:#f92672>)</span> <span style=color:#66d9ef>list</span><span style=color:#f92672>;</span>    <span style=color:#75715e>(** current VM locations *)</span>
+</span></span><span style=display:flex><span>  total_hosts<span style=color:#f92672>:</span>  <span style=color:#66d9ef>int</span><span style=color:#f92672>;</span>               <span style=color:#75715e>(** total number of hosts in the pool &#39;n&#39; *)</span>
+</span></span><span style=display:flex><span>  num_failures<span style=color:#f92672>:</span> <span style=color:#66d9ef>int</span><span style=color:#f92672>;</span>               <span style=color:#75715e>(** number of failures to tolerate &#39;r&#39; *)</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span></span></span></code></pre></div><p>Note that:</p><ul><li>the memory required by the VMs listed in <code>placement</code> has already been
+substracted from the total memory of the hosts; it doesn&rsquo;t need to be
+subtracted again.</li><li>the free memory of each host has already had per-host miscellaneous
+overheads subtracted from it, including that used by unprotected VMs,
+which do not appear in the VM list.</li><li>the total number of hosts in the pool (<code>total_hosts</code>) is a constant for
+any particular invocation of HA.</li><li>the number of failures to tolerate (<code>num_failures</code>) is the user-settable
+value from the XenAPI <code>Pool.ha_host_failures_to_tolerate</code>.</li></ul><p>There are two algorithms which satisfy the interface:</p><div class="wrap-code highlight"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ocaml data-lang=ocaml><span style=display:flex><span><span style=color:#66d9ef>sig</span>
+</span></span><span style=display:flex><span>  plan_always_possible<span style=color:#f92672>:</span> <span style=color:#f92672>(</span><span style=color:#66d9ef>&#39;</span>a<span style=color:#f92672>,</span> <span style=color:#66d9ef>&#39;</span>b<span style=color:#f92672>)</span> configuration <span style=color:#f92672>-&gt;</span> <span style=color:#66d9ef>bool</span><span style=color:#f92672>;</span>
+</span></span><span style=display:flex><span>  get_specific_plan<span style=color:#f92672>:</span> <span style=color:#f92672>(</span><span style=color:#66d9ef>&#39;</span>a<span style=color:#f92672>,</span> <span style=color:#66d9ef>&#39;</span>b<span style=color:#f92672>)</span> configuration <span style=color:#f92672>-&gt;</span> <span style=color:#66d9ef>&#39;</span>b <span style=color:#66d9ef>list</span> <span style=color:#f92672>-&gt;</span> <span style=color:#f92672>(</span><span style=color:#66d9ef>&#39;</span>b <span style=color:#f92672>*</span> <span style=color:#66d9ef>&#39;</span>a<span style=color:#f92672>)</span> <span style=color:#66d9ef>list</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>end</span></span></span></code></pre></div><p>The function <code>get_specific_plan</code> takes a configuration and a list of Hosts
+which have failed. It returns a VM restart plan represented as a VM to Host
+association list. This is the function called by the
+background HA VM restart thread on the master.</p><p>The function <code>plan_always_possible</code> returns true if every sequence of Host
+failures of length
+<code>num_failures</code> (irrespective of whether all hosts failed at once, or in
+multiple separate episodes)
+would result in calls to <code>get_specific_plan</code> which would allow all protected
+VMs to be restarted.
+This function is heavily used by the overcommit protection logic as well as code in XenCenter which aims to
+maximise failover capacity using the counterfactual reasoning APIs:</p><div class="wrap-code highlight"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ocaml data-lang=ocaml><span style=display:flex><span>Pool.ha_compute_max_host_failures_to_tolerate
+</span></span><span style=display:flex><span>Pool.ha_compute_hypothetical_max_host_failures_to_tolerate</span></span></code></pre></div><p>There are two binpacking algorithms: the more detailed but expensive
+algorithmm is used for smaller/less
+complicated pool configurations while the less detailed, cheaper algorithm
+is used for the rest. The
+choice between algorithms is based only on <code>total_hosts</code> (<code>n</code>) and
+<code>num_failures</code> (<code>r</code>).
+Note that the choice of algorithm will only change if the number of Pool
+hosts is varied (requiring HA to be disabled and then enabled) or if the
+user requests a new <code>num_failures</code> target to plan for.</p><p>The expensive algorithm uses an exchaustive search with a
+&ldquo;biggest-fit-decreasing&rdquo; strategy that
+takes the biggest VMs first and allocates them to the biggest remaining Host.
+The implementation keeps the VMs and Hosts as sorted lists throughout.
+There are a number of transformations to the input configuration which are
+guaranteed to preserve the existence of a VM to host allocation (even if
+the actual allocation is different). These transformations which are safe
+are:</p><ul><li>VMs may be removed from the list</li><li>VMs may have their memory requirements reduced</li><li>Hosts may be added</li><li>Hosts may have additional memory added.</li></ul><p>The cheaper algorithm is used for larger Pools where the state space to
+search is too large. It uses the same &ldquo;biggest-fit-decreasing&rdquo; strategy
+with the following simplifying approximations:</p><ul><li>every VM that fails is as big as the biggest</li><li>the number of VMs which fail due to a single Host failure is always the
+maximum possible (even if these are all very small VMs)</li><li>the largest and most capable Hosts fail</li></ul><p>An informal argument that these approximations are safe is as follows:
+if the maximum <em>number</em> of VMs fail, each of which is size of the largest
+and we can find a restart plan using only the smaller hosts then any real
+failure:</p><ul><li>can never result in the failure of more VMs;</li><li>can never result in the failure of bigger VMs; and</li><li>can never result in less host capacity remaining.</li></ul><p>Therefore we can take this <em>almost-certainly-worse-than-worst-case</em> failure
+plan and:</p><ul><li>replace the remaining hosts in the worst case plan with the real remaining
+hosts, which will be the same size or larger; and</li><li>replace the failed VMs in the worst case plan with the real failed VMs,
+which will be fewer or the same in number and smaller or the same in size.</li></ul><p>Note that this strategy will perform best when each host has the same number
+of VMs on it and when all VMs are approximately the same size. If one very big
+VM exists and a lot of smaller VMs then it will probably fail to find a plan.
+It is more tolerant of differing amounts of free host memory.</p><h2 id=overcommit-protection>Overcommit protection</h2><p>Overcommit protection blocks operations which would prevent the Pool being
+able to restart <em>protected</em> VMs after host failure.
+The Pool may become unable to restart protected VMs in two general ways:
+(i) by running out of resource i.e. host memory; and (ii) by altering host
+configuration in such a way that VMs cannot be started (or the planner
+thinks that VMs cannot be started).</p><p>API calls which would change the amount of host memory currently in use
+(<code>VM.start</code>, <code>VM.resume</code>, <code>VM.migrate</code> etc)
+have been modified to call the planning functions supplying special
+&ldquo;configuration change&rdquo; parameters.
+Configuration change values represent the proposed operation and have type</p><div class="wrap-code highlight"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ocaml data-lang=ocaml><span style=display:flex><span><span style=color:#66d9ef>type</span> configuration_change <span style=color:#f92672>=</span> <span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>(** existing VMs which are leaving *)</span>
+</span></span><span style=display:flex><span>  old_vms_leaving<span style=color:#f92672>:</span> <span style=color:#f92672>(</span>API.ref_host <span style=color:#f92672>*</span> <span style=color:#f92672>(</span>API.ref_VM <span style=color:#f92672>*</span> API.vM_t<span style=color:#f92672>))</span> <span style=color:#66d9ef>list</span><span style=color:#f92672>;</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>(** existing VMs which are arriving *)</span>
+</span></span><span style=display:flex><span>  old_vms_arriving<span style=color:#f92672>:</span> <span style=color:#f92672>(</span>API.ref_host <span style=color:#f92672>*</span> <span style=color:#f92672>(</span>API.ref_VM <span style=color:#f92672>*</span> API.vM_t<span style=color:#f92672>))</span> <span style=color:#66d9ef>list</span><span style=color:#f92672>;</span>  
+</span></span><span style=display:flex><span>  <span style=color:#75715e>(** hosts to pretend to disable *)</span>
+</span></span><span style=display:flex><span>  hosts_to_disable<span style=color:#f92672>:</span> API.ref_host <span style=color:#66d9ef>list</span><span style=color:#f92672>;</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>(** new number of failures to consider *)</span>
+</span></span><span style=display:flex><span>  num_failures<span style=color:#f92672>:</span> <span style=color:#66d9ef>int</span> option<span style=color:#f92672>;</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>(** new VMs to restart *)</span>  
+</span></span><span style=display:flex><span>  new_vms_to_protect<span style=color:#f92672>:</span> API.ref_VM <span style=color:#66d9ef>list</span><span style=color:#f92672>;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span></span></span></code></pre></div><p>A VM migration will be represented by saying the VM is &ldquo;leaving&rdquo; one host and
+&ldquo;arriving&rdquo; at another. A VM start or resume will be represented by saying the
+VM is &ldquo;arriving&rdquo; on a host.</p><p>Note that no attempt is made to integrate the overcommit protection with the
+general <code>VM.start</code> host chooser as this would be quite expensive.</p><p>Note that the overcommit protection calls are written as <code>asserts</code> called
+within the message forwarder in the master, holding the main forwarding lock.</p><p>API calls which would change the system configuration in such a way as to
+prevent the HA restart planner being able to guarantee to restart protected
+VMs are also blocked. These calls include:</p><ul><li><code>VBD.create</code>: where the disk is not in a <em>properly shared</em> SR</li><li><code>VBD.insert</code>: where the CDROM is local to a host</li><li><code>VIF.create</code>: where the network is not <em>properly shared</em></li><li><code>PIF.unplug</code>: when the network would cease to be <em>properly shared</em></li><li><code>PBD.unplug</code>: when the storage would cease to be <em>properly shared</em></li><li><code>Host.enable</code>: when some network or storage would cease to be
+<em>properly shared</em> (e.g. if this host had a broken storage configuration)</li></ul><h1 id=xen>xen</h1><p>The Xen hypervisor has per-domain watchdog counters which, when enabled,
+decrement as time passes and can be reset from a hypercall from the domain.
+If the domain fails to make the hypercall and the timer reaches zero then
+the domain is immediately shutdown with reason reboot. We configure Xen
+to reboot the host when domain 0 enters this state.</p><h1 id=high-level-operations>High-level operations</h1><h2 id=enabling-ha>Enabling HA</h2><p>Before HA can be enabled the admin must take care to configure the
+environment properly. In particular:</p><ul><li>NIC bonds should be available for network heartbeats;</li><li>multipath should be configured for the storage heartbeats;</li><li>all hosts should be online and fully-booted.</li></ul><p>The XenAPI client can request a specific shared SR to be used for
+storage heartbeats, otherwise Xapi will use the Pool&rsquo;s default SR.
+Xapi will use <code>VDI_GENERATE_CONFIG</code> to ensure the disk will be attached
+automatically on system boot before the liveset has been joined.</p><p>Note that extra effort is made to re-use any existing heartbeat VDIS
+so that</p><ul><li>if HA is disabled with some hosts offline, when they are rebooted they
+stand a higher chance of seeing a well-formed statefile with an explicit
+<em>invalid</em> state. If the VDIs were destroyed on HA disable then hosts which
+boot up later would fail to attach the disk and it would be harder to
+distinguish between a temporary storage failure and a permanent HA disable.</li><li>the heartbeat SR can be created on expensive low-latency high-reliability
+storage and made as small as possible (to minimise infrastructure cost),
+safe in the knowledge that if HA enables successfully once, it won&rsquo;t run
+out of space and fail to enable in the future.</li></ul><p>The Xapi-to-Xapi communication looks as follows:</p><p><a href=#image-6d413f506364a87cdf91203db43d99bc class=lightbox-link><img src=/new-docs/toolstack/features/HA/HA.configure.svg alt="Configuring HA around the Pool" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-6d413f506364a87cdf91203db43d99bc><img src=/new-docs/toolstack/features/HA/HA.configure.svg alt="Configuring HA around the Pool" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>The Xapi Pool master calls <code>Host.ha_join_liveset</code> on all hosts in the
+pool simultaneously. Each host
+runs the <code>ha_start_daemon</code> script
+which starts Xhad. Each Xhad starts exchanging heartbeats over the network
+and storage defined in the <code>xhad.conf</code>.</p><h2 id=joining-a-liveset>Joining a liveset</h2><p><a href=#image-c7b9902740c90a019712087ac3b5ca7a class=lightbox-link><img src=/new-docs/toolstack/features/HA/HA.start.svg alt="Starting up a host" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-c7b9902740c90a019712087ac3b5ca7a><img src=/new-docs/toolstack/features/HA/HA.start.svg alt="Starting up a host" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>The Xhad instances exchange heartbeats and decide which hosts are in
+the &ldquo;liveset&rdquo; and which have been fenced.</p><p>After joining the liveset, each host clears
+the &ldquo;excluded&rdquo; flag which would have
+been set if the host had been shutdown cleanly before &ndash; this is only
+needed when a host is shutdown cleanly and then restarted.</p><p>Xapi periodically queries the state of xhad via the <code>ha_query_liveset</code>
+command. The state will be <code>Starting</code> until the liveset is fully
+formed at which point the state will be <code>Online</code>.</p><p>When the <code>ha_start_daemon</code> script returns then Xapi will decide
+whether to stand for master election or not. Initially when HA is being
+enabled and there is a master already, this node will be expected to
+stand unopposed. Later when HA notices that the master host has been
+fenced, all remaining hosts will stand for election and one of them will
+be chosen.</p><h2 id=shutting-down-a-host>Shutting down a host</h2><p><a href=#image-7639a67a56571d1b1e90982975c4fc32 class=lightbox-link><img src=/new-docs/toolstack/features/HA/HA.shutdown.svg alt="Shutting down a host" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-7639a67a56571d1b1e90982975c4fc32><img src=/new-docs/toolstack/features/HA/HA.shutdown.svg alt="Shutting down a host" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>When a host is to be shutdown cleanly, it can be safely &ldquo;excluded&rdquo;
+from the pool such that a future failure of the storage heartbeat will
+not cause all pool hosts to self-fence (see survival rule 2 above).
+When a host is &ldquo;excluded&rdquo; all other hosts know that the host does not
+consider itself a master and has no resources locked i.e. no VMs are
+running on it. An excluded host will never allow itself to form part
+of a &ldquo;split brain&rdquo;.</p><p>Once a host has given up its master role and shutdown any VMs, it is safe
+to disable fencing with <code>ha_disarm_fencing</code> and stop xhad with
+<code>ha_stop_daemon</code>. Once the daemon has been stopped the &ldquo;excluded&rdquo;
+bit can be set in the statefile via <code>ha_set_excluded</code> and the
+host safely rebooted.</p><h2 id=restarting-a-host>Restarting a host</h2><p>When a host restarts after a failure Xapi notices that <em>ha_armed</em> is
+set in the local database. Xapi</p><ul><li>runs the <code>attach-static-vdis</code> script to attach the statefile and
+database VDIs. This can fail if the storage is inaccessible; Xapi will
+retry until it succeeds.</li><li>runs the ha_start_daemon to join the liveset, or determine that HA
+has been cleanly disabled (via setting the state to <em>Invalid</em>).</li></ul><p>In the special case where Xhad fails to access the statefile and the
+host used to be a slave then Xapi will try to contact the previous master
+and find out</p><ul><li>who the new master is;</li><li>whether HA is enabled on the Pool or not.</li></ul><p>If Xapi can confirm that HA was disabled then it will disarm itself and
+join the new master. Otherwise it will keep waiting for the statefile
+to recover.</p><p>In the special case where the statefile has been destroyed and cannot
+be recovered, there is an emergency HA disable API the admin can use to
+assert that HA really has been disabled, and it&rsquo;s not simply a connectivity
+problem. Obviously this API should only be used if the admin is totally
+sure that HA has been disabled.</p><h2 id=disabling-ha>Disabling HA</h2><p>There are 2 methods of disabling HA: one for the &ldquo;normal&rdquo; case when the
+statefile is available; and the other for the &ldquo;emergency&rdquo; case when the
+statefile has failed and can&rsquo;t be recovered.</p><h2 id=disabling-ha-cleanly>Disabling HA cleanly</h2><p><a href=#image-cf2d48bed38d56bc207b0b7fd519fade class=lightbox-link><img src=/new-docs/toolstack/features/HA/HA.disable.clean.svg alt="Disabling HA cleanly" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-cf2d48bed38d56bc207b0b7fd519fade><img src=/new-docs/toolstack/features/HA/HA.disable.clean.svg alt="Disabling HA cleanly" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>HA can be shutdown cleanly when the statefile is working i.e. when hosts
+are alive because of survival rule 1. First the master Xapi tells the local
+Xhad to mark the pool state as &ldquo;invalid&rdquo; using <code>ha_set_pool_state</code>.
+Every xhad instance will notice this state change the next time it performs
+a storage heartbeat. The Xhad instances will shutdown and Xapi will notice
+that HA has been disabled the next time it attempts to query the liveset.</p><p>If a host loses access to the statefile (or if none of the hosts have
+access to the statefile) then HA can be disabled uncleanly.</p><h2 id=disabling-ha-uncleanly>Disabling HA uncleanly</h2><p>The Xapi master first calls <code>Host.ha_disable_failover_actions</code> on each host
+which sets <code>ha_disable_failover_decisions</code> in the lcoal database. This
+prevents the node rebooting, gaining statefile access, acquiring the
+master lock and restarting VMs when other hosts have disabled their
+fencing (i.e. a &ldquo;split brain&rdquo;).</p><p><a href=#image-1266933ca2e47fd91f09d342e4ad1db3 class=lightbox-link><img src=/new-docs/toolstack/features/HA/HA.disable.unclean.svg alt="Disabling HA uncleanly" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-1266933ca2e47fd91f09d342e4ad1db3><img src=/new-docs/toolstack/features/HA/HA.disable.unclean.svg alt="Disabling HA uncleanly" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>Once the master is sure that no host will suddenly start recovering VMs
+it is safe to call <code>Host.ha_disarm_fencing</code> which runs the script
+<code>ha_disarm_fencing</code> and then shuts down the Xhad with <code>ha_stop_daemon</code>.</p><h2 id=add-a-host-to-the-pool>Add a host to the pool</h2><p>We assume that adding a host to the pool is an operation the admin will
+perform manually, so it is acceptable to disable HA for the duration
+and to re-enable it afterwards. If a failure happens during this operation
+then the admin will take care of it by hand.</p><footer class=footline></footer></article><article class=default><header class=headline></header><h1 id=numa>NUMA</h1><h2 id=numa-in-a-nutshell>NUMA in a nutshell</h2><p>Systems that contain more than one CPU socket are typically built on a Non-Uniform Memory Architecture (NUMA) <sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup><sup id=fnref:2><a href=#fn:2 class=footnote-ref role=doc-noteref>2</a></sup>.
+In a NUMA system each node has fast, lower latency access to local memory.</p><p><a href=#image-818788f6f5294b550dce4eb0c19d3fb8 class=lightbox-link><img src=/new-docs/toolstack/features/NUMA/hwloc.svg alt=hwloc class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-818788f6f5294b550dce4eb0c19d3fb8><img src=/new-docs/toolstack/features/NUMA/hwloc.svg alt=hwloc class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>In the diagram <sup id=fnref:3><a href=#fn:3 class=footnote-ref role=doc-noteref>3</a></sup> above we have 4 NUMA nodes:</p><ul><li>2 of those are due to 2 separate physical packages (sockets)</li><li>a further 2 is due to Sub-NUMA-Clustering (aka Nodes Per Socket for AMD) where the L3 cache is split</li></ul><p>The L3 cache is shared among multiple cores, but cores <code>0-5</code> have lower latency access to one part of it, than cores <code>6-11</code>, and this is also reflected by splitting memory addresses into 4 31GiB ranges in total.</p><p>In the diagram the closer the memory is to the core, the lower the access latency:</p><ul><li>per-core caches: L1, L2</li><li>per-package shared cache: L3 (local part), L3 (remote part)</li><li>local NUMA node (to a group of cores, e.g. <code>L#0 P#0</code>), node 0</li><li>remote NUMA node in same package (<code>L#1 P#2</code>), node 1</li><li>remote NUMA node in other packages (<code>L#2 P#1</code> and &lsquo;L#3P#3&rsquo;), node 2 and 3</li></ul><h3 id=the-numa-distance-matrix>The NUMA distance matrix</h3><p>Accessing remote NUMA node in the other package has to go through a shared interconnect, which has lower bandwidth than the direct connections, and also a bottleneck if both cores have to access remote memory: the bandwidth for a single core is effectively at most half.</p><p>This is reflected in the NUMA distance/latency matrix.
+The units are arbitrary, and by convention access latency to the local NUMA node is given distance &lsquo;10&rsquo;.</p><p>Relative latency matrix by logical indexes:</p><table><thead><tr><th>index</th><th>0</th><th>2</th><th>1</th><th>3</th></tr></thead><tbody><tr><td>0</td><td>10</td><td>21</td><td>11</td><td>21</td></tr><tr><td>2</td><td>21</td><td>10</td><td>21</td><td>11</td></tr><tr><td>1</td><td>11</td><td>21</td><td>10</td><td>21</td></tr><tr><td>3</td><td>21</td><td>11</td><td>21</td><td>10</td></tr></tbody></table><p>This follows the latencies described previously:</p><ul><li>fast access to local NUMA node memory (by definition), node 0, cost 10</li><li>slightly slower access latency to the other NUMA node in same package, node 1, cost 11</li><li>twice as slow access latency to remote NUMA memory in the other physical package (socket): nodes 2 and 3, cost 21</li></ul><p>There is also I/O NUMA where a cost is similarly associated to where a PCIe is plugged in, but exploring that is future work (it requires exposing NUMA topology to the Dom0 kernel to benefit from it), and for simplicity the diagram above does not show it.</p><h2 id=advantages-of-numa>Advantages of NUMA</h2><p>NUMA does have advantages though: if each node accesses only its local memory, then each node can independently achieve maximum throughput.</p><p>For best performance we should:</p><ul><li>minimize the amount of interconnect bandwidth we are using</li><li>run code that accesses memory allocated on the closest NUMA node</li><li>maximize the number of NUMA nodes that we use in the system as a whole</li></ul><p>If a VM&rsquo;s memory and vCPUs can entirely fit within a single NUMA node then we should tell Xen to prefer to allocate memory from and run the vCPUs on a single NUMA node.</p><h2 id=xen-vcpu-soft-affinity>Xen vCPU soft-affinity</h2><p>The Xen scheduler supports 2 kinds of constraints:</p><ul><li>hard pinning: a vCPU may only run on the specified set of pCPUs and nowhere else</li><li>soft pinning: a vCPU is <em>preferably</em> run on the specified set of pCPUs, but if they are all busy then it may run elsewhere</li></ul><p>The former is useful if you want strict separation, but it can potentially leave part of the system idle while another part is bottlenecked with lots of vCPUs all competing for the same limited set of pCPUs.</p><p>Xen does not migrate workloads between NUMA nodes on its own (the Linux kernel does), although it is possible to achieve a similar effect with explicit migration.
+However migration introduces additional delays and is best avoided for entire VMs.</p><p>The latter (soft pinning) is preferred: running a workload now, even on a potentially suboptimal pCPU (higher NUMA latency) is still better than not running it at all and waiting until a pCPU is freed up.</p><p>Xen will also allocate memory for the VM according to the vCPU (soft) pinning: if the vCPUs are pinned only to NUMA nodes A and B, then it will allocate the VM&rsquo;s memory from NUMA nodes A and B (in a round-robin way, resulting in interleaving).</p><p>By default (no pinning) it will interleave memory from all NUMA nodes, which provides average performance, but individual tasks&rsquo; performance may be significantly higher or lower depending on which NUMA node the application may have &ldquo;landed&rdquo; on.
+Furthermore restarting processes will speed them up or slow them down as address space randomization picks different memory regions inside a VM.</p><p>Note that this is not the worst case: the worst case would be for memory to be allocated on one NUMA node, but the vCPU always running on the furthest away NUMA node.</p><h2 id=best-effort-numa-aware-memory-allocation-for-vms>Best effort NUMA-aware memory allocation for VMs</h2><p>By default Xen stripes the VM&rsquo;s memory accross all NUMA nodes of the host, which means that every VM has to go through all the interconnects.
+The goal here is to find a better allocation than the default, not necessarily an optimal allocation.
+An optimal allocation would require knowing what VMs you would start/create in the future, and planning across hosts too.</p><p>Overall we want to balance the VMs across NUMA nodes, such that we use all NUMA nodes to take advantage of the maximum memory bandwidth available on the system.
+For now this proposed balancing will be done only by balancing memory usage: always heuristically allocating VMs on the NUMA node that has the most available memory.
+Note that this allocation has a race condition for now when multiple VMs are booted in parallel, because we don&rsquo;t wait until Xen has constructed the domain for each one (that&rsquo;d serialize domain construction, which is currently parallel).
+This may be improved in the future by having an API to query Xen where it has allocated the memory, and to explicitly ask it to place memory on a given NUMA node (instead of best_effort).</p><p>If a VM doesn&rsquo;t fit into a single node then it is not so clear what the best approach is.
+One criteria to consider is minimizing the NUMA distance between the nodes chosen for the VM.
+Large NUMA systems may not be fully connected in a mesh requiring multiple hops to each a node, or even have assymetric links, or links with different bitwidth.
+These tradeoff should be approximatively reflected in the ACPI SLIT tables, as a matrix of distances between nodes.
+It is possible that 3 NUMA nodes have a smaller average/maximum distance than 2, so we need to consider all possibilities.</p><p>For N nodes there would be 2^N possibilities, so [Topology.NUMA.candidates] limits the number of choices to 65520+N (full set of 2^N possibilities for 16 NUMA nodes, and a reduced set of choices for larger systems).</p><p>[Topology.NUMA.candidates] is a sorted sequence of node sets, in ascending order of maximum/average distances.
+Once we&rsquo;ve eliminated the candidates not suitable for this VM (that do not have enough total memory/pCPUs) we are left with a monotonically increasing sequence of nodes.
+There are still multiple possibilities with same average distance.
+This is where we consider our second criteria - balancing - and pick the node with most available free memory.</p><p>Once a suitable set of NUMA nodes are picked we compute the CPU soft affinity as the union of the CPUs from all these NUMA nodes.
+If we didn&rsquo;t find a solution then we let Xen use its default allocation.</p><p>The &ldquo;distances&rdquo; between NUMA nodes may not all be equal, e.g. some nodes may have shorter links to some remote NUMA nodes, while others may have to go through multiple hops to reach it.
+See page 13 in <sup id=fnref:4><a href=#fn:4 class=footnote-ref role=doc-noteref>4</a></sup> for a diagram of an AMD Opteron 6272 system.</p><h2 id=limitations-and-tradeoffs>Limitations and tradeoffs</h2><ul><li>Booting multiple VMs in parallel will result in potentially allocating both on the same NUMA node (race condition)</li><li>When we&rsquo;re about to run out of host memory we&rsquo;ll fall back to striping memory again, but the soft affinity mask won&rsquo;t reflect that (this needs an API to query Xen on where it has actually placed the VM, so we can fix up the mask accordingly)</li><li>XAPI is not aware of NUMA balancing across a pool, and choses hosts purely based on total amount of free memory, even if a better NUMA placement could be found on another host</li><li>Very large (>16 NUMA nodes) systems may only explore a limited number of choices (fit into a single node vs fallback to full interleaving)</li><li>The exact VM placement is not yet controllable</li><li>Microbenchmarks with a single VM on a host show both performance improvements and regressions on memory bandwidth usage: previously a single VM may have been able to take advantage of the bandwidth of both NUMA nodes if it happened to allocate memory from the right places, whereas now it&rsquo;ll be forced to use just a single node.
+As soon as you have more than 1 VM that is busy on a system enabling NUMA balancing should almost always be an improvement though.</li><li>it is not supported to combine hard vCPU masks with soft affinity: if hard affinities are used then no NUMA scheduling is done by the toolstack and we obey exactly what the user has asked for with hard affinities.
+This shouldn&rsquo;t affect other VMs since the memory used by hard-pinned VMs will still be reflected in overall less memory available on individual NUMA nodes.</li><li>Corner case: the ACPI standard allows certain NUMA nodes to be unreachable (distance <code>0xFF</code> = <code>-1</code> in the Xen bindings).
+This is not supported and will cause an exception to be raised.
+If this is an issue in practice the NUMA matrix could be pre-filtered to contain only reachable nodes.
+NUMA nodes with 0 CPUs <em>are</em> accepted (it can result from hard affinity pinnings)</li><li>NUMA balancing is not considered during HA planning</li><li>Dom0 is a single VM that needs to communicate with all other VMs, so NUMA balancing is not applied to it (we&rsquo;d need to expose NUMA topology to the Dom0 kernel so it can better allocate processes)</li><li>IO NUMA is out of scope for now</li></ul><h2 id=xapi-datamodel-design>XAPI datamodel design</h2><ul><li>New API field: <code>Host.numa_affinity_policy</code>.</li><li>Choices: <code>default_policy</code>, <code>any</code>, <code>best_effort</code>.</li><li>On upgrade the field is set to <code>default_policy</code></li><li>Changes in the field only affect newly (re)booted VMs, for changes to take effect on existing VMs a host evacuation or reboot is needed</li></ul><p>There may be more choices in the future (e.g. <code>strict</code>, which requires both Xen and toolstack changes).</p><p>Meaning of the policy:</p><ul><li><p><code>any</code>: the Xen default where it allocated memory by striping across NUMA nodes</p></li><li><p><code>best_effort</code>: the algorithm described in this document, where soft pinning is used to achieve better balancing and lower latency</p></li><li><p><code>default_policy</code>: when the admin hasn&rsquo;t expressed a preference</p></li><li><p>Currently <code>default_policy</code> is treated as <code>any</code>, but the admin can change it, and then the system will remember that change across upgrades.
+If we didn&rsquo;t have a <code>default_policy</code> then changing the &ldquo;default&rdquo; policy on an upgrade would be tricky: we either risk overriding an explicit choice of the admin, or existing installs cannot take advantage of the improved performance from <code>best_effort</code></p></li><li><p>Future XAPI versions may change <code>default_policy</code> to mean <code>best_effort</code>.
+Admins can still override it to <code>any</code> if they wish on a host by host basis.</p></li></ul><p>It is not expected that users would have to change <code>best_effort</code>, unless they run very specific workloads, so a pool level control is not provided at this moment.</p><p>There is also no separate feature flag: this host flag acts as a feature flag that can be set through the API without restarting the toolstack.
+Although obviously only new VMs will benefit.</p><p>Debugging the allocator is done by running <code>xl vcpu-list</code> and investigating the soft pinning masks, and by analyzing xensource.log.</p><h3 id=xenopsd-implementation>Xenopsd implementation</h3><p>See the documentation in [softaffinity.mli] and [topology.mli].</p><ul><li>[Softaffinity.plan] returns a [CPUSet] given a host&rsquo;s NUMA allocation state and a VM&rsquo;s NUMA allocation request.</li><li>[Topology.CPUSet] provides helpers for operating on a set of CPU indexes.</li><li>[Topology.NUMAResource] is a [CPUSet] and the free memory available on a NUMA node.</li><li>[Topology.NUMARequest] is a request for a given number of vCPUs and memory in bytes.</li><li>[Topology.NUMA] represents a host&rsquo;s NUMA allocation state.</li><li>[Topology.NUMA.candidates] are groups of nodes orderd by minimum average distance.
+The sequence is limited to [N+65520], where [N] is the number of NUMA nodes.
+This avoids exponential state space explosion on very large systems (>16 NUMA nodes).</li><li>[Topology.NUMA.choose] will choose one NUMA node deterministically, while trying to keep overall NUMA node usage balanced.</li><li>[Domain.numa_placement] builds a [NUMARequest] and uses the above [Topology] and [Softaffinity] functions to compute and apply a plan.</li></ul><p>We used to have a <code>xenopsd.conf</code> configuration option to enable numa placement, for backwards compatibility this is still supported, but only if the admin hasn&rsquo;t set an explicit policy on the Host.
+It is best to remove the experimental <code>xenopsd.conf</code> entry though, a future version may completely drop it.</p><p>Tests are in [test_topology.ml] which checks balancing properties and whether the plan has improved best/worst/average-case access times in a simulated test based on 2 predefined NUMA distance matrixes (one from Intel and one from an AMD system).</p><h2 id=future-work>Future work</h2><ul><li>enable &lsquo;best_effort&rsquo; mode by default once more testing has been done</li><li>an API to query Xen where it has actually allocated the VM&rsquo;s memory.
+Currently only an <code>xl debug-keys</code> interface exists which is not supported in production as it can result in killing the host via the watchdog, and is not a proper API, but a textual debug output with no stability guarantees.</li><li>more host policies (e.g. <code>strict</code>).
+Requires the XAPI pool scheduler to be NUMA aware and consider it as part of chosing hosts.</li><li>VM level policy that can set a NUMA affinity index, mapped to a NUMA node modulo NUMA nodes available on the system (this is needed so that after migration we don&rsquo;t end up trying to allocate vCPUs to a non-existent NUMA node)</li><li>VM level anti-affinity rules for NUMA placement (can be achieved by setting unique NUMA affinity indexes)</li></ul><div class=footnotes role=doc-endnotes><hr><ol><li id=fn:1><p><a href=https://wiki.xenproject.org/wiki/Xen_on_NUMA_Machines target=_blank>Xen on NUMA Machines</a>&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:2><p><a href=https://www.kernel.org/doc/html/v6.6/mm/numa.html target=_blank>What is NUMA?</a>&#160;<a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:3><p>created with <code>lstopo-no-graphics --no-io --of svg --vert=L3 >hwloc.svg</code> on a bare metal Linux&#160;<a href=#fnref:3 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:4><p>Lepers, Baptiste. <a href=https://theses.hal.science/tel-01549294/document target=_blank>&ldquo;Improving performance on NUMA systems.&rdquo;</a> PhD diss., Université de Grenoble, 2014.&#160;<a href=#fnref:4 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></div><footer class=footline></footer></article><article class=default><header class=headline></header><h1 id=snapshots>Snapshots</h1><p>Snapshots represent the state of a VM, or a disk (VDI) at a point in time. They can be used for:</p><ul><li>backups (hourly, daily, weekly etc)</li><li>experiments (take snapshot, try something, revert back again)</li><li>golden images (install OS, get it just right, clone it 1000s of times)</li></ul><p>Read more about <a href=/new-docs/toolstack/features/snapshots/../../xen-api/snapshots.html>the Snapshot APIs</a>.</p><h1 id=disk-snapshots>Disk snapshots</h1><p>Disks are represented in the XenAPI as VDI objects. Disk snapshots are represented
+as VDI objects with the flag <code>is_a_snapshot</code> set to true. Snapshots are always
+considered read-only, and should only be used for backup or cloning into new
+disks. Disk snapshots have a lifetime independent of the disk they are a snapshot
+of i.e. if someone deletes the original disk, the snapshots remain. This contrasts
+with some storage arrays in which snapshots are &ldquo;second class&rdquo; objects which are
+automatically deleted when the original disk is deleted.</p><p>Disks are implemented in Xapi via &ldquo;Storage Manager&rdquo; (SM) plugins. The SM plugins
+conform to an api (the SMAPI) which has operations including</p><ul><li>vdi_create: make a fresh disk, full of zeroes</li><li>vdi_snapshot: create a snapshot of a disk</li></ul><h1 id=file-based-vhd-implementation>File-based vhd implementation</h1><p>The existing &ldquo;EXT&rdquo; and &ldquo;NFS&rdquo; file-based Xapi SM plugins store disk data in
+trees of .vhd files as in the following diagram:</p><p><a href=#image-8c0cfe2e8ea0c325794905491ad0d6d0 class=lightbox-link><img src=/new-docs/toolstack/features/snapshots/vhd-trees.png alt="Relationship between VDIs and vhd files" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-8c0cfe2e8ea0c325794905491ad0d6d0><img src=/new-docs/toolstack/features/snapshots/vhd-trees.png alt="Relationship between VDIs and vhd files" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>From the XenAPI point of view, we have one current VDI and a set of snapshots,
+each taken at a different point in time. These VDIs correspond to leaf vhds in
+a tree stored on disk, where the non-leaf nodes contain all the shared blocks.</p><p>The vhd files are always thinly-provisioned which means they only allocate new
+blocks on an as-needed basis. The snapshot leaf vhd files only contain vhd
+metadata and therefore are very small (a few KiB). The parent nodes containing
+the shared blocks only contain the shared blocks. The current leaf initially
+contains only the vhd metadata and therefore is very small (a few KiB) and will
+only grow when the VM writes blocks.</p><p>File-based vhd implementations are a good choice if a &ldquo;gold image&rdquo; snapshot
+is going to be cloned lots of times.</p><h1 id=block-based-vhd-implementation>Block-based vhd implementation</h1><p>The existing &ldquo;LVM&rdquo;, &ldquo;LVMoISCSI&rdquo; and &ldquo;LVMoHBA&rdquo; block-based Xapi SM plugins store
+disk data in trees of .vhd files contained within LVM logical volumes:</p><p><a href=#image-42b21a7f257881dc91726ec69a060dd1 class=lightbox-link><img src=/new-docs/toolstack/features/snapshots/lun-trees.png alt="Relationship between VDIs and LVs containing vhd data" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-42b21a7f257881dc91726ec69a060dd1><img src=/new-docs/toolstack/features/snapshots/lun-trees.png alt="Relationship between VDIs and LVs containing vhd data" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>Non-snapshot VDIs are always stored full size (a.k.a. thickly-provisioned).
+When parent nodes are created they are automatically shrunk to the minimum size
+needed to store the shared blocks. The LVs corresponding with snapshot VDIs
+only contain vhd metadata and by default consume 8MiB. Note: this is different
+to VDI.clones which are stored full size.</p><p>Block-based vhd implementations are not a good choice if a &ldquo;gold image&rdquo; snapshot
+is going to be cloned lots of times, since each clone will be stored full size.</p><h1 id=hypothetical-lun-implementation>Hypothetical LUN implementation</h1><p>A hypothetical Xapi SM plugin could use LUNs on an iSCSI storage array
+as VDIs, and the array&rsquo;s custom control interface to implement the &ldquo;snapshot&rdquo;
+operation:</p><p><a href=#image-2ca6372565655bb02ecb511a79778170 class=lightbox-link><img src=/new-docs/toolstack/features/snapshots/luns.png alt="Relationship between VDIs and LUNs on a hypothetical storage target" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-2ca6372565655bb02ecb511a79778170><img src=/new-docs/toolstack/features/snapshots/luns.png alt="Relationship between VDIs and LUNs on a hypothetical storage target" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>From the XenAPI point of view, we have one current VDI and a set of snapshots,
+each taken at a different point in time. These VDIs correspond to LUNs on the
+same iSCSI target, and internally within the target these LUNs are comprised of
+blocks from a large shared copy-on-write pool with support for dedup.</p><h1 id=reverting-disk-snapshots>Reverting disk snapshots</h1><p>There is no current way to revert in-place a disk to a snapshot, but it is
+possible to create a writable disk by &ldquo;cloning&rdquo; a snapshot.</p><h1 id=vm-snapshots>VM snapshots</h1><p>Let&rsquo;s say we have a VM, &ldquo;VM1&rdquo; that has 2 disks. Concentrating only
+on the VM, VBDs and VDIs, we have the following structure:</p><p><a href=#image-de2a77a9ebb6a4ca8f476746b402a35d class=lightbox-link><img src=/new-docs/toolstack/features/snapshots/vm.png alt="VM objects" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-de2a77a9ebb6a4ca8f476746b402a35d><img src=/new-docs/toolstack/features/snapshots/vm.png alt="VM objects" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>When we take a snapshot, we first ask the storage backends to snapshot
+all of the VDIs associated with the VM, producing new VDI objects.
+Then we copy all of the metadata, producing a new &lsquo;snapshot&rsquo; VM
+object, complete with its own VBDs copied from the original, but now
+pointing at the snapshot VDIs. We also copy the VIFs and VGPUs
+but for now we will ignore those.</p><p>This process leads to a set of objects that look like this:</p><p><a href=#image-1020daf0b0b8badb9416208d47c42dab class=lightbox-link><img src=/new-docs/toolstack/features/snapshots/vm-snapshot.png alt="VM and snapshot objects" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-1020daf0b0b8badb9416208d47c42dab><img src=/new-docs/toolstack/features/snapshots/vm-snapshot.png alt="VM and snapshot objects" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>We have fields that help navigate the new objects: <code>VM.snapshot_of</code>,
+and <code>VDI.snapshot_of</code>. These, like you would expect, point to the
+relevant other objects.</p><h1 id=deleting-vm-snapshots>Deleting VM snapshots</h1><p>When a snapshot is deleted Xapi calls the SM API <code>vdi_delete</code>. The Xapi SM
+plugins which use vhd format data do not reclaim space immediately; instead
+they mark the corresponding vhd leaf node as &ldquo;hidden&rdquo; and, at some point later,
+run a garbage collector process.</p><p>The garbage collector will first determine whether a &ldquo;coalesce&rdquo; should happen i.e.
+whether any parent nodes have only one child i.e. the &ldquo;shared&rdquo; blocks are only
+&ldquo;shared&rdquo; with one other node. In the following example the snapshot delete leaves
+such a parent node and the coalesce process copies blocks from the redundant
+parent&rsquo;s only child into the parent:</p><p><a href=#image-a0fb9424821aa5c874e90f0090a646d2 class=lightbox-link><img src=/new-docs/toolstack/features/snapshots/coalesce1.png alt="We coalesce parent blocks into grand parent nodes" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-a0fb9424821aa5c874e90f0090a646d2><img src=/new-docs/toolstack/features/snapshots/coalesce1.png alt="We coalesce parent blocks into grand parent nodes" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>Note that if the vhd data is being stored in LVM, then the parent node will
+have had to be expanded to full size to accommodate the writes. Unfortunately
+this means the act of reclaiming space actually consumes space itself, which
+means it is important to never completely run out of space in such an SR.</p><p>Once the blocks have been copied, we can now cut one of the parents out of the
+tree by relinking its children into their grandparent:</p><p><a href=#image-cc051d0c1d9c0580e9a33f049a737405 class=lightbox-link><img src=/new-docs/toolstack/features/snapshots/coalesce2.png alt="Relink children into grand parent" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-cc051d0c1d9c0580e9a33f049a737405><img src=/new-docs/toolstack/features/snapshots/coalesce2.png alt="Relink children into grand parent" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>Finally the garbage collector can remove unused vhd files / LVM LVs:</p><p><a href=#image-fad8d464041069463a226ee3ccf37a3e class=lightbox-link><img src=/new-docs/toolstack/features/snapshots/coalesce3.png alt="Clean up" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-fad8d464041069463a226ee3ccf37a3e><img src=/new-docs/toolstack/features/snapshots/coalesce3.png alt="Clean up" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><h1 id=reverting-vm-snapshots>Reverting VM snapshots</h1><p>The XenAPI call <code>VM.revert</code> overwrites the VM metadata with the snapshot VM
+metadata, deletes the current VDIs and replaces them with clones of the
+snapshot VDIs. Note there is no &ldquo;vdi_revert&rdquo; in the SMAPI.</p><h2 id=revert-implementation-details>Revert implementation details</h2><p>This is the process by which we revert a VM to a snapshot. The
+first thing to notice is that there is some logic that is called
+from <a href=https://github.com/xapi-project/xen-api/blob/ce6d3f276f0a56ef57ebcf10f45b0f478fd70322/ocaml/xapi/message_forwarding.ml#L1528 target=_blank>message_forwarding.ml</a>,
+which uses some low-level database magic to turn the current VM
+record into one that looks like the snapshot object. We then go
+to the rest of the implementation in <a href=https://github.com/xapi-project/xen-api/blob/ce6d3f276f0a56ef57ebcf10f45b0f478fd70322/ocaml/xapi/xapi_vm_snapshot.ml#L403 target=_blank>xapi_vm_snapshot.ml</a>.
+First,
+we shut down the VM if it is currently running. Then, we revert
+all of the <a href=https://github.com/xapi-project/xen-api/blob/ce6d3f276f0a56ef57ebcf10f45b0f478fd70322/ocaml/xapi/xapi_vm_snapshot.ml#L270 target=_blank>VBDs, VIFs and VGPUs</a>.
+To revert the VBDs, we need to deal with the VDIs underneath them.
+In order to create space, the first thing we do is <a href=https://github.com/xapi-project/xen-api/blob/ce6d3f276f0a56ef57ebcf10f45b0f478fd70322/ocaml/xapi/xapi_vm_snapshot.ml#L287 target=_blank>delete all of
+the VDIs</a> currently attached via VBDs to the VM.
+We then <em>clone</em> the disks from the snapshot. Note that there is
+no SMAPI operation &lsquo;revert&rsquo; currently - we simply clone from
+the snapshot VDI. It&rsquo;s important to note that cloning
+creates a <em>new</em> VDI object: this is not the one we started with gone.</p><footer class=footline></footer></article><article class=default><header class=headline></header><h1 id=vgpu>vGPU</h1><p>XenServer has supported passthrough for GPU devices since XenServer 6.0. Since
+the advent of NVIDIA&rsquo;s vGPU-capable GRID K1/K2 cards it has been possible to
+carve up a GPU into smaller pieces yielding a more scalable solution to
+boosting graphics performance within virtual machines.</p><p>The K1 has four GK104 GPUs and the K2 two GK107 GPUs. Each of these will be exposed through Xapi so a host with a single K1 card will have access to four independent PGPUs.</p><p>Each of the GPUs can then be subdivided into vGPUs. For each type of PGPU,
+there are a few options of vGPU type which consume different amounts of the
+PGPU. For example, K1 and K2 cards can currently be configured in the following
+ways:</p><p><a href=#image-f90bdf940b61c3ff00e9fdfebd7bcc28 class=lightbox-link><img src=/new-docs/toolstack/features/VGPU/vgx-configs.png alt="Possible VGX configurations" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-f90bdf940b61c3ff00e9fdfebd7bcc28><img src=/new-docs/toolstack/features/VGPU/vgx-configs.png alt="Possible VGX configurations" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>Note, this diagram is not to scale, the PGPU resource required by each
+vGPU type is as follows:</p><table><thead><tr><th>vGPU type</th><th>PGPU kind</th><th>vGPUs / PGPU</th></tr></thead><tbody><tr><td>k100</td><td>GK104</td><td>8</td></tr><tr><td>k140Q</td><td>GK104</td><td>4</td></tr><tr><td>k200</td><td>GK107</td><td>8</td></tr><tr><td>k240Q</td><td>GK107</td><td>4</td></tr><tr><td>k260Q</td><td>GK107</td><td>2</td></tr></tbody></table><p>Currently each physical GPU (PGPU) only supports <em>homogeneous vGPU
+configurations</em> but different configurations are supported on different PGPUs
+across a single K1/K2 card. This means that, for example, a host with a K1 card
+can run 64 VMs with k100 vGPUs (8 per PGPU).</p><h2 id=xenservers-vgpu-architecture>XenServer&rsquo;s vGPU architecture</h2><p>A new display type has been added to the device model:</p><div class="wrap-code highlight"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-udiff data-lang=udiff><span style=display:flex><span><span style=color:#75715e>@@ -4519,6 +4522,7 @@ static const QEMUOption qemu_options[] =
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span>     /* Xen tree options: */
+</span></span><span style=display:flex><span>     { &#34;std-vga&#34;, 0, QEMU_OPTION_std_vga },
+</span></span><span style=display:flex><span><span style=color:#a6e22e>+    { &#34;vgpu&#34;, 0, QEMU_OPTION_vgpu },
+</span></span></span><span style=display:flex><span><span style=color:#a6e22e></span>     { &#34;videoram&#34;, HAS_ARG, QEMU_OPTION_videoram },
+</span></span><span style=display:flex><span>     { &#34;d&#34;, HAS_ARG, QEMU_OPTION_domid }, /* deprecated; for xend compatibility */
+</span></span><span style=display:flex><span>     { &#34;domid&#34;, HAS_ARG, QEMU_OPTION_domid },
+</span></span></code></pre></div><p>With this in place, <code>qemu</code> can now be started using a new option that will
+enable it to communicate with a new display emulator, <code>vgpu</code> to expose the
+graphics device to the guest. The <code>vgpu</code> binary is responsible for handling the
+VGX-capable GPU and, once it has been successfully passed through, the in-guest
+drivers can be installed in the same way as when it detects new hardware.</p><p>The diagram below shows the relevant parts of the architecture for this
+project.</p><p><a href=#image-07878ce50467b76d5ac9d34197c78b0d class=lightbox-link><img src=/new-docs/toolstack/features/VGPU/vgpu-arch.png alt="XenServer&amp;rsquo;s vGPU architecture" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-07878ce50467b76d5ac9d34197c78b0d><img src=/new-docs/toolstack/features/VGPU/vgpu-arch.png alt="XenServer&amp;rsquo;s vGPU architecture" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><h3 id=relevant-code>Relevant code</h3><ul><li>In Xenopsd: <a href=https://github.com/xapi-project/xenopsd/blob/8d06778db2/xc/xenops_server_xen.ml#L1107-L1113 target=_blank>Xenops_server_xen</a> is where
+Xenopsd gets the vGPU information from the values passed from Xapi;</li><li>In Xenopsd: <a href=https://github.com/xapi-project/xenopsd/blob/8d06778db2/xc/device.ml#L1696-L1708 target=_blank>Device.__start</a> is where the <code>vgpu</code> process is started, if
+necessary, before Qemu.</li></ul><h2 id=xapis-api-and-data-model>Xapi&rsquo;s API and data model</h2><p>A lot of work has gone into the toolstack to handle the creation and management
+of VMs with vGPUs. We revised our data model, introducing a semantic link
+between <code>VGPU</code> and <code>PGPU</code> objects to help with utilisation tracking; we
+maintained the <code>GPU_group</code> concept as a pool-wide abstraction of PGPUs
+available for VMs; and we added <strong><code>VGPU_types</code></strong> which are configurations for
+<code>VGPU</code> objects.</p><p><a href=#image-d9a6f3d85c8f566be33be57dfe3677b1 class=lightbox-link><img src=/new-docs/toolstack/features/VGPU/vgpu-datamodel.png alt="Xapi&amp;rsquo;s vGPU datamodel" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-d9a6f3d85c8f566be33be57dfe3677b1><img src=/new-docs/toolstack/features/VGPU/vgpu-datamodel.png alt="Xapi&amp;rsquo;s vGPU datamodel" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p><strong>Aside:</strong> The VGPU type in Xapi&rsquo;s data model predates this feature and was
+synonymous with GPU-passthrough. A VGPU is simply a display device assigned to
+a VM which may be a vGPU (this feature) or a whole GPU (a VGPU of type
+<em>passthrough</em>).</p><p><strong><code>VGPU_types</code></strong> can be enabled/disabled on a <strong>per-PGPU basis</strong> allowing for
+reservation of particular PGPUs for certain workloads. VGPUs are allocated on
+PGPUs within their GPU group in either a <em>depth-first</em> or <em>breadth-first</em>
+manner, which is configurable on a per-group basis.</p><p><strong><code>VGPU_types</code></strong> are created by xapi at startup depending on the available
+hardware and config files present in dom0. They exist in the pool database, and
+a primary key is used to avoid duplication. In XenServer 6.x the tuple of
+<code>(vendor_name, model_name)</code> was used as the primary key, however this was not
+ideal as these values are subject to change. XenServer 7.0 switched to a
+<a href=%7b%7bsite.baseurl%7d%7d/xapi/futures/vgpu-type-identifiers.html>new primary key</a>
+generated from static metadata, falling back to the old method for backwards
+compatibility.</p><p>A <strong><code>VGPU_type</code></strong> will be garbage collected when there is no VGPU of that type
+and there is no hardware which supports that type. On VM import, all VGPUs and
+VGPU_types will be created if necessary - if this results in the creation of a
+new VGPU_type then the VM will not be usable until the required hardware and
+drivers are installed.</p><h3 id=relevant-code-1>Relevant code</h3><ul><li>In Xapi: <a href=https://github.com/xapi-project/xen-api/blob/8a71a4aaaa/ocaml/xapi/xapi_vgpu_type.ml target=_blank>Xapi_vgpu_type</a> contains the type definitions and parsing logic
+for vGPUs;</li><li>In Xapi: <a href=https://github.com/xapi-project/xen-api/blob/8a71a4aaaa/ocaml/xapi/xapi_pgpu_helpers.mli target=_blank>Xapi_pgpu_helpers</a> defines the functions used to allocate vGPUs
+on PGPUs.</li></ul><h2 id=xapi---xenopsd-interface>Xapi &lt;-> Xenopsd interface</h2><p>In XenServer 6.x, all VGPU config was added to the VM&rsquo;s <code>platform</code> field at
+startup, and this information was used by xenopsd to start the display emulator.
+See the relevant code <a href=https://github.com/xenserver/xen-api/blob/50bce20546/ocaml/xapi/vgpuops.ml#L149-L165 target=_blank>here</a>.</p><p>In XenServer 7.0, to facilitate support of VGPU on Intel hardware in parallel
+with the existing NVIDIA support, VGPUs were made first-class objects in the
+xapi-xenopsd interface. The interface is described
+<a href=%7b%7bsite.baseurl%7d%7d/features/futures/gpu-support-evolution.html>here</a>.</p><h2 id=vm-startup>VM startup</h2><p>On the pool master:</p><ul><li>Assuming no WLB, all VM.start tasks pass through
+<a href=https://github.com/xapi-project/xen-api/blob/8a71a4aaaa/ocaml/xapi/xapi_vm_helpers.ml#L618-L651 target=_blank>Xapi_vm_helpers.choose_host_for_vm_no_wlb</a>. If the VM has a vGPU, the list
+of all hosts in the pool is split into a list of lists, where the first list
+is the most optimal in terms of the GPU group&rsquo;s allocation mode and the PGPU
+availability on each host.</li><li>Each list of hosts in turn is passed to <a href=https://github.com/xapi-project/xen-api/blob/8a71a4aaaa/ocaml/xapi/xapi_vm_placement.ml#L81-L97 target=_blank>Xapi_vm_placement.select_host</a>,
+which checks storage, network and memory availability, until a suitable host
+is found.</li><li>Once a host has been chosen, <a href=https://github.com/xapi-project/xen-api/blob/8a71a4aaaa/ocaml/xapi/message_forwarding.ml#L811-L828 target=_blank>allocate_vm_to_host</a> will set the
+<code>VM.scheduled_to_be_resident_on</code> and <code>VGPU.scheduled_to_be_resident_on</code>
+fields.</li></ul><p>The task is then ready to be forwarded to the host on which the VM will start:</p><ul><li>If the VM has a VGPU, the startup task is wrapped in
+<a href=https://github.com/xapi-project/xen-api/blob/8a71a4aaaa/ocaml/xapi/xapi_vm.ml#L214-L220 target=_blank>Xapi_gpumon.with_gpumon_stopped</a>. This makes sure that the NVIDIA driver
+is not in use so can be loaded or unloaded from physical GPUs as required.</li><li>The VM metadata, including VGPU metadata, is passed to xenopsd. The creation
+of the VGPU metadata is done by <a href=https://github.com/xapi-project/xen-api/blob/8a71a4aaaa/ocaml/xapi/xapi_xenops.ml#L698-L733 target=_blank>vgpus_of_vm</a>. Note that at this point
+passthrough VGPUs are represented by the PCI device type, and metadata is
+generated by <a href=https://github.com/xapi-project/xen-api/blob/8a71a4aaaa/ocaml/xapi/xapi_xenops.ml#L598-618 target=_blank>pcis_of_vm</a>.</li><li>As part of starting up the VM, xenopsd should report a <a href=https://github.com/xapi-project/xen-api/blob/8a71a4aaaa/ocaml/xapi/xapi_xenops.ml#L1841-L1854 target=_blank>VGPU event</a> or a
+<a href=https://github.com/xapi-project/xen-api/blob/8a71a4aaaa/ocaml/xapi/xapi_xenops.ml#L1777-L1801 target=_blank>PCI event</a>, which xapi will use to indicate that the xapi VGPU object can
+be marked as <code>currently_attached</code>.</li></ul><h2 id=usage>Usage</h2><p>To create a VGPU of a given type you can use <code>vgpu-create</code>:</p><div class="wrap-code highlight"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ xe vgpu-create vm-uuid<span style=color:#f92672>=</span>... gpu-group-uuid<span style=color:#f92672>=</span>... vgpu-type-uuid<span style=color:#f92672>=</span>...</span></span></code></pre></div><p>To see a list of VGPU types available for use on your XenServer, run the
+following command. Note: these will only be populated if you have installed the
+relevant NVIDIA RPMs and if there is hardware installed on that host supported
+each type. Using <code>params=all</code> will display more information such as the maximum
+number of heads supported by that VGPU type and which PGPUs have this type
+enabled and supported.</p><div class="wrap-code highlight"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ xe vgpu-type-list <span style=color:#f92672>[</span>params<span style=color:#f92672>=</span>all<span style=color:#f92672>]</span></span></span></code></pre></div><p>To access the new and relevant parameters on a PGPU (i.e.
+<code>supported_VGPU_types</code>, <code>enabled_VGPU_types</code>, <code>resident_VGPUs</code>) you can use
+<code>pgpu-param-get</code> with <code>param-name=supported-vgpu-types</code>
+<code>param-name=enabled-vgpu-types</code> and <code>param-name=resident-vgpus</code> respectively.
+Or, alternatively, you can use the following command to list all the parameters
+for the PGPU. You can get the types supported or enabled for a given PGPU:</p><div class="wrap-code highlight"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ xe pgpu-list uuid<span style=color:#f92672>=</span>... params<span style=color:#f92672>=</span>all</span></span></code></pre></div><footer class=footline></footer></article><article class=default><header class=headline></header><h1 id=xapi-storage-migration>Xapi Storage Migration</h1><p>The Xapi Storage Migration (XSM) also known as &ldquo;Storage Motion&rdquo; allows</p><ul><li>a running VM to be migrated within a pool, between different hosts
+and different storage simultaneously;</li><li>a running VM to be migrated to another pool;</li><li>a disk attached to a running VM to be moved to another SR.</li></ul><p>The following diagram shows how XSM works at a high level:</p><p><a href=#image-186978b86b18118082e7bd1586d03bf0 class=lightbox-link><img src=/new-docs/toolstack/features/XSM/xsm.png alt="Xapi Storage Migration" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
+<a href=javascript:history.back(); class=lightbox-back id=image-186978b86b18118082e7bd1586d03bf0><img src=/new-docs/toolstack/features/XSM/xsm.png alt="Xapi Storage Migration" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>The slowest part of a storage migration is migrating the storage, since virtual
+disks can be very large. Xapi starts by taking a snapshot and copying that to
+the destination as a background task. Before the datapath connecting the VM
+to the disk is re-established, xapi tells <code>tapdisk</code> to start mirroring all
+writes to a remote <code>tapdisk</code> over NBD. From this point on all VM disk writes
+are written to both the old and the new disk.
+When the background snapshot copy is complete, xapi can migrate the VM memory
+across. Once the VM memory image has been received, the destination VM is
+complete and the original can be safely destroyed.</p><footer class=footline></footer></article></section></div></main></div><script src=/new-docs/js/clipboard.min.js?1718728545 defer></script><script src=/new-docs/js/perfect-scrollbar.min.js?1718728545 defer></script><script src=/new-docs/js/theme.js?1718728545 defer></script></body></html>

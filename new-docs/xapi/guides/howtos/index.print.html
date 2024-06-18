@@ -1,0 +1,584 @@
+<!doctype html><html lang=en dir=ltr><head><meta charset=utf-8><meta name=viewport content="height=device-height,width=device-width,initial-scale=1,minimum-scale=1"><meta name=generator content="Hugo 0.127.0"><meta name=generator content="Relearn 5.20.0+tip"><meta name=description content><title>How to add.... :: XAPI Toolstack Developer Documentation</title>
+<link href=https://xapi-project.github.io/new-docs/xapi/guides/howtos/index.html rel=canonical type=text/html title="How to add.... :: XAPI Toolstack Developer Documentation"><link href=/new-docs/xapi/guides/howtos/index.xml rel=alternate type=application/rss+xml title="How to add.... :: XAPI Toolstack Developer Documentation"><link href=/new-docs/images/favicon.png?1718728542 rel=icon type=image/png><link href=/new-docs/css/fontawesome-all.min.css?1718728545 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/fontawesome-all.min.css?1718728545 rel=stylesheet></noscript><link href=/new-docs/css/nucleus.css?1718728545 rel=stylesheet><link href=/new-docs/css/auto-complete.css?1718728545 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/auto-complete.css?1718728545 rel=stylesheet></noscript><link href=/new-docs/css/perfect-scrollbar.min.css?1718728545 rel=stylesheet><link href=/new-docs/css/fonts.css?1718728545 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/fonts.css?1718728545 rel=stylesheet></noscript><link href=/new-docs/css/theme.css?1718728545 rel=stylesheet><link href=/new-docs/css/theme-auto.css?1718728545 rel=stylesheet id=variant-style><link href=/new-docs/css/variant.css?1718728545 rel=stylesheet><link href=/new-docs/css/print.css?1718728545 rel=stylesheet media=print><link href=/new-docs/css/format-print.css?1718728545 rel=stylesheet><link href=/new-docs/css/ie.css?1718728545 rel=stylesheet><script src=/new-docs/js/url.js?1718728545></script><script src=/new-docs/js/variant.js?1718728545></script><script>window.index_js_url="/new-docs/index.search.js";var baseUriFull,root_url="/",baseUri=root_url.replace(/\/$/,"");window.T_Copy_to_clipboard="Copy to clipboard",window.T_Copied_to_clipboard="Copied to clipboard!",window.T_Copy_link_to_clipboard="Copy link to clipboard",window.T_Link_copied_to_clipboard="Copied link to clipboard!",window.T_No_results_found='No results found for "{0}"',window.T_N_results_found='{1} results found for "{0}"',baseUriFull="https://xapi-project.github.io/new-docs/",window.variants&&variants.init(["auto","zen-light","zen-dark","red","blue","green","learn","neon","relearn-light","relearn-bright","relearn-dark"])</script><link rel=stylesheet href=https://xapi-project.github.io/new-docs/css/misc.css></head><body class="mobile-support print" data-url=/new-docs/xapi/guides/howtos/index.html><div id=body class=default-animation><div id=sidebar-overlay></div><div id=toc-overlay></div><nav id=topbar class=highlightable><div><div id=breadcrumbs><span id=sidebar-toggle-span><a href=# id=sidebar-toggle class=topbar-link title='Menu (CTRL+ALT+n)'><i class="fas fa-bars fa-fw"></i></a></span><ol class=links itemscope itemtype=http://schema.org/BreadcrumbList><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/index.html><span itemprop=name>XAPI Toolstack Developer Guide</span></a><meta itemprop=position content="1">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/xapi/index.html><span itemprop=name>Xapi</span></a><meta itemprop=position content="2">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/xapi/guides/index.html><span itemprop=name>Guides</span></a><meta itemprop=position content="3">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><span itemprop=name>How to add....</span><meta itemprop=position content="4"></li></ol></div></div></nav><main id=body-inner class="highlightable default" tabindex=-1><div class=flex-block-wrapper><article class=default><header class=headline></header><h1 id=how-to-add>How to add....</h1><footer class=footline></footer></article><section><h1 class=a11y-only>Subsections of How to add....</h1><article class=default><header class=headline></header><h1 id=adding-a-class-to-the-api>Adding a Class to the API</h1><p>This document describes how to add a new class to the data model that
+defines the Xen Server API. It complements two other documents that
+describe how to extend an existing class:</p><ul><li><a href=https://xapi-project.github.io/new-docs/xapi/guides/howtos/add-field/>Adding a Field</a></li><li><a href=https://xapi-project.github.io/new-docs/xapi/guides/howtos/add-function/>Adding a Function</a></li></ul><p>As a running example, we will use the addition of a class that is part
+of the design for the PVS Direct feature. PVS Direct introduces
+proxies that serve VMs with disk images. This class was added via commit
+<a href=https://github.com/xenserver/xen-api/commit/78fe558dad19458a89519fe196069317d57eac58 target=_blank>CP-16939</a> to Xen API.</p><h2 id=example-pvs_server>Example: PVS_server</h2><p>In the world of Xen Server, each important concept like a virtual
+machine, interface, or users is represented by a class in the data model.
+A class defines methods and instance variables. At runtime, all class
+instances are held in an in-memory database. For example, part of [PVS
+Direct] is a class <code>PVS_server</code>, representing a resource that provides
+block-level data for virtual machines. The design document defines it to
+have the following important properties:</p><h3 id=fields>Fields</h3><ul><li><p><code>(string set) addresses</code> (RO/constructor) IPv4 addresses of the
+server.</p></li><li><p><code>(int) first_port</code> (RO/constructor) First UDP port accepted by the
+server.</p></li><li><p><code>(int) last_port</code> (RO/constructor) Last UDP port accepted by the
+server.</p></li><li><p><code>(PVS_farm ref) farm</code> (RO/constructor) Link to the farm that this
+server is included in. A PVS_server object must always have a valid
+farm reference; the PVS_server will be automatically GC’ed by xapi
+if the associated PVS_farm object is removed.</p></li><li><p><code>(string) uuid (R0/runtime)</code> Unique identifier/object reference.
+Allocated by the server.</p></li></ul><h3 id=methods-or-functions>Methods (or Functions)</h3><ul><li><p><code>(PVS_server ref) introduce (string set addresses, int first_port, int last_port, PVS_farm ref farm)</code> Introduce a new PVS server into
+the farm. Allowed at any time, even when proxies are in use. The
+proxies will be updated automatically.</p></li><li><p><code>(void) forget (PVS_server ref self)</code> Remove a PVS server from the
+farm. Allowed at any time, even when proxies are in use. The
+proxies will be updated automatically.</p></li></ul><h3 id=implementation-overview>Implementation Overview</h3><p>The implementation of a class is distributed over several files:</p><ul><li><code>ocaml/idl/datamodel.ml</code> &ndash; central class definition</li><li><code>ocaml/idl/datamodel_types.ml</code> &ndash; definition of releases</li><li><code>ocaml/xapi/cli_frontend.ml</code> &ndash; declaration of CLI operations</li><li><code>ocaml/xapi/cli_operations.ml</code> &ndash; implementation of CLI operations</li><li><code>ocaml/xapi/records.ml</code> &ndash; getters and setters</li><li><code>ocaml/xapi/OMakefile</code> &ndash; refers to <code>xapi_pvs_farm.ml</code></li><li><code>ocaml/xapi/api_server.ml</code> &ndash; refers to <code>xapi_pvs_farm.ml</code></li><li><code>ocaml/xapi/message_forwarding.ml</code></li><li><code>ocaml/xapi/xapi_pvs_farm.ml</code> &ndash; implementation of methods, new file</li></ul><h3 id=data-model>Data Model</h3><p>The data model <code>ocaml/idl/datamodel.ml</code> defines the class. To keep the
+name space tidy, most helper functions are grouped into an internal
+module:</p><pre><code>(* datamodel.ml *)
+
+let schema_minor_vsn = 103 (* line 21 -- increment this *)
+let _pvs_farm = &quot;PVS_farm&quot; (* line 153 *)
+
+module PVS_farm = struct (* line 8658 *)
+  let lifecycle = [Prototyped, rel_dundee_plus, &quot;&quot;]
+
+  let introduce = call
+    ~name:&quot;introduce&quot;
+    ~doc:&quot;Introduce new PVS farm&quot;
+    ~result:(Ref _pvs_farm, &quot;the new PVS farm&quot;)
+    ~params:
+    [ String,&quot;name&quot;,&quot;name of the PVS farm&quot;
+    ]
+    ~lifecycle
+    ~allowed_roles:_R_POOL_OP
+    ()
+
+  let forget = call
+    ~name:&quot;forget&quot;
+    ~doc:&quot;Remove a farm's meta data&quot;
+    ~params:
+    [ Ref _pvs_farm, &quot;self&quot;, &quot;this PVS farm&quot;
+    ]
+    ~errs:[
+      Api_errors.pvs_farm_contains_running_proxies;
+      Api_errors.pvs_farm_contains_servers;
+    ]
+    ~lifecycle
+    ~allowed_roles:_R_POOL_OP
+    ()
+
+
+  let set_name = call
+    ~name:&quot;set_name&quot;
+    ~doc:&quot;Update the name of the PVS farm&quot;
+    ~params:
+    [ Ref _pvs_farm, &quot;self&quot;, &quot;this PVS farm&quot;
+    ; String, &quot;value&quot;, &quot;name to be used&quot;
+    ]
+    ~lifecycle
+    ~allowed_roles:_R_POOL_OP
+    ()
+
+  let add_cache_storage = call
+    ~name:&quot;add_cache_storage&quot;
+    ~doc:&quot;Add a cache SR for the proxies on the farm&quot;
+    ~params:
+    [ Ref _pvs_farm, &quot;self&quot;, &quot;this PVS farm&quot;
+    ; Ref _sr, &quot;value&quot;, &quot;SR to be used&quot;
+    ]
+    ~lifecycle
+    ~allowed_roles:_R_POOL_OP
+    ()
+
+  let remove_cache_storage = call
+    ~name:&quot;remove_cache_storage&quot;
+    ~doc:&quot;Remove a cache SR for the proxies on the farm&quot;
+    ~params:
+    [ Ref _pvs_farm, &quot;self&quot;, &quot;this PVS farm&quot;
+    ; Ref _sr, &quot;value&quot;, &quot;SR to be removed&quot;
+    ]
+    ~lifecycle
+    ~allowed_roles:_R_POOL_OP
+    ()
+
+  let obj =
+    let null_str = Some (VString &quot;&quot;) in
+    let null_set = Some (VSet []) in
+    create_obj (* &lt;---- creates class *)
+    ~name: _pvs_farm
+    ~descr:&quot;machines serving blocks of data for provisioning VMs&quot;
+    ~doccomments:[]
+    ~gen_constructor_destructor:false
+    ~gen_events:true
+    ~in_db:true
+    ~lifecycle
+    ~persist:PersistEverything
+    ~in_oss_since:None
+    ~messages_default_allowed_roles:_R_POOL_OP
+    ~contents:
+    [ uid     _pvs_farm ~lifecycle
+
+    ; field   ~qualifier:StaticRO ~lifecycle
+              ~ty:String &quot;name&quot; ~default_value:null_str
+              &quot;Name of the PVS farm. Must match name configured in PVS&quot;
+
+    ; field   ~qualifier:DynamicRO ~lifecycle
+              ~ty:(Set (Ref _sr)) &quot;cache_storage&quot; ~default_value:null_set
+              ~ignore_foreign_key:true
+              &quot;The SR used by PVS proxy for the cache&quot;
+
+    ; field   ~qualifier:DynamicRO ~lifecycle
+              ~ty:(Set (Ref _pvs_server)) &quot;servers&quot;
+              &quot;The set of PVS servers in the farm&quot;
+
+
+    ; field   ~qualifier:DynamicRO ~lifecycle
+              ~ty:(Set (Ref _pvs_proxy)) &quot;proxies&quot;
+              &quot;The set of proxies associated with the farm&quot;
+    ]
+    ~messages:
+    [ introduce
+    ; forget
+    ; set_name
+    ; add_cache_storage
+    ; remove_cache_storage
+    ]
+    ()
+end
+let pvs_farm = PVS_farm.obj
+</code></pre><p>The class is defined by a call to <code>create_obj</code> and it defines the
+fields and messages (methods) belonging to the class. Each field has a
+name, a type, and some meta information. Likewise, each message
+(or method) is created by <code>call</code> that describes its parameters.</p><p>The <code>PVS_farm</code> has additional getter and setter methods for accessing
+its fields. These are not declared here as part of the messages
+but are automatically generated.</p><p>To make sure the new class is actually used, it is important to enter it
+into two lists:</p><pre><code>(* datamodel.ml *)
+let all_system = (* line 8917 *)
+  [
+    ...
+    vgpu_type;
+    pvs_farm;
+    ...
+  ]
+
+let expose_get_all_messages_for = [ (* line 9097 *)
+  ...
+  _pvs_farm;
+  _pvs_server;
+  _pvs_proxy;
+</code></pre><p>When a field refers to another object that itself refers back to it,
+these two need to be entered into the <code>all_relations</code> list. For example,
+<code>_pvs_server</code> refers to a <code>_pvs_farm</code> value via <code>"farm"</code>, which, in
+turn, refers to the <code>_pvs_server</code> value via its <code>"servers"</code> field.</p><pre><code>let all_relations =
+  [
+    (* ... *)
+    (_sr, &quot;introduced_by&quot;), (_dr_task, &quot;introduced_SRs&quot;);
+    (_pvs_server, &quot;farm&quot;), (_pvs_farm, &quot;servers&quot;);
+    (_pvs_proxy,  &quot;farm&quot;), (_pvs_farm, &quot;proxies&quot;);
+  ]
+</code></pre><h2 id=cli-conventions>CLI Conventions</h2><p>The CLI provides access to objects from the command line. The following
+conventions exist for naming fields:</p><ul><li><p>A field in the data model uses an underscore (<code>_</code>) but a hyphen (<code>-</code>)
+in the CLI: what is <code>cache_storage</code> in the data model becomes
+<code>cache-storage</code> in the CLI.</p></li><li><p>When a field contains a reference or multiple, like <code>proxies</code>, it
+becomes <code>proxy-uuids</code> in the CLI because references are always
+referred to by their UUID.</p></li></ul><h2 id=cli-getters-and-setters>CLI Getters and Setters</h2><p>All fields can be read from the CLI and some fields can also be set via
+the CLI. These getters and setters are mostly generated automatically
+and need to be connected to the CLI through a function in
+<code>ocaml/xapi/records.ml</code>. Note that field names here use the
+naming convention for the CLI:</p><pre><code>(* ocaml/xapi/records.ml *)
+let pvs_farm_record rpc session_id pvs_farm =
+  let _ref = ref pvs_farm in
+  let empty_record =
+    ToGet (fun () -&gt; Client.PVS_farm.get_record rpc session_id !_ref) in
+  let record = ref empty_record in
+  let x () = lzy_get record in
+    { setref    = (fun r -&gt; _ref := r ; record := empty_record)
+    ; setrefrec = (fun (a,b) -&gt; _ref := a; record := Got b)
+    ; record    = x
+    ; getref    = (fun () -&gt; !_ref)
+    ; fields=
+      [ make_field ~name:&quot;uuid&quot;
+        ~get:(fun () -&gt; (x ()).API.pVS_farm_uuid) ()
+      ; make_field ~name:&quot;name&quot;
+        ~get:(fun () -&gt; (x ()).API.pVS_farm_name)
+        ~set:(fun name -&gt;
+          Client.PVS_farm.set_name rpc session_id !_ref name) ()
+      ; make_field ~name:&quot;cache-storage&quot;
+        ~get:(fun () -&gt; (x ()).API.pVS_farm_cache_storage
+          |&gt; List.map get_uuid_from_ref |&gt; String.concat &quot;; &quot;)
+        ~add_to_set:(fun sr_uuid -&gt;
+          let sr = Client.SR.get_by_uuid rpc session_id sr_uuid in
+          Client.PVS_farm.add_cache_storage rpc session_id !_ref sr)
+        ~remove_from_set:(fun sr_uuid -&gt;
+          let sr = Client.SR.get_by_uuid rpc session_id sr_uuid in
+          Client.PVS_farm.remove_cache_storage rpc session_id !_ref sr)
+        ()
+      ; make_field ~name:&quot;server-uuids&quot;
+        ~get:(fun () -&gt; (x ()).API.pVS_farm_servers
+          |&gt; List.map get_uuid_from_ref |&gt; String.concat &quot;; &quot;)
+        ~get_set:(fun () -&gt; (x ()).API.pVS_farm_servers
+          |&gt; List.map get_uuid_from_ref)
+        ()
+      ; make_field ~name:&quot;proxy-uuids&quot;
+        ~get:(fun () -&gt; (x ()).API.pVS_farm_proxies
+          |&gt; List.map get_uuid_from_ref |&gt; String.concat &quot;; &quot;)
+        ~get_set:(fun () -&gt; (x ()).API.pVS_farm_proxies
+          |&gt; List.map get_uuid_from_ref)
+        ()
+      ]
+    }
+</code></pre><h2 id=cli-interface-to-methods>CLI Interface to Methods</h2><p>Methods accessible from the CLI are declared in
+<code>ocaml/xapi/cli_frontend.ml</code>. Each declaration refers to the real
+implementation of the method, like <code>Cli_operations.PVS_far.introduce</code>:</p><pre><code>(* cli_frontend.ml *)
+let rec cmdtable_data : (string*cmd_spec) list =
+  (* ... *)
+  &quot;pvs-farm-introduce&quot;,
+  {
+    reqd=[&quot;name&quot;];
+    optn=[];
+    help=&quot;Introduce new PVS farm&quot;;
+    implementation=No_fd Cli_operations.PVS_farm.introduce;
+    flags=[];
+  };
+  &quot;pvs-farm-forget&quot;,
+  {
+    reqd=[&quot;uuid&quot;];
+    optn=[];
+    help=&quot;Forget a PVS farm&quot;;
+    implementation=No_fd Cli_operations.PVS_farm.forget;
+    flags=[];
+  };
+</code></pre><h2 id=cli-implementation-of-methods>CLI Implementation of Methods</h2><p>Each CLI operation that is not a getter or setter has an implementation
+in <code>cli_operations.ml</code> which is implemented in terms of the real
+implementation:</p><pre><code>(* cli_operations.ml *)
+module PVS_farm = struct
+  let introduce printer rpc session_id params =
+    let name  = List.assoc &quot;name&quot; params in
+    let ref   = Client.PVS_farm.introduce ~rpc ~session_id ~name in
+    let uuid  = Client.PVS_farm.get_uuid rpc session_id ref in
+    printer (Cli_printer.PList [uuid])
+
+  let forget printer rpc session_id params =
+    let uuid  = List.assoc &quot;uuid&quot; params in
+    let ref   = Client.PVS_farm.get_by_uuid ~rpc ~session_id ~uuid in
+    Client.PVS_farm.forget rpc session_id ref
+end
+</code></pre><p>Fields that should show up in the CLI interface by default are declared
+in the <code>gen_cmds</code> value:</p><pre><code>(* cli_operations.ml *)
+let gen_cmds rpc session_id =
+  let mk = make_param_funs in
+  List.concat
+  [ (*...*)
+  ; Client.Pool.(mk get_all get_all_records_where
+    get_by_uuid pool_record &quot;pool&quot; []
+    [&quot;uuid&quot;;&quot;name-label&quot;;&quot;name-description&quot;;&quot;master&quot;
+    ;&quot;default-SR&quot;] rpc session_id)
+  ; Client.PVS_farm.(mk get_all get_all_records_where
+    get_by_uuid pvs_farm_record &quot;pvs-farm&quot; []
+    [&quot;uuid&quot;;&quot;name&quot;;&quot;cache-storage&quot;;&quot;server-uuids&quot;] rpc session_id)
+</code></pre><h2 id=error-messages>Error messages</h2><p>Error messages used by an implementation are introduced in two files:</p><pre><code>(* ocaml/xapi-consts/api_errors.ml *)
+let pvs_farm_contains_running_proxies = &quot;PVS_FARM_CONTAINS_RUNNING_PROXIES&quot;
+let pvs_farm_contains_servers = &quot;PVS_FARM_CONTAINS_SERVERS&quot;
+let pvs_farm_sr_already_added = &quot;PVS_FARM_SR_ALREADY_ADDED&quot;
+let pvs_farm_sr_is_in_use = &quot;PVS_FARM_SR_IS_IN_USE&quot;
+let sr_not_in_pvs_farm = &quot;SR_NOT_IN_PVS_FARM&quot;
+let pvs_farm_cant_set_name = &quot;PVS_FARM_CANT_SET_NAME&quot;
+
+(* ocaml/idl/datamodel.ml *)
+  (* PVS errors *)
+  error Api_errors.pvs_farm_contains_running_proxies [&quot;proxies&quot;]
+    ~doc:&quot;The PVS farm contains running proxies and cannot be forgotten.&quot; ();
+
+  error Api_errors.pvs_farm_contains_servers [&quot;servers&quot;]
+    ~doc:&quot;The PVS farm contains servers and cannot be forgotten.&quot;
+    ();
+
+  error Api_errors.pvs_farm_sr_already_added [&quot;farm&quot;; &quot;SR&quot;]
+    ~doc:&quot;Trying to add a cache SR that is already associated with the farm&quot;
+    ();
+
+  error Api_errors.sr_not_in_pvs_farm [&quot;farm&quot;; &quot;SR&quot;]
+    ~doc:&quot;The SR is not associated with the farm.&quot;
+    ();
+
+  error Api_errors.pvs_farm_sr_is_in_use [&quot;farm&quot;; &quot;SR&quot;]
+    ~doc:&quot;The SR is in use by the farm and cannot be removed.&quot;
+    ();
+
+  error Api_errors.pvs_farm_cant_set_name [&quot;farm&quot;]
+    ~doc:&quot;The name of the farm can't be set while proxies are active.&quot;
+    ()
+</code></pre><h2 id=method-implementation>Method Implementation</h2><p>The implementation of methods lives in a module in <code>ocaml/xapi</code>:</p><pre><code>(* ocaml/xapi/api_server.ml *)
+  module PVS_farm = Xapi_pvs_farm
+</code></pre><p>The file below is typically a new file and needs to be added to
+<code>ocaml/xapi/OMakefile</code>.</p><pre><code>(* ocaml/xapi/xapi_pvs_farm.ml *)
+module D = Debug.Make(struct let name = &quot;xapi_pvs_farm&quot; end)
+module E = Api_errors
+
+let api_error msg xs = raise (E.Server_error (msg, xs))
+
+let introduce ~__context ~name =
+  let pvs_farm = Ref.make () in
+  let uuid = Uuid.to_string (Uuid.make_uuid ()) in
+  Db.PVS_farm.create ~__context
+    ~ref:pvs_farm ~uuid ~name ~cache_storage:[];
+  pvs_farm
+
+(* ... *)
+</code></pre><p>Messages received on a slave host may or may not be executed there. In
+the simple case, each methods executes locally:</p><pre><code>(* ocaml/xapi/message_forwarding.ml *)
+module PVS_farm = struct
+  let introduce ~__context ~name =
+    info &quot;PVS_farm.introduce %s&quot; name;
+    Local.PVS_farm.introduce ~__context ~name
+
+  let forget ~__context ~self =
+    info &quot;PVS_farm.forget&quot;;
+    Local.PVS_farm.forget ~__context ~self
+
+  let set_name ~__context ~self ~value =
+    info &quot;PVS_farm.set_name %s&quot; value;
+    Local.PVS_farm.set_name ~__context ~self ~value
+
+  let add_cache_storage ~__context ~self ~value =
+    info &quot;PVS_farm.add_cache_storage&quot;;
+    Local.PVS_farm.add_cache_storage ~__context ~self ~value
+
+  let remove_cache_storage ~__context ~self ~value =
+    info &quot;PVS_farm.remove_cache_storage&quot;;
+    Local.PVS_farm.remove_cache_storage ~__context ~self ~value
+end
+</code></pre><footer class=footline></footer></article><article class=default><header class=headline></header><h1 id=adding-a-field-to-the-api>Adding a field to the API</h1><p>This page describes how to add a field to XenAPI. A field is a parameter of a class that can be used in functions and read from the API.</p><h2 id=bumping-the-database-schema-version>Bumping the database schema version</h2><p>Whenever a field is added to or removed from the API, its schema version needs
+to be increased. XAPI needs this fundamental procedure in order to be able to
+detect that an automatic database upgrade is necessary or to find out that the
+new schema is incompatible with the existing database. If the schema version is
+not bumped, XAPI will start failing in unpredictable ways. Note that bumping
+the version is not necessary when adding functions, only when adding fields.</p><p>The current version number is kept at the top of the file
+<code>ocaml/idl/datamodel_common.ml</code> in the variables <code>schema_major_vsn</code> and
+<code>schema_minor_vsn</code>, of which only the latter should be incremented (the major
+version only exists for historical reasons). When moving to a new XenServer
+release, also update the variable <code>last_release_schema_minor_vsn</code> to the schema
+version of the last release. To keep track of the schema versions of recent
+XenServer releases, the file contains variables for these, such as
+<code>miami_release_schema_minor_vsn</code>. After starting a new version of Xapi on an
+existing server, the database is automatically upgraded if the schema version
+of the existing database matches the value of <code>last_release_schema_*_vsn</code> in the
+new Xapi.</p><p>As an example, the patch below shows how the schema version was bumped when the
+new API fields used for ActiveDirectory integration were added:</p><pre><code>--- a/ocaml/idl/datamodel.ml  Tue Nov 11 16:17:48 2008 +0000
++++ b/ocaml/idl/datamodel.ml  Tue Nov 11 15:53:29 2008 +0000
+@@ -15,17 +15,20 @@ open Datamodel_types
+  open Datamodel_types
+
+  (* IMPORTANT: Please bump schema vsn if you change/add/remove a _field_.
+     You do not have to dump vsn if you change/add/remove a message *)
+
+  let schema_major_vsn = 5
+ -let schema_minor_vsn = 55
+ +let schema_minor_vsn = 56
+
+  (* Historical schema versions just in case this is useful later *)
+  let rio_schema_major_vsn = 5
+  let rio_schema_minor_vsn = 19
+
+ +let miami_release_schema_major_vsn = 5
+ +let miami_release_schema_minor_vsn = 35
+ +
+  (* the schema vsn of the last release: used to determine whether we can
+     upgrade or not.. *)
+  let last_release_schema_major_vsn = 5
+ -let last_release_schema_minor_vsn = 35
+ +let last_release_schema_minor_vsn = 55
+</code></pre><h3 id=setting-the-schema-hash>Setting the schema hash</h3><p>In the <code>ocaml/idl/schematest.ml</code> there is the <code>last_known_schema_hash</code> This needs to be updated to be the next hash after the schema version was bumped. Get the new hash by running <code>make test</code> and you will receive the correct hash in the error message.</p><h2 id=adding-the-new-field-to-some-existing-class>Adding the new field to some existing class</h2><h3 id=ocamlidldatamodelml>ocaml/idl/datamodel.ml</h3><p>Add a new &ldquo;field&rdquo; line to the class in the file <code>ocaml/idl/datamodel.ml</code> or <code>ocaml/idl/datamodel_[class].ml</code>. The new field might require
+a suitable default value. This default value is used in case the user does not
+provide a value for the field.</p><p>A field has a number of parameters:</p><ul><li>The lifecycle parameter, which shows how the field has evolved over time.</li><li>The qualifier parameter, which controls access to the field. The following
+values are possible:</li></ul><table><thead><tr><th>Value</th><th>Meaning</th></tr></thead><tbody><tr><td>StaticRO</td><td>Field is set statically at install-time.</td></tr><tr><td>DynamicRO</td><td>Field is computed dynamically at run time.</td></tr><tr><td>RW</td><td>Field is read/write.</td></tr></tbody></table><ul><li>The ty parameter for the type of the field.</li><li>The default_value parameter.</li><li>The name of the field.</li><li>A documentation string.</li></ul><p>Example of a field in the pool class:</p><pre><code>field ~lifecycle:[Published, rel_orlando, &quot;Controls whether HA is enabled&quot;]
+      ~qualifier:DynamicRO ~ty:Bool
+      ~default_value:(Some (VBool false)) &quot;ha_enabled&quot; &quot;true if HA is enabled on the pool, false otherwise&quot;;
+</code></pre><p>See datamodel_types.ml for information about other parameters.</p><h2 id=changing-constructors>Changing Constructors</h2><p>Adding a field would change the constructors for the class – functions
+Db.*.create – and therefore, any references to these in the code need to be
+updated. In the example, the argument ~ha_enabled:false should be added to any
+call to Db.Pool.create.</p><p>Examples of where these calls can be found is in <code>ocaml/tests/common/test_common.ml</code> and <code>ocaml/xapi/xapi_[class].ml</code>.</p><h3 id=cli-records>CLI Records</h3><p>If you want this field to show up in the CLI (which you probably do), you will
+also need to modify the Records module, in the file
+<code>ocaml/xapi-cli-server/records.ml</code>. Find the record function for the class which
+you have modified, add a new entry to the fields list using make_field. This type can be found in the same file.</p><p>The only required parameters are name and get (and unit, of course ).
+If your field is a map or set, then you will need to pass in get_{map,set}, and
+optionally set_{map,set}, if it is a RW field. The hidden parameter is useful
+if you don&rsquo;t want this field to show up in a *_params_list call. As an example,
+here is a field that we&rsquo;ve just added to the SM class:</p><pre><code>make_field ~name:&quot;versioned-capabilities&quot;
+           ~get:(fun () -&gt; Record_util.s2sm_to_string &quot;; &quot; (x ()).API.sM_versioned_capabilities)
+           ~get_map:(fun () -&gt; (x ()).API.sM_versioned_capabilities)
+           ~hidden:true ();
+</code></pre><h2 id=testing>Testing</h2><p>The new fields can be tested by copying the newly compiled xapi binary to a
+test box. After the new xapi service is started, the file
+<em>/var/log/xensource.log</em> in the test box should contain a few lines reporting the
+successful upgrade of the metadata schema in the test box:</p><pre><code>[...|xapi] Db has schema major_vsn=5, minor_vsn=57 (current is 5 58) (last is 5 57)
+[...|xapi] Database schema version is that of last release: attempting upgrade
+[...|sql] attempting to restore database from /var/xapi/state.db
+[...|sql] finished parsing xml
+[...|sql] writing db as xml to file '/var/xapi/state.db'.
+[...|xapi] Database upgrade complete, restarting to use new db
+</code></pre><h2 id=making-this-field-accessible-as-a-cli-attribute>Making this field accessible as a CLI attribute</h2><p>XenAPI functions to get and set the value of the new field are generated
+automatically. It requires some extra work, however, to enable such operations
+in the CLI.</p><p>The CLI has commands such as host-param-list and host-param-get. To make a new
+field accessible by these commands, the file <code>xapi-cli-server/records.ml</code> needs to
+be edited. For the pool.ha-enabled field, the pool_record function in this file
+contains the following (note the convention to replace underscores by hyphens
+in the CLI):</p><pre><code>let pool_record rpc session_id pool =
+  ...
+[
+  ...
+  make_field ~name:&quot;ha-enabled&quot; ~get:(fun () -&gt; string_of_bool (x ()).API.pool_ha_enabled) ();
+  ...
+]}
+</code></pre><p>NB: the ~get parameter must return a string so include a relevant function to convert the type of the field into a string i.e. <code>string_of_bool</code></p><p>See <code>xapi-cli-server/records.ml</code> for examples of handling field types other than Bool.</p><footer class=footline></footer></article><article class=default><header class=headline></header><h1 id=adding-a-function-to-the-api>Adding a function to the API</h1><p>This page describes how to add a function to XenAPI.</p><h2 id=add-message-to-api>Add message to API</h2><p>The file <code>idl/datamodel.ml</code> is a description of the API, from which the
+marshalling and handler code is generated.</p><p>In this file, the <code>create_obj</code> function is used to define a class which may
+contain fields and support operations (known as &ldquo;messages&rdquo;). For example, the
+identifier host is defined using create_obj to encapsulate the operations which
+can be performed on a host.</p><p>In order to add a function to the API, we need to add a message to an existing
+class. This entails adding a function in <code>idl/datamodel.ml</code> or one of the other datamodel files to describe the new
+message and adding it to the class&rsquo;s list of messages. In this example, we are adding to <code>idl/datamodel_host.ml</code>.</p><p>The function to describe the new message will look something like the following:</p><pre><code>let host_price_of = call ~flags:[`Session]
+    ~name:&quot;price_of&quot;
+    ~in_oss_since:None
+    ~in_product_since:rel_orlando
+    ~params:[(Ref _host, &quot;host&quot;, &quot;The host containing the price information&quot;);
+             (String, &quot;item&quot;, &quot;The item whose price is queried&quot;)]
+    ~result:(Float, &quot;The price of the item&quot;)
+    ~doc:&quot;Returns the price of a named item.&quot;
+    ~allowed_roles:_R_POOL_OP
+    ()
+</code></pre><p>By convention, the name of the function is formed from the name of the class
+and the name of the message: host and price_of, in the example. An entry for
+host_price_of is added to the messages of the host class:</p><pre><code>let host =
+    create_obj ...
+        ~messages: [...
+                    host_price_of;
+                   ]
+...
+</code></pre><p>The parameters passed to call are all optional (except ~name and ~in_product_since).</p><ul><li><p>The ~flags parameter is used to set conditions for the use of the message.
+For example, `Session is used to indicate that the call must be made in the
+presence of an existing session.</p></li><li><p>The value of the ~in_product_since parameter is a string taken from
+<code>idl/datamodel_types.ml</code> indicates the XenServer release in which this
+message was first introduced.</p></li><li><p>The ~params parameter describes a list of the formal parameters of the message.
+Each parameter is described by a triple. The first component of the triple is
+the type (from type ty in <code>idl/datamodel_types.ml</code>); the second is the name
+of the parameter, and the third is a human-readable description of the parameter.
+The first triple in the list is conventionally the instance of the class on
+which the message will operate. In the example, this is a reference to the host.</p></li><li><p>Similarly, the ~result describes the message&rsquo;s return type, although this is
+permitted to merely be a single value rather than a list of values. If no
+~result is specified, the default is unit.</p></li><li><p>The ~doc parameter describes what the message is doing.</p></li><li><p>The bool ~hide_from_docs parameter prevents the message from being included in the documentation when generated.</p></li><li><p>The bool ~pool_internal parameter is used to indicate if the message should be callable by external systems or only internal hosts.</p></li><li><p>The ~errs parameter is a list of possible exceptions that the message can raise.</p></li><li><p>The parameter ~lifecycle takes in an array of (Status, version, doc) to indicate the lifecycle of the message type. This takes over from ~in_oss_since which indicated the release that the message type was introduced. NOTE: Leave this parameter empty, it will be populated on build.</p></li><li><p>The ~allowed_roles parameter is used for access control (see below).</p></li></ul><p>Compiling <code>xen-api.(hg|git)</code> will cause the code corresponding to this message
+to be generated and output in <code>ocaml/xapi/server.ml</code>. In the example above, a
+section handling an incoming call host.price_of appeared in <code>ocaml/xapi/server.ml</code>.
+However, after this was generated, the rest of the build failed because this
+call expects a price_of function in the Host object.</p><h2 id=expected-values-in-parameter-in_product_since>Expected values in parameter ~in_product_since</h2><p>In the example above, the value of the parameter ~in_product_since informs that
+the message host_price_of was added during the rel_orlando release cycle. If a
+new release cycle is required, then it needs to be added in the file
+<code>idl/datamodel_types.ml</code>. The patch below shows how the new rel_george release
+identifier was added. Any class, message, etc. added during the rel_george
+release cycle should contain ~in_product_since:rel_george entries.
+(obs: the release and upgrade infrastructure can handle only one new
+<code>rel_*</code> identifier &ndash; in this case, rel_george &ndash; in each release)</p><pre><code>--- a/ocaml/idl/datamodel_types.ml Tue Nov 11 15:17:48 2008 +0000
++++ b/ocaml/idl/datamodel_types.ml Tue Nov 11 15:53:29 2008 +0000
+@@ -27,14 +27,13 @@
+ (* useful constants for product vsn tracking *)
+ let oss_since_303 = Some &quot;3.0.3&quot;
++let rel_george = &quot;george&quot;
+ let rel_orlando = &quot;orlando&quot;
+ let rel_orlando_update_1 = &quot;orlando-update-1&quot;
+ let rel_symc = &quot;symc&quot;
+ let rel_miami = &quot;miami&quot;
+ let rel_rio = &quot;rio&quot;
+-let release_order = [engp:rel_rio; rel_miami; rel_symc; rel_orlando; rel_orlando_update_1]
++let release_order = [engp:rel_rio; rel_miami; rel_symc; rel_orlando; rel_orlando_update_1; rel_george] 
+</code></pre><h2 id=update-expose_get_all_messages_for-list>Update expose_get_all_messages_for list</h2><p>If you are adding a new class, do not forget to add your new class _name to
+the expose_get_all_messages_for list, at the bottom of datamodel.ml, in
+order to have automatically generated get_all and get_all_records functions
+attached to it.</p><h2 id=update-the-rbac-field-containing-the-roles-expected-to-use-the-new-api-call>Update the RBAC field containing the roles expected to use the new API call</h2><p>After the RBAC integration, Xapi provides by default a set of static roles
+associated to the most common subject tasks.</p><p>The api calls associated with each role are defined by a new <code>~allowed_roles</code>
+parameter in each api call, which specifies the list of static roles that
+should be able to execute the call. The possible roles for this list is one of
+the following names, defined in <code>datamodel.ml</code>:</p><ul><li>role_pool_admin</li><li>role_pool_operator</li><li>role_vm_power_admin</li><li>role_vm_admin</li><li>role_vm_operator</li><li>role_read_only</li></ul><p>So, for instance,</p><pre><code>~allowed_roles:[role_pool_admin,role_pool_operator] (* this is not the recommended usage, see example below *)
+</code></pre><p>would be a valid list (though it is not the recommended way of using
+allowed_roles, see below), meaning that subjects belonging to either
+role_pool_admin or role_pool_operator can execute the api call.</p><p>The RBAC requirements define a policy where the roles in the list above are
+supposed to be totally-ordered by the set of api-calls associated with each of
+them. That means that any api-call allowed to role_pool_operator should also be
+in role_pool_admin; any api-call allowed to role_vm_power_admin should also be
+in role_pool_operator and also in role_pool_admin; and so on. Datamodel.ml
+provides shortcuts for expressing these totally-ordered set of roles policy
+associated with each api-call:</p><ul><li>_R_POOL_ADMIN, equivalent to [role_pool_admin]</li><li>_R_POOL_OP, equivalent to [role_pool_admin,role_pool_operator]</li><li>_R_VM_POWER_ADMIN, equivalent to [role_pool_admin,role_pool_operator,role_vm_power_admin]</li><li>_R_VM_ADMIN, equivalent to [role_pool_admin,role_pool_operator,role_vm_power_admin,role_vm_admin]</li><li>_R_VM_OP, equivalent to [role_pool_admin,role_pool_operator,role_vm_power_admin,role_vm_admin,role_vm_op]</li><li>_R_READ_ONLY, equivalent to [role_pool_admin,role_pool_operator,role_vm_power_admin,role_vm_admin,role_vm_op,role_read_only]</li></ul><p>The <code>~allowed_roles</code> parameter should use one of the shortcuts in the list above,
+instead of directly using a list of roles, because the shortcuts above make sure
+that the roles in the list are in a total order regarding the api-calls
+permission sets. Creating an api-call with e.g.
+allowed_roles:[role_pool_admin,role_vm_admin] would be wrong, because that
+would mean that a pool_operator cannot execute the api-call that a vm_admin can,
+breaking the total-order policy expected in the RBAC 1.0 implementation.
+In the future, this requirement might be relaxed.</p><p>So, the example above should instead be used as:</p><pre><code>~allowed_roles:_R_POOL_OP  (* recommended usage via pre-defined totally-ordered role lists *)
+</code></pre><p>and so on.</p><h2 id=how-to-determine-the-correct-role-of-a-new-api-call>How to determine the correct role of a new api-call:</h2><ul><li>if only xapi should execute the api-call, ie. it is an internal call: _R_POOL_ADMIN</li><li>if it is related to subject, role, external-authentication: _R_POOL_ADMIN</li><li>if it is related to accessing Dom0 (via console, ssh, whatever): _R_POOL_ADMIN</li><li>if it is related to the pool object: R_POOL_OP</li><li>if it is related to the host object, licenses, backups, physical devices: _R_POOL_OP</li><li>if it is related to managing VM memory, snapshot/checkpoint, migration: _R_VM_POWER_ADMIN</li><li>if it is related to creating, destroying, cloning, importing/exporting VMs: _R_VM_ADMIN</li><li>if it is related to starting, stopping, pausing etc VMs or otherwise accessing/manipulating VMs: _R_VM_OP</li><li>if it is related to being able to login, manipulate own tasks and read values only: _R_READ_ONLY</li></ul><h2 id=update-message-forwarding>Update message forwarding</h2><p>The &ldquo;message forwarding&rdquo; layer describes the policy of whether an incoming API
+call should be forwarded to another host (such as another member of the pool)
+or processed on the host which receives the call. This policy may be
+non-trivial to describe and so cannot be auto-generated from the data model.</p><p>In <code>xapi/message_forwarding.ml</code>, add a function to the relevant module to
+describe this policy. In the running example, we add the following function to
+the Host module:</p><pre><code>let price_of ~__context ~host ~item =
+    info &quot;Host.price_of for item %s&quot; item;
+    let local_fn = Local.Host.price_of ~host ~item in
+    do_op_on ~local_fn ~__context ~host
+      (fun session_id rpc -&gt; Client.Host.price_of ~rpc ~session_id ~host ~item)
+</code></pre><p>After the ~__context parameter, the parameters of this new function should
+match the parameters we specified for the message. In this case, that is the
+host and the item to query the price of.</p><p>The do_op_on function takes a function to execute locally and a function to
+execute remotely and performs one of these operations depending on whether the
+given host is the local host.</p><p>The local function references Local.Host.price_of, which is a function we will
+write in the next step.</p><h2 id=implement-the-function>Implement the function</h2><p>Now we write the function to perform the logic behind the new API call.
+For a host-based call, this will reside in <code>xapi/xapi_host.ml</code>. For other
+classes, other files with similar names are used.</p><p>We add the following function to <code>xapi/xapi_host.ml</code>:</p><pre><code>let price_of ~__context ~host ~item =
+    if item = &quot;fish&quot; then 3.14 else 0.00
+</code></pre><p>We also need to add the function to the interface <code>xapi/xapi_host.mli</code>:</p><pre><code>val price_of :
+    __context:Context.t -&gt; host:API.ref_host -&gt; item:string -&gt; float
+</code></pre><p>Congratulations, you&rsquo;ve added a function to the API!</p><h2 id=add-the-operation-to-the-cli>Add the operation to the CLI</h2><p>Edit <code>xapi-cli-server/cli_frontend.ml</code>. Add a block to the definition of cmdtable_data as
+in the following example:</p><pre><code>&quot;host-price-of&quot;,
+{
+  reqd=[&quot;host-uuid&quot;; &quot;item&quot;];
+  optn=[];
+  help=&quot;Find out the price of an item on a certain host.&quot;;
+  implementation= No_fd Cli_operations.host_price_of;
+  flags=[];
+};
+</code></pre><p>Include here the following:</p><ul><li><p>The names of required (<em>reqd</em>) and optional (<em>optn</em>) parameters.</p></li><li><p>A description to be displayed when calling <em>xe help &lt;cmd></em> in the help field.</p></li><li><p>The <em>implementation</em> should use <em>With_fd</em> if any communication with the
+client is necessary (for example, showing the user a warning, sending the
+contents of a file, etc.) Otherwise, <em>No_fd</em> can be used as above.</p></li><li><p>The <em>flags</em> field can be used to set special options:</p><ul><li><em>Vm_selectors</em>: adds a &ldquo;vm&rdquo; parameter for the name of a VM (rather than a UUID)</li><li><em>Host_selectors</em>: adds a &ldquo;host&rdquo; parameter for the name of a host (rather than a UUID)</li><li><em>Standard</em>: includes the command in the list of common commands displayed by <em>xe help</em></li><li><em>Neverforward:</em></li><li><em>Hidden:</em></li><li><em>Deprecated of string list:</em></li></ul></li></ul><p>Now we must implement <code>Cli_operations.host_price_of</code>. This is done in
+<code>xapi-cli-server/cli_operations.ml</code>. This function typically extracts the parameters and
+forwards them to the internal implementation of the function. Other arbitrary
+code is permitted. For example:</p><pre><code>let host_price_of printer rpc session_id params =
+  let host = Client.Host.get_by_uuid rpc session_id (List.assoc &quot;host-uuid&quot; params) in
+  let item = List.assoc &quot;item&quot; params in
+  let price = string_of_float (Client.Host.price_of ~rpc ~session_id ~host ~item) in
+  printer (Cli_printer.PList [price])
+</code></pre><h2 id=tab-completion-in-the-cli>Tab Completion in the CLI</h2><p>The CLI features tab completion for many of its commands&rsquo; parameters.
+Tab completion is implemented in the file <code>ocaml/xe-cli/bash-completion</code>, which
+is installed on the host as <code>/etc/bash_completion.d/cli</code>, and is done on a
+parameter-name rather than on a command-name basis. The main portion of the
+bash-completion file is a case statement that contains a section for each of
+the parameters that benefit from completion. There is also an entry that
+catches all parameter names ending at -uuid, and performs an automatic lookup
+of suitable UUIDs. The host-uuid parameter of our new host-price-of command
+therefore automatically gains completion capabilities.</p><h2 id=executing-the-cli-operation>Executing the CLI operation</h2><p>Recompile <code>xapi</code> with the changes described above and install it on a test machine.</p><p>Execute the following command to see if the function exists:</p><pre><code>xe help host-price-of
+</code></pre><p>Invoke the function itself with the following command:</p><pre><code>xe host-price-of host-uuid=&lt;tab&gt; item=fish
+</code></pre><p>and you should find out the price of fish.</p><footer class=footline></footer></article><article class=default><header class=headline></header><h1 id=adding-a-xenapi-extension>Adding a XenAPI extension</h1><p>A XenAPI extension is a new RPC which is implemented as a separate executable
+(i.e. it is not part of <code>xapi</code>)
+but which still benefits from <code>xapi</code> parameter type-checking, multi-language
+stub generation, documentation generation, authentication etc.
+An extension can be backported to previous versions by simply adding the
+implementation, without having to recompile <code>xapi</code> itself.</p><p>A XenAPI extension is in two parts:</p><ol><li>a declaration in the <a href=https://github.com/xapi-project/xen-api/blob/07056d661bbf58b652e1da59d9adf67a778a5626/ocaml/idl/datamodel.ml#L5608 target=_blank>xapi datamodel</a>.
+This must use the <code>~forward_to:(Extension "filename")</code> parameter. The filename must be unique, and
+should be the same as the XenAPI call name.</li><li>an implementation executable in the dom0 filesystem with path <code>/etc/xapi.d/extensions/filename</code></li></ol><h2 id=to-define-an-extension>To define an extension</h2><p>First write the declaration in the datamodel. The act of specifying the
+types and writing the documentation will help clarify the intended meaning
+of the call.</p><p>Second create a prototype of your implementation and put an executable file
+in <code>/etc/xapi.d/extensions/filename</code>. The calling convention is:</p><ul><li>the file must be executable</li><li><code>xapi</code> will parse the XMLRPC call arguments received over the network and check the <code>session_id</code> is
+valid</li><li><code>xapi</code> will execute the named executable</li><li>the XMLRPC call arguments will be sent to the executable on <code>stdin</code> and
+<code>stdin</code> will be closed afterwards</li><li>the executable will run and print an XMLRPC response on <code>stdout</code></li><li><code>xapi</code> will read the response and return it to the client.</li></ul><p>See the <a href=https://github.com/xapi-project/xen-api/blob/07056d661bbf58b652e1da59d9adf67a778a5626/scripts/extensions/Test.test target=_blank>basic example</a>.</p><p>Second make a <a href=https://github.com/xapi-project/xen-api/pulls target=_blank>pull request</a>
+containing only the datamodel definitions (it is not necessary to include the
+prototype too).
+This will attract review comments which will help you improve your API further.
+Once the pull request is merged, then the API call name and extension are officially
+yours and you may use them on any xapi version which supports the extension mechanism.</p><h2 id=packaging-your-extension>Packaging your extension</h2><p>Your extension <code>/etc/xapi.d/extensions/filename</code> (and dependencies) should be
+packaged for your target distribution (for XenServer dom0 this would be a CentOS
+RPM). Once the package is unpacked on the target machine, the extension should
+be immediately callable via the XenAPI, provided the <code>xapi</code> version supports
+the extension mechanism. Note the <code>xapi</code> version does not need to know about
+the specific extension in advance: it will always look in <code>/etc/xapi.d/extensions/</code> for
+all RPC calls whose name it does not recognise.</p><h2 id=limitations>Limitations</h2><p>On type-checking</p><ul><li>if the <code>xapi</code> version is new enough to know about your specific extension:
+<code>xapi</code> will type-check the call arguments for you</li><li>if the <code>xapi</code> version is too old to know about your specific extension:
+the extension will still be callable but the arguments will not be type-checked.</li></ul><p>On access control</p><ul><li>if the <code>xapi</code> version is new enough to know about your specific extension:
+you can declare that a user must have a particular role (e.g. &lsquo;VM admin&rsquo;)</li><li>if the <code>xapi</code> version is too old to know about your specific extension:
+the extension will still be callable but the client must have the &lsquo;Pool admin&rsquo; role.</li></ul><p>Since a <code>xapi</code> which knows about your specific extension is stricter than an older
+<code>xapi</code>, it&rsquo;s a good idea to develop against the new <code>xapi</code> and then test older
+<code>xapi</code> versions later.</p><footer class=footline></footer></article></section></div></main></div><script src=/new-docs/js/clipboard.min.js?1718728545 defer></script><script src=/new-docs/js/perfect-scrollbar.min.js?1718728545 defer></script><script src=/new-docs/js/theme.js?1718728545 defer></script></body></html>

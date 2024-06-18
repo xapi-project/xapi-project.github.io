@@ -1,0 +1,237 @@
+<!doctype html><html lang=en dir=ltr><head><meta charset=utf-8><meta name=viewport content="height=device-height,width=device-width,initial-scale=1,minimum-scale=1"><meta name=generator content="Hugo 0.127.0"><meta name=generator content="Relearn 5.20.0+tip"><meta name=description content><title>Design :: XAPI Toolstack Developer Documentation</title>
+<link href=https://xapi-project.github.io/new-docs/xenopsd/design/index.html rel=canonical type=text/html title="Design :: XAPI Toolstack Developer Documentation"><link href=/new-docs/xenopsd/design/index.xml rel=alternate type=application/rss+xml title="Design :: XAPI Toolstack Developer Documentation"><link href=/new-docs/images/favicon.png?1718728542 rel=icon type=image/png><link href=/new-docs/css/fontawesome-all.min.css?1718728545 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/fontawesome-all.min.css?1718728545 rel=stylesheet></noscript><link href=/new-docs/css/nucleus.css?1718728545 rel=stylesheet><link href=/new-docs/css/auto-complete.css?1718728545 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/auto-complete.css?1718728545 rel=stylesheet></noscript><link href=/new-docs/css/perfect-scrollbar.min.css?1718728545 rel=stylesheet><link href=/new-docs/css/fonts.css?1718728545 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/fonts.css?1718728545 rel=stylesheet></noscript><link href=/new-docs/css/theme.css?1718728545 rel=stylesheet><link href=/new-docs/css/theme-auto.css?1718728545 rel=stylesheet id=variant-style><link href=/new-docs/css/variant.css?1718728545 rel=stylesheet><link href=/new-docs/css/print.css?1718728545 rel=stylesheet media=print><link href=/new-docs/css/format-print.css?1718728545 rel=stylesheet><link href=/new-docs/css/ie.css?1718728545 rel=stylesheet><script src=/new-docs/js/url.js?1718728545></script><script src=/new-docs/js/variant.js?1718728545></script><script>window.index_js_url="/new-docs/index.search.js";var baseUriFull,root_url="/",baseUri=root_url.replace(/\/$/,"");window.T_Copy_to_clipboard="Copy to clipboard",window.T_Copied_to_clipboard="Copied to clipboard!",window.T_Copy_link_to_clipboard="Copy link to clipboard",window.T_Link_copied_to_clipboard="Copied link to clipboard!",window.T_No_results_found='No results found for "{0}"',window.T_N_results_found='{1} results found for "{0}"',baseUriFull="https://xapi-project.github.io/new-docs/",window.variants&&variants.init(["auto","zen-light","zen-dark","red","blue","green","learn","neon","relearn-light","relearn-bright","relearn-dark"])</script><link rel=stylesheet href=https://xapi-project.github.io/new-docs/css/misc.css></head><body class="mobile-support print" data-url=/new-docs/xenopsd/design/index.html><div id=body class=default-animation><div id=sidebar-overlay></div><div id=toc-overlay></div><nav id=topbar class=highlightable><div><div id=breadcrumbs><span id=sidebar-toggle-span><a href=# id=sidebar-toggle class=topbar-link title='Menu (CTRL+ALT+n)'><i class="fas fa-bars fa-fw"></i></a></span><ol class=links itemscope itemtype=http://schema.org/BreadcrumbList><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/index.html><span itemprop=name>XAPI Toolstack Developer Guide</span></a><meta itemprop=position content="1">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/xenopsd/index.html><span itemprop=name>Xenopsd</span></a><meta itemprop=position content="2">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><span itemprop=name>Design</span><meta itemprop=position content="3"></li></ol></div></div></nav><main id=body-inner class="highlightable default" tabindex=-1><div class=flex-block-wrapper><article class=default><header class=headline></header><h1 id=design>Design</h1><footer class=footline></footer></article><section><h1 class=a11y-only>Subsections of Design</h1><article class=default><header class=headline></header><h1 id=events>Events</h1><ul><li>ids rather than data; inherently coalescable</li><li>blocking poll + async operations implies a client needs 2 connections</li><li>coarse granularity</li><li>similarity and differences with: XenAPI, event channels, xenstore watches</li></ul><p><a href=https://github.com/xapi-project/xen-api/blob/30cc9a72e8726d1e7501cd01ddb27ced6d53b9be/ocaml/xapi/xapi_xenops.ml#L1467 target=_blank>https://github.com/xapi-project/xen-api/blob/30cc9a72e8726d1e7501cd01ddb27ced6d53b9be/ocaml/xapi/xapi_xenops.ml#L1467</a></p><footer class=footline></footer></article><article class=default><header class=headline></header><h1 id=hooks>Hooks</h1><p>There are a number of hook points at which xenopsd may execute certain scripts. These scripts are found in hook-specific directories of the form <code>/etc/xapi.d/&lt;hookname>/</code>. All executable scripts in these directories are run with the following arguments:</p><pre><code>&lt;script.sh&gt; -reason &lt;reason&gt; -vmuuid &lt;uuid of VM&gt;
+</code></pre><p>The scripts are executed in filename-order. By convention, the filenames are usually of the form <code>10resetvdis</code>.</p><p>The hook points are:</p><pre><code>vm-pre-shutdown
+vm-pre-migrate
+vm-post-migrate (Dundee only)
+vm-pre-start
+vm-pre-reboot
+vm-pre-resume
+vm-post-resume (Dundee only)
+vm-post-destroy
+</code></pre><p>and the reason codes are:</p><pre><code>clean-shutdown
+hard-shutdown
+clean-reboot
+hard-reboot
+suspend
+source -- passed to pre-migrate hook on source host
+destination -- passed to post-migrate hook on destination (Dundee only)
+none
+</code></pre><p>For example, in order to execute a script on VM shutdown, it would be sufficient to create the script in the post-destroy hook point:</p><pre><code>/etc/xapi.d/vm-post-destroy/01myscript.sh
+</code></pre><p>containing</p><pre><code>#!/bin/bash
+echo I was passed $@ &gt; /tmp/output
+</code></pre><p>And when, for example, VM e30d0050-8f15-e10d-7613-cb2d045c8505 is shut-down, the script is executed:</p><pre><code>[vagrant@localhost ~]$ sudo xe vm-shutdown --force uuid=e30d0050-8f15-e10d-7613-cb2d045c8505
+[vagrant@localhost ~]$ cat /tmp/output
+I was passed -vmuuid e30d0050-8f15-e10d-7613-cb2d045c8505 -reason hard-shutdown
+</code></pre><footer class=footline></footer></article><article class=default><header class=headline></header><h1 id=pvs-proxy-ovs-rules>PVS Proxy OVS Rules</h1><h1 id=rule-design>Rule Design</h1><p>The Open vSwitch (OVS) daemon implements a programmable switch.
+XenServer uses it to re-direct traffic between three entities:</p><ul><li>PVS server - identified by its IP address</li><li>a local VM - identified by its MAC address</li><li>a local Proxy - identified by its MAC address</li></ul><p>VM and PVS server are unaware of the Proxy; xapi configures OVS to
+redirect traffic between PVS and VM to pass through the proxy.</p><p>OVS uses rules that match packets. Rules are organised in sets called
+tables. A rule can be used to match a packet and to inject it into
+another rule set/table table such that a packet can be matched again.</p><p>Furthermore, a rule can set registers associated with a packet which that
+can be matched in subsequent rules. In that way, a packet can be tagged
+such that it will only match specific rules downstream that match the
+tag.</p><p>Xapi configures 3 rule sets:</p><h2 id=table-0---entry-rules>Table 0 - Entry Rules</h2><p>Rules match UDP traffic between VM/PVS, Proxy/VM, and PVS/VM where the
+PVS server is identified by its IP and all other components by their MAC
+address. All packets are tagged with the direction they are going and
+re-submitted into Table 101 which handles ports.</p><h2 id=table-101---port-rules>Table 101 - Port Rules</h2><p>Rules match UDP traffic going to a specific port of the PVS server and
+re-submit it into Table 102.</p><h2 id=table-102---exit-rules>Table 102 - Exit Rules</h2><p>These rules implement the redirection:</p><ul><li>Rules matching packets coming from VM to PVS are directed to the Proxy.</li><li>Rules matching packets coming from PVS to VM are directed to the Proxy.</li><li>Rules matching packets coming from the Proxy are already addressed
+properly (to the VM) are handled normally.</li></ul><footer class=footline></footer></article><article class=default><header class=headline></header><h1 id=requirements-for-suspend-image-framing>Requirements for suspend image framing</h1><p>We are currently (Dec 2013) undergoing a transition from the &lsquo;classic&rsquo; xenopsd
+backend (built upon calls to libxc) to the &lsquo;xenlight&rsquo; backend built on top of
+the officially supported libxl API.</p><p>During this work, we have come across an incompatibility between the suspend
+images created using the &lsquo;classic&rsquo; backend and those created using the new
+libxl-based backend. This needed to be fixed to enable RPU to any new version
+of XenServer.</p><h2 id=historic-classic-stack>Historic &lsquo;classic&rsquo; stack</h2><p>Prior to this work, xenopsd was involved in the construction of the suspend
+image and we ended up with an image with the following format:</p><pre><code>+-----------------------------+
+| &quot;XenSavedDomain\n&quot;          |  &lt;-- added by xenopsd-classic
+|-----------------------------|
+|  Memory image dump          |  &lt;-- libxc
+|-----------------------------|
+| &quot;QemuDeviceModelRecord\n&quot;   |
+|  &lt;size of following record&gt; |  &lt;-- added by xenopsd-classic
+|  (a 32-bit big-endian int)  |
+|-----------------------------|
+| &quot;QEVM&quot;                      |  &lt;-- libxc/qemu
+|  Qemu device record         |
++-----------------------------+
+</code></pre><p>We have also been carrying a patch in the Xen patchqueue against
+xc_domain_restore. This patch (revert_qemu_tail.patch) stopped
+xc_domain_restore from attempting to read past the memory image dump. At which
+point xenopsd-classic would just take over and restore what it had put there.</p><h2 id=requirements-for-new-stack>Requirements for new stack</h2><p>For xenopsd-xenlight to work, we need to operate without the
+revert_qemu_tail.patch since libxl assumes it is operating on top of an
+upstream libxc.</p><p>We need the following relationship between suspend images created on one
+backend being able to be restored on another backend. Where the backends are
+old-classic (OC), new-classic (NC) and xenlight (XL). Obviously all suspend
+images created on any backend must be able to be restored on the same backend:</p><pre><code>                OC _______ NC _______ XL
+                 \  &gt;&gt;&gt;&gt;&gt;      &gt;&gt;&gt;&gt;&gt;  /
+                  \__________________/
+                    &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+</code></pre><p>It turns out this was not so simple. After removing the patch against
+xc_domain_restore and allowing libxc to restore the hvm_buffer_tail, we found
+that supsend images created with OC (detailed in the previous section) are not
+of a valid format for two reasons:</p><pre><code>i. The &quot;XenSavedDomain\n&quot; was extraneous;
+</code></pre><p>ii. The Qemu signature section (prior to the record) is not of valid form.</p><p>It turns out that the section with the Qemu signature can be one of the
+following:</p><pre><code>a. &quot;QemuDeviceModelRecord&quot; (NB. no newline) followed by the record to EOF;
+b. &quot;DeviceModelRecord0002&quot; then a uint32_t length followed by record;
+c. &quot;RemusDeviceModelState&quot; then a uint32_t length followed by record;
+</code></pre><p>The old-classic (OC) backend not only uses an invalid signature (since it
+contains a trailing newline) but it also includes a length, <em>and</em> the length is
+in big-endian when the uint32_t is seen to be little-endian.</p><p>We considered creating a proxy for the fd in the incompatible cases but since
+this would need to be a 22-lookahead byte-by-byte proxy this was deemed
+impracticle. Instead we have made patched libxc with a much simpler patch to
+understand this legacy format.</p><p>Because peek-ahead is not possible on pipes, the patch for (ii) needed to be
+applied at a point where the hvm tail had been read completely. We piggy-backed
+on the point after (a) had been detected. At this point the remainder of the fd
+is buffered (only around 7k) and the magic &ldquo;QEVM&rdquo; is expected at the head of
+this buffer. So we simply added a patch to check if there was a pesky newline
+and the buffer[5:8] was &ldquo;QEVM&rdquo; and if it was we could discard the first
+5 bytes:</p><pre><code>                              0    1    2    3    4    5   6   7   8
+Legacy format from OC:  [...| \n | \x | \x | \x | \x | Q | E | V | M |...]
+
+Required at this point: [...|  Q |  E |  V |  M |...]
+</code></pre><h2 id=changes-made>Changes made</h2><p>To make the above use-cases work, we have made the following changes:</p><pre><code>1. Make new-classic (NC) not restore Qemu tail (let libxc do it)
+    xenopsd.git:ef3bf4b
+
+2. Make new-classic use valid signature (b) for future restore images
+    xenopsd.git:9ccef3e
+
+3. Make xc_domain_restore in libxc understand legacy xenopsd (OC) format
+    xen-4.3.pq.hg:libxc-restore-legacy-image.patch
+
+4. Remove revert-qemu-tail.patch from Xen patchqueue
+    xen-4.3.pq.hg:3f0e16f2141e
+
+5. Make xenlight (XL) use &quot;XenSavedDomain\n&quot; start-of-image signature
+    xenopsd.git:dcda545
+</code></pre><p>This has made the required use-cases work as follows:</p><pre><code>                OC __134__ NC __245__ XL
+                 \  &gt;&gt;&gt;&gt;&gt;      &gt;&gt;&gt;&gt;&gt;  /
+                  \_______345________/
+                    &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+</code></pre><p>And the suspend-resume on same backends work by virtue of:</p><pre><code>OC --&gt; OC : Just works
+NC --&gt; NC : By 1,2,4
+XL --&gt; XL : By 4 (5 is used but not required)
+</code></pre><h2 id=new-components>New components</h2><p>The output of the changes above are:</p><ul><li>A new xenops-xc binary for NC</li><li>A new xenops-xl binary for XL</li><li>A new libxenguest.4.3 for both of NC and XL</li></ul><h2 id=future-considerations>Future considerations</h2><p>This should serve as a useful reference when considering making changes to the
+suspend image in any way.</p><footer class=footline></footer></article><article class=default><header class=headline></header><h1 id=suspend-image-framing-format>Suspend image framing format</h1><p>Example suspend image layout:</p><pre><code>+----------------------------+
+| 1. Suspend image signature |
++============================+
+| 2.0 Xenops header          |
+| 2.1 Xenops record          |
++============================+
+| 3.0 Libxc header           |
+| 3.1 Libxc record           |
++============================+
+| 4.0 Qemu header            |
+| 4.1 Qemu save record       |
++============================+
+| 5.0 End_of_image footer    |
++----------------------------+
+</code></pre><p>A suspend image is now constucted as a series of header-record pairs. The
+initial signature (1.) is used to determine whether we are dealing with the
+unstructured, &ldquo;legacy&rdquo; suspend image or the new, structured format.</p><p>Each header is two 64-bit integers: the first identifies the header type and
+the second is the length of the record that follows in bytes. The following
+types have been defined (the ones marked with a (*) have yet to be
+implemented):</p><pre><code>* Xenops       : Metadata for the suspend image
+* Libxc        : The result of a xc_domain_save
+* Libxl*       : Not implemented
+* Libxc_legacy : Marked as a libxc record saved using pre-Xen-4.5
+* Qemu_trad    : The qemu save file for the Qemu used in XenServer
+* Qemu_xen*    : Not implemented
+* Demu*        : Not implemented
+* End_of_image : A footer marker to denote the end of the suspend image
+</code></pre><p>Some of the above types do not have the notion of a length since they cannot be
+known upfront before saving and also are delegated to other layers of the stack
+on restoring. Specifically these are the memory image sections, libxc and
+libxl.</p><footer class=footline></footer></article><article class=default><header class=headline></header><h1 id=tasks>Tasks</h1><p>Some operations performed by Xenopsd are blocking, for example:</p><ul><li>suspend/resume/migration</li><li>attaching disks (where the SMAPI VDI.attach/activate calls can perform network
+I/O)</li></ul><p>We want to be able to</p><ul><li>present the user with an idea of progress (perhaps via a &ldquo;progress bar&rdquo;)</li><li>allow the user to cancel a blocked operation that is taking too long</li><li>associate logging with the user/client-initiated actions that spawned them</li></ul><h2 id=principles>Principles</h2><ul><li>all operations which may block (the vast majority) should be written in an
+asynchronous style i.e. the operations should immediately return a Task id</li><li>all operations should guarantee to respond to a cancellation request in a
+bounded amount of time (30s)</li><li>when cancelled, the system should always be left in a valid state</li><li>clients are responsible for destroying Tasks when they are finished with the
+results</li></ul><h2 id=types>Types</h2><p>A task has a state, which may be Pending, Completed or failed:</p><div class="wrap-code highlight"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ocaml data-lang=ocaml><span style=display:flex><span>	<span style=color:#66d9ef>type</span> async_result <span style=color:#f92672>=</span> <span style=color:#66d9ef>unit</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>type</span> completion_t <span style=color:#f92672>=</span> <span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>		duration <span style=color:#f92672>:</span> <span style=color:#66d9ef>float</span><span style=color:#f92672>;</span>
+</span></span><span style=display:flex><span>		result <span style=color:#f92672>:</span> async_result option
+</span></span><span style=display:flex><span>	<span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>type</span> state <span style=color:#f92672>=</span>
+</span></span><span style=display:flex><span>		<span style=color:#f92672>|</span> <span style=color:#a6e22e>Pending</span> <span style=color:#66d9ef>of</span> <span style=color:#66d9ef>float</span>
+</span></span><span style=display:flex><span>		<span style=color:#f92672>|</span> <span style=color:#a6e22e>Completed</span> <span style=color:#66d9ef>of</span> completion_t
+</span></span><span style=display:flex><span>		<span style=color:#f92672>|</span> <span style=color:#a6e22e>Failed</span> <span style=color:#66d9ef>of</span> Rpc.t</span></span></code></pre></div><p>When a task is Failed, we assocate it with a marshalled exception (a value of type
+Rpc.t). This exception must be one from the set defined in the
+<a href=https://github.com/xapi-project/xcp-idl/blob/2e5c3dd79c63e3711227892271a6bece98eb0fa1/xen/xenops_interface.ml#L46 target=_blank>Xenops_interface</a>.
+To see how they are marshalled, see
+<a href=https://github.com/xapi-project/xenopsd/blob/f876f9029cf53f14a52bf42a4a3a03265e048926/lib/xenops_server.ml#L564 target=_blank>Xenops_server</a>.</p><p>From the point of view of a client, a Task has the immutable type (which can be
+queried with a <code>Task.stat</code>):</p><div class="wrap-code highlight"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ocaml data-lang=ocaml><span style=display:flex><span>	<span style=color:#66d9ef>type</span> t <span style=color:#f92672>=</span> <span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>		id<span style=color:#f92672>:</span> id<span style=color:#f92672>;</span>
+</span></span><span style=display:flex><span>		dbg<span style=color:#f92672>:</span> <span style=color:#66d9ef>string</span><span style=color:#f92672>;</span>
+</span></span><span style=display:flex><span>		ctime<span style=color:#f92672>:</span> <span style=color:#66d9ef>float</span><span style=color:#f92672>;</span>
+</span></span><span style=display:flex><span>		state<span style=color:#f92672>:</span> state<span style=color:#f92672>;</span>
+</span></span><span style=display:flex><span>		subtasks<span style=color:#f92672>:</span> <span style=color:#f92672>(</span><span style=color:#66d9ef>string</span> <span style=color:#f92672>*</span> state<span style=color:#f92672>)</span> <span style=color:#66d9ef>list</span><span style=color:#f92672>;</span>
+</span></span><span style=display:flex><span>		debug_info<span style=color:#f92672>:</span> <span style=color:#f92672>(</span><span style=color:#66d9ef>string</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>string</span><span style=color:#f92672>)</span> <span style=color:#66d9ef>list</span><span style=color:#f92672>;</span>
+</span></span><span style=display:flex><span>	<span style=color:#f92672>}</span></span></span></code></pre></div><p>where</p><ul><li>id is a unique (integer) id generated by Xenopsd. This is how a Task is
+represented to clients</li><li>dbg is a client-provided debug key which will be used in log lines, allowing
+lines from the same Task to be associated together</li><li>ctime is the creation time</li><li>state is the current state (Pending/Completed/Failed)</li><li>subtasks lists logical internal sub-operations for debugging</li><li>debug_info includes miscellaneous key/value pairs used for debugging</li></ul><p>Internally, Xenopsd uses a
+<a href=https://github.com/xapi-project/xenopsd/blob/f876f9029cf53f14a52bf42a4a3a03265e048926/lib/task_server.ml#L73 target=_blank>mutable record type</a>
+to track Task state. This is broadly similar to the interface type except</p><ul><li>the state is mutable: this allows Tasks to complete</li><li>the task contains a &ldquo;do this now&rdquo; thunk</li><li>there is a &ldquo;cancelling&rdquo; boolean which is toggled to request a cancellation.</li><li>there is a list of cancel callbacks</li><li>there are some fields related to &ldquo;cancel points&rdquo;</li></ul><h2 id=persistence>Persistence</h2><p>The Tasks are intended to represent activities associated with in-memory queues
+and threads. Therefore the active Tasks are kept in memory in a map, and will
+be lost over a process restart. This is desirable since we will also lose the
+queued items and the threads, so there is no need to resync on start.</p><p>Note that every operation must ensure that the state of the system is recoverable
+on restart by not leaving it in an invalid state. It is not necessary to either
+guarantee to complete or roll-back a Task. Tasks are not expected to be
+transactional.</p><h2 id=lifecycle-of-a-task>Lifecycle of a Task</h2><p>All Tasks returned by API functions are created as part of the enqueue functions:
+<a href=https://github.com/xapi-project/xenopsd/blob/f876f9029cf53f14a52bf42a4a3a03265e048926/lib/xenops_server.ml#L1451 target=_blank>queue_operation_*</a>.
+Even operations which are performed internally are normally wrapped in Tasks by
+the function
+<a href=https://github.com/xapi-project/xenopsd/blob/f876f9029cf53f14a52bf42a4a3a03265e048926/lib/xenops_server.ml#L1451 target=_blank>immediate_operation</a>.</p><p>A queued operation will be processed by one of the
+<a href=https://github.com/xapi-project/xenopsd/blob/f876f9029cf53f14a52bf42a4a3a03265e048926/lib/xenops_server.ml#L554 target=_blank>queue worker threads</a>.
+It will</p><ul><li>set the thread-local debug key to the Task.dbg</li><li>call <code>task.Xenops_task.run</code>, taking care to catch exceptions and update
+the <code>task.Xenops_task.state</code></li><li>unset the thread-local debug key</li><li>generate an event on the Task to provoke clients to query the current state.</li></ul><p>Task implementations must update their progress as they work. For the common
+case of a compound operation like <code>VM_start</code> which is decomposed into
+multiple &ldquo;micro-ops&rdquo; (e.g. <code>VM_create</code> <code>VM_build</code>) there is a useful
+helper function
+<a href=https://github.com/xapi-project/xenopsd/blob/f876f9029cf53f14a52bf42a4a3a03265e048926/lib/xenops_server.ml#L1092 target=_blank>perform_atomics</a>
+which divides the progress &lsquo;bar&rsquo; into sections, where each &ldquo;micro-op&rdquo; can have
+a different size (<code>weight</code>). A progress callback function is passed into
+each Xenopsd backend function so it can be updated with fine granulatiry. For
+example note the arguments to
+<a href=https://github.com/xapi-project/xenopsd/blob/f876f9029cf53f14a52bf42a4a3a03265e048926/lib/xenops_server.ml#L1092 target=_blank>B.VM.save</a></p><p>Clients are expected to destroy Tasks they are responsible for creating. Xenopsd
+cannot do this on their behalf because it does not know if they have successfully
+queried the Task status/result.</p><p>When Xenopsd is a client of itself, it will take care to destroy the Task
+properly, for example see
+<a href=https://github.com/xapi-project/xenopsd/blob/f876f9029cf53f14a52bf42a4a3a03265e048926/lib/xenops_server.ml#L1451 target=_blank>immediate_operation</a>.</p><h2 id=cancellation>Cancellation</h2><p>The goal of cancellation is to unstick a blocked operation and to return the
+system to <em>some</em> valid state, not any valid state in particular.
+Xenopsd does not treat operations as transactions;
+when an operation is cancelled it may</p><ul><li>fully complete (e.g. if it was about to do this anyway)</li><li>fully abort (e.g. if it had made no progress)</li><li>enter some other valid state (e.g. if it had gotten half way through)</li></ul><p>Xenopsd will never leave the system in an invalid state after cancellation.</p><p>Every Xenopsd operation should unblock and return the system to a valid state within
+a reasonable amount of time after a cancel request. This should be as quick as possible
+but up to 30s may be acceptable.
+Bear in mind that a human is probably impatiently watching a UI say &ldquo;please wait&rdquo;
+and which doesn&rsquo;t have any notion of progress itself. Keep it quick!</p><p>Cancellation is triggered by TASK.cancel which calls
+<a href=https://github.com/xapi-project/xenopsd/blob/f876f9029cf53f14a52bf42a4a3a03265e048926/lib/task_server.ml#L194 target=_blank>cancel</a>.
+This</p><ul><li>sets the cancelling boolean</li><li>calls all registered cancel callbacks</li></ul><p>Implementations respond to cancellation by</p><ul><li>if running: periodically call <a href=https://github.com/xapi-project/xenopsd/blob/f876f9029cf53f14a52bf42a4a3a03265e048926/lib/task_server.ml#L213 target=_blank>check_cancelling</a></li><li>if about to block: register a suitable cancel callback safely with <a href=https://github.com/xapi-project/xenopsd/blob/f876f9029cf53f14a52bf42a4a3a03265e048926/lib/task_server.ml#L224 target=_blank>with_cancel</a>.</li></ul><p>Xenopsd&rsquo;s libxc backend can block in 2 different ways, and therefore has 2 different
+types of cancel callback:</p><ol><li>cancellable Xenstore watches</li><li>cancellable subprocesses</li></ol><p>Xenstore watches are used for device hotplug and unplug. Xenopsd has to wait for
+the backend or for a udev script to do something. If that blocks then we need
+a way to cancel the watch. The easiest way to cancel a watch is to watch an
+additional path (a &ldquo;cancel path&rdquo;) and delete it, see
+<a href=https://github.com/xapi-project/xenopsd/blob/f876f9029cf53f14a52bf42a4a3a03265e048926/xc/cancel_utils.ml#L117 target=_blank>cancellable_watch</a>.
+The &ldquo;cancel paths&rdquo; are placed within the VM&rsquo;s Xenstore directory to ensure that
+cleanup code which does <code>xenstore-rm</code> will automatically &ldquo;cancel&rdquo; all outstanding
+watches. Note that we trigger a cancel by deleting rather than creating, to avoid
+racing with delete and creating orphaned Xenstore entries.</p><p>Subprocesses are used for suspend/resume/migrate. Xenopsd hands file descriptors
+to libxenguest by running a subprocess and passing the fds to it. Xenopsd therefore
+gets the process id and can send it a signal to cancel it. See
+<a href=https://github.com/xapi-project/xenopsd/blob/f876f9029cf53f14a52bf42a4a3a03265e048926/xc/cancel_utils.ml#L117 target=_blank>Cancellable_subprocess.run</a>.</p><h2 id=testing-with-cancel-points>Testing with cancel points</h2><p>Cancellation is difficult to test, as it is completely asynchronous. Therefore
+Xenopsd has some built-in cancellation testing infrastructure known as &ldquo;cancel points&rdquo;.
+A &ldquo;cancel point&rdquo; is a point in the code where a <code>Cancelled</code> exception could
+be thrown, either by checking the cancelling boolean or as a side-effect of
+a cancel callback. The
+<a href=https://github.com/xapi-project/xenopsd/blob/f876f9029cf53f14a52bf42a4a3a03265e048926/lib/task_server.ml#L216 target=_blank>check_cancelling</a>
+function increments a counter every time it passes one of these points, and
+this value is returned to clients in the
+<a href=https://github.com/xapi-project/xenopsd/blob/f876f9029cf53f14a52bf42a4a3a03265e048926/lib/xenops_server.ml#L135 target=_blank>Task.debug_info</a>.</p><p>A <a href=https://github.com/xapi-project/xen-api/blob/a365545c3b113fcd4bedecbc9146d4b6e3efbb04/ocaml/xapi/cancel_tests.ml target=_blank>test harness</a>
+runs a series of operations. Each operation is first run all the way through to
+completion to discover the total number of cancel points. The operation is then
+re-run with a
+<a href=https://github.com/xapi-project/xenopsd/blob/f876f9029cf53f14a52bf42a4a3a03265e048926/lib/task_server.ml#L84 target=_blank>request to cancel at a particular point</a>.
+The test then waits for the system to stabilise and verifies that it appears to be
+in a valid state.</p><h2 id=preventing-tasks-leaking>Preventing Tasks leaking</h2><p>The client who creates a Task must destroy it when the Task is finished, and
+they have processed the result. What if a client like xapi is restarted while
+a Task is running?</p><p>We assume that, if xapi is talking to a xenopsd, then xapi completely owns it.
+Therefore xapi should destroy any completed tasks that it doesn&rsquo;t recognise.</p><p>If a user wishes to manage VMs with xenopsd in parallel with xapi, the user
+should run a separate xenopsd.</p><footer class=footline></footer></article></section></div></main></div><script src=/new-docs/js/clipboard.min.js?1718728545 defer></script><script src=/new-docs/js/perfect-scrollbar.min.js?1718728545 defer></script><script src=/new-docs/js/theme.js?1718728545 defer></script></body></html>
