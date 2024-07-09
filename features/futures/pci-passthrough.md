@@ -3,7 +3,7 @@ title: PCI passthrough support
 layout: default
 design_doc: true
 revision: 1
-status: proposed
+status: released (8.3)
 ---
 
 Introduction
