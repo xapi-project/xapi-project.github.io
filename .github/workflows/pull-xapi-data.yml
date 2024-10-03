@@ -9,7 +9,7 @@ jobs:
   pull-xapi:
     runs-on: ubuntu-latest
     env:
-      JEKYLL_DOCDIR: _build/install/default/share/jekyll
+      JEKYLL_DOCDIR: _build/default/ocaml/doc/jekyll
 
     steps:
       - name: Checkout xapi code
