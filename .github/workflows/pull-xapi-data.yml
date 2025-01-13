@@ -31,7 +31,7 @@ jobs:
         uses: falti/dotenv-action@v1
 
       - name: Use ocaml
-        uses: ocaml/setup-ocaml@v2
+        uses: ocaml/setup-ocaml@v3
         with:
           dune-cache: true
           ocaml-compiler: ${{ steps.dotenv.outputs.ocaml_version_full }}
