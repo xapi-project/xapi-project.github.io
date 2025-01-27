@@ -2,7 +2,7 @@ window.relearn = window.relearn || {};
 
 window.relearn.runInitialSearch = function(){
     if( window.relearn.isSearchInit && window.relearn.isLunrInit ){
-        var input = document.querySelector('#search-by-detail');
+        var input = document.querySelector('#R-search-by-detail');
         if( !input ){
             return;
         }
@@ -45,7 +45,7 @@ function initLunrIndex( index ){
 }
 
 function triggerSearch(){
-    var input = document.querySelector('#search-by-detail');
+    var input = document.querySelector('#R-search-by-detail');
     if( !input ){
         return;
     }
@@ -97,7 +97,7 @@ window.addEventListener( 'popstate', function ( event ){
     }
 });
 
-var input = document.querySelector('#search-by-detail');
+var input = document.querySelector('#R-search-by-detail');
 if( input ){
     input.addEventListener( 'keydown', function(event) {
         // if we are pressing ESC in the searchdetail our focus will
@@ -199,7 +199,7 @@ function resolvePlaceholders( s, args ) {
 };
 
 function searchDetail( value ) {
-    var results = document.querySelector('#searchresults');
+    var results = document.querySelector('#R-searchresults');
     var hint = document.querySelector('.searchhint');
     hint.innerText = '';
     results.textContent = '';
@@ -213,17 +213,26 @@ function searchDetail( value ) {
                 item.matches.map( function(match){return match.replace(/\W/g, '\\$&')} ).join('|') +
                 ')\\b\\S*(?: +\\S+){0,' + numContextWords + '}';
             var context = page.content.match(new RegExp(contextPattern, 'i'));
-            var divcontext = document.createElement('div');
-            divcontext.className = 'context';
-            divcontext.innerText = (context || '');
             var divsuggestion = document.createElement('a');
             divsuggestion.className = 'autocomplete-suggestion';
             divsuggestion.setAttribute('data-term', value);
             divsuggestion.setAttribute('data-title', page.title);
             divsuggestion.setAttribute('href', baseUri + page.uri);
             divsuggestion.setAttribute('data-context', context);
-            divsuggestion.innerText = '» ' + page.title;
-            divsuggestion.appendChild(divcontext);
+            var divtitle = document.createElement('div');
+            divtitle.className = 'title';
+            divtitle.innerText = '» ' + page.title;
+            divsuggestion.appendChild( divtitle );
+            var divbreadcrumb = document.createElement('div');
+            divbreadcrumb.className = 'breadcrumbs';
+            divbreadcrumb.innerText = (page.breadcrumb || '');
+            divsuggestion.appendChild( divbreadcrumb );
+            if( context ){
+                var divcontext = document.createElement('div');
+                divcontext.className = 'context';
+                divcontext.innerText = (context || '');
+                divsuggestion.appendChild( divcontext );
+            }
             results.appendChild( divsuggestion );
         });
         window.relearn.markSearch();
@@ -252,7 +261,7 @@ initLunrJson();
 initLunrJs();
 
 function startSearch(){
-    var input = document.querySelector('#search-by-detail');
+    var input = document.querySelector('#R-search-by-detail');
     if( input ){
         var state = window.history.state || {};
         state = Object.assign( {}, ( typeof state === 'object' ) ? state : {} );
@@ -262,8 +271,8 @@ function startSearch(){
 
     var searchList = new autoComplete({
         /* selector for the search box element */
-        selectorToInsert: '#header-wrapper',
-        selector: '#search-by',
+        selectorToInsert: '#R-header-wrapper',
+        selector: '#R-search-by',
         /* source is the callback to perform the search */
         source: function(term, response) {
             response(search(term));
@@ -276,17 +285,22 @@ function startSearch(){
                 item.matches.map( function(match){return match.replace(/\W/g, '\\$&')} ).join('|') +
                 ')\\b\\S*(?: +\\S+){0,' + numContextWords + '}';
             var context = page.content.match(new RegExp(contextPattern, 'i'));
-            var divcontext = document.createElement('div');
-            divcontext.className = 'context';
-            divcontext.innerText = (context || '');
             var divsuggestion = document.createElement('div');
             divsuggestion.className = 'autocomplete-suggestion';
             divsuggestion.setAttribute('data-term', term);
             divsuggestion.setAttribute('data-title', page.title);
             divsuggestion.setAttribute('data-uri', baseUri + page.uri);
             divsuggestion.setAttribute('data-context', context);
-            divsuggestion.innerText = '» ' + page.title;
-            divsuggestion.appendChild(divcontext);
+            var divtitle = document.createElement('div');
+            divtitle.className = 'title';
+            divtitle.innerText = '» ' + page.title;
+            divsuggestion.appendChild( divtitle );
+            if( context ){
+                var divcontext = document.createElement('div');
+                divcontext.className = 'context';
+                divcontext.innerText = (context || '');
+                divsuggestion.appendChild( divcontext );
+            }
             return divsuggestion.outerHTML;
         },
         /* onSelect callback fires when a search suggestion is chosen */

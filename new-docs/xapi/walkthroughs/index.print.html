@@ -1,5 +1,6 @@
-<!doctype html><html lang=en dir=ltr><head><meta charset=utf-8><meta name=viewport content="height=device-height,width=device-width,initial-scale=1,minimum-scale=1"><meta name=generator content="Hugo 0.127.0"><meta name=generator content="Relearn 5.20.0+tip"><meta name=description content><title>XAPI requests walk-throughs :: XAPI Toolstack Developer Documentation</title>
-<link href=https://xapi-project.github.io/new-docs/xapi/walkthroughs/index.html rel=canonical type=text/html title="XAPI requests walk-throughs :: XAPI Toolstack Developer Documentation"><link href=/new-docs/xapi/walkthroughs/index.xml rel=alternate type=application/rss+xml title="XAPI requests walk-throughs :: XAPI Toolstack Developer Documentation"><link href=/new-docs/images/favicon.png?1737974509 rel=icon type=image/png><link href=/new-docs/css/fontawesome-all.min.css?1737974513 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/fontawesome-all.min.css?1737974513 rel=stylesheet></noscript><link href=/new-docs/css/nucleus.css?1737974513 rel=stylesheet><link href=/new-docs/css/auto-complete.css?1737974513 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/auto-complete.css?1737974513 rel=stylesheet></noscript><link href=/new-docs/css/perfect-scrollbar.min.css?1737974513 rel=stylesheet><link href=/new-docs/css/fonts.css?1737974513 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/fonts.css?1737974513 rel=stylesheet></noscript><link href=/new-docs/css/theme.css?1737974513 rel=stylesheet><link href=/new-docs/css/theme-auto.css?1737974513 rel=stylesheet id=variant-style><link href=/new-docs/css/variant.css?1737974513 rel=stylesheet><link href=/new-docs/css/print.css?1737974513 rel=stylesheet media=print><link href=/new-docs/css/format-print.css?1737974513 rel=stylesheet><link href=/new-docs/css/ie.css?1737974513 rel=stylesheet><script src=/new-docs/js/url.js?1737974513></script><script src=/new-docs/js/variant.js?1737974513></script><script>window.index_js_url="/new-docs/index.search.js";var baseUriFull,root_url="/",baseUri=root_url.replace(/\/$/,"");window.T_Copy_to_clipboard="Copy to clipboard",window.T_Copied_to_clipboard="Copied to clipboard!",window.T_Copy_link_to_clipboard="Copy link to clipboard",window.T_Link_copied_to_clipboard="Copied link to clipboard!",window.T_No_results_found='No results found for "{0}"',window.T_N_results_found='{1} results found for "{0}"',baseUriFull="https://xapi-project.github.io/new-docs/",window.variants&&variants.init(["auto","zen-light","zen-dark","red","blue","green","learn","neon","relearn-light","relearn-bright","relearn-dark"])</script><link rel=stylesheet href=https://xapi-project.github.io/new-docs/css/misc.css></head><body class="mobile-support print" data-url=/new-docs/xapi/walkthroughs/index.html><div id=body class=default-animation><div id=sidebar-overlay></div><div id=toc-overlay></div><nav id=topbar class=highlightable><div><div id=breadcrumbs><span id=sidebar-toggle-span><a href=# id=sidebar-toggle class=topbar-link title='Menu (CTRL+ALT+n)'><i class="fas fa-bars fa-fw"></i></a></span><ol class=links itemscope itemtype=http://schema.org/BreadcrumbList><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/index.html><span itemprop=name>XAPI Toolstack Developer Guide</span></a><meta itemprop=position content="1">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/xapi/index.html><span itemprop=name>Xapi</span></a><meta itemprop=position content="2">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><span itemprop=name>XAPI requests walk-throughs</span><meta itemprop=position content="3"></li></ol></div></div></nav><main id=body-inner class="highlightable default" tabindex=-1><div class=flex-block-wrapper><article class=default><header class=headline></header><h1 id=xapi-requests-walk-throughs>XAPI requests walk-throughs</h1><p>Let&rsquo;s detail the handling process of an XML request within XAPI.
+<!doctype html><html lang=en dir=ltr><head><meta charset=utf-8><meta name=viewport content="height=device-height,width=device-width,initial-scale=1,minimum-scale=1"><meta name=generator content="Hugo 0.127.0"><meta name=generator content="Relearn 5.23.0"><meta name=description content><meta name=author content><meta name=twitter:card content="summary"><meta name=twitter:title content="XAPI requests walk-throughs :: XAPI Toolstack Developer Documentation"><meta name=twitter:description content><meta property="og:title" content="XAPI requests walk-throughs :: XAPI Toolstack Developer Documentation"><meta property="og:description" content><meta property="og:type" content="website"><meta property="og:url" content="https://xapi-project.github.io/new-docs/xapi/walkthroughs/index.html"><meta property="og:site_name" content="XAPI Toolstack Developer Documentation"><title>XAPI requests walk-throughs :: XAPI Toolstack Developer Documentation</title>
+<link href=https://xapi-project.github.io/new-docs/xapi/walkthroughs/index.html rel=canonical type=text/html title="XAPI requests walk-throughs :: XAPI Toolstack Developer Documentation"><link href=/new-docs/xapi/walkthroughs/index.xml rel=alternate type=application/rss+xml title="XAPI requests walk-throughs :: XAPI Toolstack Developer Documentation"><link href=/new-docs/images/favicon.png?1737986888 rel=icon type=image/png><link href=/new-docs/css/fontawesome-all.min.css?1737986893 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/fontawesome-all.min.css?1737986893 rel=stylesheet></noscript><link href=/new-docs/css/nucleus.css?1737986893 rel=stylesheet><link href=/new-docs/css/auto-complete.css?1737986893 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/auto-complete.css?1737986893 rel=stylesheet></noscript><link href=/new-docs/css/perfect-scrollbar.min.css?1737986893 rel=stylesheet><link href=/new-docs/css/fonts.css?1737986893 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/fonts.css?1737986893 rel=stylesheet></noscript><link href=/new-docs/css/theme.css?1737986893 rel=stylesheet><link href=/new-docs/css/theme-auto.css?1737986893 rel=stylesheet id=R-variant-style><link href=/new-docs/css/variant.css?1737986893 rel=stylesheet><link href=/new-docs/css/print.css?1737986893 rel=stylesheet media=print><link href=/new-docs/css/format-print.css?1737986893 rel=stylesheet><link href=/new-docs/css/ie.css?1737986893 rel=stylesheet><script src=/new-docs/js/url.js?1737986893></script><script src=/new-docs/js/variant.js?1737986893></script><script>window.index_js_url="/new-docs/index.search.js";var baseUriFull,root_url="/",baseUri=root_url.replace(/\/$/,"");window.T_Copy_to_clipboard="Copy to clipboard",window.T_Copied_to_clipboard="Copied to clipboard!",window.T_Copy_link_to_clipboard="Copy link to clipboard",window.T_Link_copied_to_clipboard="Copied link to clipboard!",window.T_Reset_view="Reset view",window.T_View_reset="View reset!",window.T_No_results_found='No results found for "{0}"',window.T_N_results_found='{1} results found for "{0}"',baseUriFull="https://xapi-project.github.io/new-docs/",window.variants&&variants.init(["auto","zen-light","zen-dark","red","blue","green","learn","neon","relearn-light","relearn-bright","relearn-dark"])</script><link rel=stylesheet href=https://xapi-project.github.io/new-docs/css/misc.css></head><body class="mobile-support print" data-url=/new-docs/xapi/walkthroughs/index.html><div id=R-body class=default-animation><div id=R-body-overlay></div><nav id=R-topbar><div class=topbar-wrapper><div class=topbar-sidebar-divider></div><div class="topbar-area topbar-area-start" data-area=start><div class="topbar-button topbar-button-sidebar" data-content-empty=disable data-width-s=show data-width-m=hide data-width-l=hide><button class=topbar-control onclick=toggleNav() type=button title="Menu (CTRL+ALT+n)">
+<i class="fa-fw fas fa-bars"></i></button></div></div><ol class="topbar-breadcrumbs breadcrumbs highlightable" itemscope itemtype=http://schema.org/BreadcrumbList><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/index.html><span itemprop=name>XAPI Toolstack Developer Guide</span></a><meta itemprop=position content="1">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/xapi/index.html><span itemprop=name>Xapi</span></a><meta itemprop=position content="2">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><span itemprop=name>XAPI requests walk-throughs</span><meta itemprop=position content="3"></li></ol><div class="topbar-area topbar-area-end" data-area=end></div></div></nav><div id=R-main-overlay></div><main id=R-body-inner class="highlightable default" tabindex=-1><div class=flex-block-wrapper><article class=default><header class=headline></header><h1 id=xapi-requests-walk-throughs>XAPI requests walk-throughs</h1><p>Let&rsquo;s detail the handling process of an XML request within XAPI.
 The first document uses the migration as an example of such request.</p><ul><li><a href=/new-docs/xapi/walkthroughs/migration_overview.md>How the migration request goes through Xen API?</a></li></ul><footer class=footline></footer></article><section><h1 class=a11y-only>Subsections of XAPI requests walk-throughs</h1><article class=default><header class=headline></header><h1 id=from-rpc-migration-request-to-xapi-internals>From RPC migration request to xapi internals</h1><h2 id=overview>Overview</h2><p>In this document we will use the <code>VM.pool_migrate</code> request to illustrate
 the interaction between various components within the XAPI toolstack during
 migration. However this schema can be applied to other requests as well.</p><p>Not all parts of the Xapi toolstack are shown here as not all are involved in
@@ -14,38 +15,52 @@ operation synchronously or asynchronously and returning the RPC answer.</li><li>
 of the pool and then forward the call or if is executed locally.</li><li>When executed locally the high-level migration operation is send to the
 <em>Xenopsd daemon</em> by posting a message on a known queue on the <em>message switch</em>.</li><li><em>Xenopsd</em> will get the command and will split it into several <em>atomic</em>
 operations that will be run by the <em>xenopsd backend</em>.</li><li><em>Xenopsd</em> with its <em>backend</em> can then access xenstore or execute hypercall to
-interact with xen a server the micro operation.</li></ul><h2 id=a-diagram-is-worth-a-thousand-words>A diagram is worth a thousand words</h2><div class="mermaid align-center">flowchart TD
-%% First we are starting by a XAPI client that is sending an XML-RPC request
-client((Xapi client)) -. sends RPC XML request .->
-xapi_server{"`Dispatch RPC
-**api_server.ml**`"}
-style client stroke:#CAFEEE,stroke-width:4px
-%% XAPI Toolstack internals
-subgraph "Xapi Toolstack (master of the pool)"
-style server stroke:#BAFA00,stroke-width:4px,stroke-dasharray: 5 5
-xapi_server --dispatch call (ie VM.pool_migrate)--> server("`Auto generated using *IDL*
-**server.ml**`")
-server --do_dispatch (ie VM.pool_migrate)--> server_helpers["`server helpers
-**server_helpers.ml**`"]
-server_helpers -- call management (ie xapi_vm_migrate.ml)--> message_forwarding["`check where to run the call **message_forwarding.ml**`"]
-message_forwarding -- execute locally --> vm_management["`VM Mgmt
-like **xapi_vm_migrate.ml**`"]
-vm_management -- Call --> xapi_xenops["`Transform xenops
-see (**xapi_xenops.ml**)`"]
-xapi_xenops &lt;-- Post following IDL model (see xenops_interface.ml) --> msg_switch
-subgraph "Message Switch Daemon"
-msg_switch[["Queues"]]
-end
-subgraph "Xenopsd Daemon"
-msg_switch &lt;-- Push/Pop on org.xen.xapi.xenopsd.classic --> xenopsd_server
-xenopsd_server["`Xenposd *frontend*
-get & split high level opertion into atomics`"] o-- linked at compile time --o xenopsd_backend
-end
-end
-%% Xenopsd backend is accessing xen and xenstore
-xenopsd_backend["`Xenopsd *backend*
-Backend XC (libxenctrl)`"] -. access to .-> xen_hypervisor["Xen hypervisor & xenstore"]
-style xen_hypervisor stroke:#BEEF00,stroke-width:2px
-%% Can send request to the host where call must be executed
-message_forwarding -.forward call to .-> elected_host["Host where call must be executed"]
-style elected_host stroke:#B0A,stroke-width:4px</div><footer class=footline></footer></article></section></div></main></div><script src=/new-docs/js/clipboard.min.js?1737974513 defer></script><script src=/new-docs/js/perfect-scrollbar.min.js?1737974513 defer></script><script src=/new-docs/js/d3/d3-color.min.js?1737974513 defer></script><script src=/new-docs/js/d3/d3-dispatch.min.js?1737974513 defer></script><script src=/new-docs/js/d3/d3-drag.min.js?1737974513 defer></script><script src=/new-docs/js/d3/d3-ease.min.js?1737974513 defer></script><script src=/new-docs/js/d3/d3-interpolate.min.js?1737974513 defer></script><script src=/new-docs/js/d3/d3-selection.min.js?1737974513 defer></script><script src=/new-docs/js/d3/d3-timer.min.js?1737974513 defer></script><script src=/new-docs/js/d3/d3-transition.min.js?1737974513 defer></script><script src=/new-docs/js/d3/d3-zoom.min.js?1737974513 defer></script><script src=/new-docs/js/js-yaml.min.js?1737974513 defer></script><script src=/new-docs/js/mermaid.min.js?1737974513 defer></script><script>window.themeUseMermaid=JSON.parse("{}")</script><script src=/new-docs/js/theme.js?1737974513 defer></script></body></html>
+interact with xen a server the micro operation.</li></ul><h2 id=a-diagram-is-worth-a-thousand-words>A diagram is worth a thousand words</h2><pre class="mermaid align-center">
+flowchart TD
+
+    %% First we are starting by a XAPI client that is sending an XML-RPC request
+    client((Xapi client)) -. sends RPC XML request .-&gt;
+        xapi_server{&#34;`Dispatch RPC
+                    **api_server.ml**`&#34;}
+    style client stroke:#CAFEEE,stroke-width:4px
+
+    %% XAPI Toolstack internals
+    subgraph &#34;Xapi Toolstack (master of the pool)&#34;
+        style server stroke:#BAFA00,stroke-width:4px,stroke-dasharray: 5 5
+
+            xapi_server --dispatch call (ie VM.pool_migrate)--&gt; server(&#34;`Auto generated using *IDL*
+                    **server.ml**`&#34;)
+
+            server --do_dispatch (ie VM.pool_migrate)--&gt; server_helpers[&#34;`server helpers
+            **server_helpers.ml**`&#34;]
+
+            server_helpers -- call management (ie xapi_vm_migrate.ml)--&gt; message_forwarding[&#34;`check where to run the call **message_forwarding.ml**`&#34;]
+
+            message_forwarding -- execute locally --&gt; vm_management[&#34;`VM Mgmt
+            like **xapi_vm_migrate.ml**`&#34;]
+
+            vm_management -- Call --&gt; xapi_xenops[&#34;`Transform xenops
+            see (**xapi_xenops.ml**)`&#34;]
+                xapi_xenops &lt;-- Post following IDL model (see xenops_interface.ml) --&gt; msg_switch
+
+
+        subgraph &#34;Message Switch Daemon&#34;
+            msg_switch[[&#34;Queues&#34;]]
+        end
+
+        subgraph &#34;Xenopsd Daemon&#34;
+            msg_switch &lt;-- Push/Pop on org.xen.xapi.xenopsd.classic --&gt; xenopsd_server
+
+            xenopsd_server[&#34;`Xenposd *frontend*
+            get &amp; split high level opertion into atomics`&#34;]  o-- linked at compile time --o xenopsd_backend
+        end
+    end
+
+    %% Xenopsd backend is accessing xen and xenstore
+    xenopsd_backend[&#34;`Xenopsd *backend*
+    Backend XC (libxenctrl)`&#34;] -. access to .-&gt; xen_hypervisor[&#34;Xen hypervisor &amp; xenstore&#34;]
+    style xen_hypervisor stroke:#BEEF00,stroke-width:2px
+
+    %% Can send request to the host where call must be executed
+    message_forwarding -.forward call to .-&gt; elected_host[&#34;Host where call must be executed&#34;]
+    style elected_host stroke:#B0A,stroke-width:4px</pre><footer class=footline></footer></article></section></div></main></div><script src=/new-docs/js/clipboard.min.js?1737986894 defer></script><script src=/new-docs/js/perfect-scrollbar.min.js?1737986894 defer></script><script src=/new-docs/js/d3/d3-color.min.js?1737986894 defer></script><script src=/new-docs/js/d3/d3-dispatch.min.js?1737986894 defer></script><script src=/new-docs/js/d3/d3-drag.min.js?1737986894 defer></script><script src=/new-docs/js/d3/d3-ease.min.js?1737986894 defer></script><script src=/new-docs/js/d3/d3-interpolate.min.js?1737986894 defer></script><script src=/new-docs/js/d3/d3-selection.min.js?1737986894 defer></script><script src=/new-docs/js/d3/d3-timer.min.js?1737986894 defer></script><script src=/new-docs/js/d3/d3-transition.min.js?1737986894 defer></script><script src=/new-docs/js/d3/d3-zoom.min.js?1737986894 defer></script><script src=/new-docs/js/js-yaml.min.js?1737986894 defer></script><script src=/new-docs/js/mermaid.min.js?1737986894 defer></script><script>window.themeUseMermaid=JSON.parse("{}")</script><script src=/new-docs/js/theme.js?1737986894 defer></script></body></html>

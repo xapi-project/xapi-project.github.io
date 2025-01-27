@@ -1,5 +1,6 @@
-<!doctype html><html lang=en dir=ltr><head><meta charset=utf-8><meta name=viewport content="height=device-height,width=device-width,initial-scale=1,minimum-scale=1"><meta name=generator content="Hugo 0.127.0"><meta name=generator content="Relearn 5.20.0+tip"><meta name=description content><title>XAPI's Storage Layers :: XAPI Toolstack Developer Documentation</title>
-<link href=https://xapi-project.github.io/new-docs/xapi/storage/index.html rel=canonical type=text/html title="XAPI's Storage Layers :: XAPI Toolstack Developer Documentation"><link href=/new-docs/xapi/storage/index.xml rel=alternate type=application/rss+xml title="XAPI's Storage Layers :: XAPI Toolstack Developer Documentation"><link href=/new-docs/images/favicon.png?1737974509 rel=icon type=image/png><link href=/new-docs/css/fontawesome-all.min.css?1737974513 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/fontawesome-all.min.css?1737974513 rel=stylesheet></noscript><link href=/new-docs/css/nucleus.css?1737974513 rel=stylesheet><link href=/new-docs/css/auto-complete.css?1737974513 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/auto-complete.css?1737974513 rel=stylesheet></noscript><link href=/new-docs/css/perfect-scrollbar.min.css?1737974513 rel=stylesheet><link href=/new-docs/css/fonts.css?1737974513 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/fonts.css?1737974513 rel=stylesheet></noscript><link href=/new-docs/css/theme.css?1737974513 rel=stylesheet><link href=/new-docs/css/theme-auto.css?1737974513 rel=stylesheet id=variant-style><link href=/new-docs/css/variant.css?1737974513 rel=stylesheet><link href=/new-docs/css/print.css?1737974513 rel=stylesheet media=print><link href=/new-docs/css/format-print.css?1737974513 rel=stylesheet><link href=/new-docs/css/ie.css?1737974513 rel=stylesheet><script src=/new-docs/js/url.js?1737974513></script><script src=/new-docs/js/variant.js?1737974513></script><script>window.index_js_url="/new-docs/index.search.js";var baseUriFull,root_url="/",baseUri=root_url.replace(/\/$/,"");window.T_Copy_to_clipboard="Copy to clipboard",window.T_Copied_to_clipboard="Copied to clipboard!",window.T_Copy_link_to_clipboard="Copy link to clipboard",window.T_Link_copied_to_clipboard="Copied link to clipboard!",window.T_No_results_found='No results found for "{0}"',window.T_N_results_found='{1} results found for "{0}"',baseUriFull="https://xapi-project.github.io/new-docs/",window.variants&&variants.init(["auto","zen-light","zen-dark","red","blue","green","learn","neon","relearn-light","relearn-bright","relearn-dark"])</script><link rel=stylesheet href=https://xapi-project.github.io/new-docs/css/misc.css></head><body class="mobile-support print" data-url=/new-docs/xapi/storage/index.html><div id=body class=default-animation><div id=sidebar-overlay></div><div id=toc-overlay></div><nav id=topbar class=highlightable><div><div id=breadcrumbs><span id=sidebar-toggle-span><a href=# id=sidebar-toggle class=topbar-link title='Menu (CTRL+ALT+n)'><i class="fas fa-bars fa-fw"></i></a></span><ol class=links itemscope itemtype=http://schema.org/BreadcrumbList><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/index.html><span itemprop=name>XAPI Toolstack Developer Guide</span></a><meta itemprop=position content="1">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/xapi/index.html><span itemprop=name>Xapi</span></a><meta itemprop=position content="2">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><span itemprop=name>XAPI's Storage Layers</span><meta itemprop=position content="3"></li></ol></div></div></nav><main id=body-inner class="highlightable default" tabindex=-1><div class=flex-block-wrapper><article class=default><header class=headline></header><h1 id=xapis-storage-layers>XAPI's Storage Layers</h1><div class="box notices cstyle info"><div class=box-label><i class="fa-fw fas fa-info-circle"></i> Info</div><div class=box-content><p>The links in this page point to the source files of xapi
+<!doctype html><html lang=en dir=ltr><head><meta charset=utf-8><meta name=viewport content="height=device-height,width=device-width,initial-scale=1,minimum-scale=1"><meta name=generator content="Hugo 0.127.0"><meta name=generator content="Relearn 5.23.0"><meta name=description content><meta name=author content><meta name=twitter:card content="summary"><meta name=twitter:title content="XAPI's Storage Layers :: XAPI Toolstack Developer Documentation"><meta name=twitter:description content><meta property="og:title" content="XAPI's Storage Layers :: XAPI Toolstack Developer Documentation"><meta property="og:description" content><meta property="og:type" content="website"><meta property="og:url" content="https://xapi-project.github.io/new-docs/xapi/storage/index.html"><meta property="og:site_name" content="XAPI Toolstack Developer Documentation"><title>XAPI's Storage Layers :: XAPI Toolstack Developer Documentation</title>
+<link href=https://xapi-project.github.io/new-docs/xapi/storage/index.html rel=canonical type=text/html title="XAPI's Storage Layers :: XAPI Toolstack Developer Documentation"><link href=/new-docs/xapi/storage/index.xml rel=alternate type=application/rss+xml title="XAPI's Storage Layers :: XAPI Toolstack Developer Documentation"><link href=/new-docs/images/favicon.png?1737986888 rel=icon type=image/png><link href=/new-docs/css/fontawesome-all.min.css?1737986893 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/fontawesome-all.min.css?1737986893 rel=stylesheet></noscript><link href=/new-docs/css/nucleus.css?1737986893 rel=stylesheet><link href=/new-docs/css/auto-complete.css?1737986893 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/auto-complete.css?1737986893 rel=stylesheet></noscript><link href=/new-docs/css/perfect-scrollbar.min.css?1737986893 rel=stylesheet><link href=/new-docs/css/fonts.css?1737986893 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/fonts.css?1737986893 rel=stylesheet></noscript><link href=/new-docs/css/theme.css?1737986893 rel=stylesheet><link href=/new-docs/css/theme-auto.css?1737986893 rel=stylesheet id=R-variant-style><link href=/new-docs/css/variant.css?1737986893 rel=stylesheet><link href=/new-docs/css/print.css?1737986893 rel=stylesheet media=print><link href=/new-docs/css/format-print.css?1737986893 rel=stylesheet><link href=/new-docs/css/ie.css?1737986893 rel=stylesheet><script src=/new-docs/js/url.js?1737986893></script><script src=/new-docs/js/variant.js?1737986893></script><script>window.index_js_url="/new-docs/index.search.js";var baseUriFull,root_url="/",baseUri=root_url.replace(/\/$/,"");window.T_Copy_to_clipboard="Copy to clipboard",window.T_Copied_to_clipboard="Copied to clipboard!",window.T_Copy_link_to_clipboard="Copy link to clipboard",window.T_Link_copied_to_clipboard="Copied link to clipboard!",window.T_Reset_view="Reset view",window.T_View_reset="View reset!",window.T_No_results_found='No results found for "{0}"',window.T_N_results_found='{1} results found for "{0}"',baseUriFull="https://xapi-project.github.io/new-docs/",window.variants&&variants.init(["auto","zen-light","zen-dark","red","blue","green","learn","neon","relearn-light","relearn-bright","relearn-dark"])</script><link rel=stylesheet href=https://xapi-project.github.io/new-docs/css/misc.css></head><body class="mobile-support print" data-url=/new-docs/xapi/storage/index.html><div id=R-body class=default-animation><div id=R-body-overlay></div><nav id=R-topbar><div class=topbar-wrapper><div class=topbar-sidebar-divider></div><div class="topbar-area topbar-area-start" data-area=start><div class="topbar-button topbar-button-sidebar" data-content-empty=disable data-width-s=show data-width-m=hide data-width-l=hide><button class=topbar-control onclick=toggleNav() type=button title="Menu (CTRL+ALT+n)">
+<i class="fa-fw fas fa-bars"></i></button></div></div><ol class="topbar-breadcrumbs breadcrumbs highlightable" itemscope itemtype=http://schema.org/BreadcrumbList><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/index.html><span itemprop=name>XAPI Toolstack Developer Guide</span></a><meta itemprop=position content="1">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/xapi/index.html><span itemprop=name>Xapi</span></a><meta itemprop=position content="2">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><span itemprop=name>XAPI's Storage Layers</span><meta itemprop=position content="3"></li></ol><div class="topbar-area topbar-area-end" data-area=end></div></div></nav><div id=R-main-overlay></div><main id=R-body-inner class="highlightable default" tabindex=-1><div class=flex-block-wrapper><article class=default><header class=headline></header><h1 id=xapis-storage-layers>XAPI's Storage Layers</h1><div class="box notices cstyle info"><div class=box-label><i class="fa-fw fas fa-info-circle"></i> Info</div><div class=box-content><p>The links in this page point to the source files of xapi
 <a href=https://github.com/xapi-project/xen-api/tree/v1.127.0 target=_blank>v1.127.0</a>, and xcp-idl
 <a href=https://github.com/xapi-project/xcp-idl/tree/v1.62.0 target=_blank>v1.62.0</a>, not to the
 latest source code.</p><p>In the beginning of 2023, significant changes have been made in the layering.
@@ -8,12 +9,14 @@ stack, below the mux, such that it only covers the SMAPIv1 backend and not
 SMAPIv3. Also, all of the code (from xcp-idl etc) is now present in this repo
 (xen-api).</p></div></div><p>Xapi directly communicates only with the SMAPIv2 layer. There are no
 plugins directly implementing the SMAPIv2 interface, but the plugins in
-other layers are accessed through it:</p><div class="mermaid align-center">graph TD
-A[xapi] --> B[SMAPIv2 interface]
-B --> C[SMAPIv2 &lt;-> SMAPIv1 translation: storage_access.ml]
-B --> D[SMAPIv2 &lt;-> SMAPIv3 translation: xapi-storage-script]
-C --> E[SMAPIv1 plugins]
-D --> F[SMAPIv3 plugins]</div><h2 id=smapiv1>SMAPIv1</h2><p>These are the files related to SMAPIv1 in <code>xen-api/ocaml/xapi/</code>:</p><ul><li><a href=https://github.com/xapi-project/xen-api/blob/v1.127.0/ocaml/xapi/sm.ml target=_blank>sm.ml</a>:
+other layers are accessed through it:</p><pre class="mermaid align-center">
+graph TD
+A[xapi] --&gt; B[SMAPIv2 interface]
+B --&gt; C[SMAPIv2 &lt;-&gt; SMAPIv1 translation: storage_access.ml]
+B --&gt; D[SMAPIv2 &lt;-&gt; SMAPIv3 translation: xapi-storage-script]
+C --&gt; E[SMAPIv1 plugins]
+D --&gt; F[SMAPIv3 plugins]
+</pre><h2 id=smapiv1>SMAPIv1</h2><p>These are the files related to SMAPIv1 in <code>xen-api/ocaml/xapi/</code>:</p><ul><li><a href=https://github.com/xapi-project/xen-api/blob/v1.127.0/ocaml/xapi/sm.ml target=_blank>sm.ml</a>:
 OCaml &ldquo;bindings&rdquo; for the SMAPIv1 Python &ldquo;drivers&rdquo; (SM)</li><li><a href=https://github.com/xapi-project/xen-api/blob/v1.127.0/ocaml/xapi/sm_exec.ml target=_blank>sm_exec.ml</a>:
 support for implementing the above &ldquo;bindings&rdquo;. The
 parameters are converted to XML-RPC, passed to the relevant python
@@ -77,36 +80,50 @@ for the SR of that PBD.<br>So basically what happens is that xapi registers itse
 server, and forwards incoming function calls to itself through
 <code>message-switch</code>, using its <code>Storage_mux</code> module. These calls are
 forwarded to xapi&rsquo;s <code>SMAPIv1</code> module doing SMAPIv2 -> SMAPIv1
-translation.</p><h4 id=registration-of-the-various-storage-servers>Registration of the various storage servers</h4><div class="mermaid align-center">sequenceDiagram
+translation.</p><h4 id=registration-of-the-various-storage-servers>Registration of the various storage servers</h4><pre class="mermaid align-center">
+sequenceDiagram
 participant q as message-switch
 participant v1 as Storage_access.SMAPIv1
 participant svr as Storage_mux.Server
-Note over q, svr: xapi startup, "Starting SMAPIv1 proxies"
-q ->> v1:org.xen.xapi.storage.sr_type_1
-q ->> v1:org.xen.xapi.storage.sr_type_2
-q ->> v1:org.xen.xapi.storage.sr_type_3
-Note over q, svr: xapi startup, "Starting SM service"
-q ->> svr:org.xen.xapi.storage
+
+Note over q, svr: xapi startup, &#34;Starting SMAPIv1 proxies&#34;
+q -&gt;&gt; v1:org.xen.xapi.storage.sr_type_1
+q -&gt;&gt; v1:org.xen.xapi.storage.sr_type_2
+q -&gt;&gt; v1:org.xen.xapi.storage.sr_type_3
+
+Note over q, svr: xapi startup, &#34;Starting SM service&#34;
+q -&gt;&gt; svr:org.xen.xapi.storage 
+
 Note over q, svr: SR.create, PBD.plug
-svr ->> q:org.xapi.storage.sr_type_2</div><h4 id=what-happens-when-a-smapiv2-function-is-called>What happens when a SMAPIv2 &ldquo;function&rdquo; is called</h4><div class="mermaid align-center">graph TD
-call[SMAPIv2 call] --VDI.attach2--> org.xen.xapi.storage
+svr -&gt;&gt; q:org.xapi.storage.sr_type_2
+</pre><h4 id=what-happens-when-a-smapiv2-function-is-called>What happens when a SMAPIv2 &ldquo;function&rdquo; is called</h4><pre class="mermaid align-center">
+graph TD
+
+call[SMAPIv2 call] --VDI.attach2--&gt; org.xen.xapi.storage
+
 subgraph message-switch
 org.xen.xapi.storage
 org.xen.xapi.storage.SR_type_x
 end
-org.xen.xapi.storage --VDI.attach2--> Storage_impl.Wrapper
+
+org.xen.xapi.storage --VDI.attach2--&gt; Storage_impl.Wrapper
+
 subgraph xapi
 subgraph Storage_mux.server
-Storage_impl.Wrapper --> Storage_mux.mux
+Storage_impl.Wrapper --&gt; Storage_mux.mux
 end
 Storage_access.SMAPIv1
 end
-Storage_mux.mux --VDI.attach2--> org.xen.xapi.storage.SR_type_x
-org.xen.xapi.storage.SR_type_x --VDI.attach2--> Storage_access.SMAPIv1
+
+Storage_mux.mux --VDI.attach2--&gt; org.xen.xapi.storage.SR_type_x
+org.xen.xapi.storage.SR_type_x --VDI.attach2--&gt; Storage_access.SMAPIv1
+
 subgraph SMAPIv1
 driver_x[SMAPIv1 driver for SR_type_x]
 end
-Storage_access.SMAPIv1 --vdi_attach--> driver_x</div><h3 id=interface-changes-backward-compatibility--sxm>Interface Changes, Backward Compatibility, & SXM</h3><p>During SXM, xapi calls SMAPIv2 functions on a remote xapi. Therefore it
+
+Storage_access.SMAPIv1 --vdi_attach--&gt; driver_x
+</pre><h3 id=interface-changes-backward-compatibility--sxm>Interface Changes, Backward Compatibility, & SXM</h3><p>During SXM, xapi calls SMAPIv2 functions on a remote xapi. Therefore it
 is important to keep all those SMAPIv2 functions backward-compatible
 that we call remotely (e.g. Remote.VDI.attach), otherwise SXM from an
 older to a newer xapi will break.</p><h3 id=functionality-implemented-in-smapiv2-layers>Functionality implemented in SMAPIv2 layers</h3><p>The layer between SMAPIv2 and SMAPIv1 is much fatter than the one between
@@ -163,51 +180,69 @@ are type-checked using the generated Python bindings, and so are the
 outputs. The URIs of the SRs that xapi-storage-script knows about are
 stored in the <code>/var/run/nonpersistent/xapi-storage-script/state.db</code>
 file, these URIs can be used on the command line when an sr argument is
-expected.<code></code></p><h4 id=registration-of-the-various-smapiv3-plugins>Registration of the various SMAPIv3 plugins</h4><div class="mermaid align-center">sequenceDiagram
+expected.<code></code></p><h4 id=registration-of-the-various-smapiv3-plugins>Registration of the various SMAPIv3 plugins</h4><pre class="mermaid align-center">
+sequenceDiagram
 participant q as message-switch
 participant v1 as (Storage_access.SMAPIv1)
 participant svr as Storage_mux.Server
 participant vol_dir as /../volume/
 participant dp_dir as /../datapath/
 participant script as xapi-storage-script
+
 Note over script, vol_dir: xapi-storage-script startup
-script ->> vol_dir: new subdir org.xen.xapi.storage.sr_type_4
-q ->> script: org.xen.xapi.storage.sr_type_4
-script ->> dp_dir: new subdir sr_type_4_dp
-Note over q, svr: xapi startup, "Starting SMAPIv1 proxies"
-q -->> v1:org.xen.xapi.storage.sr_type_1
-q -->> v1:org.xen.xapi.storage.sr_type_2
-q -->> v1:org.xen.xapi.storage.sr_type_3
-Note over q, svr: xapi startup, "Starting SM service"
-q ->> svr:org.xen.xapi.storage
+script -&gt;&gt; vol_dir: new subdir org.xen.xapi.storage.sr_type_4
+q -&gt;&gt; script: org.xen.xapi.storage.sr_type_4
+script -&gt;&gt; dp_dir: new subdir sr_type_4_dp
+
+Note over q, svr: xapi startup, &#34;Starting SMAPIv1 proxies&#34;
+q --&gt;&gt; v1:org.xen.xapi.storage.sr_type_1
+q --&gt;&gt; v1:org.xen.xapi.storage.sr_type_2
+q --&gt;&gt; v1:org.xen.xapi.storage.sr_type_3
+
+Note over q, svr: xapi startup, &#34;Starting SM service&#34;
+q -&gt;&gt; svr:org.xen.xapi.storage 
+
 Note over q, svr: SR.create, PBD.plug
-svr ->> q:org.xapi.storage.sr_type_4</div><h4 id=what-happens-when-a-smapiv3-function-is-called>What happens when a SMAPIv3 &ldquo;function&rdquo; is called</h4><div class="mermaid align-center">graph TD
-call[SMAPIv2 call] --VDI.attach2--> org.xen.xapi.storage
+svr -&gt;&gt; q:org.xapi.storage.sr_type_4
+</pre><h4 id=what-happens-when-a-smapiv3-function-is-called>What happens when a SMAPIv3 &ldquo;function&rdquo; is called</h4><pre class="mermaid align-center">
+graph TD
+
+call[SMAPIv2 call] --VDI.attach2--&gt; org.xen.xapi.storage
+
 subgraph message-switch
 org.xen.xapi.storage
 org.xen.xapi.storage.SR_type_x
 end
-org.xen.xapi.storage --VDI.attach2--> Storage_impl.Wrapper
+
+org.xen.xapi.storage --VDI.attach2--&gt; Storage_impl.Wrapper
+
 subgraph xapi
 subgraph Storage_mux.server
-Storage_impl.Wrapper --> Storage_mux.mux
+Storage_impl.Wrapper --&gt; Storage_mux.mux
 end
 Storage_access.SMAPIv1
 end
-Storage_mux.mux --VDI.attach2--> org.xen.xapi.storage.SR_type_x
-org.xen.xapi.storage.SR_type_x -."VDI.attach2".-> Storage_access.SMAPIv1
+
+Storage_mux.mux --VDI.attach2--&gt; org.xen.xapi.storage.SR_type_x
+
+org.xen.xapi.storage.SR_type_x -.&#34;VDI.attach2&#34;.-&gt; Storage_access.SMAPIv1
+
 subgraph SMAPIv1
 driver_x[SMAPIv1 driver for SR_type_x]
 end
-Storage_access.SMAPIv1 -.vdi_attach.-> driver_x
+
+Storage_access.SMAPIv1 -.vdi_attach.-&gt; driver_x
+
 subgraph SMAPIv3
-xapi-storage-script --Datapath.attach--> v3_dp_plugin_x
+xapi-storage-script --Datapath.attach--&gt; v3_dp_plugin_x
 subgraph SMAPIv3 plugins
 v3_vol_plugin_x[volume plugin for SR_type_x]
 v3_dp_plugin_x[datapath plugin for SR_type_x]
 end
 end
-org.xen.xapi.storage.SR_type_x --VDI.attach2-->xapi-storage-script</div><h2 id=error-reporting>Error reporting</h2><p>In our SMAPIv1 OCaml &ldquo;bindings&rdquo; in xapi
+
+org.xen.xapi.storage.SR_type_x --VDI.attach2--&gt;xapi-storage-script
+</pre><h2 id=error-reporting>Error reporting</h2><p>In our SMAPIv1 OCaml &ldquo;bindings&rdquo; in xapi
 (<a href=https://github.com/xapi-project/xen-api/blob/v1.127.0/ocaml/xapi/sm_exec.ml target=_blank>xen-api/ocaml/xapi/sm_exec.ml</a>),
 <a href=https://github.com/xapi-project/xen-api/blob/v1.127.0/ocaml/xapi/sm_exec.ml#L199 target=_blank>when we inspect the error codes returned from a call to
 SM</a>,
@@ -247,121 +282,132 @@ amount of data copied. When we copy over a VDI, the content_id will
 initially be the same. However, when we attach a VDI as read-write,
 and then detach it, then we will blank its content_id (set it to a
 random UUID), because we may have written to it, so the content
-could be different. .</li></ul><footer class=footline></footer></article><section><h1 class=a11y-only>Subsections of XAPI's Storage Layers</h1><article class=default><header class=headline></header><h1 id=storage-migration>Storage migration</h1><h2 id=overview>Overview</h2><div class="mermaid align-left">sequenceDiagram
+could be different. .</li></ul><footer class=footline></footer></article><section><h1 class=a11y-only>Subsections of XAPI's Storage Layers</h1><article class=default><header class=headline></header><h1 id=storage-migration>Storage migration</h1><h2 id=overview>Overview</h2><pre class="mermaid align-left">
+sequenceDiagram
 participant local_tapdisk as local tapdisk
 participant local_smapiv2 as local SMAPIv2
 participant xapi
 participant remote_xapi as remote xapi
 participant remote_smapiv2 as remote SMAPIv2 (might redirect)
 participant remote_tapdisk as remote tapdisk
+
 Note over xapi: Sort VDIs increasingly by size and then age
-loop VM's & snapshots' VDIs & suspend images
-xapi->>remote_xapi: plug dest SR to dest host and pool master
-alt VDI is not mirrored
-Note over xapi: We don't mirror RO VDIs & VDIs of snapshots
-xapi->>local_smapiv2: DATA.copy remote_sm_url
-activate local_smapiv2
-local_smapiv2-->>local_smapiv2: SR.scan
-local_smapiv2-->>local_smapiv2: VDI.similar_content
-local_smapiv2-->>remote_smapiv2: SR.scan
-Note over local_smapiv2: Find nearest smaller remote VDI remote_base, if any
-alt remote_base
-local_smapiv2-->>remote_smapiv2: VDI.clone
-local_smapiv2-->>remote_smapiv2: VDI.resize
-else no remote_base
-local_smapiv2-->>remote_smapiv2: VDI.create
-end
-Note over local_smapiv2: call copy'
-activate local_smapiv2
-local_smapiv2-->>remote_smapiv2: SR.list
-local_smapiv2-->>remote_smapiv2: SR.scan
-Note over local_smapiv2: create new datapaths remote_dp, base_dp, leaf_dp
-Note over local_smapiv2: find local base_vdi with same content_id as dest, if any
-local_smapiv2-->>remote_smapiv2: VDI.attach2 remote_dp dest
-local_smapiv2-->>remote_smapiv2: VDI.activate remote_dp dest
-opt base_vdi
-local_smapiv2-->>local_smapiv2: VDI.attach2 base_dp base_vdi
-local_smapiv2-->>local_smapiv2: VDI.activate base_dp base_vdi
-end
-local_smapiv2-->>local_smapiv2: VDI.attach2 leaf_dp vdi
-local_smapiv2-->>local_smapiv2: VDI.activate leaf_dp vdi
-local_smapiv2-->>remote_xapi: sparse_dd base_vdi vdi dest [NBD URI for dest & remote_dp]
-Note over remote_xapi: HTTP handler verifies credentials
-remote_xapi-->>remote_tapdisk: then passes connection to tapdisk's NBD server
-local_smapiv2-->>local_smapiv2: VDI.deactivate leaf_dp vdi
-local_smapiv2-->>local_smapiv2: VDI.detach leaf_dp vdi
-opt base_vdi
-local_smapiv2-->>local_smapiv2: VDI.deactivate base_dp base_vdi
-local_smapiv2-->>local_smapiv2: VDI.detach base_dp base_vdi
-end
-local_smapiv2-->>remote_smapiv2: DP.destroy remote_dp
-deactivate local_smapiv2
-local_smapiv2-->>remote_smapiv2: VDI.snapshot remote_copy
-local_smapiv2-->>remote_smapiv2: VDI.destroy remote_copy
-local_smapiv2->>xapi: task(snapshot)
-deactivate local_smapiv2
-else VDI is mirrored
-Note over xapi: We mirror RW VDIs of the VM
-Note over xapi: create new datapath dp
-xapi->>local_smapiv2: VDI.attach2 dp
-xapi->>local_smapiv2: VDI.activate dp
-xapi->>local_smapiv2: DATA.MIRROR.start dp remote_sm_url
-activate local_smapiv2
-Note over local_smapiv2: copy disk data & mirror local writes
-local_smapiv2-->>local_smapiv2: SR.scan
-local_smapiv2-->>local_smapiv2: VDI.similar_content
-local_smapiv2-->>remote_smapiv2: DATA.MIRROR.receive_start similars
-activate remote_smapiv2
-remote_smapiv2-->>local_smapiv2: mirror_vdi,mirror_dp,copy_diffs_from,copy_diffs_to,dummy_vdi
-deactivate remote_smapiv2
-local_smapiv2-->>local_smapiv2: DP.attach_info dp
-local_smapiv2-->>remote_xapi: connect to [NBD URI for mirror_vdi & mirror_dp]
-Note over remote_xapi: HTTP handler verifies credentials
-remote_xapi-->>remote_tapdisk: then passes connection to tapdisk's NBD server
-local_smapiv2-->>local_tapdisk: pass socket & dp to tapdisk of dp
-local_smapiv2-->>local_smapiv2: VDI.snapshot local_vdi [mirror:dp]
-local_smapiv2-->>local_tapdisk: [Python] unpause disk, pass dp
-local_tapdisk-->>remote_tapdisk: mirror new writes via NBD to socket
-Note over local_smapiv2: call copy' snapshot copy_diffs_to
-local_smapiv2-->>remote_smapiv2: VDI.compose copy_diffs_to mirror_vdi
-local_smapiv2-->>remote_smapiv2: VDI.remove_from_sm_config mirror_vdi base_mirror
-local_smapiv2-->>remote_smapiv2: VDI.destroy dummy_vdi
-local_smapiv2-->>local_smapiv2: VDI.destroy snapshot
-local_smapiv2->>xapi: task(mirror ID)
-deactivate local_smapiv2
-xapi->>local_smapiv2: DATA.MIRROR.stat
-activate local_smapiv2
-local_smapiv2->>xapi: dest_vdi
-deactivate local_smapiv2
-end
-loop until task finished
-xapi->>local_smapiv2: UPDATES.get
-xapi->>local_smapiv2: TASK.stat
-end
-xapi->>local_smapiv2: TASK.stat
-xapi->>local_smapiv2: TASK.destroy
+
+loop VM&#39;s &amp; snapshots&#39; VDIs &amp; suspend images
+  xapi-&gt;&gt;remote_xapi: plug dest SR to dest host and pool master
+  alt VDI is not mirrored
+    Note over xapi: We don&#39;t mirror RO VDIs &amp; VDIs of snapshots
+    xapi-&gt;&gt;local_smapiv2: DATA.copy remote_sm_url
+
+    activate local_smapiv2
+    local_smapiv2--&gt;&gt;local_smapiv2: SR.scan
+    local_smapiv2--&gt;&gt;local_smapiv2: VDI.similar_content
+    local_smapiv2--&gt;&gt;remote_smapiv2: SR.scan
+    Note over local_smapiv2: Find nearest smaller remote VDI remote_base, if any
+    alt remote_base
+      local_smapiv2--&gt;&gt;remote_smapiv2: VDI.clone
+      local_smapiv2--&gt;&gt;remote_smapiv2: VDI.resize
+    else no remote_base
+      local_smapiv2--&gt;&gt;remote_smapiv2: VDI.create
+    end
+
+    Note over local_smapiv2: call copy&#39;
+    activate local_smapiv2
+    local_smapiv2--&gt;&gt;remote_smapiv2: SR.list
+    local_smapiv2--&gt;&gt;remote_smapiv2: SR.scan
+    Note over local_smapiv2: create new datapaths remote_dp, base_dp, leaf_dp
+    Note over local_smapiv2: find local base_vdi with same content_id as dest, if any
+    local_smapiv2--&gt;&gt;remote_smapiv2: VDI.attach2 remote_dp dest
+    local_smapiv2--&gt;&gt;remote_smapiv2: VDI.activate remote_dp dest
+    opt base_vdi
+      local_smapiv2--&gt;&gt;local_smapiv2: VDI.attach2 base_dp base_vdi
+      local_smapiv2--&gt;&gt;local_smapiv2: VDI.activate base_dp base_vdi
+    end
+    local_smapiv2--&gt;&gt;local_smapiv2: VDI.attach2 leaf_dp vdi
+    local_smapiv2--&gt;&gt;local_smapiv2: VDI.activate leaf_dp vdi
+    local_smapiv2--&gt;&gt;remote_xapi: sparse_dd base_vdi vdi dest [NBD URI for dest &amp; remote_dp]
+    Note over remote_xapi: HTTP handler verifies credentials
+    remote_xapi--&gt;&gt;remote_tapdisk: then passes connection to tapdisk&#39;s NBD server
+    local_smapiv2--&gt;&gt;local_smapiv2: VDI.deactivate leaf_dp vdi
+    local_smapiv2--&gt;&gt;local_smapiv2: VDI.detach leaf_dp vdi
+    opt base_vdi
+      local_smapiv2--&gt;&gt;local_smapiv2: VDI.deactivate base_dp base_vdi
+      local_smapiv2--&gt;&gt;local_smapiv2: VDI.detach base_dp base_vdi
+    end
+    local_smapiv2--&gt;&gt;remote_smapiv2: DP.destroy remote_dp
+    deactivate local_smapiv2
+
+    local_smapiv2--&gt;&gt;remote_smapiv2: VDI.snapshot remote_copy
+    local_smapiv2--&gt;&gt;remote_smapiv2: VDI.destroy remote_copy
+    local_smapiv2-&gt;&gt;xapi: task(snapshot)
+    deactivate local_smapiv2
+
+  else VDI is mirrored
+    Note over xapi: We mirror RW VDIs of the VM
+    Note over xapi: create new datapath dp
+    xapi-&gt;&gt;local_smapiv2: VDI.attach2 dp
+    xapi-&gt;&gt;local_smapiv2: VDI.activate dp
+    xapi-&gt;&gt;local_smapiv2: DATA.MIRROR.start dp remote_sm_url
+
+    activate local_smapiv2
+    Note over local_smapiv2: copy disk data &amp; mirror local writes
+    local_smapiv2--&gt;&gt;local_smapiv2: SR.scan
+    local_smapiv2--&gt;&gt;local_smapiv2: VDI.similar_content
+    local_smapiv2--&gt;&gt;remote_smapiv2: DATA.MIRROR.receive_start similars
+    activate remote_smapiv2
+    remote_smapiv2--&gt;&gt;local_smapiv2: mirror_vdi,mirror_dp,copy_diffs_from,copy_diffs_to,dummy_vdi
+    deactivate remote_smapiv2
+    local_smapiv2--&gt;&gt;local_smapiv2: DP.attach_info dp
+    local_smapiv2--&gt;&gt;remote_xapi: connect to [NBD URI for mirror_vdi &amp; mirror_dp]
+    Note over remote_xapi: HTTP handler verifies credentials
+    remote_xapi--&gt;&gt;remote_tapdisk: then passes connection to tapdisk&#39;s NBD server
+    local_smapiv2--&gt;&gt;local_tapdisk: pass socket &amp; dp to tapdisk of dp
+    local_smapiv2--&gt;&gt;local_smapiv2: VDI.snapshot local_vdi [mirror:dp]
+    local_smapiv2--&gt;&gt;local_tapdisk: [Python] unpause disk, pass dp
+    local_tapdisk--&gt;&gt;remote_tapdisk: mirror new writes via NBD to socket
+    Note over local_smapiv2: call copy&#39; snapshot copy_diffs_to
+    local_smapiv2--&gt;&gt;remote_smapiv2: VDI.compose copy_diffs_to mirror_vdi
+    local_smapiv2--&gt;&gt;remote_smapiv2: VDI.remove_from_sm_config mirror_vdi base_mirror
+    local_smapiv2--&gt;&gt;remote_smapiv2: VDI.destroy dummy_vdi
+    local_smapiv2--&gt;&gt;local_smapiv2: VDI.destroy snapshot
+    local_smapiv2-&gt;&gt;xapi: task(mirror ID)
+    deactivate local_smapiv2
+
+    xapi-&gt;&gt;local_smapiv2: DATA.MIRROR.stat
+    activate local_smapiv2
+    local_smapiv2-&gt;&gt;xapi: dest_vdi
+    deactivate local_smapiv2
+  end
+
+  loop until task finished
+    xapi-&gt;&gt;local_smapiv2: UPDATES.get
+    xapi-&gt;&gt;local_smapiv2: TASK.stat
+  end
+  xapi-&gt;&gt;local_smapiv2: TASK.stat
+  xapi-&gt;&gt;local_smapiv2: TASK.destroy
 end
 opt for snapshot VDIs
-xapi->>local_smapiv2: SR.update_snapshot_info_src remote_sm_url
-activate local_smapiv2
-local_smapiv2-->>remote_smapiv2: SR.update_snapshot_info_dest
-deactivate local_smapiv2
+  xapi-&gt;&gt;local_smapiv2: SR.update_snapshot_info_src remote_sm_url
+  activate local_smapiv2
+  local_smapiv2--&gt;&gt;remote_smapiv2: SR.update_snapshot_info_dest
+  deactivate local_smapiv2
 end
 Note over xapi: ...
 Note over xapi: reserve resources for the new VM in dest host
 loop all VDIs
-opt VDI is mirrored
-xapi->>local_smapiv2: DP.destroy dp
-end
+  opt VDI is mirrored
+    xapi-&gt;&gt;local_smapiv2: DP.destroy dp
+  end
 end
 opt post_detach_hook
-opt active local mirror
-local_smapiv2-->>remote_smapiv2: DATA.MIRROR.receive_finalize [mirror ID]
-Note over remote_smapiv2: destroy mirror dp
-end
+  opt active local mirror
+    local_smapiv2--&gt;&gt;remote_smapiv2: DATA.MIRROR.receive_finalize [mirror ID]
+    Note over remote_smapiv2: destroy mirror dp
+  end
 end
 Note over xapi: memory image migration by xenopsd
-Note over xapi: destroy the VM record</div><h3 id=receiving-sxm>Receiving SXM</h3><p>These are the remote calls in the above diagram sent from the remote host to
+Note over xapi: destroy the VM record
+</pre><h3 id=receiving-sxm>Receiving SXM</h3><p>These are the remote calls in the above diagram sent from the remote host to
 the receiving end of storage motion:</p><ul><li>Remote SMAPIv2 -> local SMAPIv2 RPC calls:<ul><li><code>SR.list</code></li><li><code>SR.scan</code></li><li><code>SR.update_snapshot_info_dest</code></li><li><code>VDI.attach2</code></li><li><code>VDI.activate</code></li><li><code>VDI.snapshot</code></li><li><code>VDI.destroy</code></li><li>For copying:<ul><li>For copying from base:<ul><li><code>VDI.clone</code></li><li><code>VDI.resize</code></li></ul></li><li>For copying without base:<ul><li><code>VDI.create</code></li></ul></li></ul></li><li>For mirroring:<ul><li><code>DATA.MIRROR.receive_start</code></li><li><code>VDI.compose</code></li><li><code>VDI.remove_from_sm_config</code></li><li><code>DATA.MIRROR.receive_finalize</code></li></ul></li></ul></li><li>HTTP requests to xapi:<ul><li>Connecting to NBD URI via xapi&rsquo;s HTTP handler</li></ul></li></ul><hr><p>This is how xapi coordinates storage migration. We&rsquo;ll do it as a code walkthrough through the two layers: xapi and storage-in-xapi (SMAPIv2).</p><h2 id=xapi-code>Xapi code</h2><p>The entry point is in <a href=https://github.com/xapi-project/xen-api/blob/f75d51e7a3eff89d952330ec1a739df85a2895e2/ocaml/xapi/xapi_vm_migrate.ml#L786 target=_blank>xapi_vm_migration.ml</a></p><p>The function takes several arguments:</p><ul><li>a vm reference (<code>vm</code>)</li><li>a dictionary of <code>(string * string)</code> key-value pairs about the destination (<code>dest)</code>. This is the result of a previous call to the destination pool, <code>Host.migrate_receive</code></li><li><code>live</code>, a boolean of whether we should live-migrate or suspend-resume,</li><li><code>vdi_map</code>, a mapping of VDI references to destination SR references,</li><li><code>vif_map</code>, a mapping of VIF references to destination network references,</li><li><code>vgpu_map</code>, similar for VGPUs</li><li><code>options</code>, another dictionary of options</li></ul><div class="wrap-code highlight"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ocaml data-lang=ocaml><span style=display:flex><span><span style=color:#66d9ef>let</span> migrate_send&#39;  <span style=color:#f92672>~__</span>context <span style=color:#f92672>~</span>vm <span style=color:#f92672>~</span>dest <span style=color:#f92672>~</span>live <span style=color:#f92672>~</span>vdi_map <span style=color:#f92672>~</span>vif_map <span style=color:#f92672>~</span>vgpu_map <span style=color:#f92672>~</span>options <span style=color:#f92672>=</span>
 </span></span><span style=display:flex><span>  SMPERF.debug <span style=color:#e6db74>&#34;vm.migrate_send called vm:%s&#34;</span> <span style=color:#f92672>(</span>Db.VM.get_uuid <span style=color:#f92672>~__</span>context <span style=color:#f92672>~</span>self<span style=color:#f92672>:</span>vm<span style=color:#f92672>);</span>
 </span></span><span style=display:flex><span>
@@ -1238,4 +1284,4 @@ Once again we construct a module to do remote SMAPIv2 calls</p><div class="wrap-
 </span></span><span style=display:flex><span>        error <span style=color:#e6db74>&#34;Caught exception while finally checking mirror state: %s&#34;</span>
 </span></span><span style=display:flex><span>          <span style=color:#f92672>(</span>Printexc.to_string e<span style=color:#f92672>);</span>
 </span></span><span style=display:flex><span>        s<span style=color:#f92672>.</span>failed <span style=color:#f92672>&lt;-</span> true
-</span></span><span style=display:flex><span>    <span style=color:#f92672>)</span></span></span></code></pre></div><footer class=footline></footer></article></section></div></main></div><script src=/new-docs/js/clipboard.min.js?1737974513 defer></script><script src=/new-docs/js/perfect-scrollbar.min.js?1737974513 defer></script><script src=/new-docs/js/d3/d3-color.min.js?1737974513 defer></script><script src=/new-docs/js/d3/d3-dispatch.min.js?1737974513 defer></script><script src=/new-docs/js/d3/d3-drag.min.js?1737974513 defer></script><script src=/new-docs/js/d3/d3-ease.min.js?1737974513 defer></script><script src=/new-docs/js/d3/d3-interpolate.min.js?1737974513 defer></script><script src=/new-docs/js/d3/d3-selection.min.js?1737974513 defer></script><script src=/new-docs/js/d3/d3-timer.min.js?1737974513 defer></script><script src=/new-docs/js/d3/d3-transition.min.js?1737974513 defer></script><script src=/new-docs/js/d3/d3-zoom.min.js?1737974513 defer></script><script src=/new-docs/js/js-yaml.min.js?1737974513 defer></script><script src=/new-docs/js/mermaid.min.js?1737974513 defer></script><script>window.themeUseMermaid=JSON.parse("{}")</script><script src=/new-docs/js/theme.js?1737974513 defer></script></body></html>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>)</span></span></span></code></pre></div><footer class=footline></footer></article></section></div></main></div><script src=/new-docs/js/clipboard.min.js?1737986894 defer></script><script src=/new-docs/js/perfect-scrollbar.min.js?1737986894 defer></script><script src=/new-docs/js/d3/d3-color.min.js?1737986894 defer></script><script src=/new-docs/js/d3/d3-dispatch.min.js?1737986894 defer></script><script src=/new-docs/js/d3/d3-drag.min.js?1737986894 defer></script><script src=/new-docs/js/d3/d3-ease.min.js?1737986894 defer></script><script src=/new-docs/js/d3/d3-interpolate.min.js?1737986894 defer></script><script src=/new-docs/js/d3/d3-selection.min.js?1737986894 defer></script><script src=/new-docs/js/d3/d3-timer.min.js?1737986894 defer></script><script src=/new-docs/js/d3/d3-transition.min.js?1737986894 defer></script><script src=/new-docs/js/d3/d3-zoom.min.js?1737986894 defer></script><script src=/new-docs/js/js-yaml.min.js?1737986894 defer></script><script src=/new-docs/js/mermaid.min.js?1737986894 defer></script><script>window.themeUseMermaid=JSON.parse("{}")</script><script src=/new-docs/js/theme.js?1737986894 defer></script></body></html>
