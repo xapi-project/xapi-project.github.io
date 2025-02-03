@@ -1,12 +1,15 @@
-<!doctype html><html lang=en dir=ltr><head><meta charset=utf-8><meta name=viewport content="height=device-height,width=device-width,initial-scale=1,minimum-scale=1"><meta name=generator content="Hugo 0.127.0"><meta name=generator content="Relearn 5.23.0"><meta name=description content><meta name=author content><meta name=twitter:card content="summary"><meta name=twitter:title content="Squeezed :: XAPI Toolstack Developer Documentation"><meta name=twitter:description content><meta property="og:title" content="Squeezed :: XAPI Toolstack Developer Documentation"><meta property="og:description" content><meta property="og:type" content="website"><meta property="og:url" content="https://xapi-project.github.io/new-docs/squeezed/index.html"><meta property="og:site_name" content="XAPI Toolstack Developer Documentation"><title>Squeezed :: XAPI Toolstack Developer Documentation</title>
-<link href=https://xapi-project.github.io/new-docs/squeezed/index.html rel=canonical type=text/html title="Squeezed :: XAPI Toolstack Developer Documentation"><link href=/new-docs/squeezed/index.xml rel=alternate type=application/rss+xml title="Squeezed :: XAPI Toolstack Developer Documentation"><link href=/new-docs/images/favicon.png?1738343805 rel=icon type=image/png><link href=/new-docs/css/fontawesome-all.min.css?1738343810 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/fontawesome-all.min.css?1738343810 rel=stylesheet></noscript><link href=/new-docs/css/nucleus.css?1738343810 rel=stylesheet><link href=/new-docs/css/auto-complete.css?1738343810 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/auto-complete.css?1738343810 rel=stylesheet></noscript><link href=/new-docs/css/perfect-scrollbar.min.css?1738343810 rel=stylesheet><link href=/new-docs/css/fonts.css?1738343810 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/fonts.css?1738343810 rel=stylesheet></noscript><link href=/new-docs/css/theme.css?1738343810 rel=stylesheet><link href=/new-docs/css/theme-auto.css?1738343810 rel=stylesheet id=R-variant-style><link href=/new-docs/css/variant.css?1738343810 rel=stylesheet><link href=/new-docs/css/print.css?1738343810 rel=stylesheet media=print><link href=/new-docs/css/format-print.css?1738343810 rel=stylesheet><link href=/new-docs/css/ie.css?1738343810 rel=stylesheet><script src=/new-docs/js/url.js?1738343810></script><script src=/new-docs/js/variant.js?1738343810></script><script>window.index_js_url="/new-docs/index.search.js";var baseUriFull,root_url="/",baseUri=root_url.replace(/\/$/,"");window.T_Copy_to_clipboard="Copy to clipboard",window.T_Copied_to_clipboard="Copied to clipboard!",window.T_Copy_link_to_clipboard="Copy link to clipboard",window.T_Link_copied_to_clipboard="Copied link to clipboard!",window.T_Reset_view="Reset view",window.T_View_reset="View reset!",window.T_No_results_found='No results found for "{0}"',window.T_N_results_found='{1} results found for "{0}"',baseUriFull="https://xapi-project.github.io/new-docs/",window.variants&&variants.init(["auto","zen-light","zen-dark","red","blue","green","learn","neon","relearn-light","relearn-bright","relearn-dark"])</script><link rel=stylesheet href=https://xapi-project.github.io/new-docs/css/misc.css></head><body class="mobile-support print" data-url=/new-docs/squeezed/index.html><div id=R-body class=default-animation><div id=R-body-overlay></div><nav id=R-topbar><div class=topbar-wrapper><div class=topbar-sidebar-divider></div><div class="topbar-area topbar-area-start" data-area=start><div class="topbar-button topbar-button-sidebar" data-content-empty=disable data-width-s=show data-width-m=hide data-width-l=hide><button class=topbar-control onclick=toggleNav() type=button title="Menu (CTRL+ALT+n)">
-<i class="fa-fw fas fa-bars"></i></button></div></div><ol class="topbar-breadcrumbs breadcrumbs highlightable" itemscope itemtype=http://schema.org/BreadcrumbList><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/index.html><span itemprop=name>XAPI Toolstack Developer Guide</span></a><meta itemprop=position content="1">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><span itemprop=name>Squeezed</span><meta itemprop=position content="2"></li></ol><div class="topbar-area topbar-area-end" data-area=end></div></div></nav><div id=R-main-overlay></div><main id=R-body-inner class="highlightable default" tabindex=-1><div class=flex-block-wrapper><article class=default><header class=headline></header><h1 id=squeezed>Squeezed</h1><p>Squeezed is the XAPI Toolstack&rsquo;s host memory manager (aka balloon driver).
+<!doctype html><html lang=en-us dir=ltr itemscope itemtype=http://schema.org/Article data-r-output-format=print><head><meta charset=utf-8><meta name=viewport content="height=device-height,width=device-width,initial-scale=1,minimum-scale=1"><meta name=generator content="Hugo 0.127.0"><meta name=generator content="Relearn 7.3.2"><meta name=description content="Squeezed is the XAPI Toolstack’s host memory manager (aka balloon driver). Squeezed uses ballooning to move memory between running VMs, to avoid wasting host memory.
+Principles Avoid wasting host memory: unused memory should be put to use by returning it to VMs. Memory should be shared in proportion to the configured policy. Operate entirely at the level of domains (not VMs), and be independent of Xen toolstack."><meta name=author content><meta name=twitter:card content="summary"><meta name=twitter:title content="Squeezed :: XAPI Toolstack Developer Documentation"><meta name=twitter:description content="Squeezed is the XAPI Toolstack’s host memory manager (aka balloon driver). Squeezed uses ballooning to move memory between running VMs, to avoid wasting host memory.
+Principles Avoid wasting host memory: unused memory should be put to use by returning it to VMs. Memory should be shared in proportion to the configured policy. Operate entirely at the level of domains (not VMs), and be independent of Xen toolstack."><meta property="og:url" content="https://xapi-project.github.io/new-docs/squeezed/index.html"><meta property="og:site_name" content="XAPI Toolstack Developer Documentation"><meta property="og:title" content="Squeezed :: XAPI Toolstack Developer Documentation"><meta property="og:description" content="Squeezed is the XAPI Toolstack’s host memory manager (aka balloon driver). Squeezed uses ballooning to move memory between running VMs, to avoid wasting host memory.
+Principles Avoid wasting host memory: unused memory should be put to use by returning it to VMs. Memory should be shared in proportion to the configured policy. Operate entirely at the level of domains (not VMs), and be independent of Xen toolstack."><meta property="og:locale" content="en_us"><meta property="og:type" content="website"><meta itemprop=name content="Squeezed :: XAPI Toolstack Developer Documentation"><meta itemprop=description content="Squeezed is the XAPI Toolstack’s host memory manager (aka balloon driver). Squeezed uses ballooning to move memory between running VMs, to avoid wasting host memory.
+Principles Avoid wasting host memory: unused memory should be put to use by returning it to VMs. Memory should be shared in proportion to the configured policy. Operate entirely at the level of domains (not VMs), and be independent of Xen toolstack."><meta itemprop=wordCount content="67"><title>Squeezed :: XAPI Toolstack Developer Documentation</title>
+<link href=https://xapi-project.github.io/new-docs/squeezed/index.html rel=canonical type=text/html title="Squeezed :: XAPI Toolstack Developer Documentation"><link href=/new-docs/squeezed/index.xml rel=alternate type=application/rss+xml title="Squeezed :: XAPI Toolstack Developer Documentation"><link href=/new-docs/images/favicon.png?1738585003 rel=icon type=image/png><link href=/new-docs/css/fontawesome-all.min.css?1738585003 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/fontawesome-all.min.css?1738585003 rel=stylesheet></noscript><link href=/new-docs/css/auto-complete.css?1738585003 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/auto-complete.css?1738585003 rel=stylesheet></noscript><link href=/new-docs/css/perfect-scrollbar.min.css?1738585003 rel=stylesheet><link href=/new-docs/css/theme.min.css?1738585003 rel=stylesheet><link href=/new-docs/css/format-print.min.css?1738585003 rel=stylesheet id=R-format-style><script>window.relearn=window.relearn||{},window.relearn.relBasePath="..",window.relearn.relBaseUri="../..",window.relearn.absBaseUri="https://xapi-project.github.io/new-docs",window.relearn.min=`.min`,window.relearn.disableAnchorCopy=!1,window.relearn.disableAnchorScrolling=!1,window.relearn.themevariants=["auto","zen-light","zen-dark","red","blue","green","learn","neon","relearn-light","relearn-bright","relearn-dark"],window.relearn.customvariantname="my-custom-variant",window.relearn.changeVariant=function(e){var t=document.documentElement.dataset.rThemeVariant;window.localStorage.setItem(window.relearn.absBaseUri+"/variant",e),document.documentElement.dataset.rThemeVariant=e,t!=e&&document.dispatchEvent(new CustomEvent("themeVariantLoaded",{detail:{variant:e,oldVariant:t}}))},window.relearn.markVariant=function(){var t=window.localStorage.getItem(window.relearn.absBaseUri+"/variant"),e=document.querySelector("#R-select-variant");e&&(e.value=t)},window.relearn.initVariant=function(){var e=window.localStorage.getItem(window.relearn.absBaseUri+"/variant")??"";e==window.relearn.customvariantname||(!e||!window.relearn.themevariants.includes(e))&&(e=window.relearn.themevariants[0],window.localStorage.setItem(window.relearn.absBaseUri+"/variant",e)),document.documentElement.dataset.rThemeVariant=e},window.relearn.initVariant(),window.relearn.markVariant(),window.T_Copy_to_clipboard=`Copy to clipboard`,window.T_Copied_to_clipboard=`Copied to clipboard!`,window.T_Copy_link_to_clipboard=`Copy link to clipboard`,window.T_Link_copied_to_clipboard=`Copied link to clipboard!`,window.T_Reset_view=`Reset view`,window.T_View_reset=`View reset!`,window.T_No_results_found=`No results found for "{0}"`,window.T_N_results_found=`{1} results found for "{0}"`</script><link rel=stylesheet href=https://xapi-project.github.io/new-docs/css/misc.css></head><body class="mobile-support print" data-url=/new-docs/squeezed/index.html><div id=R-body class=default-animation><div id=R-body-overlay></div><nav id=R-topbar><div class=topbar-wrapper><div class=topbar-sidebar-divider></div><div class="topbar-area topbar-area-start" data-area=start><div class="topbar-button topbar-button-sidebar" data-content-empty=disable data-width-s=show data-width-m=hide data-width-l=hide><button class=topbar-control onclick=toggleNav() type=button title="Menu (CTRL+ALT+n)"><i class="fa-fw fas fa-bars"></i></button></div><div class="topbar-button topbar-button-toc" data-content-empty=hide data-width-s=show data-width-m=show data-width-l=show><button class=topbar-control onclick=toggleTopbarFlyout(this) type=button title="Table of Contents (CTRL+ALT+t)"><i class="fa-fw fas fa-list-alt"></i></button><div class=topbar-content><div class=topbar-content-wrapper><nav class=TableOfContents><ul><li><a href=#principles>Principles</a></li></ul></nav></div></div></div></div><ol class="topbar-breadcrumbs breadcrumbs highlightable" itemscope itemtype=http://schema.org/BreadcrumbList><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/index.html><span itemprop=name>XAPI Toolstack Developer Guide</span></a><meta itemprop=position content="1">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><span itemprop=name>Squeezed</span><meta itemprop=position content="2"></li></ol><div class="topbar-area topbar-area-end" data-area=end><div class="topbar-button topbar-button-print" data-content-empty=disable data-width-s=area-more data-width-m=show data-width-l=show><a class=topbar-control href=/new-docs/squeezed/index.print.html title="Print whole chapter (CTRL+ALT+p)"><i class="fa-fw fas fa-print"></i></a></div><div class="topbar-button topbar-button-prev" data-content-empty=disable data-width-s=show data-width-m=show data-width-l=show><a class=topbar-control href=/new-docs/xcp-networkd/index.html title="Networkd (🡐)"><i class="fa-fw fas fa-chevron-left"></i></a></div><div class="topbar-button topbar-button-next" data-content-empty=disable data-width-s=show data-width-m=show data-width-l=show><a class=topbar-control href=/new-docs/squeezed/architecture/index.html title="Architecture (🡒)"><i class="fa-fw fas fa-chevron-right"></i></a></div><div class="topbar-button topbar-button-more" data-content-empty=hide data-width-s=show data-width-m=show data-width-l=show><button class=topbar-control onclick=toggleTopbarFlyout(this) type=button title=More><i class="fa-fw fas fa-ellipsis-v"></i></button><div class=topbar-content><div class=topbar-content-wrapper><div class="topbar-area topbar-area-more" data-area=more></div></div></div></div></div></div></nav><div id=R-main-overlay></div><main id=R-body-inner class="highlightable squeezed" tabindex=-1><div class=flex-block-wrapper><article class=default><header class=headline></header><h1 id=squeezed>Squeezed</h1><p>Squeezed is the XAPI Toolstack&rsquo;s host memory manager (aka balloon driver).
 Squeezed uses ballooning to move memory between running VMs, to avoid wasting
 host memory.</p><h2 id=principles>Principles</h2><ol><li>Avoid wasting host memory: unused memory should be put to use by returning
 it to VMs.</li><li>Memory should be shared in proportion to the configured policy.</li><li>Operate entirely at the level of domains (not VMs), and be independent of
 Xen toolstack.</li></ol><footer class=footline></footer></article><section><h1 class=a11y-only>Subsections of Squeezed</h1><article class=default><header class=headline></header><h1 id=architecture>Architecture</h1><p>Squeezed is responsible for managing the memory on a single host. Squeezed
-&ldquo;balances&rdquo; memory between VMs according to a policy written to Xenstore.</p><p>The following diagram shows the internals of Squeezed:</p><p><a href=#R-image-3803bffac79892d85bdb412d6ae01590 class=lightbox-link><img src=/new-docs/squeezed/architecture/squeezed.png alt="Internals of squeezed" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
-<a href=javascript:history.back(); class=lightbox-back id=R-image-3803bffac79892d85bdb412d6ae01590><img src=/new-docs/squeezed/architecture/squeezed.png alt="Internals of squeezed" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>At the center of squeezed is an abstract model of a Xen host. The model
+&ldquo;balances&rdquo; memory between VMs according to a policy written to Xenstore.</p><p>The following diagram shows the internals of Squeezed:</p><p><a href=#R-image-157ff4124cfab6cc3c9735652c333158 class=lightbox-link><img alt="Internals of squeezed" class="noborder lazy lightbox noshadow figure-image" loading=lazy src=/new-docs/squeezed/architecture/squeezed.png style=height:auto;width:auto></a>
+<a href=javascript:history.back(); class=lightbox-back id=R-image-157ff4124cfab6cc3c9735652c333158><img alt="Internals of squeezed" class="noborder lazy lightbox noshadow lightbox-image" loading=lazy src=/new-docs/squeezed/architecture/squeezed.png></a></p><p>At the center of squeezed is an abstract model of a Xen host. The model
 includes:</p><ul><li>The amount of already-used host memory (used by fixed overheads such as Xen
 and the crash kernel).</li><li>Per-domain memory policy specifically <code>dynamic-min</code> and <code>dynamic-max</code> which
 together describe a range, within which the domain&rsquo;s actual used memory
@@ -24,26 +27,26 @@ fundamentally a co-operative process, so squeezed must handle cases where the
 domains refuse to obey commands.</p><p>The &ldquo;output&rdquo; of squeezed is a list of &ldquo;actions&rdquo; which include:</p><ul><li>Set domain x&rsquo;s <code>memory/target</code> to a new value.</li><li>Set the <code>maxmem</code> of a domain to a new value (as a hard limit beyond which the
 domain cannot allocate).</li></ul><footer class=footline></footer></article><article class=default><header class=headline></header><h1 id=design>Design</h1><p>Squeezed is a single host memory ballooning daemon. It helps by:</p><ol><li>Allowing VM memory to be adjusted dynamically without having to reboot;
 and</li><li>Avoiding wasting memory by keeping everything fully utilised, while retaining
-the ability to take memory back to start new VMs.</li></ol><p>Squeezed currently includes a simple <a href=#ballooning-policy>Ballooning policy</a>
+the ability to take memory back to start new VMs.</li></ol><p>Squeezed currently includes a simple <a href=/new-docs/squeezed/design/index.html#ballooning-policy>Ballooning policy</a>
 which serves as a useful default. The policy is written with respect to an
-abstract <a href=#the-memory-model>Xen memory model</a>, which is based on a number of
-<a href=#environmental-assumptions>assumptions about the environment</a>, for example
+abstract <a href=/new-docs/squeezed/design/index.html#the-memory-model>Xen memory model</a>, which is based on a number of
+<a href=/new-docs/squeezed/design/index.html#environmental-assumptions>assumptions about the environment</a>, for example
 that most domains have co-operative balloon drivers. In theory the policy could
 be replaced later with something more sophisticated (for example see
-[xenballoond](<a href=https://github.com/avsm/xen-unstable/blob/master/tools/xenballoon/ target=_blank>https://github.com/avsm/xen-unstable/blob/master/tools/xenballoon/</a>
-xenballoond.README)).</p><p>The <a href=#toolstack-interface>Toolstack interface</a> is used by Xenopsd to free
+[xenballoond](<a href=https://github.com/avsm/xen-unstable/blob/master/tools/xenballoon/ rel=external target=_blank>https://github.com/avsm/xen-unstable/blob/master/tools/xenballoon/</a>
+xenballoond.README)).</p><p>The <a href=/new-docs/squeezed/design/index.html#toolstack-interface>Toolstack interface</a> is used by Xenopsd to free
 memory for starting new VMs. Although the only known client is Xenopsd, the
 interface can in theory be used by other clients. Multiple clients can safely
-use the interface at the same time.</p><p>The <a href=#the-structure-of-the-daemon>internal structure</a> consists of a
+use the interface at the same time.</p><p>The <a href=/new-docs/squeezed/design/index.html#the-structure-of-the-daemon>internal structure</a> consists of a
 single-thread event loop. To see how it works end-to-end, consult the
-<a href=#example-operation>example</a>.</p><p>No software is ever perfect; to understand the flaws in Squeezed, please
-consult the <a href=#issues>list of issues</a>.</p><h1 id=environmental-assumptions>Environmental assumptions</h1><ol><li><p>The Squeezed daemon runs within a Xen domain 0 and
+<a href=/new-docs/squeezed/design/index.html#example-operation>example</a>.</p><p>No software is ever perfect; to understand the flaws in Squeezed, please
+consult the <a href=/new-docs/squeezed/design/index.html#issues>list of issues</a>.</p><h1 id=environmental-assumptions>Environmental assumptions</h1><ol><li><p>The Squeezed daemon runs within a Xen domain 0 and
 communicates to xenstored via a Unix domain socket. Therefore
 Squeezed
 is granted full access to xenstore, enabling it to modify every
 domain’s <code>memory/target</code>.</p></li><li><p>The Squeezed daemon calls <code>setmaxmem</code> in order to cap the amount of memory
 a domain can use. This relies on a patch to xen which allows <code>maxmem</code> to
-be set lower than <code>totpages</code> See Section <a href=#use-of-maxmem>maxmem</a> for more
+be set lower than <code>totpages</code> See Section <a href=/new-docs/squeezed/design/index.html#use-of-maxmem>maxmem</a> for more
 information.</p></li><li><p>The Squeezed daemon
 assumes that only domains which write <code>control/feature-balloon</code> into
 xenstore can respond to ballooning requests. It will not ask any
@@ -72,7 +75,7 @@ it suffices to
 set <code>memory/target</code> to
 <em>x+<code>totpages</code>-<code>memoryoffset</code></em>
 and wait for the
-balloon driver to finish. See Section <a href=#the-memory-model>memory model</a> for more
+balloon driver to finish. See Section <a href=/new-docs/squeezed/design/index.html#the-memory-model>memory model</a> for more
 detail.</li></ul></li><li><p>The Squeezed daemon must
 maintain a “slush fund” of memory (currently 9MiB) which it must
 prevent any domain from allocating. Since (i) some Xen operations (such
@@ -82,7 +85,7 @@ allocates memory outside these ranges, it follows that by preventing
 guests from allocating <em>all</em> host memory (even
 transiently) we guarantee that memory from within these special
 ranges is always available. Squeezed operates in
-<a href=#two-phase-target-setting>two phases</a>: first causing memory to be freed; and
+<a href=/new-docs/squeezed/design/index.html#two-phase-target-setting>two phases</a>: first causing memory to be freed; and
 second causing memory to be allocated.</p></li><li><p>The Squeezed daemon
 assumes that it may set <code>memory/target</code> to any value within range:
 <code>memory/dynamic-max</code> to <code>memory/dynamic-min</code></p></li><li><p>The Squeezed daemon
@@ -95,10 +98,10 @@ A <em>reservation</em> is: an amount of host free memory tagged
 with an associated <em>reservation id</em>. Note this is an
 internal Squeezed concept and Xen is
 completely unaware of it. When the daemon is moving memory between
-domains, it always aims to keep</p><p><a href=#R-image-4900581842bfe8abdf12ec7aee344c98 class=lightbox-link><img src=/new-docs/squeezed/design/hostfreemem.svg alt="host free memory &amp;gt;= s + sum_i(reservation_i)" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
-<a href=javascript:history.back(); class=lightbox-back id=R-image-4900581842bfe8abdf12ec7aee344c98><img src=/new-docs/squeezed/design/hostfreemem.svg alt="host free memory &amp;gt;= s + sum_i(reservation_i)" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>where <em>s</em> is the size of the “slush fund” (currently 9MiB) and
-<a href=#R-image-638acc0690b20cd72948df51d5aec9e7 class=lightbox-link><img src=/new-docs/squeezed/design/reservation.svg alt=reservation_t class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
-<a href=javascript:history.back(); class=lightbox-back id=R-image-638acc0690b20cd72948df51d5aec9e7><img src=/new-docs/squeezed/design/reservation.svg alt=reservation_t class="lightbox-image noborder lightbox noshadow" loading=lazy></a>
+domains, it always aims to keep</p><p><a href=#R-image-1435c7483c4887eeb5fad503e3089403 class=lightbox-link><img alt="host free memory >= s + sum_i(reservation_i)" class="noborder lazy lightbox noshadow figure-image" loading=lazy src=/new-docs/squeezed/design/hostfreemem.svg style=height:auto;width:auto></a>
+<a href=javascript:history.back(); class=lightbox-back id=R-image-1435c7483c4887eeb5fad503e3089403><img alt="host free memory >= s + sum_i(reservation_i)" class="noborder lazy lightbox noshadow lightbox-image" loading=lazy src=/new-docs/squeezed/design/hostfreemem.svg></a></p><p>where <em>s</em> is the size of the “slush fund” (currently 9MiB) and
+<a href=#R-image-157f2bac9f88901717761ee08035bee8 class=lightbox-link><img alt=reservation_t class="noborder lazy lightbox noshadow figure-image" loading=lazy src=/new-docs/squeezed/design/reservation.svg style=height:auto;width:auto></a>
+<a href=javascript:history.back(); class=lightbox-back id=R-image-157f2bac9f88901717761ee08035bee8><img alt=reservation_t class="noborder lazy lightbox noshadow lightbox-image" loading=lazy src=/new-docs/squeezed/design/reservation.svg></a>
 is the amount corresponding to the <em>i</em>th
 reservation.</p><p>As an aside: Earlier versions of Squeezed always
 associated memory with a Xen domain. Unfortunately
@@ -149,7 +152,7 @@ void transfer_reservation_to_domain(
   string reservation_id,
   int domid
 )
-</code></pre><p><a href=https://github.com/xapi-project/xenopsd/blob/bf4f8d13ded299b56e55a4b36221ada3dfa0b2b1/xc/xenops_server_xen.ml#L353 target=_blank>The Xenopsd code</a> in pseudocode works as follows:</p><pre><code> r_id = reserve_memory_range(&quot;xenopsd&quot;, min, max);
+</code></pre><p><a href=https://github.com/xapi-project/xenopsd/blob/bf4f8d13ded299b56e55a4b36221ada3dfa0b2b1/xc/xenops_server_xen.ml#L353 rel=external target=_blank>The Xenopsd code</a> in pseudocode works as follows:</p><pre><code> r_id = reserve_memory_range(&quot;xenopsd&quot;, min, max);
  try:
     d = domain_create()
     transfer_reservation_to_domain(&quot;xenopsd&quot;, r_id, d)
@@ -167,8 +170,8 @@ the highest value that Squeezed is allowed
 to set <code>memory/target</code>. This can be used to dynamically cap the
 amount of memory a domain can use.</li></ul><p>If all balloon drivers are responsive then Squeezed daemon allocates
 memory proportionally, so that each domain has the same value of:
-<a href=#R-image-61922d6eb4f1170cbf7e202e80462500 class=lightbox-link><img src=/new-docs/squeezed/design/fraction.svg alt=target-min/(max-min) class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
-<a href=javascript:history.back(); class=lightbox-back id=R-image-61922d6eb4f1170cbf7e202e80462500><img src=/new-docs/squeezed/design/fraction.svg alt=target-min/(max-min) class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>So:</p><ul><li><p>if memory is plentiful then all domains will have
+<a href=#R-image-bb170eabd49da1a914f0e30f51395d97 class=lightbox-link><img alt=target-min/(max-min) class="noborder lazy lightbox noshadow figure-image" loading=lazy src=/new-docs/squeezed/design/fraction.svg style=height:auto;width:auto></a>
+<a href=javascript:history.back(); class=lightbox-back id=R-image-bb170eabd49da1a914f0e30f51395d97><img alt=target-min/(max-min) class="noborder lazy lightbox noshadow lightbox-image" loading=lazy src=/new-docs/squeezed/design/fraction.svg></a></p><p>So:</p><ul><li><p>if memory is plentiful then all domains will have
 <code>memory/target</code>=<code>memory/dynamic-max</code></p></li><li><p>if memory is scarce then all domains will have
 <code>memory/target</code>=<code>memory/dynamic-min</code></p></li></ul><p>Note that the values of <code>memory/target</code> suggested by the policy are
 ideal values. In many real-life situations (e.g. when a balloon driver
@@ -182,8 +185,8 @@ domain 0.</p><h1 id=the-memory-model>The memory model</h1><p>Squeezed
 considers a ballooning-aware domain (i.e. one which has written
 the <code>feature-balloon</code> flag into xenstore) to be completely described by
 the parameters:</p><ul><li><p><code>dynamic-min</code>: policy value written to <code>memory/dynamic-min</code> in xenstore by a
-toolstack (see Section <a href=#ballooning-policy>Ballooning policy</a>)</p></li><li><p><code>dynamic-max</code>: policy value written to <code>memory/dynamic-max</code> in xenstore by a
-toolstack (see Section <a href=#ballooning-policy>Ballooning policy</a>)</p></li><li><p><code>target</code>: balloon driver target written to <code>memory/target</code> in xenstore by
+toolstack (see Section <a href=/new-docs/squeezed/design/index.html#ballooning-policy>Ballooning policy</a>)</p></li><li><p><code>dynamic-max</code>: policy value written to <code>memory/dynamic-max</code> in xenstore by a
+toolstack (see Section <a href=/new-docs/squeezed/design/index.html#ballooning-policy>Ballooning policy</a>)</p></li><li><p><code>target</code>: balloon driver target written to <code>memory/target</code> in xenstore by
 Squeezed.</p></li><li><p><code>totpages</code>: instantaneous number of pages used by the domain as returned by
 the hypercall <code>domain_getinfo</code></p></li><li><p><code>memory-offset</code>: constant difference between <code>target</code> and <code>totpages</code> when the
 balloon driver believes no ballooning is necessary: where
@@ -206,8 +209,8 @@ written <code>feature-balloon</code>) to be represented by pairs of:</p><ul><li>
 since the domain will not be
 instructed to balloon. Since a domain which is being built will have
 0 &lt;= <code>totpages</code> &lt;= <code>reservation</code>, Squeezed computes
-<a href=#R-image-610de2988ea887b71effe0977251281f class=lightbox-link><img src=/new-docs/squeezed/design/unused.svg alt="unused(i)=reservation(i)-totpages" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
-<a href=javascript:history.back(); class=lightbox-back id=R-image-610de2988ea887b71effe0977251281f><img src=/new-docs/squeezed/design/unused.svg alt="unused(i)=reservation(i)-totpages" class="lightbox-image noborder lightbox noshadow" loading=lazy></a>
+<a href=#R-image-db3b1525b9e206b97d3b0f3b8bba5e98 class=lightbox-link><img alt="unused(i)=reservation(i)-totpages" class="noborder lazy lightbox noshadow figure-image" loading=lazy src=/new-docs/squeezed/design/unused.svg style=height:auto;width:auto></a>
+<a href=javascript:history.back(); class=lightbox-back id=R-image-db3b1525b9e206b97d3b0f3b8bba5e98><img alt="unused(i)=reservation(i)-totpages" class="noborder lazy lightbox noshadow lightbox-image" loading=lazy src=/new-docs/squeezed/design/unused.svg></a>
 and subtracts this from its model of the host’s free memory, ensuring
 that it doesn’t accidentally reallocate this memory for some other
 purpose.</p><p>The Squeezed
@@ -221,19 +224,19 @@ balloon drivers (or whose balloon drivers have failed)</p></li><li><p>a &ldquo;s
 with any domain</p></li></ul><p>The Squeezed
 daemon considers memory to be unused (i.e. not allocated for any useful
 purpose) if it is neither in use by a domain nor reserved.</p><h1 id=the-main-loop>The main loop</h1><p>The main loop is triggered by either:</p><ol><li><p>the arrival of an allocation request on the toolstack interface; or</p></li><li><p>the policy engine – polled every 10s – deciding that a target
-<a href=https://github.com/xapi-project/squeezed/blob/7a5601d1543bd27e1e390a0a4f0a50aa531760e6/src/memory_server.ml#L60 target=_blank>adjustment is needed</a>.</p></li></ol><p>Each iteration of the main loop generates the following actions:</p><ol><li><p>Domains which were active but have failed to make progress towards
+<a href=https://github.com/xapi-project/squeezed/blob/7a5601d1543bd27e1e390a0a4f0a50aa531760e6/src/memory_server.ml#L60 rel=external target=_blank>adjustment is needed</a>.</p></li></ol><p>Each iteration of the main loop generates the following actions:</p><ol><li><p>Domains which were active but have failed to make progress towards
 their target in 5s are declared <em>inactive</em>. These
 domains then have:
 <code>maxmem</code> set to the minimum of <code>target</code> and <code>totpages</code>.</p></li><li><p>Domains which were inactive but have started to make progress
 towards their target are declared <em>active</em>. These
 domains then have: <code>maxmem</code> set to <code>target</code>.</p></li><li><p>Domains which are currently active have new targets computed
-according to the policy (see Section <a href=#ballooning-policy>Ballooning policy</a>). Note that
+according to the policy (see Section <a href=/new-docs/squeezed/design/index.html#ballooning-policy>Ballooning policy</a>). Note that
 inactive domains are ignored and not expected to balloon.</p></li></ol><p>Note that domains remain classified as <em>inactive</em> only
 during one run of the main loop. Once the loop has terminated all
 domains are optimistically assumed to be <em>active</em> again.
 Therefore should a domain be classified as <em>inactive</em> once,
-it will get many later chances to respond.</p><p>The targets are set in <a href=#two-phase-target-setting>two phases</a>.
-The <a href=#use-of-maxmem>maxmem</a> is used to prevent domains suddenly allocating
+it will get many later chances to respond.</p><p>The targets are set in <a href=/new-docs/squeezed/design/index.html#two-phase-target-setting>two phases</a>.
+The <a href=/new-docs/squeezed/design/index.html#use-of-maxmem>maxmem</a> is used to prevent domains suddenly allocating
 more memory than we want them to.</p><p>The main loop has a notion of a host free memory “target”, similar to
 the existing domain memory <code>target</code>. When we are trying to free memory
 (e.g. for starting a new VM), the host free memory “target” is
@@ -241,7 +244,7 @@ increased. When we are trying to distribute memory among guests
 (e.g. after a domain has shutdown and freed lots of memory), the host
 free memory “target” is low. Note the host free memory “target” is
 always at least several MiB to ensure that some host free memory with
-physical address less than 4GiB is free (see <a href=#two-phase-target-setting>Two phase target setting</a> for
+physical address less than 4GiB is free (see <a href=/new-docs/squeezed/design/index.html#two-phase-target-setting>Two phase target setting</a> for
 related information).</p><p>The main loop terminates when all <em>active</em> domains have
 reached their targets (this could be because all domains responded or
 because they all wedged and became inactive); and the policy function
@@ -265,8 +268,8 @@ domain 2) and a host. For a domain, the square box shows its
 <code>adjusted-totpages</code> and the arrow indicates the direction of the
 <code>memory/target</code>. For the host the square box indicates total free
 memory. Note the highlighted state where the host’s free memory is
-temporarily exhausted</p><p><a href=#R-image-7b1b7fc0cb45139066416dde8366e72f class=lightbox-link><img src=/new-docs/squeezed/design/twophase.svg alt="Two phase target setting" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
-<a href=javascript:history.back(); class=lightbox-back id=R-image-7b1b7fc0cb45139066416dde8366e72f><img src=/new-docs/squeezed/design/twophase.svg alt="Two phase target setting" class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>In the
+temporarily exhausted</p><p><a href=#R-image-cb71c7186eeff35eb8ae50c5030aa5b4 class=lightbox-link><img alt="Two phase target setting" class="noborder lazy lightbox noshadow figure-image" loading=lazy src=/new-docs/squeezed/design/twophase.svg style=height:auto;width:auto></a>
+<a href=javascript:history.back(); class=lightbox-back id=R-image-cb71c7186eeff35eb8ae50c5030aa5b4><img alt="Two phase target setting" class="noborder lazy lightbox noshadow lightbox-image" loading=lazy src=/new-docs/squeezed/design/twophase.svg></a></p><p>In the
 initial state (at the top of the diagram), there are two domains, one
 which has been requested to use more memory and the other requested to
 use less memory. In effect the memory is to be transferred from one
@@ -295,7 +298,7 @@ diagram above.</p><h2 id=use-of-maxmem>Use of maxmem</h2><p>The Xen
 domain <code>maxmem</code> value is used to limit memory allocations by the domain.
 The rules are:</p><ol><li><p>if the domain has never been run and is paused then
 <code>maxmem</code> is set to <code>reservation</code> (reservations were described
-in the <a href=#toolstack-interface>Toolstack interface</a> section above);</p><ul><li><p>these domains are probably still being built and we must let
+in the <a href=/new-docs/squeezed/design/index.html#toolstack-interface>Toolstack interface</a> section above);</p><ul><li><p>these domains are probably still being built and we must let
 them allocate their <code>startmem</code></p></li><li><p><strong>FIXME</strong>: this &ldquo;never been run&rdquo; concept pre-dates the
 <code>feature-balloon</code> flag: perhaps we should use the
 <code>feature-balloon</code> flag instead.</p></li></ul></li><li><p>if the domain is running and the balloon driver is thought to be
@@ -314,8 +317,8 @@ differing values of <code>adjusted-totpages</code>. In addition the host has mor
 memory free than desired. The second diagram shows the result of
 computing ideal target values and the third diagram shows the result
 after targets have been set and the balloon drivers have
-responded.</p><p><a href=#R-image-c8a5ff75747ea22ff9ac26f0351386be class=lightbox-link><img src=/new-docs/squeezed/design/calculation.svg alt=calculation class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
-<a href=javascript:history.back(); class=lightbox-back id=R-image-c8a5ff75747ea22ff9ac26f0351386be><img src=/new-docs/squeezed/design/calculation.svg alt=calculation class="lightbox-image noborder lightbox noshadow" loading=lazy></a></p><p>The scenario above includes 3 domains (domain 1,
+responded.</p><p><a href=#R-image-e674c0dbc518b2a333ce2aebb96974be class=lightbox-link><img alt=calculation class="noborder lazy lightbox noshadow figure-image" loading=lazy src=/new-docs/squeezed/design/calculation.svg style=height:auto;width:auto></a>
+<a href=javascript:history.back(); class=lightbox-back id=R-image-e674c0dbc518b2a333ce2aebb96974be><img alt=calculation class="noborder lazy lightbox noshadow lightbox-image" loading=lazy src=/new-docs/squeezed/design/calculation.svg></a></p><p>The scenario above includes 3 domains (domain 1,
 domain 2, domain 3) on a host. Each of the domains has a non-ideal
 <code>adjusted-totpages</code> value.</p><p>Recall we also have the policy constraint that:
 <code>dynamic-min</code> &lt;= <code>target</code> &lt;= <code>dynamic-max</code>
@@ -335,36 +338,36 @@ return <code>x</code> + <code>d1</code> + <code>d2</code> + <code>d3</code> to g
 use the default built-in proportional policy then, since all domains
 have the same <code>dynamic-min</code> and <code>dynamic-max</code>, each gets the same
 fraction of this free memory which we call <code>g</code>:
-<a href=#R-image-02a9ed50a3f0678218c8a4c89539072e class=lightbox-link><img src=/new-docs/squeezed/design/g.svg alt="definition of g" class="figure-image noborder lightbox noshadow" style=height:auto;width:auto loading=lazy></a>
-<a href=javascript:history.back(); class=lightbox-back id=R-image-02a9ed50a3f0678218c8a4c89539072e><img src=/new-docs/squeezed/design/g.svg alt="definition of g" class="lightbox-image noborder lightbox noshadow" loading=lazy></a>
+<a href=#R-image-5b715398636c176a4ab7efe0d49f2870 class=lightbox-link><img alt="definition of g" class="noborder lazy lightbox noshadow figure-image" loading=lazy src=/new-docs/squeezed/design/g.svg style=height:auto;width:auto></a>
+<a href=javascript:history.back(); class=lightbox-back id=R-image-5b715398636c176a4ab7efe0d49f2870><img alt="definition of g" class="noborder lazy lightbox noshadow lightbox-image" loading=lazy src=/new-docs/squeezed/design/g.svg></a>
 For each domain, the ideal balloon target is now
 <code>target</code> = <code>dynamic-min</code> + <code>g</code>.
 Squeezed does not set all the targets at once: this would allow the
 allocating domains to race with the deallocating domains, potentially allowing
 all low memory to be allocated. Therefore Squeezed sets the
-targets in <a href=#two-phase-target-setting>two phases</a>.</p><h1 id=the-structure-of-the-daemon>The structure of the daemon</h1><p>Squeezed is a single-threaded daemon which is started by an <code>init.d</code>
+targets in <a href=/new-docs/squeezed/design/index.html#two-phase-target-setting>two phases</a>.</p><h1 id=the-structure-of-the-daemon>The structure of the daemon</h1><p>Squeezed is a single-threaded daemon which is started by an <code>init.d</code>
 script. It sits waiting for incoming requests on its toolstack interface
 and checks every 10s whether all domain targets are set to the ideal
 values
-(recall the <a href=#ballooning-policy>Ballooning policy</a>). If an allocation request
+(recall the <a href=/new-docs/squeezed/design/index.html#ballooning-policy>Ballooning policy</a>). If an allocation request
 arrives or if the domain targets require adjusting then it calls into
 the module
-<a href=https://github.com/xapi-project/squeezed/blob/master/src/squeeze_xen.ml target=_blank>squeeze_xen.ml</a>.</p><p>The module
-<a href=https://github.com/xapi-project/squeezed/blob/master/src/squeeze_xen.ml target=_blank>src/squeeze_xen.ml</a>
+<a href=https://github.com/xapi-project/squeezed/blob/master/src/squeeze_xen.ml rel=external target=_blank>squeeze_xen.ml</a>.</p><p>The module
+<a href=https://github.com/xapi-project/squeezed/blob/master/src/squeeze_xen.ml rel=external target=_blank>src/squeeze_xen.ml</a>
 contains code which inspects the state of the host (through hypercalls
 and reading xenstore) and creates a set of records describing the
 current state of the host and all the domains. Note this snapshot of
 state is not atomic – it is pieced together from multiple hypercalls and
 xenstore reads – we assume that the errors generated are small and we
 ignore them. These records are passed into the
-<a href=https://github.com/xapi-project/squeezed/blob/master/lib/squeeze.ml target=_blank>squeeze.ml</a>
+<a href=https://github.com/xapi-project/squeezed/blob/master/lib/squeeze.ml rel=external target=_blank>squeeze.ml</a>
 module where they
 are processed and converted into a list of <em>actions</em> i.e.
 (i) updates to <code>memory/target</code> and; (ii) declarations that particular
 domains have become <em>inactive</em> or <em>active</em>.
 The rationale for separating the Xen interface from the
 main ballooning logic was to make testing easier: the module
-<a href=https://github.com/xapi-project/squeezed/blob/master/test/squeeze_test.ml target=_blank>test/squeeze_test.ml</a>
+<a href=https://github.com/xapi-project/squeezed/blob/master/test/squeeze_test.ml rel=external target=_blank>test/squeeze_test.ml</a>
 contains a simple simulator which allows various edge-cases to be
 checked.</p><h1 id=issues>Issues</h1><ul><li><p>If a linux domU kernel has the netback, blkback or blktap modules
 then they away pages via <code>alloc_empty_pages_and_pagevec()</code> during
@@ -387,4 +390,4 @@ amounts of progress shouldn’t be enough. Otherwise a domain could
 free 1 byte (or maybe 1 page) every 5s.</p></li><li><p>Likewise, declaring a domain “uncooperative” only if it has been
 <em>inactive</em> for 20s means that a domain could alternate
 between <em>inactive</em> for 19s and <em>active</em>
-for 1s and not be declared “uncooperative”.</p></li></ul><h2 id=document-history>Document history</h2><table><thead><tr><th>Version</th><th>Date</th><th>Change</th></tr></thead><tbody><tr><td>0.2</td><td>10th Nov 2014</td><td>Update to markdown</td></tr><tr><td>0.1</td><td>9th Nov 2009</td><td>Initial version</td></tr></tbody></table><footer class=footline></footer></article></section></div></main></div><script src=/new-docs/js/clipboard.min.js?1738343810 defer></script><script src=/new-docs/js/perfect-scrollbar.min.js?1738343810 defer></script><script src=/new-docs/js/theme.js?1738343810 defer></script></body></html>
+for 1s and not be declared “uncooperative”.</p></li></ul><h2 id=document-history>Document history</h2><table><thead><tr><th>Version</th><th>Date</th><th>Change</th></tr></thead><tbody><tr><td>0.2</td><td>10th Nov 2014</td><td>Update to markdown</td></tr><tr><td>0.1</td><td>9th Nov 2009</td><td>Initial version</td></tr></tbody></table><footer class=footline></footer></article></section></div></main></div><script src=/new-docs/js/clipboard.min.js?1738585003 defer></script><script src=/new-docs/js/perfect-scrollbar.min.js?1738585003 defer></script><script src=/new-docs/js/theme.js?1738585003 defer></script></body></html>
