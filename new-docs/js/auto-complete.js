@@ -31,7 +31,6 @@ var autoComplete = (function(){
             if (el.attachEvent) el.attachEvent('on'+type, handler); else el.addEventListener(type, handler);
         }
         function removeEvent(el, type, handler){
-            // if (el.removeEventListener) not working in IE11
             if (el.detachEvent) el.detachEvent('on'+type, handler); else el.removeEventListener(type, handler);
         }
         function live(elClass, event, cb, context){
@@ -93,9 +92,10 @@ var autoComplete = (function(){
                     pageXOffset = window.pageXOffset || document.documentElement.scrollLeft;
                     pageYOffset = window.pageYOffset || document.documentElement.scrollTop;
                 }
-                that.sc.style.left = Math.round(rect.left + pageXOffset + o.offsetLeft - parentOffsetLeft) + 'px';
-                that.sc.style.top = Math.round(rect.bottom + pageYOffset + o.offsetTop - parentOffsetTop) + 'px';
-                that.sc.style.width = Math.round(rect.right - rect.left) + 'px'; // outerWidth
+                // Is this really the job of the tool or should it be defered to the user?
+                // that.sc.style.left = Math.round(rect.left + pageXOffset + o.offsetLeft - parentOffsetLeft) + 'px';
+                // that.sc.style.top = Math.round(rect.bottom + pageYOffset + o.offsetTop - parentOffsetTop) + 'px';
+                // that.sc.style.width = Math.round(rect.right - rect.left) + 'px'; // outerWidth
                 if (!resize) {
                     that.sc.style.display = 'block';
                     if (!that.sc.maxHeight) { that.sc.maxHeight = parseInt((window.getComputedStyle ? getComputedStyle(that.sc, null) : that.sc.currentStyle).maxHeight); }
