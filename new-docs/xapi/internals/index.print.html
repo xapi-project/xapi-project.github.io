@@ -1,0 +1,278 @@
+<!doctype html><html lang=en-us dir=ltr itemscope itemtype=http://schema.org/Article data-r-output-format=print><head><meta charset=utf-8><meta name=viewport content="height=device-height,width=device-width,initial-scale=1,minimum-scale=1"><meta name=generator content="Hugo 0.127.0"><meta name=generator content="Relearn 7.3.2"><meta name=description content="The articles provided under this sub-section intend to act as a developer resource for toolstack engineers."><meta name=author content><meta name=twitter:card content="summary"><meta name=twitter:title content="XAPI's Internals :: XAPI Toolstack Developer Documentation"><meta name=twitter:description content="The articles provided under this sub-section intend to act as a developer resource for toolstack engineers."><meta property="og:url" content="https://xapi-project.github.io/new-docs/xapi/internals/index.html"><meta property="og:site_name" content="XAPI Toolstack Developer Documentation"><meta property="og:title" content="XAPI's Internals :: XAPI Toolstack Developer Documentation"><meta property="og:description" content="The articles provided under this sub-section intend to act as a developer resource for toolstack engineers."><meta property="og:locale" content="en_us"><meta property="og:type" content="website"><meta itemprop=name content="XAPI's Internals :: XAPI Toolstack Developer Documentation"><meta itemprop=description content="The articles provided under this sub-section intend to act as a developer resource for toolstack engineers."><meta itemprop=wordCount content="16"><title>XAPI's Internals :: XAPI Toolstack Developer Documentation</title>
+<link href=https://xapi-project.github.io/new-docs/xapi/internals/index.html rel=canonical type=text/html title="XAPI's Internals :: XAPI Toolstack Developer Documentation"><link href=/new-docs/xapi/internals/index.xml rel=alternate type=application/rss+xml title="XAPI's Internals :: XAPI Toolstack Developer Documentation"><link href=/new-docs/images/favicon.png?1738764730 rel=icon type=image/png><link href=/new-docs/css/fontawesome-all.min.css?1738764730 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/fontawesome-all.min.css?1738764730 rel=stylesheet></noscript><link href=/new-docs/css/auto-complete.css?1738764730 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/auto-complete.css?1738764730 rel=stylesheet></noscript><link href=/new-docs/css/perfect-scrollbar.min.css?1738764730 rel=stylesheet><link href=/new-docs/css/theme.min.css?1738764730 rel=stylesheet><link href=/new-docs/css/format-print.min.css?1738764730 rel=stylesheet id=R-format-style><script>window.relearn=window.relearn||{},window.relearn.relBasePath="../..",window.relearn.relBaseUri="../../..",window.relearn.absBaseUri="https://xapi-project.github.io/new-docs",window.relearn.min=`.min`,window.relearn.disableAnchorCopy=!1,window.relearn.disableAnchorScrolling=!1,window.relearn.themevariants=["auto","zen-light","zen-dark","red","blue","green","learn","neon","relearn-light","relearn-bright","relearn-dark"],window.relearn.customvariantname="my-custom-variant",window.relearn.changeVariant=function(e){var t=document.documentElement.dataset.rThemeVariant;window.localStorage.setItem(window.relearn.absBaseUri+"/variant",e),document.documentElement.dataset.rThemeVariant=e,t!=e&&document.dispatchEvent(new CustomEvent("themeVariantLoaded",{detail:{variant:e,oldVariant:t}}))},window.relearn.markVariant=function(){var t=window.localStorage.getItem(window.relearn.absBaseUri+"/variant"),e=document.querySelector("#R-select-variant");e&&(e.value=t)},window.relearn.initVariant=function(){var e=window.localStorage.getItem(window.relearn.absBaseUri+"/variant")??"";e==window.relearn.customvariantname||(!e||!window.relearn.themevariants.includes(e))&&(e=window.relearn.themevariants[0],window.localStorage.setItem(window.relearn.absBaseUri+"/variant",e)),document.documentElement.dataset.rThemeVariant=e},window.relearn.initVariant(),window.relearn.markVariant(),window.T_Copy_to_clipboard=`Copy to clipboard`,window.T_Copied_to_clipboard=`Copied to clipboard!`,window.T_Copy_link_to_clipboard=`Copy link to clipboard`,window.T_Link_copied_to_clipboard=`Copied link to clipboard!`,window.T_Reset_view=`Reset view`,window.T_View_reset=`View reset!`,window.T_No_results_found=`No results found for "{0}"`,window.T_N_results_found=`{1} results found for "{0}"`</script><link rel=stylesheet href=https://xapi-project.github.io/new-docs/css/misc.css></head><body class="mobile-support print" data-url=/new-docs/xapi/internals/index.html><div id=R-body class=default-animation><div id=R-body-overlay></div><nav id=R-topbar><div class=topbar-wrapper><div class=topbar-sidebar-divider></div><div class="topbar-area topbar-area-start" data-area=start><div class="topbar-button topbar-button-sidebar" data-content-empty=disable data-width-s=show data-width-m=hide data-width-l=hide><button class=topbar-control onclick=toggleNav() type=button title="Menu (CTRL+ALT+n)"><i class="fa-fw fas fa-bars"></i></button></div><div class="topbar-button topbar-button-toc" data-content-empty=hide data-width-s=show data-width-m=show data-width-l=show><button class=topbar-control onclick=toggleTopbarFlyout(this) type=button title="Table of Contents (CTRL+ALT+t)"><i class="fa-fw fas fa-list-alt"></i></button><div class=topbar-content><div class=topbar-content-wrapper></div></div></div></div><ol class="topbar-breadcrumbs breadcrumbs highlightable" itemscope itemtype=http://schema.org/BreadcrumbList><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/index.html><span itemprop=name>XAPI Toolstack Developer Guide</span></a><meta itemprop=position content="1">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/xapi/index.html><span itemprop=name>Xapi</span></a><meta itemprop=position content="2">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><span itemprop=name>Internals</span><meta itemprop=position content="3"></li></ol><div class="topbar-area topbar-area-end" data-area=end><div class="topbar-button topbar-button-print" data-content-empty=disable data-width-s=area-more data-width-m=show data-width-l=show><a class=topbar-control href=/new-docs/xapi/internals/index.print.html title="Print whole chapter (CTRL+ALT+p)"><i class="fa-fw fas fa-print"></i></a></div><div class="topbar-button topbar-button-prev" data-content-empty=disable data-width-s=show data-width-m=show data-width-l=show><a class=topbar-control href=/new-docs/xapi/database/redo-log/index.html title="Metadata-on-LUN (🡐)"><i class="fa-fw fas fa-chevron-left"></i></a></div><div class="topbar-button topbar-button-next" data-content-empty=disable data-width-s=show data-width-m=show data-width-l=show><a class=topbar-control href=/new-docs/xapi/internals/generated/index.html title="Generated Parts of Xapi (🡒)"><i class="fa-fw fas fa-chevron-right"></i></a></div><div class="topbar-button topbar-button-more" data-content-empty=hide data-width-s=show data-width-m=show data-width-l=show><button class=topbar-control onclick=toggleTopbarFlyout(this) type=button title=More><i class="fa-fw fas fa-ellipsis-v"></i></button><div class=topbar-content><div class=topbar-content-wrapper><div class="topbar-area topbar-area-more" data-area=more></div></div></div></div></div></div></nav><div id=R-main-overlay></div><main id=R-body-inner class="highlightable xapi" tabindex=-1><div class=flex-block-wrapper><article class=default><header class=headline></header><h1 id=xapis-internals>XAPI's Internals</h1><p>The articles provided under this sub-section intend to act as a developer
+resource for toolstack engineers.</p><footer class=footline></footer></article><section><h1 class=a11y-only>Subsections of Internals</h1><article class=default><header class=headline></header><h1 id=generated-parts-of-xapi>Generated Parts of Xapi</h1><h2 id=introduction>Introduction</h2><p>Many parts of <code>xapi</code> are auto-generated during the build process.
+This article aims to document some of these modules and how they relate to each
+other. The intention of this article is to serve as a developer resource and,
+as such, its contents are prone to change (or become inaccurate) as the
+codebase evolves. The ultimate source of truth remains the codebase itself.</p><h2 id=interface-description>Interface Description</h2><p>All of XenAPI&rsquo;s data model is described within the <code>ocaml/idl</code> subdirectory.
+The data model itself describes the classes that make up the API.
+The classes themselves comprise fields and messages (methods), relating
+functionality together.</p><h2 id=api-types-apiml>API Types (<code>aPI.ml</code>)</h2><p>The internal representation of each object is a record whose type is specified
+within the generated <code>API</code> module, as part of building <code>xapi-types</code>. For
+example, the <code>task</code> object&rsquo;s structure is defined by the type <code>task_t</code>.
+Similarly, <code>API</code> includes the internal type representation used to represent
+fields. For example, a type such as <code>(string -> vdi_operations) map</code>, used by
+the data model, is defined as <code>(string * vdi_operations) list</code> within <code>API</code>
+(where <code>vdi_operations</code> itself is a polymorphic variant also defined by
+<code>API</code>).</p><p>Note that the all the type definitions within <code>API</code> are annotated with
+<code>[@@deriving rpc]</code>. This ensures that the final module, after preprocessing,
+also contains functions to marshal each type to/from <code>Rpc.t</code> values (which is
+important for <code>Server</code> - described later - which receives that format as
+input).</p><h2 id=database-actions-db_actionsml>Database Actions (<code>db_actions.ml</code>)</h2><p>The majority of XenAPI consists of methods used to read and modify the fields
+of objects in the database. These methods are automatically generated and
+their implementations are placed within the generated <code>Db_actions</code> module.</p><p>The <code>Db_actions</code> module consists of various, related, parts: type definitions
+for a subset of objects&rsquo; fields, marshallers for converting API types to/from
+strings, and database action handlers. Briefly, the role of each of these is
+described below:</p><ul><li><p>Type definitions for XenAPI objects are redefined in <code>Db_actions</code> in order to
+exclude internal fields. If a field is marked as &ldquo;internal only&rdquo; within the
+data model, then it should only exist within internal representations (those
+defined by <code>API</code>, described above). For example, <code>task_t</code> (describing a
+<code>task</code> object) - as described by <code>Db_actions</code> - notably omits the field
+<code>task_session</code> (of type <code>session ref</code>) so as to not leak sensitive information
+to clients (in this case, the reference to the session that created the task
+object).</p></li><li><p>Fields of the database are internally stored as strings and must be
+marshalled to typed values for use in OCaml code using DB actions. To this
+end, submodules <code>String_to_DM</code> and <code>DM_to_String</code> are generated to include code
+for doing these conversions. These submodules consist of the inverse
+operations of the other. For example, for the data model type <code>Observer ref set</code>, the function <code>ref_Observer_set</code> exists in both <code>String_to_DM</code>
+(as <code>string -> [`Observer] API.Ref.t list</code>) and
+in <code>DM_to_String</code> (inversely, as <code>[`Observer] API.Ref.t list -> string</code>).</p></li><li><p>Handlers for actions that read/write fields of database objects are
+implemented by <code>Db_actions</code>. Each handler uses the relevant marshallers to
+marshal inputs and outputs. Note that <code>Db_actions</code> generates two variants of
+<code>get_record</code> for each class: a normal <code>get_record</code> which returns the public
+class representation as described by the types defined in <code>Db_actions</code>, and a
+<code>get_record_internal</code>, which returns the full class representation (including
+internal fields) as described by the <code>API</code> module.</p></li></ul><h3 id=registering-for-snapshots>Registering for Snapshots</h3><p>The <code>Db_actions</code> module also generates modules that register callbacks
+for Xapi&rsquo;s event mechanisms. These modules are named in the format
+<code>Class_init</code> and consist only of top-level code, evaluated for its
+effect.</p><p>As each event must provide a snapshot of the related object, the event
+mechanism must be able to read records from the database. To do this,
+<code>Eventgen</code> exposes an API that <code>Db_actions</code> uses to register callbacks
+(one for each type of object in the database).</p><p>For example, within <code>Db_actions</code>, there is a module <code>VM_init</code>,
+consisting of:</p><div class="highlight wrap-code"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ocaml data-lang=ocaml><span style=display:flex><span><span style=color:#66d9ef>module</span> <span style=color:#a6e22e>VM_init</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>struct</span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>let</span> <span style=color:#f92672>_</span>  <span style=color:#f92672>=</span>
+</span></span><span style=display:flex><span>    Hashtbl.add Eventgen.get_record_table <span style=color:#e6db74>&#34;VM&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>(</span><span style=color:#66d9ef>fun</span> <span style=color:#f92672>~__</span>context <span style=color:#f92672>~</span>self <span style=color:#f92672>-&gt;</span> <span style=color:#f92672>(</span><span style=color:#66d9ef>fun</span> () <span style=color:#f92672>-&gt;</span> API.rpc_of_vM_t <span style=color:#f92672>(</span>VM.get_record <span style=color:#f92672>~__</span>context <span style=color:#f92672>~</span>self<span style=color:#f92672>:(</span>Ref.of_string self<span style=color:#f92672>))))</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>end</span></span></span></code></pre></div><p>As snapshots are served to external clients, the functions use the
+public <code>get_record</code> functions - returning types defined by <code>API</code> -
+which omits internal fields.</p><p>Notice that the type of values being mapped to is <code>__context:Context.t -> self:string -> unit -> Rpc.t</code>.</p><p>The presence of <code>unit</code> in the type is to permit partial application
+(of <code>__context</code> and <code>self</code>) to create thunks. The type <code>unit -> Rpc.t</code>
+is lossy, it says nothing about the context or object reference being
+used to fetch the snapshot; these details are captured by the closure
+arising from partial application. This means that code can arbitrarily
+delay the fetching of a snapshot and then &ldquo;force&rdquo; it (on demand)
+later. In practice, these snapshots are not delayed for long, see
+<code>Eventgen</code> for more information.</p><h2 id=custom-actions-custom_actionsml>Custom Actions (<code>custom_actions.ml</code>)</h2><p>The API operations that require a custom implementation (i.e. are not
+automatically generated) are grouped together into a signature called
+<code>CUSTOM_ACTIONS</code> within <code>custom_actions.ml</code>.</p><div class="highlight wrap-code"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ocaml data-lang=ocaml><span style=display:flex><span><span style=color:#66d9ef>open</span> <span style=color:#a6e22e>API</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>module</span> <span style=color:#66d9ef>type</span> <span style=color:#a6e22e>CUSTOM_ACTIONS</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>sig</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>module</span> <span style=color:#a6e22e>Session</span> <span style=color:#f92672>:</span> <span style=color:#66d9ef>sig</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>val</span> login_with_password <span style=color:#f92672>:</span> <span style=color:#f92672>__</span>context<span style=color:#f92672>:</span>Context.t <span style=color:#f92672>-&gt;</span> uname<span style=color:#f92672>:</span><span style=color:#66d9ef>string</span> <span style=color:#f92672>-&gt;</span> pwd<span style=color:#f92672>:</span><span style=color:#66d9ef>string</span> <span style=color:#f92672>-&gt;</span> version<span style=color:#f92672>:</span><span style=color:#66d9ef>string</span> <span style=color:#f92672>-&gt;</span> originator<span style=color:#f92672>:</span><span style=color:#66d9ef>string</span> <span style=color:#f92672>-&gt;</span> ref_session
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>val</span> logout <span style=color:#f92672>:</span> <span style=color:#f92672>__</span>context<span style=color:#f92672>:</span>Context.t <span style=color:#f92672>-&gt;</span> <span style=color:#66d9ef>unit</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>(* ... *)</span></span></span></code></pre></div><p>The isolation of these methods into their own signature is important for
+ensuring implementations exist for them.</p><p>The <code>Actions</code> submodule of <code>Api_server_common</code> can be ascribed
+this signature. The purpose of the <code>Actions</code> sub-module is to group custom
+implementations together whilst renaming them using module aliases. For
+example, the custom implementations of messages associate with the <code>task</code> class
+exist within <code>xapi_task.ml</code> - the module arising from this file is aliased,
+within <code>Actions</code>, to rename it and satisfy the <code>CUSTOM_ACTIONS</code> signature (e.g.
+<code>module Task = Xapi_task</code>).</p><p>The signature is not explicitly ascribed to <code>Actions</code> at its definition site,
+but is used by functors which are parameterised by modules satisfying
+<code>CUSTOM_ACTIONS</code>. The important modules of note are <code>Actions</code> itself (which
+comprise the concrete implementations of custom messages in Xapi) and the
+<code>Forwarder</code> sub-module (of <code>Api_server_common</code>) which uses the
+<code>Message_forwarding.Forward</code> functor to potentially override (via shadowing)
+the implementations of custom actions, in order to define policies around
+forwarding (e.g. whether the coordinator should handle a custom action by
+appealing to a subordinate host, usually via the <code>Client</code> module - described
+later).</p><h2 id=server-serverml>Server (<code>server.ml</code>)</h2><p>The <code>Server</code> modules contains the logic to handle incoming calls from Xapi&rsquo;s
+HTTP server. At the top level, it contains a functor (parameterised by <code>Local</code>
+and <code>Forward</code> - both satisfying the <code>CUSTOM_ACTIONS</code> signature), that contains a
+large pattern match on the name of the supplied message (e.g.
+<code>Host.get_record</code>). Then, dependent on the semantics of the message itself, the
+body of each handler differs in slight ways when doing dispatch.</p><h3 id=the-top-level-dispatch_call-function>The top-level <code>dispatch_call</code> function</h3><p>The top-level dispatch function, <code>dispatch_call</code>, has the following header:</p><div class="highlight wrap-code"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ocaml data-lang=ocaml><span style=display:flex><span><span style=color:#66d9ef>let</span> dispatch_call <span style=color:#f92672>(</span>http_req<span style=color:#f92672>:</span> Http.Request.t<span style=color:#f92672>)</span> <span style=color:#f92672>(</span>fd<span style=color:#f92672>:</span> Unix.file_descr<span style=color:#f92672>)</span> <span style=color:#f92672>(</span>call<span style=color:#f92672>:</span> Rpc.call<span style=color:#f92672>)</span> <span style=color:#f92672>=</span></span></span></code></pre></div><p>The incoming HTTP request (<code>http_req</code>) and - related - socket&rsquo;s file descriptor
+(<code>Unix.file_descr)</code> are forwarded - within handler code - to
+<code>Server_helpers.do_dispatch</code>. The HTTP request is important because task and
+tracing-related metadata can be propagated using fields within the request
+header. The file descriptor can be used to determine the origin of the request
+(whether it&rsquo;s local or not) but also can permit flexibility in upgrading
+protocols (as is done in other parts of Xapi, such as the <code>/cli</code> handler, where
+the connection starts off as HTTP but continues as something else).</p><h3 id=the-anatomy-of-a-handler>The Anatomy of a Handler</h3><p>A typical handler, within <code>dispatch_call</code>, looks like the following:</p><div class="highlight wrap-code"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ocaml data-lang=ocaml><span style=display:flex><span>    <span style=color:#f92672>|</span> <span style=color:#e6db74>&#34;task.get_name_label&#34;</span> <span style=color:#f92672>|</span> <span style=color:#e6db74>&#34;task_get_name_label&#34;</span> <span style=color:#f92672>-&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>begin</span> <span style=color:#66d9ef>match</span> <span style=color:#f92672>__</span>params <span style=color:#66d9ef>with</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>|</span> <span style=color:#f92672>[</span>session_id_rpc<span style=color:#f92672>;</span> self_rpc<span style=color:#f92672>]</span> <span style=color:#f92672>-&gt;</span>
+</span></span><span style=display:flex><span>            <span style=color:#75715e>(* has no side-effect; should be handled by DB action *)</span>
+</span></span><span style=display:flex><span>            <span style=color:#75715e>(* has no asynchronous mode *)</span>
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>let</span> session_id <span style=color:#f92672>=</span> ref_session_of_rpc session_id_rpc <span style=color:#66d9ef>in</span>
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>let</span> self <span style=color:#f92672>=</span> ref_task_of_rpc self_rpc <span style=color:#66d9ef>in</span>
+</span></span><span style=display:flex><span>            Session_check.check <span style=color:#f92672>~</span>intra_pool_only<span style=color:#f92672>:</span>false <span style=color:#f92672>~</span>session_id <span style=color:#f92672>~</span>action<span style=color:#f92672>:</span><span style=color:#e6db74>&#34;task.get_name_label&#34;</span><span style=color:#f92672>;</span>
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>let</span> arg_names_values <span style=color:#f92672>=</span> <span style=color:#f92672>[(</span><span style=color:#e6db74>&#34;session_id&#34;</span><span style=color:#f92672>,</span> session_id_rpc<span style=color:#f92672>);</span> <span style=color:#f92672>(</span><span style=color:#e6db74>&#34;self&#34;</span><span style=color:#f92672>,</span> self_rpc<span style=color:#f92672>)]</span> <span style=color:#66d9ef>in</span>
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>let</span> key_names <span style=color:#f92672>=</span> [] <span style=color:#66d9ef>in</span>
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>let</span> rbac <span style=color:#f92672>__</span>context fn <span style=color:#f92672>=</span> Rbac.check session_id <span style=color:#f92672>__</span>call <span style=color:#f92672>~</span>args<span style=color:#f92672>:</span>arg_names_values <span style=color:#f92672>~</span>keys<span style=color:#f92672>:</span>key_names <span style=color:#f92672>~__</span>context <span style=color:#f92672>~</span>fn <span style=color:#66d9ef>in</span>
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>let</span> marshaller <span style=color:#f92672>=</span> <span style=color:#f92672>(</span><span style=color:#66d9ef>fun</span> x <span style=color:#f92672>-&gt;</span> rpc_of_string x<span style=color:#f92672>)</span> <span style=color:#66d9ef>in</span>
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>let</span> local_op <span style=color:#f92672>=</span> <span style=color:#66d9ef>fun</span> <span style=color:#f92672>~__</span>context <span style=color:#f92672>-&gt;(</span>rbac <span style=color:#f92672>__</span>context <span style=color:#f92672>(</span><span style=color:#66d9ef>fun</span>()<span style=color:#f92672>-&gt;(</span>Db_actions.DB_Action.Task.get_name_label <span style=color:#f92672>~__</span>context<span style=color:#f92672>:(</span>Context.check_for_foreign_database <span style=color:#f92672>~__</span>context<span style=color:#f92672>)</span>  <span style=color:#f92672>~</span>self<span style=color:#f92672>)))</span> <span style=color:#66d9ef>in</span>
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>let</span> supports_async <span style=color:#f92672>=</span> false <span style=color:#66d9ef>in</span>
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>let</span> generate_task_for <span style=color:#f92672>=</span> false <span style=color:#66d9ef>in</span>
+</span></span><span style=display:flex><span>            ApiLogRead.debug <span style=color:#e6db74>&#34;task.get_name_label&#34;</span><span style=color:#f92672>;</span>
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>let</span> resp <span style=color:#f92672>=</span> Server_helpers.do_dispatch <span style=color:#f92672>~</span>session_id  supports_async <span style=color:#f92672>__</span>call local_op marshaller fd http_req <span style=color:#f92672>__</span>label <span style=color:#f92672>__</span>sync_ty generate_task_for <span style=color:#66d9ef>in</span>
+</span></span><span style=display:flex><span>            resp
+</span></span><span style=display:flex><span>        <span style=color:#f92672>|</span> <span style=color:#f92672>_</span> <span style=color:#f92672>-&gt;</span>
+</span></span><span style=display:flex><span>            Server_helpers.parameter_count_mismatch_failure <span style=color:#f92672>__</span>call <span style=color:#e6db74>&#34;1&#34;</span> <span style=color:#f92672>(</span>string_of_int <span style=color:#f92672>((</span>List.length <span style=color:#f92672>__</span>params<span style=color:#f92672>)</span> <span style=color:#f92672>-</span> 1<span style=color:#f92672>))</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>end</span></span></span></code></pre></div><p>The start of each handler contains calls to unmarshal arguments from their
+<code>Rpc.t</code> representation to that defined by the <code>API</code> module. These functions are
+automatically generated during preprocessing of the <code>aPI.ml</code> file (<code>API</code>
+modules from <code>xapi-types</code>, described above). The conversion from the incoming
+XML-RPC (or JSON-RPC) to the <code>Rpc.t</code> encoding is handled by <code>Api_server</code> before
+it calls <code>dispatch_call</code>.</p><p>In the example above, the &ldquo;local&rdquo; operation (<code>local_op</code>) uses handlers
+generated within <code>Db_actions</code> (described above). This is typical of handlers
+for DB-related actions (the most common type of action): they have no
+forwarding logic (thus, no entry in the <code>CUSTOM_ACTIONS</code> signature) as they can
+only be carried out on the coordinator host (which maintains the database). If
+a subordinate host wishes to change the database, it must use a custom endpoint
+and protocol (not described here).</p><hr><p>To see more about how the <code>CUSTOM_ACTIONS</code> signature is used in practice, you
+can look at the &ldquo;local&rdquo; and &ldquo;forward&rdquo; operations for a message with custom
+handling. For example, in <code>Pool_patch.apply</code>:</p><div class="highlight wrap-code"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ocaml data-lang=ocaml><span style=display:flex><span><span style=color:#75715e>(* ... *)</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> local_op <span style=color:#f92672>=</span> <span style=color:#66d9ef>fun</span> <span style=color:#f92672>~__</span>context <span style=color:#f92672>-&gt;(</span>rbac <span style=color:#f92672>__</span>context <span style=color:#f92672>(</span><span style=color:#66d9ef>fun</span>()<span style=color:#f92672>-&gt;(</span>Custom.Pool_patch.apply <span style=color:#f92672>~__</span>context<span style=color:#f92672>:(</span>Context.check_for_foreign_database <span style=color:#f92672>~__</span>context<span style=color:#f92672>)</span>  <span style=color:#f92672>~</span>self <span style=color:#f92672>~</span>host<span style=color:#f92672>)))</span> <span style=color:#66d9ef>in</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>(* ...  *)</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> forward_op <span style=color:#f92672>=</span> <span style=color:#66d9ef>fun</span> <span style=color:#f92672>~</span>local_fn <span style=color:#f92672>~__</span>context <span style=color:#f92672>-&gt;</span> <span style=color:#f92672>(</span>rbac <span style=color:#f92672>__</span>context <span style=color:#f92672>(</span><span style=color:#66d9ef>fun</span>()<span style=color:#f92672>-&gt;</span> <span style=color:#f92672>(</span>Forward.Pool_patch.apply <span style=color:#f92672>~__</span>context<span style=color:#f92672>:(</span>Context.check_for_foreign_database <span style=color:#f92672>~__</span>context<span style=color:#f92672>)</span>  <span style=color:#f92672>~</span>self <span style=color:#f92672>~</span>host<span style=color:#f92672>)</span> <span style=color:#f92672>))</span> <span style=color:#66d9ef>in</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>(* ...  *)</span></span></span></code></pre></div><p>As mentioned above, the <code>Custom</code> and <code>Forward</code> modules are both inputs
+to <code>Server</code>&rsquo;s <code>Make</code> functor. The difference lies in how they are
+instantiated: <code>Api_server</code> ensures that <code>Custom</code> is referring to local
+implementations (such as that arising from modules defined by files
+named <code>xapi_*.ml</code>) and <code>Forward</code> is referring to the module derived by
+<code>Message_forwarding</code> (but shadowed with implementations that may apply
+different handling to the call).</p><h3 id=rbac-checking-and-auditing>RBAC Checking and Auditing</h3><p>In order to implement RBAC (Role Based Access Control) checking for individual
+messages, each handler contains logic that wraps an action (as a callback)
+within code that calls into the <code>Rbac</code> module (specifically, the <code>Rbac.check</code>
+function).</p><p>In the typical case, <code>Rbac.check</code> compares the name of a call against the list
+of RBAC permissions granted to the role associated with the originator&rsquo;s
+session/context. There is more involved logic for key-related RBAC checks
+(explained later).</p><p>For an accessible listing of each (static) RBAC permission, Xapi auto-generates
+a CSV file containing this information in a tabular format (within
+<code>rbac_static.csv</code>). The information in that file is consistent with the
+auto-generated <code>Rbac_static</code> module described in this document.</p><p>Along with providing authorisation checking, the <code>Rbac.check</code> function also
+appends to an audit log which contains a (sanitised) list of actions (alongside
+their RBAC check outcome).</p><h3 id=rbac-checking-of-keys>RBAC Checking of Keys</h3><p>In auto-generated handlers for <code>add_to</code> and <code>remove_from</code> messages (e.g.
+<code>pool.add_to_other_config</code>), the RBAC check may cite a list of key
+descriptors. For example:</p><div class="highlight wrap-code"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ocaml data-lang=ocaml><span style=display:flex><span><span style=color:#75715e>(* pool.add_to_other_config ...  *)</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> arg_names_values <span style=color:#f92672>=</span> <span style=color:#f92672>[(</span><span style=color:#e6db74>&#34;session_id&#34;</span><span style=color:#f92672>,</span> session_id_rpc<span style=color:#f92672>);</span> <span style=color:#f92672>(</span><span style=color:#e6db74>&#34;self&#34;</span><span style=color:#f92672>,</span> self_rpc<span style=color:#f92672>);</span> <span style=color:#f92672>(</span><span style=color:#e6db74>&#34;key&#34;</span><span style=color:#f92672>,</span> key_rpc<span style=color:#f92672>);</span> <span style=color:#f92672>(</span><span style=color:#e6db74>&#34;value&#34;</span><span style=color:#f92672>,</span> value_rpc<span style=color:#f92672>)]</span> <span style=color:#66d9ef>in</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> key_names <span style=color:#f92672>=</span> <span style=color:#f92672>[</span><span style=color:#e6db74>&#34;folder&#34;</span><span style=color:#f92672>;</span> <span style=color:#e6db74>&#34;XenCenter.CustomFields.*&#34;</span><span style=color:#f92672>;</span> <span style=color:#e6db74>&#34;EMPTY_FOLDERS&#34;</span><span style=color:#f92672>]</span> <span style=color:#66d9ef>in</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> rbac <span style=color:#f92672>__</span>context fn <span style=color:#f92672>=</span> Rbac.check session_id <span style=color:#f92672>__</span>call <span style=color:#f92672>~</span>args<span style=color:#f92672>:</span>arg_names_values <span style=color:#f92672>~</span>keys<span style=color:#f92672>:</span>key_names <span style=color:#f92672>~__</span>context <span style=color:#f92672>~</span>fn <span style=color:#66d9ef>in</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>(* ... *)</span></span></span></code></pre></div><p>These keys are specified within the data model as being tied to specific roles,
+in order to apply role-based exclusions to specific keys. The usual situation
+is that the setter for such a <code>(string -> string) map</code> field (e.g.
+<code>pool.set_other_config</code>) requires a more privileged role than the roles
+specified for individual keys.</p><p>The mechanism that enforces this check is somewhat brittle at present: the
+<code>Rbac.check</code> function is provided the list of key descriptors and the
+(association) list of (unmarshalled) arguments. If the key descriptor list is
+non-empty, it will consult the argument listing for the cited key (i.e. the key
+name mapped to by &ldquo;key&rdquo; in the argument listing) and then attempt to match that
+against a descriptor. If there is a match, it will check the current session
+against the list of RBAC permissions. The key-related RBAC permissions are
+encoded in the format <code>action/key:key</code> (all lowercase) - for example,
+<code>pool.add_to_other_config/key:xencenter.customfields.*</code>.</p><h3 id=alternative-wire-names>Alternative Wire Names</h3><p>In order to support languages that have keywords that collide with message
+names within Xapi, an alternative wire format is also cased upon within
+<code>dispatch_call</code>.</p><div class="highlight wrap-code"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ocaml data-lang=ocaml><span style=display:flex><span><span style=color:#f92672>|</span> <span style=color:#e6db74>&#34;task.get_name_label&#34;</span> <span style=color:#f92672>|</span> <span style=color:#e6db74>&#34;task_get_name_label&#34;</span> <span style=color:#f92672>-&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>(* ... *)</span></span></span></code></pre></div><p>For example, Python uses the keyword <code>from</code> to handle imports and, so, an API
+call (using <code>xmlrpc.client</code>) - rendered as <code>event.from</code> - is a syntactic error.
+To get around this, the API permits an underscore to be substituted in place of
+the period (<code>.</code>) that separates the class name from the message name (e.g.
+<code>event_from</code>).</p><p>This apparent duplication of cases does not amount to a concrete duplication of
+matching code within the compiled module (due to how OCaml special cases the
+compilation of pattern matching over constant strings). However, in future, we
+could avoid casing on both of them by normalising the name of the incoming call
+(i.e. transform <code>event.from</code> to <code>event_from</code> prior to matching).</p><h2 id=client-clientml>Client (<code>client.ml</code>)</h2><p>The <code>Client</code> module serves as the main module of the <code>xapi-client</code> library. The
+primary consumer of this library is Xapi itself, for use when a host may call
+into another host (or itself).</p><p>For example, when defining a message forwarding policy, the implementation of a
+handler may use the <code>Client</code> module to invoke a function on another host. For
+instance, the message forwarding of <code>Pool_patch.apply</code> (from
+<code>xapi/message_forwarding.ml</code>):</p><div class="highlight wrap-code"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ocaml data-lang=ocaml><span style=display:flex><span><span style=color:#66d9ef>let</span> apply <span style=color:#f92672>~__</span>context <span style=color:#f92672>~</span>self <span style=color:#f92672>~</span>host <span style=color:#f92672>=</span>
+</span></span><span style=display:flex><span>  info <span style=color:#e6db74>&#34;Pool_patch.apply: pool patch = &#39;%s&#39;; host = &#39;%s&#39;&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>(</span>pool_patch_uuid <span style=color:#f92672>~__</span>context self<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>(</span>host_uuid <span style=color:#f92672>~__</span>context host<span style=color:#f92672>)</span> <span style=color:#f92672>;</span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>let</span> local_fn <span style=color:#f92672>=</span> Local.Pool_patch.apply <span style=color:#f92672>~</span>self <span style=color:#f92672>~</span>host <span style=color:#66d9ef>in</span>
+</span></span><span style=display:flex><span>  do_op_on <span style=color:#f92672>~</span>local_fn <span style=color:#f92672>~__</span>context <span style=color:#f92672>~</span>host <span style=color:#f92672>(</span><span style=color:#66d9ef>fun</span> session_id rpc <span style=color:#f92672>-&gt;</span>
+</span></span><span style=display:flex><span>    Client.Pool_patch.apply <span style=color:#f92672>~</span>rpc <span style=color:#f92672>~</span>session_id <span style=color:#f92672>~</span>self <span style=color:#f92672>~</span>host
+</span></span><span style=display:flex><span>  <span style=color:#f92672>)</span></span></span></code></pre></div><p>The <code>do_op_on</code> machinery provides the <code>rpc</code> transport (<code>Rpc.call -> Rpc.response</code>) to the callback which passes it to <code>Client</code>&rsquo;s implementation
+(which just performs the relevant marshalling). The RPC transport itself is
+XML-RPC over HTTP (as implemented by the internal <code>http-lib</code> library -
+<code>ocaml/libs/http-lib</code>).</p><h3 id=client-internals>Client Internals</h3><p>Internally, the <code>Client</code> module contains a few functors. The top-level functor,
+<code>ClientF</code> is parameterised by a signature describing an arbitrary monad. The
+intention is to permit users to instantiate clients defined in terms of an RPC
+transport that may be asynchronous (for example, within the context of a
+program using <code>Lwt</code> or <code>Async</code> for its networking).</p><p>There is also a sub-functor <code>AsyncF</code> (within <code>ClientF</code>) that is parameterised
+by a module that provides a qualifier string to be prepended to calls&rsquo; method
+names. A few messages in Xapi can be qualified with async qualifiers (in
+particular, <code>Async</code> and <code>InternalAsync</code>). The <code>AsyncF</code> functor provides
+handling of those calls and is used to define the sub-modules (within
+<code>ClientF</code>) <code>Async</code> and <code>InternalAsync</code>. (the former prepending <code>Async</code> and the
+latter further prepending <code>Internal</code>). Code at the top-level of <code>Server</code>&rsquo;s
+<code>dispatch_call</code> function is used to parse (and remove) this async qualifier
+from the provided message name.</p><div class="highlight wrap-code"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ocaml data-lang=ocaml><span style=display:flex><span><span style=color:#66d9ef>module</span> <span style=color:#a6e22e>ClientF</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>functor</span><span style=color:#f92672>(</span><span style=color:#a6e22e>X</span> <span style=color:#f92672>:</span> <span style=color:#a6e22e>IO</span><span style=color:#f92672>)</span> <span style=color:#f92672>-&gt;</span><span style=color:#66d9ef>struct</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>(* ... *)</span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>module</span> <span style=color:#a6e22e>AsyncF</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>functor</span><span style=color:#f92672>(</span><span style=color:#a6e22e>AQ</span><span style=color:#f92672>:</span> <span style=color:#a6e22e>AsyncQualifier</span><span style=color:#f92672>)</span> <span style=color:#f92672>-&gt;</span><span style=color:#66d9ef>struct</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>(* handling of messages with asynchronous modes *)</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>module</span> <span style=color:#a6e22e>Session</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>struct</span>
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>let</span> create_from_db_file <span style=color:#f92672>~</span>rpc <span style=color:#f92672>~</span>session_id <span style=color:#f92672>~</span>filename <span style=color:#f92672>=</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>let</span> session_id <span style=color:#f92672>=</span> rpc_of_ref_session session_id <span style=color:#66d9ef>in</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>let</span> filename <span style=color:#f92672>=</span> rpc_of_string filename <span style=color:#66d9ef>in</span>
+</span></span><span style=display:flex><span>        rpc_wrapper rpc <span style=color:#f92672>(</span>Printf.sprintf <span style=color:#e6db74>&#34;%sAsync.session.create_from_db_file&#34;</span> AQ.async_qualifier<span style=color:#f92672>)</span> <span style=color:#f92672>[</span> session_id<span style=color:#f92672>;</span> filename <span style=color:#f92672>]</span> <span style=color:#f92672>&gt;&gt;=</span> <span style=color:#66d9ef>fun</span> x <span style=color:#f92672>-&gt;</span> return <span style=color:#f92672>(</span>ref_task_of_rpc  x<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>(* ... *)</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>end</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>(* ...  *)</span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>end</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>(* handling of messages with synchronous modes; similar to above, but without prefixing of &#34;Async&#34; *)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>module</span> <span style=color:#a6e22e>Async</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>AsyncF</span><span style=color:#f92672>(</span><span style=color:#66d9ef>struct</span> <span style=color:#66d9ef>let</span> async_qualifier <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;&#34;</span> <span style=color:#66d9ef>end</span><span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>module</span> <span style=color:#a6e22e>InternalAsync</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>AsyncF</span><span style=color:#f92672>(</span><span style=color:#66d9ef>struct</span> <span style=color:#66d9ef>let</span> async_qualifier <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Internal&#34;</span> <span style=color:#66d9ef>end</span><span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>end</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>(* instantiate Client with the identity monad *)</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>module</span> <span style=color:#a6e22e>Client</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>ClientF</span><span style=color:#f92672>(</span><span style=color:#a6e22e>Id</span><span style=color:#f92672>)</span></span></span></code></pre></div><p>The usual <code>Client</code> module used by users of <code>xapi-client</code> is the <code>Client</code>
+sub-module, defined in terms of the identity monad (which simply applies the
+given continuation as its sequencing logic and performs no wrapping):</p><div class="highlight wrap-code"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ocaml data-lang=ocaml><span style=display:flex><span><span style=color:#66d9ef>module</span> <span style=color:#a6e22e>Id</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>struct</span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>type</span> <span style=color:#66d9ef>&#39;</span>a t <span style=color:#f92672>=</span> <span style=color:#66d9ef>&#39;</span>a
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>let</span> bind x f <span style=color:#f92672>=</span> f x 
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>let</span> return x <span style=color:#f92672>=</span> x
+</span></span><span style=display:flex><span><span style=color:#66d9ef>end</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>module</span> <span style=color:#a6e22e>Client</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>ClientF</span><span style=color:#f92672>(</span><span style=color:#a6e22e>Id</span><span style=color:#f92672>)</span></span></span></code></pre></div><p>This results in synchronous semantics, whereby any code within <code>Xapi</code> that uses
+it would block as it waits for a response via the RPC transport. This is not an
+issue in practice, as each call is given its own thread during the dispatch logic.</p><p>Note that the RPC transport itself is defined in terms of the provided monad.
+In the identity case, it&rsquo;s a simple alias, and so the type of <code>rpc</code> is rendered
+<code>Rpc.call -> Rpc.response</code>. However, if you were to provide a monad defined,
+for example, in terms of <code>Lwt.t</code> (i.e. <code>type 'a t = 'a Lwt.t</code>), the expected
+type of the transport would reflect that: <code>Rpc.call -> Rpc.response Lwt.t</code>.</p><h2 id=rbac_static>Rbac_static</h2><p>The data model assigns specific roles to messages and fields. In order
+to permit RBAC (Role Based Access Control) checking for the related
+actions, Xapi must be able to determine the required role(s) for a
+given action. To this end, <code>Rbac_static</code> is generated to contain
+entries that encode this information.</p><p>The format of the entries in <code>Rbac_static</code> is rather peculiar. For
+example, for the action <code>Pool_patch.apply</code>, we find
+<code>permission_pool_patch_apply</code> defined at the top-level:</p><div class="highlight wrap-code"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ocaml data-lang=ocaml><span style=display:flex><span><span style=color:#66d9ef>let</span> permission_pool_patch_apply <span style=color:#f92672>=</span> 
+</span></span><span style=display:flex><span>  <span style=color:#f92672>{</span> <span style=color:#75715e>(* 311/2196 *)</span>
+</span></span><span style=display:flex><span>  role_uuid <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;d4385002-b920-5412-4c57-b010f451fa81&#34;</span><span style=color:#f92672>;</span>
+</span></span><span style=display:flex><span>  role_name_label <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;pool_patch.apply&#34;</span><span style=color:#f92672>;</span>
+</span></span><span style=display:flex><span>  role_name_description <span style=color:#f92672>=</span> permission_description<span style=color:#f92672>;</span>
+</span></span><span style=display:flex><span>  role_subroles <span style=color:#f92672>=</span> []<span style=color:#f92672>;</span> <span style=color:#75715e>(* permission cannot have any subroles *)</span>
+</span></span><span style=display:flex><span>  role_is_internal <span style=color:#f92672>=</span> true<span style=color:#f92672>;</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>}</span></span></span></code></pre></div><p>This record is of type <code>role_t</code> (as defined by <code>Db_actions</code>). This
+record is later incorporated into role-specific lists of permissions
+(for each statically known role).</p><p>The reason that <code>Rbac_static</code> defines permissions in a format defined
+by <code>Db_actions</code> is because, to avoid flooding the database with
+thousands of entries, <code>Rbac_static</code> acts as its own database. In
+<code>Xapi_role</code>, functions are defined that mirror the functionality of
+functions within <code>Db_actions</code> (e.g. <code>get_by_uuid</code>).</p><p>The <code>get_by_uuid</code> function (within <code>Xapi_role</code>) illustrates the bypassing of the database clearly:</p><div class="highlight wrap-code"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ocaml data-lang=ocaml><span style=display:flex><span><span style=color:#66d9ef>let</span> get_by_uuid <span style=color:#f92672>~__</span>context <span style=color:#f92672>~</span>uuid <span style=color:#f92672>=</span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>match</span> find_role_by_uuid uuid <span style=color:#66d9ef>with</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>|</span> <span style=color:#a6e22e>Some</span> static_record <span style=color:#f92672>-&gt;</span>
+</span></span><span style=display:flex><span>      ref_of_role <span style=color:#f92672>~</span>role<span style=color:#f92672>:</span>static_record
+</span></span><span style=display:flex><span>  <span style=color:#f92672>|</span> <span style=color:#a6e22e>None</span> <span style=color:#f92672>-&gt;</span>
+</span></span><span style=display:flex><span>      <span style=color:#75715e>(* pass-through to Db *)</span>
+</span></span><span style=display:flex><span>      Db.Role.get_by_uuid <span style=color:#f92672>~__</span>context <span style=color:#f92672>~</span>uuid</span></span></code></pre></div><p>If a role can be found (by UUID) statically (within <code>Rbac_static</code>),
+then that is used. Otherwise, the database is queried. Using the
+database as a fallback is important because there is still a dynamic
+component to the RBAC checking in Xapi: users can define their own
+roles that incorporate other roles as sub-roles - it&rsquo;s just that
+the statically-known roles won&rsquo;t be stored in the database. Precluding
+static roles from the database helps to avoid making the database
+larger and prevents users from deleting static roles from the
+database.</p><footer class=footline></footer></article></section></div></main></div><script src=/new-docs/js/clipboard.min.js?1738764730 defer></script><script src=/new-docs/js/perfect-scrollbar.min.js?1738764730 defer></script><script src=/new-docs/js/theme.js?1738764730 defer></script></body></html>
