@@ -905,8 +905,8 @@ var relearn_searchindex = [
   },
   {
     "breadcrumb": "XAPI Toolstack Developer Guide \u003e Xenopsd",
-    "content": "",
-    "description": "",
+    "content": "Design documents for xenopsd: Events Hooks PVS Proxy OVS Rules Requirements for suspend image framing Suspend image framing format Tasks",
+    "description": "Design documents for xenopsd: Events Hooks PVS Proxy OVS Rules Requirements for suspend image framing Suspend image framing format Tasks",
     "tags": [],
     "title": "Design",
     "uri": "/new-docs/xenopsd/design/index.html"
@@ -1953,8 +1953,8 @@ var relearn_searchindex = [
   },
   {
     "breadcrumb": "XAPI Toolstack Developer Guide \u003e Xenopsd",
-    "content": "Let’s trace through interesting operations to see how the whole system works.\nStarting a VM Migrating a VM Shutting down a VM and waiting for it to happen A VM wants to reboot itself A disk is hotplugged A disk refuses to hotunplug A VM is suspended",
-    "description": "Let’s trace through interesting operations to see how the whole system works.\nStarting a VM Migrating a VM Shutting down a VM and waiting for it to happen A VM wants to reboot itself A disk is hotplugged A disk refuses to hotunplug A VM is suspended",
+    "content": "Let’s trace through interesting operations to see how the whole system works.\nLive Migration Walkthrough: Migrating a VM Walkthrough: Starting a VM Inspiration for other walk-throughs:\nShutting down a VM and waiting for it to happen A VM wants to reboot itself A disk is hotplugged A disk refuses to hotunplug A VM is suspended",
+    "description": "Let’s trace through interesting operations to see how the whole system works.\nLive Migration Walkthrough: Migrating a VM Walkthrough: Starting a VM Inspiration for other walk-throughs:\nShutting down a VM and waiting for it to happen A VM wants to reboot itself A disk is hotplugged A disk refuses to hotunplug A VM is suspended",
     "tags": [],
     "title": "Operation Walk-Throughs",
     "uri": "/new-docs/xenopsd/walkthroughs/index.html"
