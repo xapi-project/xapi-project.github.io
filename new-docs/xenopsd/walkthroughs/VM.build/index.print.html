@@ -1,0 +1,194 @@
+<!doctype html><html lang=en-us dir=ltr itemscope itemtype=http://schema.org/Article data-r-output-format=print><head><meta charset=utf-8><meta name=viewport content="height=device-height,width=device-width,initial-scale=1,minimum-scale=1"><meta name=generator content="Hugo 0.127.0"><meta name=generator content="Relearn 7.3.2"><meta name=description content="After VM_create, VM_build builds the core of the domain (vCPUs, memory)"><meta name=author content><meta name=twitter:card content="summary"><meta name=twitter:title content="Building a VM :: XAPI Toolstack Developer Documentation"><meta name=twitter:description content="After VM_create, VM_build builds the core of the domain (vCPUs, memory)"><meta property="og:url" content="https://xapi-project.github.io/new-docs/xenopsd/walkthroughs/VM.build/index.html"><meta property="og:site_name" content="XAPI Toolstack Developer Documentation"><meta property="og:title" content="Building a VM :: XAPI Toolstack Developer Documentation"><meta property="og:description" content="After VM_create, VM_build builds the core of the domain (vCPUs, memory)"><meta property="og:locale" content="en_us"><meta property="og:type" content="website"><meta itemprop=name content="Building a VM :: XAPI Toolstack Developer Documentation"><meta itemprop=description content="After VM_create, VM_build builds the core of the domain (vCPUs, memory)"><meta itemprop=wordCount content="79"><title>Building a VM :: XAPI Toolstack Developer Documentation</title>
+<link href=https://xapi-project.github.io/new-docs/xenopsd/walkthroughs/VM.build/index.html rel=canonical type=text/html title="Building a VM :: XAPI Toolstack Developer Documentation"><link href=/new-docs/xenopsd/walkthroughs/VM.build/index.xml rel=alternate type=application/rss+xml title="Building a VM :: XAPI Toolstack Developer Documentation"><link href=/new-docs/images/favicon.png?1739370549 rel=icon type=image/png><link href=/new-docs/css/fontawesome-all.min.css?1739370549 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/fontawesome-all.min.css?1739370549 rel=stylesheet></noscript><link href=/new-docs/css/auto-complete.css?1739370549 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/auto-complete.css?1739370549 rel=stylesheet></noscript><link href=/new-docs/css/perfect-scrollbar.min.css?1739370549 rel=stylesheet><link href=/new-docs/css/theme.min.css?1739370549 rel=stylesheet><link href=/new-docs/css/format-print.min.css?1739370549 rel=stylesheet id=R-format-style><script>window.relearn=window.relearn||{},window.relearn.relBasePath="../../..",window.relearn.relBaseUri="../../../..",window.relearn.absBaseUri="https://xapi-project.github.io/new-docs",window.relearn.min=`.min`,window.relearn.disableAnchorCopy=!1,window.relearn.disableAnchorScrolling=!1,window.relearn.themevariants=["auto","zen-light","zen-dark","red","blue","green","learn","neon","relearn-light","relearn-bright","relearn-dark"],window.relearn.customvariantname="my-custom-variant",window.relearn.changeVariant=function(e){var t=document.documentElement.dataset.rThemeVariant;window.localStorage.setItem(window.relearn.absBaseUri+"/variant",e),document.documentElement.dataset.rThemeVariant=e,t!=e&&document.dispatchEvent(new CustomEvent("themeVariantLoaded",{detail:{variant:e,oldVariant:t}}))},window.relearn.markVariant=function(){var t=window.localStorage.getItem(window.relearn.absBaseUri+"/variant"),e=document.querySelector("#R-select-variant");e&&(e.value=t)},window.relearn.initVariant=function(){var e=window.localStorage.getItem(window.relearn.absBaseUri+"/variant")??"";e==window.relearn.customvariantname||(!e||!window.relearn.themevariants.includes(e))&&(e=window.relearn.themevariants[0],window.localStorage.setItem(window.relearn.absBaseUri+"/variant",e)),document.documentElement.dataset.rThemeVariant=e},window.relearn.initVariant(),window.relearn.markVariant(),window.T_Copy_to_clipboard=`Copy to clipboard`,window.T_Copied_to_clipboard=`Copied to clipboard!`,window.T_Copy_link_to_clipboard=`Copy link to clipboard`,window.T_Link_copied_to_clipboard=`Copied link to clipboard!`,window.T_Reset_view=`Reset view`,window.T_View_reset=`View reset!`,window.T_No_results_found=`No results found for "{0}"`,window.T_N_results_found=`{1} results found for "{0}"`</script><link rel=stylesheet href=https://xapi-project.github.io/new-docs/css/misc.css></head><body class="mobile-support print" data-url=/new-docs/xenopsd/walkthroughs/VM.build/index.html><div id=R-body class=default-animation><div id=R-body-overlay></div><nav id=R-topbar><div class=topbar-wrapper><div class=topbar-sidebar-divider></div><div class="topbar-area topbar-area-start" data-area=start><div class="topbar-button topbar-button-sidebar" data-content-empty=disable data-width-s=show data-width-m=hide data-width-l=hide><button class=topbar-control onclick=toggleNav() type=button title="Menu (CTRL+ALT+n)"><i class="fa-fw fas fa-bars"></i></button></div><div class="topbar-button topbar-button-toc" data-content-empty=hide data-width-s=show data-width-m=show data-width-l=show><button class=topbar-control onclick=toggleTopbarFlyout(this) type=button title="Table of Contents (CTRL+ALT+t)"><i class="fa-fw fas fa-list-alt"></i></button><div class=topbar-content><div class=topbar-content-wrapper></div></div></div></div><ol class="topbar-breadcrumbs breadcrumbs highlightable" itemscope itemtype=http://schema.org/BreadcrumbList><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/index.html><span itemprop=name>XAPI Toolstack Developer Guide</span></a><meta itemprop=position content="1">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/xenopsd/index.html><span itemprop=name>Xenopsd</span></a><meta itemprop=position content="2">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/xenopsd/walkthroughs/index.html><span itemprop=name>Walk-throughs</span></a><meta itemprop=position content="3">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><span itemprop=name>Building a VM</span><meta itemprop=position content="4"></li></ol><div class="topbar-area topbar-area-end" data-area=end><div class="topbar-button topbar-button-edit" data-content-empty=disable data-width-s=area-more data-width-m=show data-width-l=show><a class=topbar-control href=https://github.com/xapi-project/xen-api/edit/master/doc/content/xenopsd/walkthroughs/VM.build/_index.md target=_blank title="Edit (CTRL+ALT+w)"><i class="fa-fw fas fa-pen"></i></a></div><div class="topbar-button topbar-button-print" data-content-empty=disable data-width-s=area-more data-width-m=show data-width-l=show><a class=topbar-control href=/new-docs/xenopsd/walkthroughs/VM.build/index.print.html title="Print whole chapter (CTRL+ALT+p)"><i class="fa-fw fas fa-print"></i></a></div><div class="topbar-button topbar-button-prev" data-content-empty=disable data-width-s=show data-width-m=show data-width-l=show><a class=topbar-control href=/new-docs/xenopsd/walkthroughs/VM.start/index.html title="Walkthrough: Starting a VM (🡐)"><i class="fa-fw fas fa-chevron-left"></i></a></div><div class="topbar-button topbar-button-next" data-content-empty=disable data-width-s=show data-width-m=show data-width-l=show><a class=topbar-control href=/new-docs/xenopsd/walkthroughs/VM.build/VM_build/index.html title="VM_build micro-op (🡒)"><i class="fa-fw fas fa-chevron-right"></i></a></div><div class="topbar-button topbar-button-more" data-content-empty=hide data-width-s=show data-width-m=show data-width-l=show><button class=topbar-control onclick=toggleTopbarFlyout(this) type=button title=More><i class="fa-fw fas fa-ellipsis-v"></i></button><div class=topbar-content><div class=topbar-content-wrapper><div class="topbar-area topbar-area-more" data-area=more></div></div></div></div></div></div></nav><div id=R-main-overlay></div><main id=R-body-inner class="highlightable xenopsd" tabindex=-1><div class=flex-block-wrapper><article class=default><header class=headline></header><h1 id=building-a-vm>Building a VM</h1><p>Walk-through documents for the <code>VM_build</code> phase:</p><pre class="mermaid align-center">flowchart
+subgraph xenopsd VM_build[xenopsd&amp;nbsp;VM_build&amp;nbsp;micro#8209;op]
+direction LR
+VM_build --&gt; VM.build
+VM.build --&gt; VM.build_domain
+VM.build_domain --&gt; VM.build_domain_exn
+VM.build_domain_exn --&gt; Domain.build
+click VM_build &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/lib/xenops_server.ml#L2255-L2271&#34; _blank
+click VM.build &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L2290-L2291&#34; _blank
+click VM.build_domain &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L2250-L2288&#34; _blank
+click VM.build_domain_exn &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L2024-L2248&#34; _blank
+end</pre><ul class="children children-li children-sort-"><li><a href=/new-docs/xenopsd/walkthroughs/VM.build/VM_build/index.html>VM_build μ-op</a><p>Overview of the VM_build μ-op (runs after the VM_create μ-op created the domain).</p></li><li><a href=/new-docs/xenopsd/walkthroughs/VM.build/Domain.build/index.html>Domain.build</a><p>Prepare the build of a VM: Wait for scrubbing, do NUMA placement, run xenguest.</p></li><li><a href=/new-docs/xenopsd/walkthroughs/VM.build/xenguest/index.html>xenguest</a><p>Perform building VMs: Allocate and populate the domain's system memory.</p></li></ul><footer class=footline></footer></article><section><h1 class=a11y-only>Subsections of Building a VM</h1><article class=default><header class=headline></header><h1 id=vm_build-micro-op>VM_build micro-op</h1><h2 id=overview>Overview</h2><p>On Xen, <code>Xenctrl.domain_create</code> creates an empty domain and
+returns the domain ID (<code>domid</code>) of the new domain to <code>xenopsd</code>.</p><p>In the <code>build</code> phase, the <code>xenguest</code> program is called to create
+the system memory layout of the domain, set vCPU affinity and a
+lot more.</p><p>The <a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/lib/xenops_server.ml#L2255-L2271 rel=external target=_blank>VM_build</a>
+micro-op collects the VM build parameters and calls
+<a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L2290-L2291 rel=external target=_blank>VM.build</a>,
+which calls
+<a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L2250-L2288 rel=external target=_blank>VM.build_domain</a>,
+which calls
+<a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L2024-L2248 rel=external target=_blank>VM.build_domain_exn</a>
+which calls <a href=/new-docs/xenopsd/walkthroughs/VM.build/Domain.build/index.html>Domain.build</a>:</p><pre class="mermaid align-center">flowchart
+subgraph xenopsd VM_build[xenopsd&amp;nbsp;VM_build&amp;nbsp;micro#8209;op]
+direction LR
+VM_build --&gt; VM.build
+VM.build --&gt; VM.build_domain
+VM.build_domain --&gt; VM.build_domain_exn
+VM.build_domain_exn --&gt; Domain.build
+click VM_build &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/lib/xenops_server.ml#L2255-L2271&#34; _blank
+click VM.build &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L2290-L2291&#34; _blank
+click VM.build_domain &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L2250-L2288&#34; _blank
+click VM.build_domain_exn &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L2024-L2248&#34; _blank
+click Domain.build &#34;../Domain.build/index.html&#34;
+end</pre><p>The function
+<a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L2024 rel=external target=_blank>VM.build_domain_exn</a>
+must:</p><ol><li><p>Run pygrub (or eliloader) to extract the kernel and initrd, if necessary</p></li><li><p><a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L2222-L2225 rel=external target=_blank>Call</a>
+<a href=/new-docs/xenopsd/walkthroughs/VM.build/Domain.build/index.html>Domain.build</a>
+to:</p><ul><li>optionally run NUMA placement and</li><li>invoke <a href=VM.build/xenguest>xenguest</a> to set up the domain memory.</li></ul><p>See the walk-though on <a href=VM.build>VM.build</a> for more details on this phase.</p></li><li><p>Apply the <code>cpuid</code> configuration</p></li><li><p>Store the current domain configuration on disk &ndash; it&rsquo;s important to know
+the difference between the configuration you started with and the configuration
+you would use after a reboot because some properties (such as maximum memory
+and vCPUs) as fixed on create.</p></li></ol><footer class=footline></footer></article><article class=default><header class=headline></header><h1 id=domainbuild>Domain.build</h1><h2 id=overview>Overview</h2><pre class="mermaid align-center">flowchart LR
+subgraph xenopsd VM_build[
+  xenopsd&amp;nbsp;thread&amp;nbsp;pool&amp;nbsp;with&amp;nbsp;two&amp;nbsp;VM_build&amp;nbsp;micro#8209;ops:
+  During&amp;nbsp;parallel&amp;nbsp;VM_start,&amp;nbsp;Many&amp;nbsp;threads&amp;nbsp;run&amp;nbsp;this&amp;nbsp;in&amp;nbsp;parallel!
+]
+direction LR
+build_domain_exn[
+  VM.build_domain_exn
+  from thread pool Thread #1
+]  --&gt; Domain.build
+Domain.build --&gt; build_pre
+build_pre --&gt; wait_xen_free_mem
+build_pre --&gt;|if NUMA/Best_effort| numa_placement
+Domain.build --&gt; xenguest[Invoke xenguest]
+click Domain.build &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L1111-L1210&#34; _blank
+click build_domain_exn &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L2222-L2225&#34; _blank
+click wait_xen_free_mem &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L236-L272&#34; _blank
+click numa_placement &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L862-L897&#34; _blank
+click build_pre &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L899-L964&#34; _blank
+click xenguest &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L1139-L1146&#34; _blank
+
+build_domain_exn2[
+  VM.build_domain_exn
+  from thread pool Thread #2]  --&gt; Domain.build2[Domain.build]
+Domain.build2 --&gt; build_pre2[build_pre]
+build_pre2 --&gt; wait_xen_free_mem2[wait_xen_free_mem]
+build_pre2 --&gt;|if NUMA/Best_effort| numa_placement2[numa_placement]
+Domain.build2 --&gt; xenguest2[Invoke xenguest]
+click Domain.build2 &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L1111-L1210&#34; _blank
+click build_domain_exn2 &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L2222-L2225&#34; _blank
+click wait_xen_free_mem2 &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L236-L272&#34; _blank
+click numa_placement2 &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L862-L897&#34; _blank
+click build_pre2 &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L899-L964&#34; _blank
+click xenguest2 &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L1139-L1146&#34; _blank
+end</pre><p><a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L2024-L2248 rel=external target=_blank><code>VM.build_domain_exn</code></a>
+<a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L2222-L2225 rel=external target=_blank>calls</a>
+<a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L1111-L1210 rel=external target=_blank><code>Domain.build</code></a>
+to call:</p><ul><li><code>build_pre</code> to prepare the build of a VM:<ul><li>If the <code>xe</code> config <code>numa_placement</code> is set to <code>Best_effort</code>, invoke the NUMA placement algorithm.</li><li>Run <code>xenguest</code></li></ul></li><li><code>xenguest</code> to invoke the <a href=/new-docs/xenopsd/walkthroughs/VM.build/xenguest/index.html>xenguest</a> program to setup the domain&rsquo;s system memory.</li></ul><h2 id=domain-build-preparation-using-build_pre>Domain Build Preparation using build_pre</h2><p><a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L1111-L1210 rel=external target=_blank><code>Domain.build</code></a>
+<a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L1137 rel=external target=_blank>calls</a>
+the <a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L899-L964 rel=external target=_blank>function <code>build_pre</code></a>
+(which is also used for VM restore). It must:</p><ol><li><p><a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L902-L911 rel=external target=_blank>Call</a>
+<a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L236-L272 rel=external target=_blank>wait_xen_free_mem</a>
+to wait, if necessary, for the Xen memory scrubber to catch up reclaiming memory (CA-39743)</p></li><li><p>Call the hypercall to set the timer mode</p></li><li><p>Call the hypercall to set the number of vCPUs</p></li><li><p>As described in the <a href=../../toolstack/features/NUMA>NUMA feature description</a>,
+when the <code>xe</code> configuration option <code>numa_placement</code> is set to <code>Best_effort</code>,
+except when the VM has a hard affinity set, invoke the <code>numa_placement</code> function:</p><div class="highlight wrap-code"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ml data-lang=ml><span style=display:flex><span><span style=color:#66d9ef>match</span> <span style=color:#f92672>!</span>Xenops_server.numa_placement <span style=color:#66d9ef>with</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>|</span> <span style=color:#a6e22e>Any</span> <span style=color:#f92672>-&gt;</span>
+</span></span><span style=display:flex><span>    ()
+</span></span><span style=display:flex><span><span style=color:#f92672>|</span> <span style=color:#a6e22e>Best_effort</span> <span style=color:#f92672>-&gt;</span>
+</span></span><span style=display:flex><span>    log_reraise <span style=color:#f92672>(</span>Printf.sprintf <span style=color:#e6db74>&#34;NUMA placement&#34;</span><span style=color:#f92672>)</span> <span style=color:#f92672>(</span><span style=color:#66d9ef>fun</span> () <span style=color:#f92672>-&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> has_hard_affinity <span style=color:#66d9ef>then</span>
+</span></span><span style=display:flex><span>          D.debug <span style=color:#e6db74>&#34;VM has hard affinity set, skipping NUMA optimization&#34;</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>else</span>
+</span></span><span style=display:flex><span>          numa_placement domid <span style=color:#f92672>~</span>vcpus
+</span></span><span style=display:flex><span>            <span style=color:#f92672>~</span>memory<span style=color:#f92672>:(</span>Int64.mul memory<span style=color:#f92672>.</span>xen_max_mib 1048576L<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>)</span></span></span></code></pre></div></li></ol><h2 id=numa-placement>NUMA placement</h2><p><code>build_pre</code> passes the <code>domid</code>, the number of <code>vCPUs</code> and <code>xen_max_mib</code> to the
+<a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L862-L897 rel=external target=_blank>numa_placement</a>
+function to run the algorithm to find the best NUMA placement.</p><p>When it returns a NUMA node to use, it calls the Xen hypercalls
+to set the vCPU affinity to this NUMA node:</p><div class="highlight wrap-code"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ml data-lang=ml><span style=display:flex><span>  <span style=color:#66d9ef>let</span> vm <span style=color:#f92672>=</span> NUMARequest.make <span style=color:#f92672>~</span>memory <span style=color:#f92672>~</span>vcpus <span style=color:#66d9ef>in</span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>let</span> nodea <span style=color:#f92672>=</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>match</span> <span style=color:#f92672>!</span>numa_resources <span style=color:#66d9ef>with</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>|</span> <span style=color:#a6e22e>None</span> <span style=color:#f92672>-&gt;</span>
+</span></span><span style=display:flex><span>        Array.of_list nodes
+</span></span><span style=display:flex><span>    <span style=color:#f92672>|</span> <span style=color:#a6e22e>Some</span> a <span style=color:#f92672>-&gt;</span>
+</span></span><span style=display:flex><span>        Array.map2 NUMAResource.min_memory <span style=color:#f92672>(</span>Array.of_list nodes<span style=color:#f92672>)</span> a
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>in</span>
+</span></span><span style=display:flex><span>  numa_resources <span style=color:#f92672>:=</span> <span style=color:#a6e22e>Some</span> nodea <span style=color:#f92672>;</span>
+</span></span><span style=display:flex><span>  Softaffinity.plan <span style=color:#f92672>~</span>vm host nodea</span></span></code></pre></div><p>By using the default <code>auto_node_affinity</code> feature of Xen,
+setting the vCPU affinity causes the Xen hypervisor to activate
+NUMA node affinity for memory allocations to be aligned with
+the vCPU affinity of the domain.</p><p>Note: See the Xen domain&rsquo;s
+<a href=https://wiki.xenproject.org/wiki/NUMA_node_affinity_in_the_Xen_hypervisor rel=external target=_blank>auto_node_affinity</a>
+feature flag, which controls this, which can be overridden in the
+Xen hypervisor if needed for specific VMs.</p><p>This can be used, for example, when there might not be enough memory
+on the preferred NUMA node, but there are other NUMA nodes that have
+enough free memory among with the memory allocations shall be done.</p><p>In terms of future NUMA design, it might be even more favourable to
+have a strategy in <code>xenguest</code> where in such cases, the superpages
+of the preferred node are used first and a fallback to neighbouring
+NUMA nodes only happens to the extent necessary.</p><p>Likely, the future allocation strategy should be passed to <code>xenguest</code>
+using Xenstore like the other platform parameters for the VM.</p><p>Summary: This passes the information to the hypervisor that memory
+allocation for this domain should preferably be done from this NUMA node.</p><h2 id=invoke-the-xenguest-program>Invoke the xenguest program</h2><p>With the preparation in <code>build_pre</code> completed, <code>Domain.build</code>
+<a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L1127-L1155 rel=external target=_blank>calls</a>
+the <code>xenguest</code> function to invoke the <a href=/new-docs/xenopsd/walkthroughs/VM.build/xenguest/index.html>xenguest</a> program to build the domain.</p><footer class=footline></footer></article><article class=default><header class=headline></header><h1 id=xenguest>xenguest</h1><h1 id=flowchart>Flowchart</h1><p>xenguest is called as part of starting a new domain in VM_build:</p><pre class="mermaid align-center">flowchart
+subgraph xenopsd VM_build[xenopsd&amp;nbsp;VM_build&amp;nbsp;micro#8209;ops]
+direction LR
+xenopsd1[Domain.build - Thread #1] --&gt; xenguest1[xenguest #1]
+xenopsd2[Domain.build - Thread #2] --&gt; xenguest2[xenguest #2]
+xenguest1 --&gt; libxenguest
+xenguest2 --&gt; libxenguest2[libxenguest]
+click xenopsd1 &#34;../Domain.build/index.html&#34;
+click xenopsd2 &#34;../Domain.build/index.html&#34;
+click xenguest1 &#34;https://github.com/xenserver/xen.pg/blob/XS-8/patches/xenguest.patch&#34; _blank
+click xenguest2 &#34;https://github.com/xenserver/xen.pg/blob/XS-8/patches/xenguest.patch&#34; _blank
+click libxenguest &#34;https://github.com/xen-project/xen/tree/master/tools/libs/guest&#34; _blank
+click libxenguest2 &#34;https://github.com/xen-project/xen/tree/master/tools/libs/guest&#34; _blank
+libxenguest --&gt; Xen[Xen&lt;br&gt;Hypervisor]
+libxenguest2 --&gt; Xen
+end</pre><h1 id=about-xenguest>About xenguest</h1><p><code>xenguest</code> is called by the xenopsd <a href=/new-docs/xenopsd/walkthroughs/VM.build/Domain.build/index.html>Domain.build</a> function
+to perform the build phase for new VMs, which is part of the <code>xenopsd</code>
+<a href=VM.start>VM.start operation</a>.</p><p><a href=https://github.com/xenserver/xen.pg/blob/XS-8/patches/xenguest.patch rel=external target=_blank>xenguest</a>
+was created as a separate program due to issues with
+<code>libxenguest</code>:</p><ul><li>It wasn&rsquo;t threadsafe: fixed, but it still uses a per-call global struct</li><li>It had an incompatible licence, but now licensed under the LGPL.</li></ul><p>Those were fixed, but we still shell out to <code>xenguest</code>, which is currently
+carried in the patch queue for the Xen hypervisor packages, but could become
+an individual package once planned changes to the Xen hypercalls are stabilised.</p><p>Over time, <code>xenguest</code> has evolved to build more of the initial domain state.</p><h1 id=interface-to-xenguest>Interface to xenguest</h1><pre class="mermaid align-center">flowchart
+subgraph xenopsd VM_build[xenopsd&amp;nbsp;VM_build&amp;nbsp;micro#8209;op]
+direction TB
+mode
+domid
+memmax
+Xenstore
+end
+mode[--mode build_hvm] --&gt; xenguest
+domid --&gt; xenguest
+memmax --&gt; xenguest
+Xenstore[Xenstore platform data] --&gt; xenguest</pre><p><code>xenopsd</code> must pass this information to <code>xenguest</code> to build a VM:</p><ul><li>The domain type to build for (HVM, PHV or PV).<ul><li>It is passed using the command line option <code>--mode hvm_build</code>.</li></ul></li><li>The <code>domid</code> of the created empty domain,</li><li>The amount of system memory of the domain,</li><li>A number of other parameters that are domain-specific.</li></ul><p>Using the Xenstore, the platform data (vCPUs, vCPU affinity, etc) is passed:</p><ul><li>the vCPU affinity</li><li>the vCPU credit2 weight/cap parameters</li><li>whether the NX bit is exposed</li><li>whether the viridian CPUID leaf is exposed</li><li>whether the system has PAE or not</li><li>whether the system has ACPI or not</li><li>whether the system has nested HVM or not</li><li>whether the system has an HPET or not</li></ul><p>When called to build a domain, <code>xenguest</code> reads those and builds the VM accordingly.</p><h2 id=walkthrough-of-the-xenguest-build-mode>Walkthrough of the xenguest build mode</h2><pre class="mermaid align-center">flowchart
+subgraph xenguest[xenguest&amp;nbsp;#8209;#8209;mode&amp;nbsp;hvm_build&amp;nbsp;domid]
+direction LR
+stub_xc_hvm_build[stub_xc_hvm_build#40;#41;] --&gt; get_flags[
+    get_flags#40;#41;&amp;nbsp;&lt;#8209;&amp;nbsp;Xenstore&amp;nbsp;platform&amp;nbsp;data
+]
+stub_xc_hvm_build --&gt; configure_vcpus[
+    configure_vcpus#40;#41;&amp;nbsp;#8209;&gt;&amp;nbsp;Xen&amp;nbsp;hypercall
+]
+stub_xc_hvm_build --&gt; setup_mem[
+    setup_mem#40;#41;&amp;nbsp;#8209;&gt;&amp;nbsp;Xen&amp;nbsp;hypercalls&amp;nbsp;to&amp;nbsp;setup&amp;nbsp;domain&amp;nbsp;memory
+]
+end</pre><p>Based on the given domain type, the <code>xenguest</code> program calls dedicated
+functions for the build process of the given domain type.</p><p>These are:</p><ul><li><code>stub_xc_hvm_build()</code> for HVM,</li><li><code>stub_xc_pvh_build()</code> for PVH, and</li><li><code>stub_xc_pv_build()</code> for PV domains.</li></ul><p>These domain build functions call these functions:</p><ol><li><code>get_flags()</code> to get the platform data from the Xenstore</li><li><code>configure_vcpus()</code> which uses the platform data from the Xenstore to configure vCPU affinity and the credit scheduler parameters vCPU weight and vCPU cap (max % pCPU time for throttling)</li><li>The <code>setup_mem</code> function for the given VM type.</li></ol><h2 id=the-function-hvm_build_setup_mem>The function hvm_build_setup_mem()</h2><p>For HVM domains, <code>hvm_build_setup_mem()</code> is responsible for deriving the memory
+layout of the new domain, allocating the required memory and populating for the
+new domain. It must:</p><ol><li>Derive the <code>e820</code> memory layout of the system memory of the domain
+including memory holes depending on PCI passthrough and vGPU flags.</li><li>Load the BIOS/UEFI firmware images</li><li>Store the final MMIO hole parameters in the Xenstore</li><li>Call the <code>libxenguest</code> function <code>xc_dom_boot_mem_init()</code> (see below)</li><li>Call <code>construct_cpuid_policy()</code> to apply the CPUID <code>featureset</code> policy</li></ol><h2 id=the-function-xc_dom_boot_mem_init>The function xc_dom_boot_mem_init()</h2><pre class="mermaid align-center">flowchart LR
+subgraph xenguest
+hvm_build_setup_mem[hvm_build_setup_mem#40;#41;]
+end
+subgraph libxenguest
+hvm_build_setup_mem --&gt; xc_dom_boot_mem_init[xc_dom_boot_mem_init#40;#41;]
+xc_dom_boot_mem_init --&gt;|vmemranges| meminit_hvm[meninit_hvm#40;#41;]
+click xc_dom_boot_mem_init &#34;https://github.com/xen-project/xen/blob/39c45c/tools/libs/guest/xg_dom_boot.c#L110-L126&#34; _blank
+click meminit_hvm &#34;https://github.com/xen-project/xen/blob/39c45c/tools/libs/guest/xg_dom_x86.c#L1348-L1648&#34; _blank
+end</pre><p><code>hvm_build_setup_mem()</code> calls
+<a href=https://github.com/xen-project/xen/blob/39c45c/tools/libs/guest/xg_dom_boot.c#L110-L126 rel=external target=_blank>xc_dom_boot_mem_init()</a>
+to allocate and populate the domain&rsquo;s system memory.</p><p>It calls
+<a href=https://github.com/xen-project/xen/blob/39c45c/tools/libs/guest/xg_dom_x86.c#L1348-L1648 rel=external target=_blank>meminit_hvm()</a>
+to loop over the <code>vmemranges</code> of the domain for mapping the system RAM
+of the guest from the Xen hypervisor heap. Its goals are:</p><ul><li>Attempt to allocate 1GB superpages when possible</li><li>Fall back to 2MB pages when 1GB allocation failed</li><li>Fall back to 4k pages when both failed</li></ul><p>It uses the hypercall
+<a href=https://github.com/xen-project/xen/blob/39c45c/xen/common/memory.c#L1408-L1477 rel=external target=_blank>XENMEM_populate_physmap</a>
+to perform memory allocation and to map the allocated memory
+to the system RAM ranges of the domain.</p><p><a href=https://github.com/xen-project/xen/blob/39c45c/xen/common/memory.c#L1022-L1071 rel=external target=_blank>https://github.com/xen-project/xen/blob/39c45c/xen/common/memory.c#L1022-L1071</a></p><p><code>XENMEM_populate_physmap</code>:</p><ol><li>Uses
+<a href=https://github.com/xen-project/xen/blob/39c45c/xen/common/memory.c#L1022-L1071 rel=external target=_blank>construct_memop_from_reservation</a>
+to convert the arguments for allocating a page from
+<a href=https://github.com/xen-project/xen/blob/master/xen/include/public/memory.h#L46-L80 rel=external target=_blank>struct xen_memory_reservation</a>
+to <code>struct memop_args</code>.</li><li>Sets flags and calls functions according to the arguments</li><li>Allocates the requested page at the most suitable place<ul><li>depending on passed flags, allocate on a specific NUMA node</li><li>else, if the domain has node affinity, on the affine nodes</li><li>also in the most suitable memory zone within the NUMA node</li></ul></li><li>Falls back to less desirable places if this fails<ul><li>or fail for &ldquo;exact&rdquo; allocation requests</li></ul></li><li>When no pages of the requested size are free,
+it splits larger superpages into pages of the requested size.</li></ol><p>For more details on the VM build step involving <code>xenguest</code> and Xen side see:
+<a href=https://wiki.xenproject.org/wiki/Walkthrough:_VM_build_using_xenguest rel=external target=_blank>https://wiki.xenproject.org/wiki/Walkthrough:_VM_build_using_xenguest</a></p><footer class=footline></footer></article></section></div></main></div><script src=/new-docs/js/clipboard.min.js?1739370549 defer></script><script src=/new-docs/js/perfect-scrollbar.min.js?1739370549 defer></script><script src=/new-docs/js/d3/d3-color.min.js?1739370549 defer></script><script src=/new-docs/js/d3/d3-dispatch.min.js?1739370549 defer></script><script src=/new-docs/js/d3/d3-drag.min.js?1739370549 defer></script><script src=/new-docs/js/d3/d3-ease.min.js?1739370549 defer></script><script src=/new-docs/js/d3/d3-interpolate.min.js?1739370549 defer></script><script src=/new-docs/js/d3/d3-selection.min.js?1739370549 defer></script><script src=/new-docs/js/d3/d3-timer.min.js?1739370549 defer></script><script src=/new-docs/js/d3/d3-transition.min.js?1739370549 defer></script><script src=/new-docs/js/d3/d3-zoom.min.js?1739370549 defer></script><script src=/new-docs/js/js-yaml.min.js?1739370549 defer></script><script src=/new-docs/js/mermaid.min.js?1739370549 defer></script><script>window.themeUseMermaid=JSON.parse('{ "fontFamily": "Roboto Flex", "securityLevel": "loose" }')</script><script src=/new-docs/js/theme.js?1739370549 defer></script><script>function apply_image_invert_filter(e){document.querySelectorAll("img").forEach(function(t){if(t.classList.contains("no-invert"))return;t.style="filter: invert("+e+");"})}function darkThemeUsed(){const t=window.getComputedStyle(document.querySelector("body")),n=t.getPropertyValue("background-color");var e=n.match(/\d+/g).map(function(e){return parseInt(e,10)});return e.length===3&&.2126*e[0]+.7152*e[1]+.0722*e[2]<165}const invertToDarkGray=.85;darkThemeUsed()&&apply_image_invert_filter(invertToDarkGray),document.addEventListener("themeVariantLoaded",function(e){apply_image_invert_filter(e.detail.variant.endsWith("dark")?invertToDarkGray:0)})</script></body></html>

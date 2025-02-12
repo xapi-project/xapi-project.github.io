@@ -1,126 +1,26 @@
 <!doctype html><html lang=en-us dir=ltr itemscope itemtype=http://schema.org/Article data-r-output-format=print><head><meta charset=utf-8><meta name=viewport content="height=device-height,width=device-width,initial-scale=1,minimum-scale=1"><meta name=generator content="Hugo 0.127.0"><meta name=generator content="Relearn 7.3.2"><meta name=description content="Let’s trace through interesting operations to see how the whole system works.
-Live Migration Walkthrough: Migrating a VM Walkthrough: Starting a VM Inspiration for other walk-throughs:
-Shutting down a VM and waiting for it to happen A VM wants to reboot itself A disk is hotplugged A disk refuses to hotunplug A VM is suspended"><meta name=author content><meta name=twitter:card content="summary"><meta name=twitter:title content="Operation Walk-Throughs :: XAPI Toolstack Developer Documentation"><meta name=twitter:description content="Let’s trace through interesting operations to see how the whole system works.
-Live Migration Walkthrough: Migrating a VM Walkthrough: Starting a VM Inspiration for other walk-throughs:
-Shutting down a VM and waiting for it to happen A VM wants to reboot itself A disk is hotplugged A disk refuses to hotunplug A VM is suspended"><meta property="og:url" content="https://xapi-project.github.io/new-docs/xenopsd/walkthroughs/index.html"><meta property="og:site_name" content="XAPI Toolstack Developer Documentation"><meta property="og:title" content="Operation Walk-Throughs :: XAPI Toolstack Developer Documentation"><meta property="og:description" content="Let’s trace through interesting operations to see how the whole system works.
-Live Migration Walkthrough: Migrating a VM Walkthrough: Starting a VM Inspiration for other walk-throughs:
-Shutting down a VM and waiting for it to happen A VM wants to reboot itself A disk is hotplugged A disk refuses to hotunplug A VM is suspended"><meta property="og:locale" content="en_us"><meta property="og:type" content="website"><meta itemprop=name content="Operation Walk-Throughs :: XAPI Toolstack Developer Documentation"><meta itemprop=description content="Let’s trace through interesting operations to see how the whole system works.
-Live Migration Walkthrough: Migrating a VM Walkthrough: Starting a VM Inspiration for other walk-throughs:
-Shutting down a VM and waiting for it to happen A VM wants to reboot itself A disk is hotplugged A disk refuses to hotunplug A VM is suspended"><meta itemprop=wordCount content="55"><title>Operation Walk-Throughs :: XAPI Toolstack Developer Documentation</title>
-<link href=https://xapi-project.github.io/new-docs/xenopsd/walkthroughs/index.html rel=canonical type=text/html title="Operation Walk-Throughs :: XAPI Toolstack Developer Documentation"><link href=/new-docs/xenopsd/walkthroughs/index.xml rel=alternate type=application/rss+xml title="Operation Walk-Throughs :: XAPI Toolstack Developer Documentation"><link href=/new-docs/images/favicon.png?1739360098 rel=icon type=image/png><link href=/new-docs/css/fontawesome-all.min.css?1739360098 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/fontawesome-all.min.css?1739360098 rel=stylesheet></noscript><link href=/new-docs/css/auto-complete.css?1739360098 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/auto-complete.css?1739360098 rel=stylesheet></noscript><link href=/new-docs/css/perfect-scrollbar.min.css?1739360098 rel=stylesheet><link href=/new-docs/css/theme.min.css?1739360098 rel=stylesheet><link href=/new-docs/css/format-print.min.css?1739360098 rel=stylesheet id=R-format-style><script>window.relearn=window.relearn||{},window.relearn.relBasePath="../..",window.relearn.relBaseUri="../../..",window.relearn.absBaseUri="https://xapi-project.github.io/new-docs",window.relearn.min=`.min`,window.relearn.disableAnchorCopy=!1,window.relearn.disableAnchorScrolling=!1,window.relearn.themevariants=["auto","zen-light","zen-dark","red","blue","green","learn","neon","relearn-light","relearn-bright","relearn-dark"],window.relearn.customvariantname="my-custom-variant",window.relearn.changeVariant=function(e){var t=document.documentElement.dataset.rThemeVariant;window.localStorage.setItem(window.relearn.absBaseUri+"/variant",e),document.documentElement.dataset.rThemeVariant=e,t!=e&&document.dispatchEvent(new CustomEvent("themeVariantLoaded",{detail:{variant:e,oldVariant:t}}))},window.relearn.markVariant=function(){var t=window.localStorage.getItem(window.relearn.absBaseUri+"/variant"),e=document.querySelector("#R-select-variant");e&&(e.value=t)},window.relearn.initVariant=function(){var e=window.localStorage.getItem(window.relearn.absBaseUri+"/variant")??"";e==window.relearn.customvariantname||(!e||!window.relearn.themevariants.includes(e))&&(e=window.relearn.themevariants[0],window.localStorage.setItem(window.relearn.absBaseUri+"/variant",e)),document.documentElement.dataset.rThemeVariant=e},window.relearn.initVariant(),window.relearn.markVariant(),window.T_Copy_to_clipboard=`Copy to clipboard`,window.T_Copied_to_clipboard=`Copied to clipboard!`,window.T_Copy_link_to_clipboard=`Copy link to clipboard`,window.T_Link_copied_to_clipboard=`Copied link to clipboard!`,window.T_Reset_view=`Reset view`,window.T_View_reset=`View reset!`,window.T_No_results_found=`No results found for "{0}"`,window.T_N_results_found=`{1} results found for "{0}"`</script><link rel=stylesheet href=https://xapi-project.github.io/new-docs/css/misc.css></head><body class="mobile-support print" data-url=/new-docs/xenopsd/walkthroughs/index.html><div id=R-body class=default-animation><div id=R-body-overlay></div><nav id=R-topbar><div class=topbar-wrapper><div class=topbar-sidebar-divider></div><div class="topbar-area topbar-area-start" data-area=start><div class="topbar-button topbar-button-sidebar" data-content-empty=disable data-width-s=show data-width-m=hide data-width-l=hide><button class=topbar-control onclick=toggleNav() type=button title="Menu (CTRL+ALT+n)"><i class="fa-fw fas fa-bars"></i></button></div><div class="topbar-button topbar-button-toc" data-content-empty=hide data-width-s=show data-width-m=show data-width-l=show><button class=topbar-control onclick=toggleTopbarFlyout(this) type=button title="Table of Contents (CTRL+ALT+t)"><i class="fa-fw fas fa-list-alt"></i></button><div class=topbar-content><div class=topbar-content-wrapper></div></div></div></div><ol class="topbar-breadcrumbs breadcrumbs highlightable" itemscope itemtype=http://schema.org/BreadcrumbList><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/index.html><span itemprop=name>XAPI Toolstack Developer Guide</span></a><meta itemprop=position content="1">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/xenopsd/index.html><span itemprop=name>Xenopsd</span></a><meta itemprop=position content="2">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><span itemprop=name>Walk-throughs</span><meta itemprop=position content="3"></li></ol><div class="topbar-area topbar-area-end" data-area=end><div class="topbar-button topbar-button-edit" data-content-empty=disable data-width-s=area-more data-width-m=show data-width-l=show><a class=topbar-control href=https://github.com/xapi-project/xen-api/edit/master/doc/content/xenopsd/walkthroughs/_index.md target=_blank title="Edit (CTRL+ALT+w)"><i class="fa-fw fas fa-pen"></i></a></div><div class="topbar-button topbar-button-print" data-content-empty=disable data-width-s=area-more data-width-m=show data-width-l=show><a class=topbar-control href=/new-docs/xenopsd/walkthroughs/index.print.html title="Print whole chapter (CTRL+ALT+p)"><i class="fa-fw fas fa-print"></i></a></div><div class="topbar-button topbar-button-prev" data-content-empty=disable data-width-s=show data-width-m=show data-width-l=show><a class=topbar-control href=/new-docs/xenopsd/features/index.html title="Features (🡐)"><i class="fa-fw fas fa-chevron-left"></i></a></div><div class="topbar-button topbar-button-next" data-content-empty=disable data-width-s=show data-width-m=show data-width-l=show><a class=topbar-control href=/new-docs/xenopsd/walkthroughs/live-migration/index.html title="Live Migration Sequence Diagram (🡒)"><i class="fa-fw fas fa-chevron-right"></i></a></div><div class="topbar-button topbar-button-more" data-content-empty=hide data-width-s=show data-width-m=show data-width-l=show><button class=topbar-control onclick=toggleTopbarFlyout(this) type=button title=More><i class="fa-fw fas fa-ellipsis-v"></i></button><div class=topbar-content><div class=topbar-content-wrapper><div class="topbar-area topbar-area-more" data-area=more></div></div></div></div></div></div></nav><div id=R-main-overlay></div><main id=R-body-inner class="highlightable xenopsd" tabindex=-1><div class=flex-block-wrapper><article class=default><header class=headline></header><h1 id=operation-walk-throughs>Operation Walk-Throughs</h1><p>Let&rsquo;s trace through interesting operations to see how the whole system
-works.</p><ul class="children children-li children-sort-"><li><a href=/new-docs/xenopsd/walkthroughs/live-migration/index.html>Live Migration</a></li><li><a href=/new-docs/xenopsd/walkthroughs/VM.migrate/index.html>Walkthrough: Migrating a VM</a></li><li><a href=/new-docs/xenopsd/walkthroughs/VM.start/index.html>Walkthrough: Starting a VM</a></li></ul><p>Inspiration for other walk-throughs:</p><ul><li>Shutting down a VM and waiting for it to happen</li><li>A VM wants to reboot itself</li><li>A disk is hotplugged</li><li>A disk refuses to hotunplug</li><li>A VM is suspended</li></ul><footer class=footline></footer></article><section><h1 class=a11y-only>Subsections of Walk-throughs</h1><article class=default><header class=headline></header><h1 id=live-migration-sequence-diagram>Live Migration Sequence Diagram</h1><pre class="mermaid align-left">
-sequenceDiagram
-autonumber
-participant tx as sender
-participant rx0 as receiver thread 0
-participant rx1 as receiver thread 1
-participant rx2 as receiver thread 2
-
-activate tx
-tx-&gt;&gt;rx0: VM.import_metadata
-tx-&gt;&gt;tx: Squash memory to dynamic-min
-
-tx-&gt;&gt;rx1: HTTP /migrate/vm
-activate rx1
-rx1-&gt;&gt;rx1: VM_receive_memory&lt;br/&gt;VM_create (00000001)&lt;br/&gt;VM_restore_vifs
-rx1-&gt;&gt;tx: handshake (control channel)&lt;br/&gt;Synchronisation point 1
-
-tx-&gt;&gt;rx2: HTTP /migrate/mem
-activate rx2
-rx2-&gt;&gt;tx: handshake (memory channel)&lt;br/&gt;Synchronisation point 1-mem
-
-tx-&gt;&gt;rx1: handshake (control channel)&lt;br/&gt;Synchronisation point 1-mem ACK
-
-rx2-&gt;&gt;rx1: memory fd
-
-tx-&gt;&gt;rx1: VM_save/VM_restore&lt;br/&gt;Synchronisation point 2
-tx-&gt;&gt;tx: VM_rename
-rx1-&gt;&gt;rx2: exit
-deactivate rx2
-
-tx-&gt;&gt;rx1: handshake (control channel)&lt;br/&gt;Synchronisation point 3
-
-rx1-&gt;&gt;rx1: VM_rename&lt;br/&gt;VM_restore_devices&lt;br/&gt;VM_unpause&lt;br/&gt;VM_set_domain_action_request
-
-rx1-&gt;&gt;tx: handshake (control channel)&lt;br/&gt;Synchronisation point 4
-
-deactivate rx1
-
-tx-&gt;&gt;tx: VM_shutdown&lt;br/&gt;VM_remove
-deactivate tx
-
-</pre><footer class=footline></footer></article><article class=default><header class=headline></header><h1 id=walkthrough-migrating-a-vm>Walkthrough: Migrating a VM</h1><p>A XenAPI client wishes to migrate a VM from one host to another within
-the same pool.</p><p>The client will issue a command to migrate the VM and it will be dispatched
-by the autogenerated <code>dispatch_call</code> function from <strong>xapi/server.ml</strong>. For
-more information about the generated functions you can have a look to
-<a href=https://github.com/xapi-project/xen-api/tree/master/ocaml/idl/ocaml_backend rel=external target=_blank>XAPI IDL model</a>.</p><p>The command will trigger the operation
-<a href=https://github.com/xapi-project/xen-api/blob/7ac88b90e762065c5ebb94a8ea61c61bdbf62c5c/ocaml/xenopsd/lib/xenops_server.ml#L2572 rel=external target=_blank>VM_migrate</a>
-that has low level operations performed by the backend. These atomics operations
-that we will describe in the documentation are:</p><ul><li>VM.restore</li><li>VM.rename</li><li>VBD.set_active</li><li>VBD.plug</li><li>VIF.set_active</li><li>VGPU.set_active</li><li>VM.create_device_model</li><li>PCI.plug</li><li>VM.set_domain_action_request</li></ul><p>The command have serveral parameters such as: should it be ran asynchronously,
-should it be forwared to another host, how arguments should be marshalled and
-so on. A new thread is created by <a href=https://github.com/xapi-project/xen-api/blob/7ac88b90e762065c5ebb94a8ea61c61bdbf62c5c/ocaml/xapi/server_helpers.ml#L55 rel=external target=_blank>xapi/server_helpers.ml</a>
-to handle the command asynchronously. At this point the helper also check if
-the command should be passed to the <a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xapi/message_forwarding.ml rel=external target=_blank>message forwarding</a>
-layer in order to be executed on another host (the destination) or locally if
-we are already at the right place.</p><p>It will finally reach <a href=https://github.com/xapi-project/xen-api/blob/7ac88b90e762065c5ebb94a8ea61c61bdbf62c5c/ocaml/xapi/api_server.ml#L242 rel=external target=_blank>xapi/api_server.ml</a> that will take the action
-of posted a command to the message broker <a href=https://github.com/xapi-project/xen-api/tree/master/ocaml/message-switch rel=external target=_blank>message switch</a>.
-It is a JSON-RPC HTTP request sends on a Unix socket to communicate between some
-XAPI daemons. In the case of the migration this message sends by <strong>XAPI</strong> will be
-consumed by the <a href=https://github.com/xapi-project/xen-api/tree/master/ocaml/xenopsd rel=external target=_blank>xenopsd</a>
-daemon that will do the job of migrating the VM.</p><h1 id=the-migration-of-the-vm>The migration of the VM</h1><p>The migration is an asynchronous task and a thread is created to handle this task.
-The tasks&rsquo;s reference is returned to the client, which can then check
-its status until completion.</p><p>As we see in the introduction the <a href=https://github.com/xapi-project/xen-api/tree/master/ocaml/xenopsd rel=external target=_blank>xenopsd</a>
-daemon will pop the operation
-<a href=https://github.com/xapi-project/xen-api/blob/7ac88b90e762065c5ebb94a8ea61c61bdbf62c5c/ocaml/xenopsd/lib/xenops_server.ml#L2572 rel=external target=_blank>VM_migrate</a>
-from the message broker.</p><p>Only one backend is know available that interacts with libxc, libxenguest
-and xenstore. It is the <a href=https://github.com/xapi-project/xen-api/tree/master/ocaml/xenopsd/xc rel=external target=_blank>xc backend</a>.</p><p>The entities that need to be migrated are: <em>VDI</em>, <em>VIF</em>, <em>VGPU</em> and <em>PCI</em> components.</p><p>During the migration process the destination domain will be built with the same
-uuid than the original VM but the last part of the UUID will be
-<code>XXXXXXXX-XXXX-XXXX-XXXX-000000000001</code>. The original domain will be removed using
-<code>XXXXXXXX-XXXX-XXXX-XXXX-000000000000</code>.</p><p>There are some points called <em>hooks</em> at which <code>xenopsd</code> can execute some script.
-Before starting a migration a command is send to the original domain to execute
-a pre migrate script if it exists.</p><p>Before starting the migration a command is sent to Qemu using the Qemu Machine Protocol (QMP)
-to check that the domain can be suspended (see <a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/device_common.ml rel=external target=_blank>xenopsd/xc/device_common.ml</a>).
-After checking with Qemu that the VM is suspendable we can start the migration.</p><h2 id=importing-metadata>Importing metadata</h2><p>As for <em>hooks</em>, commands to source domain are sent using <a href=https://github.com/xapi-project/xen-api/tree/master/ocaml/libs/stunnel rel=external target=_blank>stunnel</a> a daemon which
-is used as a wrapper to manage SSL encryption communication between two hosts on the same
-pool. To import metada an XML RPC command is sent to the original domain.</p><p>Once imported it will give us a reference id and will allow to build the new domain
-on the destination using the temporary VM uuid <code>XXXXXXXX-XXXX-XXXX-XXXX-000000000001</code>
-where <code>XXX...</code> is the reference id of the original VM.</p><h2 id=setting-memory>Setting memory</h2><p>One of the first thing to do is to setup the memory. The backend will check that there
-is no ballooning operation in progress. At this point the migration can fail if a
-ballooning operation is in progress and takes too much time.</p><p>Once memory checked the daemon will get the state of the VM (running, halted, &mldr;) and
-information about the VM are retrieve by the backend like the maximum memory the domain
-can consume but also information about quotas for example.
-Information are retrieve by the backend from xenstore.</p><p>Once this is complete, we can restore VIF and create the domain.</p><p>The synchronisation of the memory is the first point of synchronisation and everythin
-is ready for VM migration.</p><h2 id=vm-migration>VM Migration</h2><p>After receiving memory we can set up the destination domain. If we have a vGPU we need to kick
-off its migration process. We will need to wait the acknowledge that indicates that the entry
-for the GPU has been well initialized. before starting the main VM migration.</p><p>Their is a mechanism of handshake for synchronizing between the source and the
-destination. Using the handshake protocol the receiver inform the sender of the
-request that everything has been setup and ready to save/restore.</p><h3 id=vm-restore>VM restore</h3><p>VM restore is a low level atomic operation <a href=https://github.com/xapi-project/xen-api/blob/7ac88b90e762065c5ebb94a8ea61c61bdbf62c5c/ocaml/xenopsd/xc/xenops_server_xen.ml#L2684 rel=external target=_blank>VM.restore</a>.
-This operation is represented by a function call to <a href=https://github.com/xapi-project/xen-api/blob/7ac88b90e762065c5ebb94a8ea61c61bdbf62c5c/ocaml/xenopsd/xc/domain.ml#L1540 rel=external target=_blank>backend</a>.
-It uses <strong>Xenguest</strong>, a low-level utility from XAPI toolstack, to interact with the Xen hypervisor
-and libxc for sending a request of migration to the <strong>emu-manager</strong>.</p><p>After sending the request results coming from <strong>emu-manager</strong> are collected
-by the main thread. It blocks until results are received.</p><p>During the live migration, <strong>emu-manager</strong> helps in ensuring the correct state
-transitions for the devices and handling the message passing for the VM as
-it&rsquo;s moved between hosts. This includes making sure that the state of the
-VM&rsquo;s virtual devices, like disks or network interfaces, is correctly moved over.</p><h3 id=vm-renaming>VM renaming</h3><p>Once all operations are done we can rename the VM on the target from its temporary
-name to its real UUID. This operation is another low level atomic one
-<a href=https://github.com/xapi-project/xen-api/blob/7ac88b90e762065c5ebb94a8ea61c61bdbf62c5c/ocaml/xenopsd/xc/xenops_server_xen.ml#L1667 rel=external target=_blank>VM.rename</a>
-that will take care of updating the xenstore on the destination.</p><p>The next step is the restauration of devices and unpause the domain.</p><h3 id=restoring-remaining-devices>Restoring remaining devices</h3><p>Restoring devices starts by activating VBD using the low level atomic operation
-<a href=https://github.com/xapi-project/xen-api/blob/7ac88b90e762065c5ebb94a8ea61c61bdbf62c5c/ocaml/xenopsd/xc/xenops_server_xen.ml#L3674 rel=external target=_blank>VBD.set_active</a>. It is an update of Xenstore. VBDs that are read-write must
-be plugged before read-only ones. Once activated the low level atomic operation
-<a href=https://github.com/xapi-project/xen-api/blob/7ac88b90e762065c5ebb94a8ea61c61bdbf62c5c/ocaml/xenopsd/xc/xenops_server_xen.ml#L3721 rel=external target=_blank>VBD.plug</a>
-is called. VDI are attached and activate.</p><p>Next devices are VIFs that are set as active <a href=https://github.com/xapi-project/xen-api/blob/7ac88b90e762065c5ebb94a8ea61c61bdbf62c5c/ocaml/xenopsd/xc/xenops_server_xen.ml#L4296 rel=external target=_blank>VIF.set_active</a> and plug <a href=https://github.com/xapi-project/xen-api/blob/7ac88b90e762065c5ebb94a8ea61c61bdbf62c5c/ocaml/xenopsd/xc/xenops_server_xen.ml#L4394 rel=external target=_blank>VIF.plug</a>.
-If there are VGPUs we will set them as active now using the atomic <a href=https://github.com/xapi-project/xen-api/blob/7ac88b90e762065c5ebb94a8ea61c61bdbf62c5c/ocaml/xenopsd/xc/xenops_server_xen.ml#L3490 rel=external target=_blank>VGPU.set_active</a>.</p><p>We are almost done. The next step is to create the device model</p><h4 id=create-device-model>create device model</h4><p>Create device model is done by using the atomic operation <a href=https://github.com/xapi-project/xen-api/blob/7ac88b90e762065c5ebb94a8ea61c61bdbf62c5c/ocaml/xenopsd/xc/xenops_server_xen.ml#L2375 rel=external target=_blank>VM.create_device_model</a>. This
-will configure <strong>qemu-dm</strong> and started. This allow to manage PCI devices.</p><h4 id=pci-plug>PCI plug</h4><p><a href=https://github.com/xapi-project/xen-api/blob/7ac88b90e762065c5ebb94a8ea61c61bdbf62c5c/ocaml/xenopsd/xc/xenops_server_xen.ml#L3399 rel=external target=_blank>PCI.plug</a>
-is executed by the backend. It plugs a PCI device and advertise it to QEMU if this option is set. It is
-the case for NVIDIA SR-IOV vGPUS.</p><p>At this point devices have been restored. The new domain is considered survivable. We can
-unpause the domain and performs last actions</p><h3 id=unpause-and-done>Unpause and done</h3><p>Unpause is done by managing the state of the domain using bindings to <a href="https://xenbits.xen.org/gitweb/?p=xen.git;a=blob;f=tools/libs/ctrl/xc_domain.c;h=f2d9d14b4d9f24553fa766c5dcb289f88d684bb0;hb=HEAD#l76" rel=external target=_blank>xenctrl</a>.
-Once hypervisor has unpaused the domain some actions can be requested using <a href=https://github.com/xapi-project/xen-api/blob/7ac88b90e762065c5ebb94a8ea61c61bdbf62c5c/ocaml/xenopsd/xc/xenops_server_xen.ml#L3172 rel=external target=_blank>VM.set_domain_action_request</a>.
-It is a path in xenstore. By default no action is done but a reboot can be for example
-initiated.</p><p>Previously we spoke about some points called <em>hooks</em> at which <code>xenopsd</code> can execute some script. There
-is also a hook to run a post migrate script. After the execution of the script if there is one
-the migration is almost done. The last step is a handskake to seal the success of the migration
-and the old VM can now be cleaned.</p><h1 id=links>Links</h1><p>Some links are old but even if many changes occured they are relevant for a global understanding
-of the XAPI toolstack.</p><ul><li><a href=https://xapi-project.github.io/xapi/architecture.html rel=external target=_blank>XAPI architecture</a></li><li><a href=https://wiki.xenproject.org/wiki/XAPI_Dispatch rel=external target=_blank>XAPI dispatcher</a></li><li><a href=https://xapi-project.github.io/xenopsd/architecture.html rel=external target=_blank>Xenopsd architecture</a></li></ul><footer class=footline></footer></article><article class=default><header class=headline></header><h1 id=walkthrough-starting-a-vm>Walkthrough: Starting a VM</h1><p>A Xenopsd client wishes to start a VM. They must first tell Xenopsd the VM
+Starting a VMComplete walkthrough of starting a VM, from receiving the request to unpause.
+Building a VMAfter VM_create, VM_build builds the core of the domain (vCPUs, memory)
+VM_build μ-opOverview of the VM_build μ-op (runs after the VM_create μ-op created the domain).
+Domain.buildPrepare the build of a VM: Wait for scrubbing, do NUMA placement, run xenguest.
+xenguestPerform building VMs: Allocate and populate the domain's system memory."><meta name=author content><meta name=twitter:card content="summary"><meta name=twitter:title content="Operation Walk-Throughs :: XAPI Toolstack Developer Documentation"><meta name=twitter:description content="Let’s trace through interesting operations to see how the whole system works.
+Starting a VMComplete walkthrough of starting a VM, from receiving the request to unpause.
+Building a VMAfter VM_create, VM_build builds the core of the domain (vCPUs, memory)
+VM_build μ-opOverview of the VM_build μ-op (runs after the VM_create μ-op created the domain).
+Domain.buildPrepare the build of a VM: Wait for scrubbing, do NUMA placement, run xenguest.
+xenguestPerform building VMs: Allocate and populate the domain's system memory."><meta property="og:url" content="https://xapi-project.github.io/new-docs/xenopsd/walkthroughs/index.html"><meta property="og:site_name" content="XAPI Toolstack Developer Documentation"><meta property="og:title" content="Operation Walk-Throughs :: XAPI Toolstack Developer Documentation"><meta property="og:description" content="Let’s trace through interesting operations to see how the whole system works.
+Starting a VMComplete walkthrough of starting a VM, from receiving the request to unpause.
+Building a VMAfter VM_create, VM_build builds the core of the domain (vCPUs, memory)
+VM_build μ-opOverview of the VM_build μ-op (runs after the VM_create μ-op created the domain).
+Domain.buildPrepare the build of a VM: Wait for scrubbing, do NUMA placement, run xenguest.
+xenguestPerform building VMs: Allocate and populate the domain's system memory."><meta property="og:locale" content="en_us"><meta property="og:type" content="website"><meta itemprop=name content="Operation Walk-Throughs :: XAPI Toolstack Developer Documentation"><meta itemprop=description content="Let’s trace through interesting operations to see how the whole system works.
+Starting a VMComplete walkthrough of starting a VM, from receiving the request to unpause.
+Building a VMAfter VM_create, VM_build builds the core of the domain (vCPUs, memory)
+VM_build μ-opOverview of the VM_build μ-op (runs after the VM_create μ-op created the domain).
+Domain.buildPrepare the build of a VM: Wait for scrubbing, do NUMA placement, run xenguest.
+xenguestPerform building VMs: Allocate and populate the domain's system memory."><meta itemprop=wordCount content="131"><title>Operation Walk-Throughs :: XAPI Toolstack Developer Documentation</title>
+<link href=https://xapi-project.github.io/new-docs/xenopsd/walkthroughs/index.html rel=canonical type=text/html title="Operation Walk-Throughs :: XAPI Toolstack Developer Documentation"><link href=/new-docs/xenopsd/walkthroughs/index.xml rel=alternate type=application/rss+xml title="Operation Walk-Throughs :: XAPI Toolstack Developer Documentation"><link href=/new-docs/images/favicon.png?1739370549 rel=icon type=image/png><link href=/new-docs/css/fontawesome-all.min.css?1739370549 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/fontawesome-all.min.css?1739370549 rel=stylesheet></noscript><link href=/new-docs/css/auto-complete.css?1739370549 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/auto-complete.css?1739370549 rel=stylesheet></noscript><link href=/new-docs/css/perfect-scrollbar.min.css?1739370549 rel=stylesheet><link href=/new-docs/css/theme.min.css?1739370549 rel=stylesheet><link href=/new-docs/css/format-print.min.css?1739370549 rel=stylesheet id=R-format-style><script>window.relearn=window.relearn||{},window.relearn.relBasePath="../..",window.relearn.relBaseUri="../../..",window.relearn.absBaseUri="https://xapi-project.github.io/new-docs",window.relearn.min=`.min`,window.relearn.disableAnchorCopy=!1,window.relearn.disableAnchorScrolling=!1,window.relearn.themevariants=["auto","zen-light","zen-dark","red","blue","green","learn","neon","relearn-light","relearn-bright","relearn-dark"],window.relearn.customvariantname="my-custom-variant",window.relearn.changeVariant=function(e){var t=document.documentElement.dataset.rThemeVariant;window.localStorage.setItem(window.relearn.absBaseUri+"/variant",e),document.documentElement.dataset.rThemeVariant=e,t!=e&&document.dispatchEvent(new CustomEvent("themeVariantLoaded",{detail:{variant:e,oldVariant:t}}))},window.relearn.markVariant=function(){var t=window.localStorage.getItem(window.relearn.absBaseUri+"/variant"),e=document.querySelector("#R-select-variant");e&&(e.value=t)},window.relearn.initVariant=function(){var e=window.localStorage.getItem(window.relearn.absBaseUri+"/variant")??"";e==window.relearn.customvariantname||(!e||!window.relearn.themevariants.includes(e))&&(e=window.relearn.themevariants[0],window.localStorage.setItem(window.relearn.absBaseUri+"/variant",e)),document.documentElement.dataset.rThemeVariant=e},window.relearn.initVariant(),window.relearn.markVariant(),window.T_Copy_to_clipboard=`Copy to clipboard`,window.T_Copied_to_clipboard=`Copied to clipboard!`,window.T_Copy_link_to_clipboard=`Copy link to clipboard`,window.T_Link_copied_to_clipboard=`Copied link to clipboard!`,window.T_Reset_view=`Reset view`,window.T_View_reset=`View reset!`,window.T_No_results_found=`No results found for "{0}"`,window.T_N_results_found=`{1} results found for "{0}"`</script><link rel=stylesheet href=https://xapi-project.github.io/new-docs/css/misc.css></head><body class="mobile-support print" data-url=/new-docs/xenopsd/walkthroughs/index.html><div id=R-body class=default-animation><div id=R-body-overlay></div><nav id=R-topbar><div class=topbar-wrapper><div class=topbar-sidebar-divider></div><div class="topbar-area topbar-area-start" data-area=start><div class="topbar-button topbar-button-sidebar" data-content-empty=disable data-width-s=show data-width-m=hide data-width-l=hide><button class=topbar-control onclick=toggleNav() type=button title="Menu (CTRL+ALT+n)"><i class="fa-fw fas fa-bars"></i></button></div><div class="topbar-button topbar-button-toc" data-content-empty=hide data-width-s=show data-width-m=show data-width-l=show><button class=topbar-control onclick=toggleTopbarFlyout(this) type=button title="Table of Contents (CTRL+ALT+t)"><i class="fa-fw fas fa-list-alt"></i></button><div class=topbar-content><div class=topbar-content-wrapper></div></div></div></div><ol class="topbar-breadcrumbs breadcrumbs highlightable" itemscope itemtype=http://schema.org/BreadcrumbList><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/index.html><span itemprop=name>XAPI Toolstack Developer Guide</span></a><meta itemprop=position content="1">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/xenopsd/index.html><span itemprop=name>Xenopsd</span></a><meta itemprop=position content="2">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><span itemprop=name>Walk-throughs</span><meta itemprop=position content="3"></li></ol><div class="topbar-area topbar-area-end" data-area=end><div class="topbar-button topbar-button-edit" data-content-empty=disable data-width-s=area-more data-width-m=show data-width-l=show><a class=topbar-control href=https://github.com/xapi-project/xen-api/edit/master/doc/content/xenopsd/walkthroughs/_index.md target=_blank title="Edit (CTRL+ALT+w)"><i class="fa-fw fas fa-pen"></i></a></div><div class="topbar-button topbar-button-print" data-content-empty=disable data-width-s=area-more data-width-m=show data-width-l=show><a class=topbar-control href=/new-docs/xenopsd/walkthroughs/index.print.html title="Print whole chapter (CTRL+ALT+p)"><i class="fa-fw fas fa-print"></i></a></div><div class="topbar-button topbar-button-prev" data-content-empty=disable data-width-s=show data-width-m=show data-width-l=show><a class=topbar-control href=/new-docs/xenopsd/features/index.html title="Features (🡐)"><i class="fa-fw fas fa-chevron-left"></i></a></div><div class="topbar-button topbar-button-next" data-content-empty=disable data-width-s=show data-width-m=show data-width-l=show><a class=topbar-control href=/new-docs/xenopsd/walkthroughs/VM.start/index.html title="Walkthrough: Starting a VM (🡒)"><i class="fa-fw fas fa-chevron-right"></i></a></div><div class="topbar-button topbar-button-more" data-content-empty=hide data-width-s=show data-width-m=show data-width-l=show><button class=topbar-control onclick=toggleTopbarFlyout(this) type=button title=More><i class="fa-fw fas fa-ellipsis-v"></i></button><div class=topbar-content><div class=topbar-content-wrapper><div class="topbar-area topbar-area-more" data-area=more></div></div></div></div></div></div></nav><div id=R-main-overlay></div><main id=R-body-inner class="highlightable xenopsd" tabindex=-1><div class=flex-block-wrapper><article class=default><header class=headline></header><h1 id=operation-walk-throughs>Operation Walk-Throughs</h1><p>Let&rsquo;s trace through interesting operations to see how the whole system
+works.</p><ul class="children children-li children-sort-"><li><a href=/new-docs/xenopsd/walkthroughs/VM.start/index.html>Starting a VM</a><p>Complete walkthrough of starting a VM, from receiving the request to unpause.</p><ul></ul></li><li><a href=/new-docs/xenopsd/walkthroughs/VM.build/index.html>Building a VM</a><p>After VM_create, VM_build builds the core of the domain (vCPUs, memory)</p><ul><li><a href=/new-docs/xenopsd/walkthroughs/VM.build/VM_build/index.html>VM_build μ-op</a><p>Overview of the VM_build μ-op (runs after the VM_create μ-op created the domain).</p></li><li><a href=/new-docs/xenopsd/walkthroughs/VM.build/Domain.build/index.html>Domain.build</a><p>Prepare the build of a VM: Wait for scrubbing, do NUMA placement, run xenguest.</p></li><li><a href=/new-docs/xenopsd/walkthroughs/VM.build/xenguest/index.html>xenguest</a><p>Perform building VMs: Allocate and populate the domain's system memory.</p></li></ul></li><li><a href=/new-docs/xenopsd/walkthroughs/VM.migrate/index.html>Migrating a VM</a><p>Walkthrough of migrating a VM from one host to another.</p><ul></ul></li><li><a href=/new-docs/xenopsd/walkthroughs/live-migration/index.html>Live Migration</a><p>Sequence diagram of the process of Live Migration.</p><ul></ul></li></ul><p>Inspiration for other walk-throughs:</p><ul><li>Shutting down a VM and waiting for it to happen</li><li>A VM wants to reboot itself</li><li>A disk is hotplugged</li><li>A disk refuses to hotunplug</li><li>A VM is suspended</li></ul><footer class=footline></footer></article><section><h1 class=a11y-only>Subsections of Walk-throughs</h1><article class=default><header class=headline></header><h1 id=walkthrough-starting-a-vm>Walkthrough: Starting a VM</h1><p>A Xenopsd client wishes to start a VM. They must first tell Xenopsd the VM
 configuration to use. A VM configuration is broken down into objects:</p><ul><li>VM: A device-less Virtual Machine</li><li>VBD: A virtual block device for a VM</li><li>VIF: A virtual network interface for a VM</li><li>PCI: A virtual PCI device for a VM</li></ul><p>Treating devices as first-class objects is convenient because we wish to expose
 operations on the devices such as hotplug, unplug, eject (for removable media),
 carrier manipulation (for network interfaces) etc.</p><p>The &ldquo;add&rdquo; functions in the Xenopsd interface cause Xenopsd to create the
@@ -155,7 +55,7 @@ in the filesystem.</p><p>Aside: it would probably be more appropriate to store t
 since this has the exact object lifetime we need. This will require a more
 performant Xenstore to realise.</p><p>Every running Xenopsd process is linked with a single backend. Currently backends
 exist for:</p><ul><li>Xen via libxc, libxenguest and xenstore</li><li>Xen via libxl, libxc and xenstore</li><li>Xen via libvirt</li><li>KVM by direct invocation of qemu</li><li>Simulation for testing</li></ul><p>From here we shall assume the use of the &ldquo;Xen via libxc, libxenguest and xenstore&rdquo; (a.k.a.
-&ldquo;Xenopsd classic&rdquo;) backend.</p><p>The backend <a href=https://github.com/xapi-project/xenopsd/blob/2a476c132c0b5732f9b224316b851a1b4d57520b/xc/xenops_server_xen.ml#L719 rel=external target=_blank>VM.add</a>
+&ldquo;Xenopsd classic&rdquo;) backend.</p><p>The backend <a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L1603-L1659 rel=external target=_blank>VM.add</a>
 function checks whether the VM we have to manage already exists &ndash; and if it does
 then it ensures the Xenstore configuration is intact. This Xenstore configuration
 is important because at any time a client can query the state of a VM with
@@ -218,18 +118,33 @@ which will be executed by a thread from the thread pool. The
 takes care of:</p><ul><li>pushing operations to the right queue</li><li>ensuring at most one worker thread is working on a VM&rsquo;s operations</li><li>reducing the queue size by coalescing items together</li><li>providing a diagnostics interface</li></ul><p>Once a thread from the worker pool becomes free, it will execute the &ldquo;do it now&rdquo;
 function. In the example above this is <code>perform op t</code> where <code>op</code> is
 <code>VM_start vm</code> and <code>t</code> is the Task. The function
-<a href=https://github.com/xapi-project/xenopsd/blob/524d57b3c70/lib/xenops_server.ml#L1198 rel=external target=_blank>perform</a>
-has fragments like this:</p><div class="highlight wrap-code"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ocaml data-lang=ocaml><span style=display:flex><span>		<span style=color:#f92672>|</span> <span style=color:#a6e22e>VM_start</span> id <span style=color:#f92672>-&gt;</span>
-</span></span><span style=display:flex><span>			debug <span style=color:#e6db74>&#34;VM.start %s&#34;</span> id<span style=color:#f92672>;</span>
-</span></span><span style=display:flex><span>			perform_atomics <span style=color:#f92672>(</span>atomics_of_operation op<span style=color:#f92672>)</span> t<span style=color:#f92672>;</span>
-</span></span><span style=display:flex><span>			VM_DB.signal id</span></span></code></pre></div><p>Each &ldquo;operation&rdquo; (e.g. <code>VM_start vm</code>) is decomposed into &ldquo;micro-ops&rdquo; by the
+<a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/lib/xenops_server.ml#L2533 rel=external target=_blank>perform_exn</a>
+has fragments like this:</p><div class="highlight wrap-code"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ocaml data-lang=ocaml><span style=display:flex><span>  <span style=color:#f92672>|</span> <span style=color:#a6e22e>VM_start</span> <span style=color:#f92672>(</span>id<span style=color:#f92672>,</span> force<span style=color:#f92672>)</span> <span style=color:#f92672>-&gt;</span> <span style=color:#f92672>(</span>
+</span></span><span style=display:flex><span>      debug <span style=color:#e6db74>&#34;VM.start %s (force=%b)&#34;</span> id force <span style=color:#f92672>;</span>
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>let</span> power <span style=color:#f92672>=</span> <span style=color:#f92672>(</span>B.VM.get_state <span style=color:#f92672>(</span>VM_DB.read_exn id<span style=color:#f92672>)).</span>Vm.power_state <span style=color:#66d9ef>in</span>
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>match</span> power <span style=color:#66d9ef>with</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>|</span> <span style=color:#a6e22e>Running</span> <span style=color:#f92672>-&gt;</span>
+</span></span><span style=display:flex><span>          info <span style=color:#e6db74>&#34;VM %s is already running&#34;</span> id
+</span></span><span style=display:flex><span>      <span style=color:#f92672>|</span> <span style=color:#f92672>_</span> <span style=color:#f92672>-&gt;</span>
+</span></span><span style=display:flex><span>          perform_atomics <span style=color:#f92672>(</span>atomics_of_operation op<span style=color:#f92672>)</span> t <span style=color:#f92672>;</span>
+</span></span><span style=display:flex><span>          VM_DB.signal id <span style=color:#e6db74>&#34;^^^^^^^^^^^^^^^^^^^^--------
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    )</span></span></span></code></pre></div><p>Each &ldquo;operation&rdquo; (e.g. <code>VM_start vm</code>) is decomposed into &ldquo;micro-ops&rdquo; by the
 function
-<a href=https://github.com/xapi-project/xenopsd/blob/524d57b3c70/lib/xenops_server.ml#L739 rel=external target=_blank>atomics_of_operation</a>
+<a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/lib/xenops_server.ml#L1583 rel=external target=_blank>atomics_of_operation</a>
 where the micro-ops are small building-block actions common to the higher-level
 operations. Each operation corresponds to a list of &ldquo;micro-ops&rdquo;, where there is
 no if/then/else. Some of the &ldquo;micro-ops&rdquo; may be a no-op depending on the VM
 configuration (for example a PV domain may not need a qemu). In the case of
-<code>VM_start vm</code> this decomposes into the sequence:</p><h2 id=1-run-the-vm_pre_start-scripts>1. run the &ldquo;VM_pre_start&rdquo; scripts</h2><p>The <code>VM_hook_script</code> micro-op runs the corresponding &ldquo;hook&rdquo; scripts. The
+<a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/lib/xenops_server.ml#L1584 rel=external target=_blank><code>VM_start vm</code></a>
+the <code>Xenopsd</code> server starts by calling the <a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/lib/xenops_server.ml#L1612-L1714 rel=external target=_blank>functions that
+decompose</a>
+the <code>VM_hook_script</code>, <code>VM_create</code> and <code>VM_build</code> micro-ops:</p><div class="highlight wrap-code"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ml data-lang=ml><span style=display:flex><span>        dequarantine_ops vgpus
+</span></span><span style=display:flex><span>      <span style=color:#f92672>;</span> <span style=color:#f92672>[</span>
+</span></span><span style=display:flex><span>          <span style=color:#a6e22e>VM_hook_script</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>(</span>id<span style=color:#f92672>,</span> Xenops_hooks.<span style=color:#a6e22e>VM_pre_start</span><span style=color:#f92672>,</span> Xenops_hooks.reason__none<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>;</span> <span style=color:#a6e22e>VM_create</span> <span style=color:#f92672>(</span>id<span style=color:#f92672>,</span> <span style=color:#a6e22e>None</span><span style=color:#f92672>,</span> <span style=color:#a6e22e>None</span><span style=color:#f92672>,</span> no_sharept<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>;</span> <span style=color:#a6e22e>VM_build</span> <span style=color:#f92672>(</span>id<span style=color:#f92672>,</span> force<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>]</span></span></span></code></pre></div><p>This is the complete sequence of micro-ops:</p><h2 id=1-run-the-vm_pre_start-scripts>1. run the &ldquo;VM_pre_start&rdquo; scripts</h2><p>The <code>VM_hook_script</code> micro-op runs the corresponding &ldquo;hook&rdquo; scripts. The
 code is all in the
 <a href=https://github.com/xapi-project/xenopsd/blob/b33bab13080cea91e2fd59d5088622cd68152339/lib/xenops_hooks.ml rel=external target=_blank>Xenops_hooks</a>
 module and looks for scripts in the hardcoded path <code>/etc/xapi.d</code>.</p><h2 id=2-create-a-xen-domain>2. create a Xen domain</h2><p>The <code>VM_create</code> micro-op calls the <code>VM.create</code> function in the backend.
@@ -251,31 +166,10 @@ lots of vCPUs and then the guest is asked to only use some of them. Every VM
 therefore starts with the &ldquo;VCPUs_max&rdquo; setting and co-operative hotplug is
 used to reduce the number. Note there is no enforcement mechanism: a VM which
 cheats and uses too many vCPUs would have to be caught by looking at the
-performance statistics.</li></ol><h2 id=3-build-the-domain>3. build the domain</h2><p>On Xen, <code>Xenctrl.domain_create</code> creates an empty domain and
-returns the domain ID (<code>domid</code>) of the new domain to <code>xenopsd</code>.</p><p>In the <code>build</code> phase, the <code>xenguest</code> program is called to create
-the system memory layout of the domain, set vCPU affinity and a
-lot more.</p><p>The function
-<a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L2024 rel=external target=_blank>VM.build_domain_exn</a>
-must</p><ol><li>run pygrub (or eliloader) to extract the kernel and initrd, if necessary</li><li>invoke the <em>xenguest</em> binary to interact with libxenguest.</li><li>apply the <code>cpuid</code> configuration</li><li>store the current domain configuration on disk &ndash; it&rsquo;s important to know
-the difference between the configuration you started with and the configuration
-you would use after a reboot because some properties (such as maximum memory
-and vCPUs) as fixed on create.</li></ol><h3 id=31-interface-to-xenguest-for-building-domains>3.1 Interface to xenguest for building domains</h3><p><a href=https://github.com/xenserver/xen.pg/blob/XS-8/patches/xenguest.patch rel=external target=_blank>xenguest</a>
-was originally created as a separate program due to issues with
-<code>libxenguest</code> that were fixed, but we still shell out to <code>xenguest</code>:</p><ul><li>Wasn&rsquo;t threadsafe: fixed, but it still uses a per-call global struct</li><li>Incompatible licence, but now licensed under the LGPL.</li></ul><p>The <code>xenguest</code> binary has evolved to build more of the initial
-domain state. <code>xenopsd</code> passes it:</p><ul><li>The domain type to build for (HVM, PHV or PV),</li><li>The <code>domid</code> of the created empty domain,</li><li>The amount of system memory of the domain,</li><li>The platform data (vCPUs, vCPU affinity, etc) using the Xenstore:<ul><li>the vCPU affinity</li><li>the vCPU credit2 weight/cap parameters</li><li>whether the NX bit is exposed</li><li>whether the viridian CPUID leaf is exposed</li><li>whether the system has PAE or not</li><li>whether the system has ACPI or not</li><li>whether the system has nested HVM or not</li><li>whether the system has an HPET or not</li></ul></li></ul><p>When called to build a domain, <code>xenguest</code> reads those and builds the VM accordingly.</p><h3 id=32-workflow-for-allocating-and-populating-domain-memory>3.2 Workflow for allocating and populating domain memory</h3><p>Based on the given type, the <code>xenguest</code> program calls dedicated
-functions for the build process of given domain type.</p><ul><li>For HVM, this function is <code>stub_xc_hvm_build()</code>.</li></ul><p>These domain build functions call these functions:</p><ol><li><p><code>get_flags()</code> to get the platform data from the Xenstore</p></li><li><p><code>configure_vcpus()</code> which uses the platform data from the Xenstore to configure vCPU affinity and the credit scheduler parameters vCPU weight and vCPU cap (max % pCPU time for throttling)</p></li><li><p>For HVM, <code>hvm_build_setup_mem</code> to:</p><ol><li><p>Decide the <code>e820</code> memory layout of the system memory of the domain
-including memory holes depending on PCI passthrough and vGPU flags.</p></li><li><p>Load the BIOS/UEFI firmware images</p></li><li><p>Store the final MMIO hole parameters in the Xenstore</p></li><li><p>Call the <code>libxenguest</code> function
-<a href=https://github.com/xen-project/xen/blob/39c45caef271bc2b2e299217450cfda24c0c772a/tools/libs/guest/xg_dom_boot.c#L110-L126 rel=external target=_blank>xc_dom_boot_mem_init()</a>
-to allocate and map the domain&rsquo;s system memory.
-For HVM domains, it calls
-<a href=https://github.com/xen-project/xen/blob/39c45caef271bc2b2e299217450cfda24c0c772a/tools/libs/guest/xg_dom_x86.c#L1348-L1648 rel=external target=_blank>meminit_hvm()</a>
-to loop over the <code>vmemranges</code> of the domain for mapping the system RAM
-of the guest from the Xen hypervisor heap. Its goals are:</p><ul><li>Attempt to allocate 1GB superpages when possible</li><li>Fall back to 2MB pages when 1GB allocation failed</li><li>Fall back to 4k pages when both failed</li></ul><p>It uses the hypercall
-<a href=https://github.com/xen-project/xen/blob/39c45caef271bc2b2e299217450cfda24c0c772a/xen/common/memory.c#L1408-L1477 rel=external target=_blank>XENMEM_populate_physmap()</a>
-to perform memory allocation and to map the allocated memory
-to the system RAM ranges of the domain.
-The hypercall must:</p><ol><li><p>convert the arguments for allocating a page to hypervisor structures</p></li><li><p>set flags and calls functions according to the arguments</p></li><li><p>allocate the requested page at the most suitable place</p><ul><li>depending on passed flags, allocate on a specific NUMA node</li><li>else, if the domain has node affinity, on the affine nodes</li><li>also in the most suitable memory zone within the NUMA node</li></ul></li><li><p>fall back to less desirable places if this fails</p><ul><li>or fail for &ldquo;exact&rdquo; allocation requests</li></ul></li><li><p>split superpages if pages of the requested size are not available</p></li></ol></li><li><p>Call <code>construct_cpuid_policy()</code> to apply the <code>CPUID</code> <code>featureset</code> policy</p></li></ol><p>For more details on the VM build step involving xenguest and Xen side see:
-<a href=https://wiki.xenproject.org/wiki/Walkthrough:_VM_build_using_xenguest rel=external target=_blank>https://wiki.xenproject.org/wiki/Walkthrough:_VM_build_using_xenguest</a></p></li></ol><h2 id=4-mark-each-vbd-as-active>4. mark each VBD as &ldquo;active&rdquo;</h2><p>VBDs and VIFs are said to be &ldquo;active&rdquo; when they are intended to be used by a
+performance statistics.</li></ol><h2 id=3-build-the-domain>3. build the domain</h2><p>The <code>build</code> phase waits, if necessary, for the Xen memory scrubber to catch
+up reclaiming memory, runs NUMA placement, sets vCPU affinity and invokes
+the <code>xenguest</code> to build the system memory layout of the domain.
+See the <a href=/new-docs/xenopsd/walkthroughs/VM.build/index.html>walk-through of the VM_build μ-op</a> for details.</p><h2 id=4-mark-each-vbd-as-active>4. mark each VBD as &ldquo;active&rdquo;</h2><p>VBDs and VIFs are said to be &ldquo;active&rdquo; when they are intended to be used by a
 particular VM, even if the backend/frontend connection hasn&rsquo;t been established,
 or has been closed. If someone calls <code>VBD.stat</code> or <code>VIF.stat</code> then
 the result includes both &ldquo;active&rdquo; and &ldquo;plugged&rdquo;, where &ldquo;plugged&rdquo; is true if
@@ -394,4 +288,308 @@ is reassuringly simple:</p><div class="highlight wrap-code"><pre tabindex=0 styl
 </span></span><span style=display:flex><span>		Opt.iter
 </span></span><span style=display:flex><span>			<span style=color:#f92672>(</span><span style=color:#66d9ef>fun</span> stubdom_domid <span style=color:#f92672>-&gt;</span>
 </span></span><span style=display:flex><span>				Domain.unpause <span style=color:#f92672>~</span>xc stubdom_domid
-</span></span><span style=display:flex><span>			<span style=color:#f92672>)</span> <span style=color:#f92672>(</span>get_stubdom <span style=color:#f92672>~</span>xs di<span style=color:#f92672>.</span>Xenctrl.domid<span style=color:#f92672>)</span></span></span></code></pre></div><footer class=footline></footer></article></section></div></main></div><script src=/new-docs/js/clipboard.min.js?1739360098 defer></script><script src=/new-docs/js/perfect-scrollbar.min.js?1739360098 defer></script><script src=/new-docs/js/d3/d3-color.min.js?1739360098 defer></script><script src=/new-docs/js/d3/d3-dispatch.min.js?1739360098 defer></script><script src=/new-docs/js/d3/d3-drag.min.js?1739360098 defer></script><script src=/new-docs/js/d3/d3-ease.min.js?1739360098 defer></script><script src=/new-docs/js/d3/d3-interpolate.min.js?1739360098 defer></script><script src=/new-docs/js/d3/d3-selection.min.js?1739360098 defer></script><script src=/new-docs/js/d3/d3-timer.min.js?1739360098 defer></script><script src=/new-docs/js/d3/d3-transition.min.js?1739360098 defer></script><script src=/new-docs/js/d3/d3-zoom.min.js?1739360098 defer></script><script src=/new-docs/js/js-yaml.min.js?1739360098 defer></script><script src=/new-docs/js/mermaid.min.js?1739360098 defer></script><script>window.themeUseMermaid=JSON.parse("{}")</script><script src=/new-docs/js/theme.js?1739360098 defer></script><script>function apply_image_invert_filter(e){document.querySelectorAll("img").forEach(function(t){if(t.classList.contains("no-invert"))return;t.style="filter: invert("+e+");"})}function darkThemeUsed(){const t=window.getComputedStyle(document.querySelector("body")),n=t.getPropertyValue("background-color");var e=n.match(/\d+/g).map(function(e){return parseInt(e,10)});return e.length===3&&.2126*e[0]+.7152*e[1]+.0722*e[2]<165}const invertToDarkGray=.85;darkThemeUsed()&&apply_image_invert_filter(invertToDarkGray),document.addEventListener("themeVariantLoaded",function(e){apply_image_invert_filter(e.detail.variant.endsWith("dark")?invertToDarkGray:0)})</script></body></html>
+</span></span><span style=display:flex><span>			<span style=color:#f92672>)</span> <span style=color:#f92672>(</span>get_stubdom <span style=color:#f92672>~</span>xs di<span style=color:#f92672>.</span>Xenctrl.domid<span style=color:#f92672>)</span></span></span></code></pre></div><footer class=footline></footer></article><article class=default><header class=headline></header><h1 id=building-a-vm>Building a VM</h1><p>Walk-through documents for the <code>VM_build</code> phase:</p><pre class="mermaid align-center">flowchart
+subgraph xenopsd VM_build[xenopsd&amp;nbsp;VM_build&amp;nbsp;micro#8209;op]
+direction LR
+VM_build --&gt; VM.build
+VM.build --&gt; VM.build_domain
+VM.build_domain --&gt; VM.build_domain_exn
+VM.build_domain_exn --&gt; Domain.build
+click VM_build &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/lib/xenops_server.ml#L2255-L2271&#34; _blank
+click VM.build &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L2290-L2291&#34; _blank
+click VM.build_domain &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L2250-L2288&#34; _blank
+click VM.build_domain_exn &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L2024-L2248&#34; _blank
+end</pre><ul class="children children-li children-sort-"><li><a href=/new-docs/xenopsd/walkthroughs/VM.build/VM_build/index.html>VM_build μ-op</a><p>Overview of the VM_build μ-op (runs after the VM_create μ-op created the domain).</p></li><li><a href=/new-docs/xenopsd/walkthroughs/VM.build/Domain.build/index.html>Domain.build</a><p>Prepare the build of a VM: Wait for scrubbing, do NUMA placement, run xenguest.</p></li><li><a href=/new-docs/xenopsd/walkthroughs/VM.build/xenguest/index.html>xenguest</a><p>Perform building VMs: Allocate and populate the domain's system memory.</p></li></ul><footer class=footline></footer></article><section><h1 class=a11y-only>Subsections of Building a VM</h1><article class=default><header class=headline></header><h1 id=vm_build-micro-op>VM_build micro-op</h1><h2 id=overview>Overview</h2><p>On Xen, <code>Xenctrl.domain_create</code> creates an empty domain and
+returns the domain ID (<code>domid</code>) of the new domain to <code>xenopsd</code>.</p><p>In the <code>build</code> phase, the <code>xenguest</code> program is called to create
+the system memory layout of the domain, set vCPU affinity and a
+lot more.</p><p>The <a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/lib/xenops_server.ml#L2255-L2271 rel=external target=_blank>VM_build</a>
+micro-op collects the VM build parameters and calls
+<a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L2290-L2291 rel=external target=_blank>VM.build</a>,
+which calls
+<a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L2250-L2288 rel=external target=_blank>VM.build_domain</a>,
+which calls
+<a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L2024-L2248 rel=external target=_blank>VM.build_domain_exn</a>
+which calls <a href=/new-docs/xenopsd/walkthroughs/VM.build/Domain.build/index.html>Domain.build</a>:</p><pre class="mermaid align-center">flowchart
+subgraph xenopsd VM_build[xenopsd&amp;nbsp;VM_build&amp;nbsp;micro#8209;op]
+direction LR
+VM_build --&gt; VM.build
+VM.build --&gt; VM.build_domain
+VM.build_domain --&gt; VM.build_domain_exn
+VM.build_domain_exn --&gt; Domain.build
+click VM_build &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/lib/xenops_server.ml#L2255-L2271&#34; _blank
+click VM.build &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L2290-L2291&#34; _blank
+click VM.build_domain &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L2250-L2288&#34; _blank
+click VM.build_domain_exn &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L2024-L2248&#34; _blank
+click Domain.build &#34;../Domain.build/index.html&#34;
+end</pre><p>The function
+<a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L2024 rel=external target=_blank>VM.build_domain_exn</a>
+must:</p><ol><li><p>Run pygrub (or eliloader) to extract the kernel and initrd, if necessary</p></li><li><p><a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L2222-L2225 rel=external target=_blank>Call</a>
+<a href=/new-docs/xenopsd/walkthroughs/VM.build/Domain.build/index.html>Domain.build</a>
+to:</p><ul><li>optionally run NUMA placement and</li><li>invoke <a href=VM.build/xenguest>xenguest</a> to set up the domain memory.</li></ul><p>See the walk-though on <a href=VM.build>VM.build</a> for more details on this phase.</p></li><li><p>Apply the <code>cpuid</code> configuration</p></li><li><p>Store the current domain configuration on disk &ndash; it&rsquo;s important to know
+the difference between the configuration you started with and the configuration
+you would use after a reboot because some properties (such as maximum memory
+and vCPUs) as fixed on create.</p></li></ol><footer class=footline></footer></article><article class=default><header class=headline></header><h1 id=domainbuild>Domain.build</h1><h2 id=overview>Overview</h2><pre class="mermaid align-center">flowchart LR
+subgraph xenopsd VM_build[
+  xenopsd&amp;nbsp;thread&amp;nbsp;pool&amp;nbsp;with&amp;nbsp;two&amp;nbsp;VM_build&amp;nbsp;micro#8209;ops:
+  During&amp;nbsp;parallel&amp;nbsp;VM_start,&amp;nbsp;Many&amp;nbsp;threads&amp;nbsp;run&amp;nbsp;this&amp;nbsp;in&amp;nbsp;parallel!
+]
+direction LR
+build_domain_exn[
+  VM.build_domain_exn
+  from thread pool Thread #1
+]  --&gt; Domain.build
+Domain.build --&gt; build_pre
+build_pre --&gt; wait_xen_free_mem
+build_pre --&gt;|if NUMA/Best_effort| numa_placement
+Domain.build --&gt; xenguest[Invoke xenguest]
+click Domain.build &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L1111-L1210&#34; _blank
+click build_domain_exn &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L2222-L2225&#34; _blank
+click wait_xen_free_mem &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L236-L272&#34; _blank
+click numa_placement &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L862-L897&#34; _blank
+click build_pre &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L899-L964&#34; _blank
+click xenguest &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L1139-L1146&#34; _blank
+
+build_domain_exn2[
+  VM.build_domain_exn
+  from thread pool Thread #2]  --&gt; Domain.build2[Domain.build]
+Domain.build2 --&gt; build_pre2[build_pre]
+build_pre2 --&gt; wait_xen_free_mem2[wait_xen_free_mem]
+build_pre2 --&gt;|if NUMA/Best_effort| numa_placement2[numa_placement]
+Domain.build2 --&gt; xenguest2[Invoke xenguest]
+click Domain.build2 &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L1111-L1210&#34; _blank
+click build_domain_exn2 &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L2222-L2225&#34; _blank
+click wait_xen_free_mem2 &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L236-L272&#34; _blank
+click numa_placement2 &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L862-L897&#34; _blank
+click build_pre2 &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L899-L964&#34; _blank
+click xenguest2 &#34;https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L1139-L1146&#34; _blank
+end</pre><p><a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L2024-L2248 rel=external target=_blank><code>VM.build_domain_exn</code></a>
+<a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/xenops_server_xen.ml#L2222-L2225 rel=external target=_blank>calls</a>
+<a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L1111-L1210 rel=external target=_blank><code>Domain.build</code></a>
+to call:</p><ul><li><code>build_pre</code> to prepare the build of a VM:<ul><li>If the <code>xe</code> config <code>numa_placement</code> is set to <code>Best_effort</code>, invoke the NUMA placement algorithm.</li><li>Run <code>xenguest</code></li></ul></li><li><code>xenguest</code> to invoke the <a href=/new-docs/xenopsd/walkthroughs/VM.build/xenguest/index.html>xenguest</a> program to setup the domain&rsquo;s system memory.</li></ul><h2 id=domain-build-preparation-using-build_pre>Domain Build Preparation using build_pre</h2><p><a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L1111-L1210 rel=external target=_blank><code>Domain.build</code></a>
+<a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L1137 rel=external target=_blank>calls</a>
+the <a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L899-L964 rel=external target=_blank>function <code>build_pre</code></a>
+(which is also used for VM restore). It must:</p><ol><li><p><a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L902-L911 rel=external target=_blank>Call</a>
+<a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L236-L272 rel=external target=_blank>wait_xen_free_mem</a>
+to wait, if necessary, for the Xen memory scrubber to catch up reclaiming memory (CA-39743)</p></li><li><p>Call the hypercall to set the timer mode</p></li><li><p>Call the hypercall to set the number of vCPUs</p></li><li><p>As described in the <a href=../../toolstack/features/NUMA>NUMA feature description</a>,
+when the <code>xe</code> configuration option <code>numa_placement</code> is set to <code>Best_effort</code>,
+except when the VM has a hard affinity set, invoke the <code>numa_placement</code> function:</p><div class="highlight wrap-code"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ml data-lang=ml><span style=display:flex><span><span style=color:#66d9ef>match</span> <span style=color:#f92672>!</span>Xenops_server.numa_placement <span style=color:#66d9ef>with</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>|</span> <span style=color:#a6e22e>Any</span> <span style=color:#f92672>-&gt;</span>
+</span></span><span style=display:flex><span>    ()
+</span></span><span style=display:flex><span><span style=color:#f92672>|</span> <span style=color:#a6e22e>Best_effort</span> <span style=color:#f92672>-&gt;</span>
+</span></span><span style=display:flex><span>    log_reraise <span style=color:#f92672>(</span>Printf.sprintf <span style=color:#e6db74>&#34;NUMA placement&#34;</span><span style=color:#f92672>)</span> <span style=color:#f92672>(</span><span style=color:#66d9ef>fun</span> () <span style=color:#f92672>-&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> has_hard_affinity <span style=color:#66d9ef>then</span>
+</span></span><span style=display:flex><span>          D.debug <span style=color:#e6db74>&#34;VM has hard affinity set, skipping NUMA optimization&#34;</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>else</span>
+</span></span><span style=display:flex><span>          numa_placement domid <span style=color:#f92672>~</span>vcpus
+</span></span><span style=display:flex><span>            <span style=color:#f92672>~</span>memory<span style=color:#f92672>:(</span>Int64.mul memory<span style=color:#f92672>.</span>xen_max_mib 1048576L<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>)</span></span></span></code></pre></div></li></ol><h2 id=numa-placement>NUMA placement</h2><p><code>build_pre</code> passes the <code>domid</code>, the number of <code>vCPUs</code> and <code>xen_max_mib</code> to the
+<a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L862-L897 rel=external target=_blank>numa_placement</a>
+function to run the algorithm to find the best NUMA placement.</p><p>When it returns a NUMA node to use, it calls the Xen hypercalls
+to set the vCPU affinity to this NUMA node:</p><div class="highlight wrap-code"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ml data-lang=ml><span style=display:flex><span>  <span style=color:#66d9ef>let</span> vm <span style=color:#f92672>=</span> NUMARequest.make <span style=color:#f92672>~</span>memory <span style=color:#f92672>~</span>vcpus <span style=color:#66d9ef>in</span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>let</span> nodea <span style=color:#f92672>=</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>match</span> <span style=color:#f92672>!</span>numa_resources <span style=color:#66d9ef>with</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>|</span> <span style=color:#a6e22e>None</span> <span style=color:#f92672>-&gt;</span>
+</span></span><span style=display:flex><span>        Array.of_list nodes
+</span></span><span style=display:flex><span>    <span style=color:#f92672>|</span> <span style=color:#a6e22e>Some</span> a <span style=color:#f92672>-&gt;</span>
+</span></span><span style=display:flex><span>        Array.map2 NUMAResource.min_memory <span style=color:#f92672>(</span>Array.of_list nodes<span style=color:#f92672>)</span> a
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>in</span>
+</span></span><span style=display:flex><span>  numa_resources <span style=color:#f92672>:=</span> <span style=color:#a6e22e>Some</span> nodea <span style=color:#f92672>;</span>
+</span></span><span style=display:flex><span>  Softaffinity.plan <span style=color:#f92672>~</span>vm host nodea</span></span></code></pre></div><p>By using the default <code>auto_node_affinity</code> feature of Xen,
+setting the vCPU affinity causes the Xen hypervisor to activate
+NUMA node affinity for memory allocations to be aligned with
+the vCPU affinity of the domain.</p><p>Note: See the Xen domain&rsquo;s
+<a href=https://wiki.xenproject.org/wiki/NUMA_node_affinity_in_the_Xen_hypervisor rel=external target=_blank>auto_node_affinity</a>
+feature flag, which controls this, which can be overridden in the
+Xen hypervisor if needed for specific VMs.</p><p>This can be used, for example, when there might not be enough memory
+on the preferred NUMA node, but there are other NUMA nodes that have
+enough free memory among with the memory allocations shall be done.</p><p>In terms of future NUMA design, it might be even more favourable to
+have a strategy in <code>xenguest</code> where in such cases, the superpages
+of the preferred node are used first and a fallback to neighbouring
+NUMA nodes only happens to the extent necessary.</p><p>Likely, the future allocation strategy should be passed to <code>xenguest</code>
+using Xenstore like the other platform parameters for the VM.</p><p>Summary: This passes the information to the hypervisor that memory
+allocation for this domain should preferably be done from this NUMA node.</p><h2 id=invoke-the-xenguest-program>Invoke the xenguest program</h2><p>With the preparation in <code>build_pre</code> completed, <code>Domain.build</code>
+<a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/domain.ml#L1127-L1155 rel=external target=_blank>calls</a>
+the <code>xenguest</code> function to invoke the <a href=/new-docs/xenopsd/walkthroughs/VM.build/xenguest/index.html>xenguest</a> program to build the domain.</p><footer class=footline></footer></article><article class=default><header class=headline></header><h1 id=xenguest>xenguest</h1><h1 id=flowchart>Flowchart</h1><p>xenguest is called as part of starting a new domain in VM_build:</p><pre class="mermaid align-center">flowchart
+subgraph xenopsd VM_build[xenopsd&amp;nbsp;VM_build&amp;nbsp;micro#8209;ops]
+direction LR
+xenopsd1[Domain.build - Thread #1] --&gt; xenguest1[xenguest #1]
+xenopsd2[Domain.build - Thread #2] --&gt; xenguest2[xenguest #2]
+xenguest1 --&gt; libxenguest
+xenguest2 --&gt; libxenguest2[libxenguest]
+click xenopsd1 &#34;../Domain.build/index.html&#34;
+click xenopsd2 &#34;../Domain.build/index.html&#34;
+click xenguest1 &#34;https://github.com/xenserver/xen.pg/blob/XS-8/patches/xenguest.patch&#34; _blank
+click xenguest2 &#34;https://github.com/xenserver/xen.pg/blob/XS-8/patches/xenguest.patch&#34; _blank
+click libxenguest &#34;https://github.com/xen-project/xen/tree/master/tools/libs/guest&#34; _blank
+click libxenguest2 &#34;https://github.com/xen-project/xen/tree/master/tools/libs/guest&#34; _blank
+libxenguest --&gt; Xen[Xen&lt;br&gt;Hypervisor]
+libxenguest2 --&gt; Xen
+end</pre><h1 id=about-xenguest>About xenguest</h1><p><code>xenguest</code> is called by the xenopsd <a href=/new-docs/xenopsd/walkthroughs/VM.build/Domain.build/index.html>Domain.build</a> function
+to perform the build phase for new VMs, which is part of the <code>xenopsd</code>
+<a href=VM.start>VM.start operation</a>.</p><p><a href=https://github.com/xenserver/xen.pg/blob/XS-8/patches/xenguest.patch rel=external target=_blank>xenguest</a>
+was created as a separate program due to issues with
+<code>libxenguest</code>:</p><ul><li>It wasn&rsquo;t threadsafe: fixed, but it still uses a per-call global struct</li><li>It had an incompatible licence, but now licensed under the LGPL.</li></ul><p>Those were fixed, but we still shell out to <code>xenguest</code>, which is currently
+carried in the patch queue for the Xen hypervisor packages, but could become
+an individual package once planned changes to the Xen hypercalls are stabilised.</p><p>Over time, <code>xenguest</code> has evolved to build more of the initial domain state.</p><h1 id=interface-to-xenguest>Interface to xenguest</h1><pre class="mermaid align-center">flowchart
+subgraph xenopsd VM_build[xenopsd&amp;nbsp;VM_build&amp;nbsp;micro#8209;op]
+direction TB
+mode
+domid
+memmax
+Xenstore
+end
+mode[--mode build_hvm] --&gt; xenguest
+domid --&gt; xenguest
+memmax --&gt; xenguest
+Xenstore[Xenstore platform data] --&gt; xenguest</pre><p><code>xenopsd</code> must pass this information to <code>xenguest</code> to build a VM:</p><ul><li>The domain type to build for (HVM, PHV or PV).<ul><li>It is passed using the command line option <code>--mode hvm_build</code>.</li></ul></li><li>The <code>domid</code> of the created empty domain,</li><li>The amount of system memory of the domain,</li><li>A number of other parameters that are domain-specific.</li></ul><p>Using the Xenstore, the platform data (vCPUs, vCPU affinity, etc) is passed:</p><ul><li>the vCPU affinity</li><li>the vCPU credit2 weight/cap parameters</li><li>whether the NX bit is exposed</li><li>whether the viridian CPUID leaf is exposed</li><li>whether the system has PAE or not</li><li>whether the system has ACPI or not</li><li>whether the system has nested HVM or not</li><li>whether the system has an HPET or not</li></ul><p>When called to build a domain, <code>xenguest</code> reads those and builds the VM accordingly.</p><h2 id=walkthrough-of-the-xenguest-build-mode>Walkthrough of the xenguest build mode</h2><pre class="mermaid align-center">flowchart
+subgraph xenguest[xenguest&amp;nbsp;#8209;#8209;mode&amp;nbsp;hvm_build&amp;nbsp;domid]
+direction LR
+stub_xc_hvm_build[stub_xc_hvm_build#40;#41;] --&gt; get_flags[
+    get_flags#40;#41;&amp;nbsp;&lt;#8209;&amp;nbsp;Xenstore&amp;nbsp;platform&amp;nbsp;data
+]
+stub_xc_hvm_build --&gt; configure_vcpus[
+    configure_vcpus#40;#41;&amp;nbsp;#8209;&gt;&amp;nbsp;Xen&amp;nbsp;hypercall
+]
+stub_xc_hvm_build --&gt; setup_mem[
+    setup_mem#40;#41;&amp;nbsp;#8209;&gt;&amp;nbsp;Xen&amp;nbsp;hypercalls&amp;nbsp;to&amp;nbsp;setup&amp;nbsp;domain&amp;nbsp;memory
+]
+end</pre><p>Based on the given domain type, the <code>xenguest</code> program calls dedicated
+functions for the build process of the given domain type.</p><p>These are:</p><ul><li><code>stub_xc_hvm_build()</code> for HVM,</li><li><code>stub_xc_pvh_build()</code> for PVH, and</li><li><code>stub_xc_pv_build()</code> for PV domains.</li></ul><p>These domain build functions call these functions:</p><ol><li><code>get_flags()</code> to get the platform data from the Xenstore</li><li><code>configure_vcpus()</code> which uses the platform data from the Xenstore to configure vCPU affinity and the credit scheduler parameters vCPU weight and vCPU cap (max % pCPU time for throttling)</li><li>The <code>setup_mem</code> function for the given VM type.</li></ol><h2 id=the-function-hvm_build_setup_mem>The function hvm_build_setup_mem()</h2><p>For HVM domains, <code>hvm_build_setup_mem()</code> is responsible for deriving the memory
+layout of the new domain, allocating the required memory and populating for the
+new domain. It must:</p><ol><li>Derive the <code>e820</code> memory layout of the system memory of the domain
+including memory holes depending on PCI passthrough and vGPU flags.</li><li>Load the BIOS/UEFI firmware images</li><li>Store the final MMIO hole parameters in the Xenstore</li><li>Call the <code>libxenguest</code> function <code>xc_dom_boot_mem_init()</code> (see below)</li><li>Call <code>construct_cpuid_policy()</code> to apply the CPUID <code>featureset</code> policy</li></ol><h2 id=the-function-xc_dom_boot_mem_init>The function xc_dom_boot_mem_init()</h2><pre class="mermaid align-center">flowchart LR
+subgraph xenguest
+hvm_build_setup_mem[hvm_build_setup_mem#40;#41;]
+end
+subgraph libxenguest
+hvm_build_setup_mem --&gt; xc_dom_boot_mem_init[xc_dom_boot_mem_init#40;#41;]
+xc_dom_boot_mem_init --&gt;|vmemranges| meminit_hvm[meninit_hvm#40;#41;]
+click xc_dom_boot_mem_init &#34;https://github.com/xen-project/xen/blob/39c45c/tools/libs/guest/xg_dom_boot.c#L110-L126&#34; _blank
+click meminit_hvm &#34;https://github.com/xen-project/xen/blob/39c45c/tools/libs/guest/xg_dom_x86.c#L1348-L1648&#34; _blank
+end</pre><p><code>hvm_build_setup_mem()</code> calls
+<a href=https://github.com/xen-project/xen/blob/39c45c/tools/libs/guest/xg_dom_boot.c#L110-L126 rel=external target=_blank>xc_dom_boot_mem_init()</a>
+to allocate and populate the domain&rsquo;s system memory.</p><p>It calls
+<a href=https://github.com/xen-project/xen/blob/39c45c/tools/libs/guest/xg_dom_x86.c#L1348-L1648 rel=external target=_blank>meminit_hvm()</a>
+to loop over the <code>vmemranges</code> of the domain for mapping the system RAM
+of the guest from the Xen hypervisor heap. Its goals are:</p><ul><li>Attempt to allocate 1GB superpages when possible</li><li>Fall back to 2MB pages when 1GB allocation failed</li><li>Fall back to 4k pages when both failed</li></ul><p>It uses the hypercall
+<a href=https://github.com/xen-project/xen/blob/39c45c/xen/common/memory.c#L1408-L1477 rel=external target=_blank>XENMEM_populate_physmap</a>
+to perform memory allocation and to map the allocated memory
+to the system RAM ranges of the domain.</p><p><a href=https://github.com/xen-project/xen/blob/39c45c/xen/common/memory.c#L1022-L1071 rel=external target=_blank>https://github.com/xen-project/xen/blob/39c45c/xen/common/memory.c#L1022-L1071</a></p><p><code>XENMEM_populate_physmap</code>:</p><ol><li>Uses
+<a href=https://github.com/xen-project/xen/blob/39c45c/xen/common/memory.c#L1022-L1071 rel=external target=_blank>construct_memop_from_reservation</a>
+to convert the arguments for allocating a page from
+<a href=https://github.com/xen-project/xen/blob/master/xen/include/public/memory.h#L46-L80 rel=external target=_blank>struct xen_memory_reservation</a>
+to <code>struct memop_args</code>.</li><li>Sets flags and calls functions according to the arguments</li><li>Allocates the requested page at the most suitable place<ul><li>depending on passed flags, allocate on a specific NUMA node</li><li>else, if the domain has node affinity, on the affine nodes</li><li>also in the most suitable memory zone within the NUMA node</li></ul></li><li>Falls back to less desirable places if this fails<ul><li>or fail for &ldquo;exact&rdquo; allocation requests</li></ul></li><li>When no pages of the requested size are free,
+it splits larger superpages into pages of the requested size.</li></ol><p>For more details on the VM build step involving <code>xenguest</code> and Xen side see:
+<a href=https://wiki.xenproject.org/wiki/Walkthrough:_VM_build_using_xenguest rel=external target=_blank>https://wiki.xenproject.org/wiki/Walkthrough:_VM_build_using_xenguest</a></p><footer class=footline></footer></article></section><article class=default><header class=headline></header><h1 id=walkthrough-migrating-a-vm>Walkthrough: Migrating a VM</h1><p>A XenAPI client wishes to migrate a VM from one host to another within
+the same pool.</p><p>The client will issue a command to migrate the VM and it will be dispatched
+by the autogenerated <code>dispatch_call</code> function from <strong>xapi/server.ml</strong>. For
+more information about the generated functions you can have a look to
+<a href=https://github.com/xapi-project/xen-api/tree/master/ocaml/idl/ocaml_backend rel=external target=_blank>XAPI IDL model</a>.</p><p>The command will trigger the operation
+<a href=https://github.com/xapi-project/xen-api/blob/7ac88b90e762065c5ebb94a8ea61c61bdbf62c5c/ocaml/xenopsd/lib/xenops_server.ml#L2572 rel=external target=_blank>VM_migrate</a>
+that has low level operations performed by the backend. These atomics operations
+that we will describe in the documentation are:</p><ul><li>VM.restore</li><li>VM.rename</li><li>VBD.set_active</li><li>VBD.plug</li><li>VIF.set_active</li><li>VGPU.set_active</li><li>VM.create_device_model</li><li>PCI.plug</li><li>VM.set_domain_action_request</li></ul><p>The command have serveral parameters such as: should it be ran asynchronously,
+should it be forwared to another host, how arguments should be marshalled and
+so on. A new thread is created by <a href=https://github.com/xapi-project/xen-api/blob/7ac88b90e762065c5ebb94a8ea61c61bdbf62c5c/ocaml/xapi/server_helpers.ml#L55 rel=external target=_blank>xapi/server_helpers.ml</a>
+to handle the command asynchronously. At this point the helper also check if
+the command should be passed to the <a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xapi/message_forwarding.ml rel=external target=_blank>message forwarding</a>
+layer in order to be executed on another host (the destination) or locally if
+we are already at the right place.</p><p>It will finally reach <a href=https://github.com/xapi-project/xen-api/blob/7ac88b90e762065c5ebb94a8ea61c61bdbf62c5c/ocaml/xapi/api_server.ml#L242 rel=external target=_blank>xapi/api_server.ml</a> that will take the action
+of posted a command to the message broker <a href=https://github.com/xapi-project/xen-api/tree/master/ocaml/message-switch rel=external target=_blank>message switch</a>.
+It is a JSON-RPC HTTP request sends on a Unix socket to communicate between some
+XAPI daemons. In the case of the migration this message sends by <strong>XAPI</strong> will be
+consumed by the <a href=https://github.com/xapi-project/xen-api/tree/master/ocaml/xenopsd rel=external target=_blank>xenopsd</a>
+daemon that will do the job of migrating the VM.</p><h1 id=the-migration-of-the-vm>The migration of the VM</h1><p>The migration is an asynchronous task and a thread is created to handle this task.
+The tasks&rsquo;s reference is returned to the client, which can then check
+its status until completion.</p><p>As we see in the introduction the <a href=https://github.com/xapi-project/xen-api/tree/master/ocaml/xenopsd rel=external target=_blank>xenopsd</a>
+daemon will pop the operation
+<a href=https://github.com/xapi-project/xen-api/blob/7ac88b90e762065c5ebb94a8ea61c61bdbf62c5c/ocaml/xenopsd/lib/xenops_server.ml#L2572 rel=external target=_blank>VM_migrate</a>
+from the message broker.</p><p>Only one backend is know available that interacts with libxc, libxenguest
+and xenstore. It is the <a href=https://github.com/xapi-project/xen-api/tree/master/ocaml/xenopsd/xc rel=external target=_blank>xc backend</a>.</p><p>The entities that need to be migrated are: <em>VDI</em>, <em>VIF</em>, <em>VGPU</em> and <em>PCI</em> components.</p><p>During the migration process the destination domain will be built with the same
+uuid than the original VM but the last part of the UUID will be
+<code>XXXXXXXX-XXXX-XXXX-XXXX-000000000001</code>. The original domain will be removed using
+<code>XXXXXXXX-XXXX-XXXX-XXXX-000000000000</code>.</p><p>There are some points called <em>hooks</em> at which <code>xenopsd</code> can execute some script.
+Before starting a migration a command is send to the original domain to execute
+a pre migrate script if it exists.</p><p>Before starting the migration a command is sent to Qemu using the Qemu Machine Protocol (QMP)
+to check that the domain can be suspended (see <a href=https://github.com/xapi-project/xen-api/blob/master/ocaml/xenopsd/xc/device_common.ml rel=external target=_blank>xenopsd/xc/device_common.ml</a>).
+After checking with Qemu that the VM is suspendable we can start the migration.</p><h2 id=importing-metadata>Importing metadata</h2><p>As for <em>hooks</em>, commands to source domain are sent using <a href=https://github.com/xapi-project/xen-api/tree/master/ocaml/libs/stunnel rel=external target=_blank>stunnel</a> a daemon which
+is used as a wrapper to manage SSL encryption communication between two hosts on the same
+pool. To import metada an XML RPC command is sent to the original domain.</p><p>Once imported it will give us a reference id and will allow to build the new domain
+on the destination using the temporary VM uuid <code>XXXXXXXX-XXXX-XXXX-XXXX-000000000001</code>
+where <code>XXX...</code> is the reference id of the original VM.</p><h2 id=setting-memory>Setting memory</h2><p>One of the first thing to do is to setup the memory. The backend will check that there
+is no ballooning operation in progress. At this point the migration can fail if a
+ballooning operation is in progress and takes too much time.</p><p>Once memory checked the daemon will get the state of the VM (running, halted, &mldr;) and
+information about the VM are retrieve by the backend like the maximum memory the domain
+can consume but also information about quotas for example.
+Information are retrieve by the backend from xenstore.</p><p>Once this is complete, we can restore VIF and create the domain.</p><p>The synchronisation of the memory is the first point of synchronisation and everythin
+is ready for VM migration.</p><h2 id=vm-migration>VM Migration</h2><p>After receiving memory we can set up the destination domain. If we have a vGPU we need to kick
+off its migration process. We will need to wait the acknowledge that indicates that the entry
+for the GPU has been well initialized. before starting the main VM migration.</p><p>Their is a mechanism of handshake for synchronizing between the source and the
+destination. Using the handshake protocol the receiver inform the sender of the
+request that everything has been setup and ready to save/restore.</p><h3 id=vm-restore>VM restore</h3><p>VM restore is a low level atomic operation <a href=https://github.com/xapi-project/xen-api/blob/7ac88b90e762065c5ebb94a8ea61c61bdbf62c5c/ocaml/xenopsd/xc/xenops_server_xen.ml#L2684 rel=external target=_blank>VM.restore</a>.
+This operation is represented by a function call to <a href=https://github.com/xapi-project/xen-api/blob/7ac88b90e762065c5ebb94a8ea61c61bdbf62c5c/ocaml/xenopsd/xc/domain.ml#L1540 rel=external target=_blank>backend</a>.
+It uses <strong>Xenguest</strong>, a low-level utility from XAPI toolstack, to interact with the Xen hypervisor
+and libxc for sending a request of migration to the <strong>emu-manager</strong>.</p><p>After sending the request results coming from <strong>emu-manager</strong> are collected
+by the main thread. It blocks until results are received.</p><p>During the live migration, <strong>emu-manager</strong> helps in ensuring the correct state
+transitions for the devices and handling the message passing for the VM as
+it&rsquo;s moved between hosts. This includes making sure that the state of the
+VM&rsquo;s virtual devices, like disks or network interfaces, is correctly moved over.</p><h3 id=vm-renaming>VM renaming</h3><p>Once all operations are done we can rename the VM on the target from its temporary
+name to its real UUID. This operation is another low level atomic one
+<a href=https://github.com/xapi-project/xen-api/blob/7ac88b90e762065c5ebb94a8ea61c61bdbf62c5c/ocaml/xenopsd/xc/xenops_server_xen.ml#L1667 rel=external target=_blank>VM.rename</a>
+that will take care of updating the xenstore on the destination.</p><p>The next step is the restauration of devices and unpause the domain.</p><h3 id=restoring-remaining-devices>Restoring remaining devices</h3><p>Restoring devices starts by activating VBD using the low level atomic operation
+<a href=https://github.com/xapi-project/xen-api/blob/7ac88b90e762065c5ebb94a8ea61c61bdbf62c5c/ocaml/xenopsd/xc/xenops_server_xen.ml#L3674 rel=external target=_blank>VBD.set_active</a>. It is an update of Xenstore. VBDs that are read-write must
+be plugged before read-only ones. Once activated the low level atomic operation
+<a href=https://github.com/xapi-project/xen-api/blob/7ac88b90e762065c5ebb94a8ea61c61bdbf62c5c/ocaml/xenopsd/xc/xenops_server_xen.ml#L3721 rel=external target=_blank>VBD.plug</a>
+is called. VDI are attached and activate.</p><p>Next devices are VIFs that are set as active <a href=https://github.com/xapi-project/xen-api/blob/7ac88b90e762065c5ebb94a8ea61c61bdbf62c5c/ocaml/xenopsd/xc/xenops_server_xen.ml#L4296 rel=external target=_blank>VIF.set_active</a> and plug <a href=https://github.com/xapi-project/xen-api/blob/7ac88b90e762065c5ebb94a8ea61c61bdbf62c5c/ocaml/xenopsd/xc/xenops_server_xen.ml#L4394 rel=external target=_blank>VIF.plug</a>.
+If there are VGPUs we will set them as active now using the atomic <a href=https://github.com/xapi-project/xen-api/blob/7ac88b90e762065c5ebb94a8ea61c61bdbf62c5c/ocaml/xenopsd/xc/xenops_server_xen.ml#L3490 rel=external target=_blank>VGPU.set_active</a>.</p><p>We are almost done. The next step is to create the device model</p><h4 id=create-device-model>create device model</h4><p>Create device model is done by using the atomic operation <a href=https://github.com/xapi-project/xen-api/blob/7ac88b90e762065c5ebb94a8ea61c61bdbf62c5c/ocaml/xenopsd/xc/xenops_server_xen.ml#L2375 rel=external target=_blank>VM.create_device_model</a>. This
+will configure <strong>qemu-dm</strong> and started. This allow to manage PCI devices.</p><h4 id=pci-plug>PCI plug</h4><p><a href=https://github.com/xapi-project/xen-api/blob/7ac88b90e762065c5ebb94a8ea61c61bdbf62c5c/ocaml/xenopsd/xc/xenops_server_xen.ml#L3399 rel=external target=_blank>PCI.plug</a>
+is executed by the backend. It plugs a PCI device and advertise it to QEMU if this option is set. It is
+the case for NVIDIA SR-IOV vGPUS.</p><p>At this point devices have been restored. The new domain is considered survivable. We can
+unpause the domain and performs last actions</p><h3 id=unpause-and-done>Unpause and done</h3><p>Unpause is done by managing the state of the domain using bindings to <a href="https://xenbits.xen.org/gitweb/?p=xen.git;a=blob;f=tools/libs/ctrl/xc_domain.c;h=f2d9d14b4d9f24553fa766c5dcb289f88d684bb0;hb=HEAD#l76" rel=external target=_blank>xenctrl</a>.
+Once hypervisor has unpaused the domain some actions can be requested using <a href=https://github.com/xapi-project/xen-api/blob/7ac88b90e762065c5ebb94a8ea61c61bdbf62c5c/ocaml/xenopsd/xc/xenops_server_xen.ml#L3172 rel=external target=_blank>VM.set_domain_action_request</a>.
+It is a path in xenstore. By default no action is done but a reboot can be for example
+initiated.</p><p>Previously we spoke about some points called <em>hooks</em> at which <code>xenopsd</code> can execute some script. There
+is also a hook to run a post migrate script. After the execution of the script if there is one
+the migration is almost done. The last step is a handskake to seal the success of the migration
+and the old VM can now be cleaned.</p><h1 id=links>Links</h1><p>Some links are old but even if many changes occured they are relevant for a global understanding
+of the XAPI toolstack.</p><ul><li><a href=https://xapi-project.github.io/xapi/architecture.html rel=external target=_blank>XAPI architecture</a></li><li><a href=https://wiki.xenproject.org/wiki/XAPI_Dispatch rel=external target=_blank>XAPI dispatcher</a></li><li><a href=https://xapi-project.github.io/xenopsd/architecture.html rel=external target=_blank>Xenopsd architecture</a></li></ul><footer class=footline></footer></article><article class=default><header class=headline></header><h1 id=live-migration-sequence-diagram>Live Migration Sequence Diagram</h1><pre class="mermaid align-left">
+sequenceDiagram
+autonumber
+participant tx as sender
+participant rx0 as receiver thread 0
+participant rx1 as receiver thread 1
+participant rx2 as receiver thread 2
+
+activate tx
+tx-&gt;&gt;rx0: VM.import_metadata
+tx-&gt;&gt;tx: Squash memory to dynamic-min
+
+tx-&gt;&gt;rx1: HTTP /migrate/vm
+activate rx1
+rx1-&gt;&gt;rx1: VM_receive_memory&lt;br/&gt;VM_create (00000001)&lt;br/&gt;VM_restore_vifs
+rx1-&gt;&gt;tx: handshake (control channel)&lt;br/&gt;Synchronisation point 1
+
+tx-&gt;&gt;rx2: HTTP /migrate/mem
+activate rx2
+rx2-&gt;&gt;tx: handshake (memory channel)&lt;br/&gt;Synchronisation point 1-mem
+
+tx-&gt;&gt;rx1: handshake (control channel)&lt;br/&gt;Synchronisation point 1-mem ACK
+
+rx2-&gt;&gt;rx1: memory fd
+
+tx-&gt;&gt;rx1: VM_save/VM_restore&lt;br/&gt;Synchronisation point 2
+tx-&gt;&gt;tx: VM_rename
+rx1-&gt;&gt;rx2: exit
+deactivate rx2
+
+tx-&gt;&gt;rx1: handshake (control channel)&lt;br/&gt;Synchronisation point 3
+
+rx1-&gt;&gt;rx1: VM_rename&lt;br/&gt;VM_restore_devices&lt;br/&gt;VM_unpause&lt;br/&gt;VM_set_domain_action_request
+
+rx1-&gt;&gt;tx: handshake (control channel)&lt;br/&gt;Synchronisation point 4
+
+deactivate rx1
+
+tx-&gt;&gt;tx: VM_shutdown&lt;br/&gt;VM_remove
+deactivate tx
+
+</pre><footer class=footline></footer></article></section></div></main></div><script src=/new-docs/js/clipboard.min.js?1739370549 defer></script><script src=/new-docs/js/perfect-scrollbar.min.js?1739370549 defer></script><script src=/new-docs/js/d3/d3-color.min.js?1739370549 defer></script><script src=/new-docs/js/d3/d3-dispatch.min.js?1739370549 defer></script><script src=/new-docs/js/d3/d3-drag.min.js?1739370549 defer></script><script src=/new-docs/js/d3/d3-ease.min.js?1739370549 defer></script><script src=/new-docs/js/d3/d3-interpolate.min.js?1739370549 defer></script><script src=/new-docs/js/d3/d3-selection.min.js?1739370549 defer></script><script src=/new-docs/js/d3/d3-timer.min.js?1739370549 defer></script><script src=/new-docs/js/d3/d3-transition.min.js?1739370549 defer></script><script src=/new-docs/js/d3/d3-zoom.min.js?1739370549 defer></script><script src=/new-docs/js/js-yaml.min.js?1739370549 defer></script><script src=/new-docs/js/mermaid.min.js?1739370549 defer></script><script>window.themeUseMermaid=JSON.parse('{ "fontFamily": "Roboto Flex", "securityLevel": "loose" }')</script><script src=/new-docs/js/theme.js?1739370549 defer></script><script>function apply_image_invert_filter(e){document.querySelectorAll("img").forEach(function(t){if(t.classList.contains("no-invert"))return;t.style="filter: invert("+e+");"})}function darkThemeUsed(){const t=window.getComputedStyle(document.querySelector("body")),n=t.getPropertyValue("background-color");var e=n.match(/\d+/g).map(function(e){return parseInt(e,10)});return e.length===3&&.2126*e[0]+.7152*e[1]+.0722*e[2]<165}const invertToDarkGray=.85;darkThemeUsed()&&apply_image_invert_filter(invertToDarkGray),document.addEventListener("themeVariantLoaded",function(e){apply_image_invert_filter(e.detail.variant.endsWith("dark")?invertToDarkGray:0)})</script></body></html>
