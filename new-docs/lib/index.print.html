@@ -1,5 +1,5 @@
 <!doctype html><html lang=en-us dir=ltr itemscope itemtype=http://schema.org/Article data-r-output-format=print><head><meta charset=utf-8><meta name=viewport content="height=device-height,width=device-width,initial-scale=1,minimum-scale=1"><meta name=generator content="Hugo 0.127.0"><meta name=generator content="Relearn 7.3.2"><meta name=description content="libxenctrlXen Control library for controlling the Xen hypervisor"><meta name=author content><meta name=twitter:card content="summary"><meta name=twitter:title content="Libraries :: XAPI Toolstack Developer Documentation"><meta name=twitter:description content="libxenctrlXen Control library for controlling the Xen hypervisor"><meta property="og:url" content="https://xapi-project.github.io/new-docs/lib/index.html"><meta property="og:site_name" content="XAPI Toolstack Developer Documentation"><meta property="og:title" content="Libraries :: XAPI Toolstack Developer Documentation"><meta property="og:description" content="libxenctrlXen Control library for controlling the Xen hypervisor"><meta property="og:locale" content="en_us"><meta property="og:type" content="website"><meta itemprop=name content="Libraries :: XAPI Toolstack Developer Documentation"><meta itemprop=description content="libxenctrlXen Control library for controlling the Xen hypervisor"><meta itemprop=wordCount content="8"><title>Libraries :: XAPI Toolstack Developer Documentation</title>
-<link href=https://xapi-project.github.io/new-docs/lib/index.html rel=canonical type=text/html title="Libraries :: XAPI Toolstack Developer Documentation"><link href=/new-docs/lib/index.xml rel=alternate type=application/rss+xml title="Libraries :: XAPI Toolstack Developer Documentation"><link href=/new-docs/images/favicon.png?1741689706 rel=icon type=image/png><link href=/new-docs/css/fontawesome-all.min.css?1741689706 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/fontawesome-all.min.css?1741689706 rel=stylesheet></noscript><link href=/new-docs/css/auto-complete.css?1741689706 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/auto-complete.css?1741689706 rel=stylesheet></noscript><link href=/new-docs/css/perfect-scrollbar.min.css?1741689706 rel=stylesheet><link href=/new-docs/css/theme.min.css?1741689706 rel=stylesheet><link href=/new-docs/css/format-print.min.css?1741689706 rel=stylesheet id=R-format-style><script>window.relearn=window.relearn||{},window.relearn.relBasePath="..",window.relearn.relBaseUri="../..",window.relearn.absBaseUri="https://xapi-project.github.io/new-docs",window.relearn.min=`.min`,window.relearn.disableAnchorCopy=!1,window.relearn.disableAnchorScrolling=!1,window.relearn.themevariants=["auto","zen-light","zen-dark","red","blue","green","learn","neon","relearn-light","relearn-bright","relearn-dark"],window.relearn.customvariantname="my-custom-variant",window.relearn.changeVariant=function(e){var t=document.documentElement.dataset.rThemeVariant;window.localStorage.setItem(window.relearn.absBaseUri+"/variant",e),document.documentElement.dataset.rThemeVariant=e,t!=e&&document.dispatchEvent(new CustomEvent("themeVariantLoaded",{detail:{variant:e,oldVariant:t}}))},window.relearn.markVariant=function(){var t=window.localStorage.getItem(window.relearn.absBaseUri+"/variant"),e=document.querySelector("#R-select-variant");e&&(e.value=t)},window.relearn.initVariant=function(){var e=window.localStorage.getItem(window.relearn.absBaseUri+"/variant")??"";e==window.relearn.customvariantname||(!e||!window.relearn.themevariants.includes(e))&&(e=window.relearn.themevariants[0],window.localStorage.setItem(window.relearn.absBaseUri+"/variant",e)),document.documentElement.dataset.rThemeVariant=e},window.relearn.initVariant(),window.relearn.markVariant(),window.T_Copy_to_clipboard=`Copy to clipboard`,window.T_Copied_to_clipboard=`Copied to clipboard!`,window.T_Copy_link_to_clipboard=`Copy link to clipboard`,window.T_Link_copied_to_clipboard=`Copied link to clipboard!`,window.T_Reset_view=`Reset view`,window.T_View_reset=`View reset!`,window.T_No_results_found=`No results found for "{0}"`,window.T_N_results_found=`{1} results found for "{0}"`</script><link rel=stylesheet href=https://xapi-project.github.io/new-docs/css/misc.css></head><body class="mobile-support print" data-url=/new-docs/lib/index.html><div id=R-body class=default-animation><div id=R-body-overlay></div><nav id=R-topbar><div class=topbar-wrapper><div class=topbar-sidebar-divider></div><div class="topbar-area topbar-area-start" data-area=start><div class="topbar-button topbar-button-sidebar" data-content-empty=disable data-width-s=show data-width-m=hide data-width-l=hide><button class=topbar-control onclick=toggleNav() type=button title="Menu (CTRL+ALT+n)"><i class="fa-fw fas fa-bars"></i></button></div><div class="topbar-button topbar-button-toc" data-content-empty=hide data-width-s=show data-width-m=show data-width-l=show><button class=topbar-control onclick=toggleTopbarFlyout(this) type=button title="Table of Contents (CTRL+ALT+t)"><i class="fa-fw fas fa-list-alt"></i></button><div class=topbar-content><div class=topbar-content-wrapper></div></div></div></div><ol class="topbar-breadcrumbs breadcrumbs highlightable" itemscope itemtype=http://schema.org/BreadcrumbList><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/index.html><span itemprop=name>XAPI Toolstack Developer Guide</span></a><meta itemprop=position content="1">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><span itemprop=name>Libraries</span><meta itemprop=position content="2"></li></ol><div class="topbar-area topbar-area-end" data-area=end><div class="topbar-button topbar-button-edit" data-content-empty=disable data-width-s=area-more data-width-m=show data-width-l=show><a class=topbar-control href=https://github.com/xapi-project/xen-api/edit/master/doc/content/lib/_index.md target=_blank title="Edit (CTRL+ALT+w)"><i class="fa-fw fas fa-pen"></i></a></div><div class="topbar-button topbar-button-print" data-content-empty=disable data-width-s=area-more data-width-m=show data-width-l=show><a class=topbar-control href=/new-docs/lib/index.print.html title="Print whole chapter (CTRL+ALT+p)"><i class="fa-fw fas fa-print"></i></a></div><div class="topbar-button topbar-button-prev" data-content-empty=disable data-width-s=show data-width-m=show data-width-l=show><a class=topbar-control href=/new-docs/design/xenprep/index.html title="XenPrep (🡐)"><i class="fa-fw fas fa-chevron-left"></i></a></div><div class="topbar-button topbar-button-next" data-content-empty=disable data-width-s=show data-width-m=show data-width-l=show><a class=topbar-control href=/new-docs/lib/xenctrl/index.html title="libxenctrl (🡒)"><i class="fa-fw fas fa-chevron-right"></i></a></div><div class="topbar-button topbar-button-more" data-content-empty=hide data-width-s=show data-width-m=show data-width-l=show><button class=topbar-control onclick=toggleTopbarFlyout(this) type=button title=More><i class="fa-fw fas fa-ellipsis-v"></i></button><div class=topbar-content><div class=topbar-content-wrapper><div class="topbar-area topbar-area-more" data-area=more></div></div></div></div></div></div></nav><div id=R-main-overlay></div><main id=R-body-inner class="highlightable lib" tabindex=-1><div class=flex-block-wrapper><article class=default><header class=headline></header><h1 id=libraries>Libraries</h1><ul class="children children-li children-sort-"><li><a href=/new-docs/lib/xenctrl/index.html>libxenctrl</a><p>Xen Control library for controlling the Xen hypervisor</p></li></ul><script>for(let e of document.querySelectorAll(".inline-type"))e.innerHTML=renderType(e.innerHTML)</script><footer class=footline></footer></article><section><h1 class=a11y-only>Subsections of Libraries</h1><article class=default><header class=headline></header><h1 id=libxenctrl>libxenctrl</h1><ul class="children children-li children-sort-"><li><a href=/new-docs/lib/xenctrl/xc_domain_claim_pages/index.html>xc_domain_claim_pages()</a><p>Stake a claim for further memory for a domain, and release it too.</p></li><li><a href=/new-docs/lib/xenctrl/xc_domain_node_setaffinity/index.html>xc_domain_node_setaffinity()</a><p>Set a Xen domain's NUMA node affinity</p></li></ul><script>for(let e of document.querySelectorAll(".inline-type"))e.innerHTML=renderType(e.innerHTML)</script><footer class=footline></footer></article><section><h1 class=a11y-only>Subsections of libxenctrl</h1><article class=default><header class=headline></header><h1 id=xc_domain_claim_pages>xc_domain_claim_pages()</h1><h2 id=purpose>Purpose</h2><p>The purpose of <code>xc_domain_claim_pages()</code> is to attempt to
+<link href=https://xapi-project.github.io/new-docs/lib/index.html rel=canonical type=text/html title="Libraries :: XAPI Toolstack Developer Documentation"><link href=/new-docs/lib/index.xml rel=alternate type=application/rss+xml title="Libraries :: XAPI Toolstack Developer Documentation"><link href=/new-docs/images/favicon.png?1741689739 rel=icon type=image/png><link href=/new-docs/css/fontawesome-all.min.css?1741689739 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/fontawesome-all.min.css?1741689739 rel=stylesheet></noscript><link href=/new-docs/css/auto-complete.css?1741689739 rel=stylesheet media=print onload='this.media="all",this.onload=null'><noscript><link href=/new-docs/css/auto-complete.css?1741689739 rel=stylesheet></noscript><link href=/new-docs/css/perfect-scrollbar.min.css?1741689739 rel=stylesheet><link href=/new-docs/css/theme.min.css?1741689739 rel=stylesheet><link href=/new-docs/css/format-print.min.css?1741689739 rel=stylesheet id=R-format-style><script>window.relearn=window.relearn||{},window.relearn.relBasePath="..",window.relearn.relBaseUri="../..",window.relearn.absBaseUri="https://xapi-project.github.io/new-docs",window.relearn.min=`.min`,window.relearn.disableAnchorCopy=!1,window.relearn.disableAnchorScrolling=!1,window.relearn.themevariants=["auto","zen-light","zen-dark","red","blue","green","learn","neon","relearn-light","relearn-bright","relearn-dark"],window.relearn.customvariantname="my-custom-variant",window.relearn.changeVariant=function(e){var t=document.documentElement.dataset.rThemeVariant;window.localStorage.setItem(window.relearn.absBaseUri+"/variant",e),document.documentElement.dataset.rThemeVariant=e,t!=e&&document.dispatchEvent(new CustomEvent("themeVariantLoaded",{detail:{variant:e,oldVariant:t}}))},window.relearn.markVariant=function(){var t=window.localStorage.getItem(window.relearn.absBaseUri+"/variant"),e=document.querySelector("#R-select-variant");e&&(e.value=t)},window.relearn.initVariant=function(){var e=window.localStorage.getItem(window.relearn.absBaseUri+"/variant")??"";e==window.relearn.customvariantname||(!e||!window.relearn.themevariants.includes(e))&&(e=window.relearn.themevariants[0],window.localStorage.setItem(window.relearn.absBaseUri+"/variant",e)),document.documentElement.dataset.rThemeVariant=e},window.relearn.initVariant(),window.relearn.markVariant(),window.T_Copy_to_clipboard=`Copy to clipboard`,window.T_Copied_to_clipboard=`Copied to clipboard!`,window.T_Copy_link_to_clipboard=`Copy link to clipboard`,window.T_Link_copied_to_clipboard=`Copied link to clipboard!`,window.T_Reset_view=`Reset view`,window.T_View_reset=`View reset!`,window.T_No_results_found=`No results found for "{0}"`,window.T_N_results_found=`{1} results found for "{0}"`</script><link rel=stylesheet href=https://xapi-project.github.io/new-docs/css/misc.css></head><body class="mobile-support print" data-url=/new-docs/lib/index.html><div id=R-body class=default-animation><div id=R-body-overlay></div><nav id=R-topbar><div class=topbar-wrapper><div class=topbar-sidebar-divider></div><div class="topbar-area topbar-area-start" data-area=start><div class="topbar-button topbar-button-sidebar" data-content-empty=disable data-width-s=show data-width-m=hide data-width-l=hide><button class=topbar-control onclick=toggleNav() type=button title="Menu (CTRL+ALT+n)"><i class="fa-fw fas fa-bars"></i></button></div><div class="topbar-button topbar-button-toc" data-content-empty=hide data-width-s=show data-width-m=show data-width-l=show><button class=topbar-control onclick=toggleTopbarFlyout(this) type=button title="Table of Contents (CTRL+ALT+t)"><i class="fa-fw fas fa-list-alt"></i></button><div class=topbar-content><div class=topbar-content-wrapper></div></div></div></div><ol class="topbar-breadcrumbs breadcrumbs highlightable" itemscope itemtype=http://schema.org/BreadcrumbList><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><a itemprop=item href=/new-docs/index.html><span itemprop=name>XAPI Toolstack Developer Guide</span></a><meta itemprop=position content="1">&nbsp;>&nbsp;</li><li itemscope itemtype=https://schema.org/ListItem itemprop=itemListElement><span itemprop=name>Libraries</span><meta itemprop=position content="2"></li></ol><div class="topbar-area topbar-area-end" data-area=end><div class="topbar-button topbar-button-edit" data-content-empty=disable data-width-s=area-more data-width-m=show data-width-l=show><a class=topbar-control href=https://github.com/xapi-project/xen-api/edit/master/doc/content/lib/_index.md target=_blank title="Edit (CTRL+ALT+w)"><i class="fa-fw fas fa-pen"></i></a></div><div class="topbar-button topbar-button-print" data-content-empty=disable data-width-s=area-more data-width-m=show data-width-l=show><a class=topbar-control href=/new-docs/lib/index.print.html title="Print whole chapter (CTRL+ALT+p)"><i class="fa-fw fas fa-print"></i></a></div><div class="topbar-button topbar-button-prev" data-content-empty=disable data-width-s=show data-width-m=show data-width-l=show><a class=topbar-control href=/new-docs/design/xenprep/index.html title="XenPrep (🡐)"><i class="fa-fw fas fa-chevron-left"></i></a></div><div class="topbar-button topbar-button-next" data-content-empty=disable data-width-s=show data-width-m=show data-width-l=show><a class=topbar-control href=/new-docs/lib/xenctrl/index.html title="libxenctrl (🡒)"><i class="fa-fw fas fa-chevron-right"></i></a></div><div class="topbar-button topbar-button-more" data-content-empty=hide data-width-s=show data-width-m=show data-width-l=show><button class=topbar-control onclick=toggleTopbarFlyout(this) type=button title=More><i class="fa-fw fas fa-ellipsis-v"></i></button><div class=topbar-content><div class=topbar-content-wrapper><div class="topbar-area topbar-area-more" data-area=more></div></div></div></div></div></div></nav><div id=R-main-overlay></div><main id=R-body-inner class="highlightable lib" tabindex=-1><div class=flex-block-wrapper><article class=default><header class=headline></header><h1 id=libraries>Libraries</h1><ul class="children children-li children-sort-"><li><a href=/new-docs/lib/xenctrl/index.html>libxenctrl</a><p>Xen Control library for controlling the Xen hypervisor</p></li></ul><script>for(let e of document.querySelectorAll(".inline-type"))e.innerHTML=renderType(e.innerHTML)</script><footer class=footline></footer></article><section><h1 class=a11y-only>Subsections of Libraries</h1><article class=default><header class=headline></header><h1 id=libxenctrl>libxenctrl</h1><ul class="children children-li children-sort-"><li><a href=/new-docs/lib/xenctrl/xc_domain_claim_pages/index.html>xc_domain_claim_pages()</a><p>Stake a claim for further memory for a domain, and release it too.</p></li><li><a href=/new-docs/lib/xenctrl/xc_domain_node_setaffinity/index.html>xc_domain_node_setaffinity()</a><p>Set a Xen domain's NUMA node affinity for memory allocations</p></li><li><a href=/new-docs/lib/xenctrl/xc_vcpu_setaffinity/index.html>xc_vcpu_setaffinity()</a><p>Set a Xen vCPU's pCPU affinity and the domain's NUMA node affinity</p></li></ul><script>for(let e of document.querySelectorAll(".inline-type"))e.innerHTML=renderType(e.innerHTML)</script><footer class=footline></footer></article><section><h1 class=a11y-only>Subsections of libxenctrl</h1><article class=default><header class=headline></header><h1 id=xc_domain_claim_pages>xc_domain_claim_pages()</h1><h2 id=purpose>Purpose</h2><p>The purpose of <code>xc_domain_claim_pages()</code> is to attempt to
 stake a claim on an amount of memory for a given domain which guarantees that
 memory allocations for the claimed amount will be successful.</p><p>The domain can still attempt to allocate beyond the claim, but those are not
 guaranteed to be successful and will fail if the domain&rsquo;s memory reaches it&rsquo;s
@@ -57,9 +57,15 @@ avoiding remote memory accesses when accessing the grant tables from inside
 the domain.</p><p>Note: In case the corresponding backend process in Dom0 is running on another
 NUMA node, it would access the domain&rsquo;s grant tables from a remote NUMA node,
 but in this would enable a future improvement for Dom0, where it could prefer to
-run the corresponding backend process on the same or a neighbouring NUMA node.</p><script>for(let e of document.querySelectorAll(".inline-type"))e.innerHTML=renderType(e.innerHTML)</script><footer class=footline></footer></article><article class=default><header class=headline></header><h1 id=xc_domain_node_setaffinity>xc_domain_node_setaffinity()</h1><p><code>xc_domain_node_setaffinity()</code> controls the NUMA node affinity of a domain.</p><p>By default, Xen enables the <code>auto_node_affinity</code> feature flag,
-where setting the vCPU affinity also sets the NUMA node affinity for
-memory allocations to be aligned with the vCPU affinity of the domain.</p><p>Setting the NUMA node affinity using this call can be used,
+run the corresponding backend process on the same or a neighbouring NUMA node.</p><script>for(let e of document.querySelectorAll(".inline-type"))e.innerHTML=renderType(e.innerHTML)</script><footer class=footline></footer></article><article class=default><header class=headline></header><h1 id=xc_domain_node_setaffinity>xc_domain_node_setaffinity()</h1><p><code>xc_domain_node_setaffinity()</code> controls the NUMA node affinity of a domain,
+but it only updates the Xen hypervisor domain&rsquo;s <code>d->node_affinity</code> mask.
+This mask is read by the Xen memory allocator as the 2nd preference for the
+NUMA node to allocate memory from for this domain.</p><blockquote><p>[!info] Preferences of the Xen memory allocator:</p><ol><li>A NUMA node passed to the allocator directly takes precedence, if present.</li><li>Then, if the allocation is for a domain, it&rsquo;s <code>node_affinity</code> mask is tried.</li><li>Finally, it falls back to spread the pages over all remaining NUMA nodes.</li></ol></blockquote><p>As this call has no practical effect on the Xen scheduler, vCPU affinities
+need to be set separately anyways.</p><p>The domain&rsquo;s <code>auto_node_affinity</code> flag is enabled by default by Xen. This means
+that when setting vCPU affinities, Xen updates the <code>d->node_affinity</code> mask
+to consist of the NUMA nodes to which its vCPUs have affinity to.</p><p>See <a href=/new-docs/lib/xenctrl/xc_vcpu_setaffinity/index.html>xc_vcpu_setaffinity()</a> for more information
+on how <code>d->auto_node_affinity</code> is used to set the NUMA node affinity.</p><p>Thus, so far, there is no obvious need to call <code>xc_domain_node_setaffinity()</code>
+when building a domain.</p><p>Setting the NUMA node affinity using this call can be used,
 for example, when there might not be enough memory on the
 preferred NUMA node, but there are other NUMA nodes that have
 enough free memory to be used for the system memory of the domain.</p><p>In terms of future NUMA design, it might be even more favourable to
@@ -99,11 +105,201 @@ click `domain_set_node_affinity()` href &#34;
 https://github.com/xen-project/xen/blob/master/xen/common/domain.c#L943-L970&#34;</pre><h3 id=domain_set_node_affinity>domain_set_node_affinity()</h3><p>This function implements the functionality of <code>xc_domain_node_setaffinity</code>
 to set the NUMA affinity of a domain as described above.
 If the new_affinity does not intersect the <code>node_online_map</code>,
-it returns <code>-EINVAL</code>, otherwise on success <code>0</code>.</p><p>When the <code>new_affinity</code> is a specific set of NUMA nodes, it updates the NUMA
-<code>node_affinity</code> of the domain to these nodes and disables <code>auto_node_affinity</code>
-for this domain. It also notifies the Xen scheduler of the change.</p><p>This sets the preference the memory allocator to the new NUMA nodes,
-and in theory, it could also alter the behaviour of the scheduler.
-This of course depends on the scheduler and its configuration.</p><h2 id=notes-on-future-design-improvements>Notes on future design improvements</h2><p>This call cannot influence the past: The <code>xenopsd</code>
+it returns <code>-EINVAL</code>. Otherwise, the result is a success, and it returns <code>0</code>.</p><p>When the <code>new_affinity</code> is a specific set of NUMA nodes, it updates the NUMA
+<code>node_affinity</code> of the domain to these nodes and disables <code>d->auto_node_affinity</code>
+for this domain. With <code>d->auto_node_affinity</code> disabled,
+<a href=/new-docs/lib/xenctrl/xc_vcpu_setaffinity/index.html>xc_vcpu_setaffinity()</a> no longer updates the NUMA affinity
+of this domain.</p><p>If <code>new_affinity</code> has all bits set, it re-enables the <code>d->auto_node_affinity</code>
+for this domain and calls
+<a href=https://github.com/xen-project/xen/blob/e16acd80/xen/common/sched/core.c#L1809-L1876 rel=external target=_blank>domain_update_node_aff()</a>
+to re-set the domain&rsquo;s <code>node_affinity</code> mask to the NUMA nodes of the current
+the hard and soft affinity of the domain&rsquo;s online vCPUs.</p><h3 id=flowchart-in-relation-to-xc_set_vcpu_affinity>Flowchart in relation to xc_set_vcpu_affinity()</h3><p>The effect of <code>domain_set_node_affinity()</code> can be seen more clearly on this
+flowchart which shows how <code>xc_set_vcpu_affinity()</code> is currently used to set
+the NUMA affinity of a new domain, but also shows how <code>domain_set_node_affinity()</code>
+relates to it:</p><p>In the flowchart, two code paths are set in bold:</p><ul><li>Show the path when <code>Host.numa_affinity_policy</code> is the default (off) in <code>xenopsd</code>.</li><li>Show the default path of <code>xc_vcpu_setaffinity(XEN_VCPUAFFINITY_SOFT)</code> in Xen,
+when the Domain&rsquo;s <code>auto_node_affinity</code> flag is enabled (default) to show
+how it changes to the vCPU affinity update the domain&rsquo;s <code>node_affinity</code>
+in this default case as well.</li></ul><p><a href=/new-docs/xenopsd/walkthroughs/VM.build/xenguest/index.html>xenguest</a> uses the Xenstore
+to read the static domain configuration that it needs reads to build the domain.</p><pre class="mermaid align-center">flowchart TD
+
+subgraph VM.create[&#34;xenopsd VM.create&#34;]
+
+    %% Is xe vCPU-params:mask= set? If yes, write to Xenstore:
+
+    is_xe_vCPUparams_mask_set?{&#34;
+
+            Is
+            &lt;tt&gt;xe vCPU-params:mask=&lt;/tt&gt;
+            set? Example: &lt;tt&gt;1,2,3&lt;/tt&gt;
+            (Is used to enable vCPU&lt;br&gt;hard-affinity)
+
+        &#34;} --&#34;yes&#34;--&gt; set_hard_affinity(&#34;Write hard-affinity to XenStore:
+                        &lt;tt&gt;platform/vcpu/#domid/affinity&lt;/tt&gt;
+                        (xenguest will read this and other configuration data
+                         from Xenstore)&#34;)
+
+end
+
+subgraph VM.build[&#34;xenopsd VM.build&#34;]
+
+    %% Labels of the decision nodes
+
+    is_Host.numa_affinity_policy_set?{
+        Is&lt;p&gt;&lt;tt&gt;Host.numa_affinity_policy&lt;/tt&gt;&lt;p&gt;set?}
+    has_hard_affinity?{
+        Is hard-affinity configured in &lt;p&gt;&lt;tt&gt;platform/vcpu/#domid/affinity&lt;/tt&gt;?}
+
+    %% Connections from VM.create:
+    set_hard_affinity --&gt; is_Host.numa_affinity_policy_set?
+    is_xe_vCPUparams_mask_set? == &#34;no&#34;==&gt; is_Host.numa_affinity_policy_set?
+
+    %% The Subgraph itself:
+
+    %% Check Host.numa_affinity_policy
+
+    is_Host.numa_affinity_policy_set?
+
+        %% If Host.numa_affinity_policy is &#34;best_effort&#34;:
+
+        -- Host.numa_affinity_policy is&lt;p&gt;&lt;tt&gt;best_effort --&gt;
+
+            %% If has_hard_affinity is set, skip numa_placement:
+
+            has_hard_affinity?
+                --&#34;yes&#34;--&gt;exec_xenguest
+
+            %% If has_hard_affinity is not set, run numa_placement:
+
+            has_hard_affinity?
+                --&#34;no&#34;--&gt;numa_placement--&gt;exec_xenguest
+
+        %% If Host.numa_affinity_policy is off (default, for now),
+        %% skip NUMA placement:
+
+        is_Host.numa_affinity_policy_set?
+            ==&#34;default: disabled&#34;==&gt;
+            exec_xenguest
+end
+
+%% xenguest subgraph
+
+subgraph xenguest
+
+    exec_xenguest
+
+        ==&gt; stub_xc_hvm_build(&#34;&lt;tt&gt;stub_xc_hvm_build()&#34;)
+
+            ==&gt; configure_vcpus(&#34;&lt;tT&gt;configure_vcpus()&#34;)
+
+                %% Decision
+                ==&gt; set_hard_affinity?{&#34;
+                        Is &lt;tt&gt;platform/&lt;br&gt;vcpu/#domid/affinity&lt;/tt&gt;
+                        set?&#34;}
+
+end
+
+%% do_domctl Hypercalls
+
+numa_placement
+    --Set the NUMA placement using soft-affinity--&gt;
+    XEN_VCPUAFFINITY_SOFT(&#34;&lt;tt&gt;xc_vcpu_setaffinity(SOFT)&#34;)
+        ==&gt; do_domctl
+
+set_hard_affinity?
+    --yes--&gt;
+    XEN_VCPUAFFINITY_HARD(&#34;&lt;tt&gt;xc_vcpu_setaffinity(HARD)&#34;)
+        --&gt; do_domctl
+
+xc_domain_node_setaffinity(&#34;&lt;tt&gt;xc_domain_node_setaffinity()&lt;/tt&gt;
+                            and
+                            &lt;tt&gt;xc_domain_node_getaffinity()&#34;)
+                                &lt;--&gt; do_domctl
+
+%% Xen subgraph
+
+subgraph xen[Xen Hypervisor]
+
+    subgraph domain_update_node_affinity[&#34;domain_update_node_affinity()&#34;]
+        domain_update_node_aff(&#34;&lt;tt&gt;domain_update_node_aff()&#34;)
+        ==&gt; check_auto_node{&#34;Is domain&#39;s&lt;br&gt;&lt;tt&gt;auto_node_affinity&lt;/tt&gt;&lt;br&gt;enabled?&#34;}
+          ==&#34;yes (default)&#34;==&gt;set_node_affinity_from_vcpu_affinities(&#34;
+            Calculate the domain&#39;s &lt;tt&gt;node_affinity&lt;/tt&gt; mask from vCPU affinity
+            (used for further NUMA memory allocation for the domain)&#34;)
+    end
+
+    do_domctl{&#34;do_domctl()&lt;br&gt;op-&gt;cmd=?&#34;}
+        ==XEN_DOMCTL_setvcpuaffinity==&gt;
+            vcpu_set_affinity(&#34;&lt;tt&gt;vcpu_set_affinity()&lt;/tt&gt;&lt;br&gt;set the vCPU affinity&#34;)
+                ==&gt;domain_update_node_aff
+    do_domctl
+        --XEN_DOMCTL_setnodeaffinity (not used currently)
+            --&gt;is_new_affinity_all_nodes?
+
+    subgraph  domain_set_node_affinity[&#34;domain_set_node_affinity()&#34;]
+
+        is_new_affinity_all_nodes?{new_affinity&lt;br&gt;is #34;all#34;?}
+
+            --is #34;all#34;
+
+                --&gt; enable_auto_node_affinity(&#34;&lt;tt&gt;auto_node_affinity=1&#34;)
+                    --&gt; domain_update_node_aff
+
+        is_new_affinity_all_nodes?
+
+            --not #34;all#34;
+
+                --&gt; disable_auto_node_affinity(&#34;&lt;tt&gt;auto_node_affinity=0&#34;)
+                    --&gt; domain_update_node_aff
+    end
+
+%% setting and getting the struct domain&#39;s node_affinity:
+
+disable_auto_node_affinity
+    --node_affinity=new_affinity--&gt;
+        domain_node_affinity
+
+set_node_affinity_from_vcpu_affinities
+    ==&gt; domain_node_affinity@{ shape: bow-rect,label: &#34;domain:&amp;nbsp;node_affinity&#34; }
+        --XEN_DOMCTL_getnodeaffinity--&gt; do_domctl
+
+end
+click is_Host.numa_affinity_policy_set?
+&#34;https://github.com/xapi-project/xen-api/blob/90ef043c1f3a3bc20f1c5d3ccaaf6affadc07983/ocaml/xenopsd/xc/domain.ml#L951-L962&#34;
+click numa_placement
+&#34;https://github.com/xapi-project/xen-api/blob/90ef043c/ocaml/xenopsd/xc/domain.ml#L862-L897&#34;
+click stub_xc_hvm_build
+&#34;https://github.com/xenserver/xen.pg/blob/65c0438b/patches/xenguest.patch#L2329-L2436&#34; _blank
+click get_flags
+&#34;https://github.com/xenserver/xen.pg/blob/65c0438b/patches/xenguest.patch#L1164-L1288&#34; _blank
+click do_domctl
+&#34;https://github.com/xen-project/xen/blob/7cf163879/xen/common/domctl.c#L282-L894&#34; _blank
+click domain_set_node_affinity
+&#34;https://github.com/xen-project/xen/blob/7cf163879/xen/common/domain.c#L943-L970&#34; _blank
+click configure_vcpus
+&#34;https://github.com/xenserver/xen.pg/blob/65c0438b/patches/xenguest.patch#L1297-L1348&#34; _blank
+click set_hard_affinity?
+&#34;https://github.com/xenserver/xen.pg/blob/65c0438b/patches/xenguest.patch#L1305-L1326&#34; _blank
+click xc_vcpu_setaffinity
+&#34;https://github.com/xen-project/xen/blob/7cf16387/tools/libs/ctrl/xc_domain.c#L199-L250&#34; _blank
+click vcpu_set_affinity
+&#34;https://github.com/xen-project/xen/blob/7cf16387/xen/common/sched/core.c#L1353-L1393&#34; _blank
+click domain_update_node_aff
+&#34;https://github.com/xen-project/xen/blob/7cf16387/xen/common/sched/core.c#L1809-L1876&#34; _blank
+click check_auto_node
+&#34;https://github.com/xen-project/xen/blob/7cf16387/xen/common/sched/core.c#L1840-L1870&#34; _blank
+click set_node_affinity_from_vcpu_affinities
+&#34;https://github.com/xen-project/xen/blob/7cf16387/xen/common/sched/core.c#L1867-L1869&#34; _blank</pre><p><code>xc_domain_node_setaffinity</code> can be used to set the domain&rsquo;s <code>node_affinity</code>
+(which is normally set by <code>xc_set_vcpu_affinity</code>) to different NUMA nodes.</p><h4 id=no-effect-on-the-xen-scheduler>No effect on the Xen scheduler</h4><p>Currently, the node affinity does not affect the Xen scheudler:
+In case <code>d->node_affinity</code> would be set before vCPU creation, the initial pCPU
+of the new vCPU is the first pCPU of the first NUMA node in the domain&rsquo;s
+<code>node_affinity</code>. This is further changed when one of more <code>cpupools</code> are set up.
+As this is only the initial pCPU of the vCPU, this alone does not change the
+scheduling of Xen Credit scheduler as it reschedules the vCPUs to other pCPUs.</p><h2 id=notes-on-future-design-improvements>Notes on future design improvements</h2><h3 id=it-may-be-possible-to-call-it-before-vcpus-are-created>It may be possible to call it before vCPUs are created</h3><p>When done early, before vCPU creation, some domain-related data structures
+could be allocated using the domain&rsquo;s <code>d->node_affinity</code> NUMA node mask.</p><p>With further changes in Xen and <code>xenopsd</code>, Xen could allocate the vCPU structs
+on the affine NUMA nodes of the domain.</p><p>For this, would be that <code>xenopsd</code> would have to call <code>xc_domain_node_setaffinity()</code>
+before vCPU creation, after having decided the domain&rsquo;s NUMA placement,
+preferably including claiming the required memory for the domain to ensure
+that the domain will be populated from the same NUMA node(s).</p><p>This call cannot influence the past: The <code>xenopsd</code>
 <a href=/new-docs/xenopsd/walkthroughs/VM.start/index.html#2-create-a-xen-domain>VM_create</a>
 micro-ops calls <code>Xenctrl.domain_create</code>. It currently creates
 the domain&rsquo;s data structures before <code>numa_placement</code> was done.</p><p>Improving <code>Xenctrl.domain_create</code> to pass a NUMA node
@@ -111,4 +307,229 @@ for allocating the Hypervisor&rsquo;s data structures (e.g. vCPU)
 of the domain would require changes
 to the Xen hypervisor and the <code>xenopsd</code>
 <a href=/new-docs/xenopsd/walkthroughs/VM.start/index.html#2-create-a-xen-domain>xenopsd VM_create</a>
-micro-op.</p><script>for(let e of document.querySelectorAll(".inline-type"))e.innerHTML=renderType(e.innerHTML)</script><footer class=footline></footer></article></section></section></div></main></div><script src=/new-docs/js/clipboard.min.js?1741689706 defer></script><script src=/new-docs/js/perfect-scrollbar.min.js?1741689706 defer></script><script src=/new-docs/js/d3/d3-color.min.js?1741689706 defer></script><script src=/new-docs/js/d3/d3-dispatch.min.js?1741689706 defer></script><script src=/new-docs/js/d3/d3-drag.min.js?1741689706 defer></script><script src=/new-docs/js/d3/d3-ease.min.js?1741689706 defer></script><script src=/new-docs/js/d3/d3-interpolate.min.js?1741689706 defer></script><script src=/new-docs/js/d3/d3-selection.min.js?1741689706 defer></script><script src=/new-docs/js/d3/d3-timer.min.js?1741689706 defer></script><script src=/new-docs/js/d3/d3-transition.min.js?1741689706 defer></script><script src=/new-docs/js/d3/d3-zoom.min.js?1741689706 defer></script><script src=/new-docs/js/js-yaml.min.js?1741689706 defer></script><script src=/new-docs/js/mermaid.min.js?1741689706 defer></script><script>window.themeUseMermaid=JSON.parse('{ "fontFamily": "Roboto Flex", "securityLevel": "loose" }')</script><script src=/new-docs/js/theme.js?1741689706 defer></script><script>function apply_image_invert_filter(e){document.querySelectorAll("img").forEach(function(t){if(t.classList.contains("no-invert"))return;t.style="filter: invert("+e+");"})}function darkThemeUsed(){const t=window.getComputedStyle(document.querySelector("body")),n=t.getPropertyValue("background-color");var e=n.match(/\d+/g).map(function(e){return parseInt(e,10)});return e.length===3&&.2126*e[0]+.7152*e[1]+.0722*e[2]<165}const invertToDarkGray=.85;darkThemeUsed()&&apply_image_invert_filter(invertToDarkGray),document.addEventListener("themeVariantLoaded",function(e){apply_image_invert_filter(e.detail.variant.endsWith("dark")?invertToDarkGray:0)})</script></body></html>
+micro-op.</p><script>for(let e of document.querySelectorAll(".inline-type"))e.innerHTML=renderType(e.innerHTML)</script><footer class=footline></footer></article><article class=default><header class=headline></header><h1 id=xc_vcpu_setaffinity>xc_vcpu_setaffinity()</h1><h2 id=introduction>Introduction</h2><p>In the Xen hypervisor, each vCPU has:</p><ul><li><p>A <em>soft affinity</em>, This is the list of pCPUs where a vCPU prefers to run:</p><p>This can be used in cases to make vCPUs prefer to run on a set on pCPUs,
+for example the pCPUs of a NUMA node, but in case those are already busy,
+the Credit schedule can still ignore the soft-affinity.
+A typical use case for this are NUMA machines, where the soft affinity
+for the vCPUs of a domain should be set equal to the pCPUs of the NUMA node where the domain&rsquo;s memory shall be placed.</p><p>See the description of the <a href=/new-docs/toolstack/features/NUMA/index.html>NUMA feature</a>
+for more details.</p></li><li><p>A <em>hard affinity</em>, also known as pinning.
+This is the list of pCPUs where a vCPU is allowed to run</p><p>Hard affinity is currently not used for NUMA placement, but can be configured
+manually for a given domain, either using <code>xe VCPUs-params:mask=</code> or the API.</p><p>For example, the vCPU’s pinning can be configured using a template with:</p><div class="highlight wrap-code"><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span>xe template<span style=color:#f92672>-</span>param<span style=color:#f92672>-</span>set uuid<span style=color:#f92672>=&lt;</span>template_uuid<span style=color:#f92672>&gt;</span> vCPUs<span style=color:#f92672>-</span>params:mask<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span>,<span style=color:#ae81ff>2</span>,<span style=color:#ae81ff>3</span></span></span></code></pre></div><p>There are also host-level <code>guest_VCPUs_params</code> which are used by
+<code>host-cpu-tune</code> to exclusively pin Dom0 and guests (i.e. that their
+pCPUs never overlap). Note: This isn&rsquo;t currently supported by the
+NUMA code: It could result that the NUMA placement picks a node that
+has reduced capacity or unavailable due to the host mask that
+<code>host-cpu-tune</code> has set.</p></li></ul><h2 id=purpose>Purpose</h2><p>The libxenctrl library call <code>xc_set_vcpu_affinity()</code>
+controls the pCPU affinity of the given vCPU.</p><p><a href=/new-docs/xenopsd/walkthroughs/VM.build/xenguest/index.html#walkthrough-of-the-xenguest-build-mode>xenguest</a>
+uses it when building domains if
+<a href=/new-docs/xenopsd/walkthroughs/VM.build/Domain.build/index.html>xenopsd</a>
+added vCPU affinity information to the XenStore platform data path
+<code>platform/vcpu/#domid/affinity</code> of the domain.</p><h3 id=updating-the-numa-node-affinity-of-a-domain>Updating the NUMA node affinity of a domain</h3><p>Besides that, <code>xc_set_vcpu_affinity()</code> can also modify the NUMA node
+affinity of the Xen domain if the vCPU:</p><p>When Xen creates a domain, it enables the domain&rsquo;s <code>d->auto_node_affinity</code>
+feature flag.</p><p>When it is enabled, setting the vCPU affinity also updates the NUMA node
+affinity which is used for memory allocations for the domain:</p><h3 id=simplified-flowchart>Simplified flowchart</h3><pre class="mermaid align-center">flowchart TD
+subgraph libxenctrl
+    xc_vcpu_setaffinity(&#34;&lt;tt&gt;xc_vcpu_setaffinity()&#34;)--hypercall--&gt;xen
+end
+subgraph xen[Xen Hypervisor]
+direction LR
+vcpu_set_affinity(&#34;&lt;tt&gt;vcpu_set_affinity()&lt;/tt&gt;&lt;br&gt;set the vCPU affinity&#34;)
+    --&gt;check_auto_node{&#34;Is the domain&#39;s&lt;br&gt;&lt;tt&gt;auto_node_affinity&lt;/tt&gt;&lt;br&gt;enabled?&#34;}
+        --&#34;yes&lt;br&gt;(default)&#34;--&gt;
+            auto_node_affinity(&#34;Set the&lt;br&gt;domain&#39;s&lt;br&gt;&lt;tt&gt;node_affinity&lt;/tt&gt;
+            mask as well&lt;br&gt;(used for further&lt;br&gt;NUMA memory&lt;br&gt;allocation)&#34;)
+
+click xc_vcpu_setaffinity
+&#34;https://github.com/xen-project/xen/blob/7cf16387/tools/libs/ctrl/xc_domain.c#L199-L250&#34; _blank
+click vcpu_set_affinity
+&#34;https://github.com/xen-project/xen/blob/7cf16387/xen/common/sched/core.c#L1353-L1393&#34; _blank
+click domain_update_node_aff
+&#34;https://github.com/xen-project/xen/blob/7cf16387/xen/common/sched/core.c#L1809-L1876&#34; _blank
+click check_auto_node
+&#34;https://github.com/xen-project/xen/blob/7cf16387/xen/common/sched/core.c#L1840-L1870&#34; _blank
+click auto_node_affinity
+&#34;https://github.com/xen-project/xen/blob/7cf16387/xen/common/sched/core.c#L1867-L1869&#34; _blank
+end</pre><h2 id=current-use-by-xenopsd-and-xenguest>Current use by xenopsd and xenguest</h2><p>When <code>Host.numa_affinity_policy</code> is set to
+<a href=/new-docs/toolstack/features/NUMA/index.html#xapi-datamodel-design>best_effort</a>,
+<a href=/new-docs/xenopsd/walkthroughs/VM.build/index.html>xenopsd</a> attempts NUMA node placement
+when building new VMs and instructs
+<a href=/new-docs/xenopsd/walkthroughs/VM.build/xenguest/index.html#walkthrough-of-the-xenguest-build-mode>xenguest</a>
+to set the vCPU affinity of the domain.</p><p>With the domain&rsquo;s <code>auto_node_affinity</code> flag enabled by default in Xen,
+this automatically also sets the <code>d->node_affinity</code> mask of the domain.</p><p>This then causes the Xen memory allocator to prefer the NUMA nodes in the
+<code>d->node_affinity</code> NUMA node mask when allocating memory.</p><p>That is, (for completeness) unless Xen&rsquo;s allocation function
+<code>alloc_heap_pages()</code> receives a specific NUMA node in its <code>memflags</code>
+argument when called.</p><p>See <a href=/new-docs/lib/xenctrl/xc_domain_node_setaffinity/index.html>xc_domain_node_setaffinity()</a> for more
+information about another way to set the <code>node_affinity</code> NUMA node mask
+of Xen domains and more depth on how it is used in Xen.</p><h3 id=flowchart-of-its-current-use-for-numa-affinity>Flowchart of its current use for NUMA affinity</h3><p>In the flowchart, two code paths are set in bold:</p><ul><li>Show the path when <code>Host.numa_affinity_policy</code> is the default (off) in <code>xenopsd</code>.</li><li>Show the default path of <code>xc_vcpu_setaffinity(XEN_VCPUAFFINITY_SOFT)</code> in Xen,
+when the Domain&rsquo;s <code>auto_node_affinity</code> flag is enabled (default) to show
+how it changes to the vCPU affinity update the domain&rsquo;s <code>node_affinity</code>
+in this default case as well.</li></ul><p><a href=/new-docs/xenopsd/walkthroughs/VM.build/xenguest/index.html>xenguest</a> uses the Xenstore
+to read the static domain configuration that it needs reads to build the domain.</p><pre class="mermaid align-center">flowchart TD
+
+subgraph VM.create[&#34;xenopsd VM.create&#34;]
+
+    %% Is xe vCPU-params:mask= set? If yes, write to Xenstore:
+
+    is_xe_vCPUparams_mask_set?{&#34;
+
+            Is
+            &lt;tt&gt;xe vCPU-params:mask=&lt;/tt&gt;
+            set? Example: &lt;tt&gt;1,2,3&lt;/tt&gt;
+            (Is used to enable vCPU&lt;br&gt;hard-affinity)
+
+        &#34;} --&#34;yes&#34;--&gt; set_hard_affinity(&#34;Write hard-affinity to XenStore:
+                        &lt;tt&gt;platform/vcpu/#domid/affinity&lt;/tt&gt;
+                        (xenguest will read this and other configuration data
+                         from Xenstore)&#34;)
+
+end
+
+subgraph VM.build[&#34;xenopsd VM.build&#34;]
+
+    %% Labels of the decision nodes
+
+    is_Host.numa_affinity_policy_set?{
+        Is&lt;p&gt;&lt;tt&gt;Host.numa_affinity_policy&lt;/tt&gt;&lt;p&gt;set?}
+    has_hard_affinity?{
+        Is hard-affinity configured in &lt;p&gt;&lt;tt&gt;platform/vcpu/#domid/affinity&lt;/tt&gt;?}
+
+    %% Connections from VM.create:
+    set_hard_affinity --&gt; is_Host.numa_affinity_policy_set?
+    is_xe_vCPUparams_mask_set? == &#34;no&#34;==&gt; is_Host.numa_affinity_policy_set?
+
+    %% The Subgraph itself:
+
+    %% Check Host.numa_affinity_policy
+
+    is_Host.numa_affinity_policy_set?
+
+        %% If Host.numa_affinity_policy is &#34;best_effort&#34;:
+
+        -- Host.numa_affinity_policy is&lt;p&gt;&lt;tt&gt;best_effort --&gt;
+
+            %% If has_hard_affinity is set, skip numa_placement:
+
+            has_hard_affinity?
+                --&#34;yes&#34;--&gt;exec_xenguest
+
+            %% If has_hard_affinity is not set, run numa_placement:
+
+            has_hard_affinity?
+                --&#34;no&#34;--&gt;numa_placement--&gt;exec_xenguest
+
+        %% If Host.numa_affinity_policy is off (default, for now),
+        %% skip NUMA placement:
+
+        is_Host.numa_affinity_policy_set?
+            ==&#34;default: disabled&#34;==&gt;
+            exec_xenguest
+end
+
+%% xenguest subgraph
+
+subgraph xenguest
+
+    exec_xenguest
+
+        ==&gt; stub_xc_hvm_build(&#34;&lt;tt&gt;stub_xc_hvm_build()&#34;)
+
+            ==&gt; configure_vcpus(&#34;&lt;tT&gt;configure_vcpus()&#34;)
+
+                %% Decision
+                ==&gt; set_hard_affinity?{&#34;
+                        Is &lt;tt&gt;platform/&lt;br&gt;vcpu/#domid/affinity&lt;/tt&gt;
+                        set?&#34;}
+
+end
+
+%% do_domctl Hypercalls
+
+numa_placement
+    --Set the NUMA placement using soft-affinity--&gt;
+    XEN_VCPUAFFINITY_SOFT(&#34;&lt;tt&gt;xc_vcpu_setaffinity(SOFT)&#34;)
+        ==&gt; do_domctl
+
+set_hard_affinity?
+    --yes--&gt;
+    XEN_VCPUAFFINITY_HARD(&#34;&lt;tt&gt;xc_vcpu_setaffinity(HARD)&#34;)
+        --&gt; do_domctl
+
+xc_domain_node_setaffinity(&#34;&lt;tt&gt;xc_domain_node_setaffinity()&lt;/tt&gt;
+                            and
+                            &lt;tt&gt;xc_domain_node_getaffinity()&#34;)
+                                &lt;--&gt; do_domctl
+
+%% Xen subgraph
+
+subgraph xen[Xen Hypervisor]
+
+    subgraph domain_update_node_affinity[&#34;domain_update_node_affinity()&#34;]
+        domain_update_node_aff(&#34;&lt;tt&gt;domain_update_node_aff()&#34;)
+        ==&gt; check_auto_node{&#34;Is domain&#39;s&lt;br&gt;&lt;tt&gt;auto_node_affinity&lt;/tt&gt;&lt;br&gt;enabled?&#34;}
+          ==&#34;yes (default)&#34;==&gt;set_node_affinity_from_vcpu_affinities(&#34;
+            Calculate the domain&#39;s &lt;tt&gt;node_affinity&lt;/tt&gt; mask from vCPU affinity
+            (used for further NUMA memory allocation for the domain)&#34;)
+    end
+
+    do_domctl{&#34;do_domctl()&lt;br&gt;op-&gt;cmd=?&#34;}
+        ==XEN_DOMCTL_setvcpuaffinity==&gt;
+            vcpu_set_affinity(&#34;&lt;tt&gt;vcpu_set_affinity()&lt;/tt&gt;&lt;br&gt;set the vCPU affinity&#34;)
+                ==&gt;domain_update_node_aff
+    do_domctl
+        --XEN_DOMCTL_setnodeaffinity (not used currently)
+            --&gt;is_new_affinity_all_nodes?
+
+    subgraph  domain_set_node_affinity[&#34;domain_set_node_affinity()&#34;]
+
+        is_new_affinity_all_nodes?{new_affinity&lt;br&gt;is #34;all#34;?}
+
+            --is #34;all#34;
+
+                --&gt; enable_auto_node_affinity(&#34;&lt;tt&gt;auto_node_affinity=1&#34;)
+                    --&gt; domain_update_node_aff
+
+        is_new_affinity_all_nodes?
+
+            --not #34;all#34;
+
+                --&gt; disable_auto_node_affinity(&#34;&lt;tt&gt;auto_node_affinity=0&#34;)
+                    --&gt; domain_update_node_aff
+    end
+
+%% setting and getting the struct domain&#39;s node_affinity:
+
+disable_auto_node_affinity
+    --node_affinity=new_affinity--&gt;
+        domain_node_affinity
+
+set_node_affinity_from_vcpu_affinities
+    ==&gt; domain_node_affinity@{ shape: bow-rect,label: &#34;domain:&amp;nbsp;node_affinity&#34; }
+        --XEN_DOMCTL_getnodeaffinity--&gt; do_domctl
+
+end
+click is_Host.numa_affinity_policy_set?
+&#34;https://github.com/xapi-project/xen-api/blob/90ef043c1f3a3bc20f1c5d3ccaaf6affadc07983/ocaml/xenopsd/xc/domain.ml#L951-L962&#34;
+click numa_placement
+&#34;https://github.com/xapi-project/xen-api/blob/90ef043c/ocaml/xenopsd/xc/domain.ml#L862-L897&#34;
+click stub_xc_hvm_build
+&#34;https://github.com/xenserver/xen.pg/blob/65c0438b/patches/xenguest.patch#L2329-L2436&#34; _blank
+click get_flags
+&#34;https://github.com/xenserver/xen.pg/blob/65c0438b/patches/xenguest.patch#L1164-L1288&#34; _blank
+click do_domctl
+&#34;https://github.com/xen-project/xen/blob/7cf163879/xen/common/domctl.c#L282-L894&#34; _blank
+click domain_set_node_affinity
+&#34;https://github.com/xen-project/xen/blob/7cf163879/xen/common/domain.c#L943-L970&#34; _blank
+click configure_vcpus
+&#34;https://github.com/xenserver/xen.pg/blob/65c0438b/patches/xenguest.patch#L1297-L1348&#34; _blank
+click set_hard_affinity?
+&#34;https://github.com/xenserver/xen.pg/blob/65c0438b/patches/xenguest.patch#L1305-L1326&#34; _blank
+click xc_vcpu_setaffinity
+&#34;https://github.com/xen-project/xen/blob/7cf16387/tools/libs/ctrl/xc_domain.c#L199-L250&#34; _blank
+click vcpu_set_affinity
+&#34;https://github.com/xen-project/xen/blob/7cf16387/xen/common/sched/core.c#L1353-L1393&#34; _blank
+click domain_update_node_aff
+&#34;https://github.com/xen-project/xen/blob/7cf16387/xen/common/sched/core.c#L1809-L1876&#34; _blank
+click check_auto_node
+&#34;https://github.com/xen-project/xen/blob/7cf16387/xen/common/sched/core.c#L1840-L1870&#34; _blank
+click set_node_affinity_from_vcpu_affinities
+&#34;https://github.com/xen-project/xen/blob/7cf16387/xen/common/sched/core.c#L1867-L1869&#34; _blank</pre><script>for(let e of document.querySelectorAll(".inline-type"))e.innerHTML=renderType(e.innerHTML)</script><footer class=footline></footer></article></section></section></div></main></div><script src=/new-docs/js/clipboard.min.js?1741689739 defer></script><script src=/new-docs/js/perfect-scrollbar.min.js?1741689739 defer></script><script src=/new-docs/js/d3/d3-color.min.js?1741689739 defer></script><script src=/new-docs/js/d3/d3-dispatch.min.js?1741689739 defer></script><script src=/new-docs/js/d3/d3-drag.min.js?1741689739 defer></script><script src=/new-docs/js/d3/d3-ease.min.js?1741689739 defer></script><script src=/new-docs/js/d3/d3-interpolate.min.js?1741689739 defer></script><script src=/new-docs/js/d3/d3-selection.min.js?1741689739 defer></script><script src=/new-docs/js/d3/d3-timer.min.js?1741689739 defer></script><script src=/new-docs/js/d3/d3-transition.min.js?1741689739 defer></script><script src=/new-docs/js/d3/d3-zoom.min.js?1741689739 defer></script><script src=/new-docs/js/js-yaml.min.js?1741689739 defer></script><script src=/new-docs/js/mermaid.min.js?1741689739 defer></script><script>window.themeUseMermaid=JSON.parse('{ "fontFamily": "Roboto Flex", "securityLevel": "loose" }')</script><script src=/new-docs/js/theme.js?1741689739 defer></script><script>function apply_image_invert_filter(e){document.querySelectorAll("img").forEach(function(t){if(t.classList.contains("no-invert"))return;t.style="filter: invert("+e+");"})}function darkThemeUsed(){const t=window.getComputedStyle(document.querySelector("body")),n=t.getPropertyValue("background-color");var e=n.match(/\d+/g).map(function(e){return parseInt(e,10)});return e.length===3&&.2126*e[0]+.7152*e[1]+.0722*e[2]<165}const invertToDarkGray=.85;darkThemeUsed()&&apply_image_invert_filter(invertToDarkGray),document.addEventListener("themeVariantLoaded",function(e){apply_image_invert_filter(e.detail.variant.endsWith("dark")?invertToDarkGray:0)})</script></body></html>
