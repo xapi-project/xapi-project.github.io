@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Checkout xapi code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: xapi-project/xen-api
           path: xapi
@@ -35,13 +35,13 @@ jobs:
         with:
           dune-cache: true
           ocaml-compiler: ${{ steps.dotenv.outputs.ocaml_version_full }}
-          opam-local-packages: xapi/*.opam
+          opam-local-packages: xapi/opam/*.opam
           opam-repositories: |
             xs-opam: ${{ steps.dotenv.outputs.repository }}
 
       - name: Install dependencies
         working-directory: xapi
-        run: opam pin list --short | xargs opam install --deps-only --with-test -v
+        run: opam install . --deps-only -v
 
       - name: Generate xapi docs
         working-directory: xapi
@@ -50,7 +50,7 @@ jobs:
           opam exec -- make doc-json
 
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: web
 
