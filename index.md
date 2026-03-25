@@ -36,6 +36,13 @@ Otherwise, you can
 - follow the [build instructions](https://github.com/xenserver/buildroot)
 - try experimental [ARM packages](http://wiki.xenproject.org/wiki/Running_XCP/xapi_on_ARM)
 
+## Members of the XAPI security team
+
+* [Rob Hoes](https://github.com/robhoes) [@xenserver](https://github.com/xenserver)
+* [Pau Ruiz Safont](https://github.com/psafont) [@xcp-ng](https://github.com/xcp-ng)
+
+The preferred way to report security issues is to follow the [usual process for Xen](https://xenproject.org/about/security-policy/)
+
 ## Get in touch
 
 You're welcome to
