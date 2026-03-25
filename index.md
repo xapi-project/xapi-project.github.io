@@ -40,5 +40,4 @@ Otherwise, you can
 
 You're welcome to
 
-- join the #xen-api channel on freenode
 - checkout the [code on github](https://github.com/xapi-project/)
