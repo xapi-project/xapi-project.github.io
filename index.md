@@ -48,3 +48,4 @@ The preferred way to report security issues is to follow the [usual process for 
 You're welcome to
 
 - checkout the [code on github](https://github.com/xapi-project/)
+- join [#xapi:vates.tech](https://matrix.to/#/#xapi:vates.tech) room on the Matrix chat
