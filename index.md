@@ -3,7 +3,7 @@ layout: default
 title: Welcome
 ---
 
-## The [xapi toolstack](http://www.xenproject.org/developers/teams/xapi.html)
+## The [xapi toolstack](https://xenproject.org/projects/xapi/)
 
 - manages clusters of Xen hosts with shared storage and networking
 - allows running VMs to be migrated between hosts (with or without storage)
@@ -22,7 +22,7 @@ title: Welcome
   and [CloudStack](http://cloudstack.apache.org)
 
 The xapi toolstack is developed by the
-[xapi project](http://www.xenproject.org/developers/teams/xapi.html):
+[xapi project](https://xenproject.org/projects/xapi/):
 a sub-project of the Linux Foundation Xen Project.
 
 ## Getting the Xapi toolstack
