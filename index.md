@@ -38,8 +38,8 @@ Otherwise, you can
 
 ## Members of the XAPI security team
 
-* [Rob Hoes](https://github.com/robhoes) [@xenserver](https://github.com/xenserver)
-* [Pau Ruiz Safont](https://github.com/psafont) [@xcp-ng](https://github.com/xcp-ng)
+* [Christian Pardillo Laursen](https://github.com/cplaursen) [@xenserver](https://github.com/xenserver)
+* [Andriy Sultanov](https://github.com/last-genius) [@xcp-ng](https://github.com/xcp-ng)
 
 The preferred way to report security issues is to follow the [usual process for Xen](https://xenproject.org/about/security-policy/)
 
